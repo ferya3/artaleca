@@ -1,0 +1,40 @@
+<?php
+
+return [
+    'technical_data' => 'مشخصات فنی',
+    'properties' => 'خواص فیزیکی',
+    'packaging' => 'بسته‌بندی و حمل',
+    'standards' => 'استانداردها',
+    'applications' => 'موارد کاربرد',
+    'description' => 'شرح محصول',
+    'datasheet' => 'دیتاشیت فنی',
+
+    'grain_size' => 'اندازه دانه',
+    'grain_size_unit' => 'میلی‌متر',
+    'bulk_density' => 'وزن مخصوص انبوه',
+    'bulk_density_unit' => 'کیلوگرم بر متر مکعب',
+    'particle_density' => 'چگالی دانه',
+    'crushing_strength' => 'مقاومت فشاری دانه',
+    'crushing_strength_unit' => 'مگاپاسکال',
+    'thermal_conductivity' => 'ضریب هدایت حرارتی',
+    'thermal_conductivity_unit' => 'وات بر متر کلوین',
+    'water_absorption' => 'جذب آب ۲۴ ساعته',
+    'water_absorption_unit' => 'درصد',
+    'ph_value' => 'pH',
+    'fire_resistance' => 'مقاومت حرارتی',
+    'fire_resistance_unit' => 'درجه سانتی‌گراد',
+    'sku' => 'کد محصول',
+
+    'filter_by_category' => 'دسته‌بندی',
+    'filter_by_grain' => 'اندازه دانه',
+    'filter_by_application' => 'کاربرد',
+    'sort_position' => 'پیش‌فرض',
+    'sort_grain_asc' => 'اندازه دانه (صعودی)',
+    'sort_grain_desc' => 'اندازه دانه (نزولی)',
+    'sort_density_asc' => 'چگالی (صعودی)',
+
+    'request_quote' => 'استعلام این محصول',
+    'ask_engineer' => 'پرسش فنی از کارشناس',
+    'catalogue_intro' => 'سبکدانه‌های رسی منبسط‌شده آرتا لیکا در بازه‌های دانه‌بندی استاندارد تولید می‌شوند. برای انتخاب گرید مناسب، دانه‌بندی و وزن مخصوص مورد نیاز پروژه را با جدول زیر مقایسه کنید.',
+    'empty' => 'محصولی با این مشخصات یافت نشد. فیلترها را تغییر دهید یا با کارشناسان ما تماس بگیرید.',
+];

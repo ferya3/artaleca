@@ -1,0 +1,193 @@
+<x-layouts.app>
+
+    {{-- ── Hero ───────────────────────────────────────────────────────────
+         One headline, one paragraph, two actions. The visual sits beside the
+         copy rather than behind it, so the text never needs a scrim and the
+         LCP element is predictable. --}}
+    <section class="relative overflow-hidden bg-ink-950 text-white">
+        <div class="hairline-grid absolute inset-0" aria-hidden="true"></div>
+
+        <div class="container-page relative">
+            <div class="grid items-center gap-12 py-16 lg:grid-cols-12 lg:gap-16 lg:py-24">
+                <div class="lg:col-span-6">
+                    <p class="eyebrow text-clay-400!">{{ __('home.hero_eyebrow') }}</p>
+
+                    <h1 class="mt-5 text-4xl font-bold leading-[1.15] md:text-5xl lg:text-[3.25rem]">
+                        {{ __('home.hero_title') }}
+                    </h1>
+
+                    <p class="mt-6 max-w-xl text-base leading-relaxed text-ink-300 md:text-lg">
+                        {{ __('home.hero_body') }}
+                    </p>
+
+                    <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+                        <x-button :href="route('products.index')" variant="accent" size="lg">
+                            {{ __('home.hero_primary_cta') }}
+                        </x-button>
+                        <x-button :href="route('quote')" variant="inverse" size="lg">
+                            {{ __('home.hero_secondary_cta') }}
+                        </x-button>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6">
+                    <x-media
+                        seed="arta-hero"
+                        ratio="4/3"
+                        tone="dark"
+                        eager
+                        :alt="__('home.hero_title')"
+                        sizes="(min-width: 1024px) 50vw, 100vw"
+                        class="border border-hairline-dark"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <div class="container-page relative pb-16 lg:pb-20">
+            <x-stat-strip tone="dark" class="border border-hairline-dark" />
+        </div>
+    </section>
+
+    {{-- ── What the material does ─────────────────────────────────────── --}}
+    <section class="border-b border-hairline py-section">
+        <div class="container-page">
+            <div class="max-w-3xl">
+                <p class="eyebrow mb-3">{{ __('nav.about') }}</p>
+                <h2 class="text-2xl font-bold text-ink-950 md:text-3xl">{{ __('home.intro_title') }}</h2>
+                <p class="mt-5 text-base leading-relaxed text-ink-600 md:text-lg">{{ __('home.intro_body') }}</p>
+            </div>
+
+            <div class="mt-14 grid gap-px bg-hairline md:grid-cols-3">
+                @foreach (['weight', 'thermal', 'durability'] as $index => $key)
+                    <div class="bg-white pt-8 md:px-7">
+                        <p class="tabular text-xs font-semibold tracking-widest text-clay-600">
+                            {{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}
+                        </p>
+                        <h3 class="mt-4 text-lg font-bold text-ink-950">{{ __("home.pillars.$key.title") }}</h3>
+                        <p class="mt-3 pb-8 text-sm leading-relaxed text-ink-600">{{ __("home.pillars.$key.body") }}</p>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    {{-- ── Products ───────────────────────────────────────────────────── --}}
+    @if ($products->isNotEmpty())
+        <section class="py-section">
+            <div class="container-page">
+                <x-section-heading
+                    :eyebrow="__('nav.products')"
+                    :title="__('home.products_title')"
+                    :body="__('home.products_body')"
+                    :href="route('products.index')"
+                />
+
+                <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    @foreach ($products as $product)
+                        <x-product-card :product="$product" />
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
+    {{-- ── Applications ───────────────────────────────────────────────── --}}
+    @if ($applications->isNotEmpty())
+        <section class="border-y border-hairline bg-surface-muted py-section">
+            <div class="container-page">
+                <x-section-heading
+                    :eyebrow="__('nav.applications')"
+                    :title="__('home.applications_title')"
+                    :body="__('home.applications_body')"
+                    :href="route('applications.index')"
+                />
+
+                <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    @foreach ($applications as $application)
+                        <x-application-card :application="$application" />
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
+    {{-- ── Quality ────────────────────────────────────────────────────── --}}
+    <section class="py-section">
+        <div class="container-page grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+            <x-media
+                seed="arta-quality-lab"
+                ratio="4/3"
+                :alt="__('home.quality_title')"
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                class="border border-hairline"
+            />
+
+            <div>
+                <p class="eyebrow mb-3">{{ __('nav.quality') }}</p>
+                <h2 class="text-2xl font-bold text-ink-950 md:text-3xl">{{ __('home.quality_title') }}</h2>
+                <p class="mt-5 text-base leading-relaxed text-ink-600">{{ __('home.quality_body') }}</p>
+
+                @if ($certificates->isNotEmpty())
+                    <ul class="mt-8 flex flex-wrap gap-2">
+                        @foreach ($certificates as $certificate)
+                            <li class="border border-hairline px-3.5 py-2 text-xs text-ink-600">
+                                {{ $certificate->title }}
+                                @if ($certificate->year)
+                                    <span class="ltr-run tabular ms-1 text-ink-400">{{ $certificate->year }}</span>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+
+                <x-button :href="route('about.quality')" variant="outline" class="mt-8">
+                    {{ __('home.quality_cta') }}
+                </x-button>
+            </div>
+        </div>
+    </section>
+
+    {{-- ── Projects ───────────────────────────────────────────────────── --}}
+    @if ($projects->isNotEmpty())
+        <section class="border-y border-hairline bg-surface-muted py-section">
+            <div class="container-page">
+                <x-section-heading
+                    :eyebrow="__('nav.projects')"
+                    :title="__('home.projects_title')"
+                    :body="__('home.projects_body')"
+                    :href="route('projects.index')"
+                />
+
+                <div class="mt-12 grid gap-6 md:grid-cols-3">
+                    @foreach ($projects as $project)
+                        <x-project-card :project="$project" />
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
+    {{-- ── News ───────────────────────────────────────────────────────── --}}
+    @if ($posts->isNotEmpty())
+        <section class="py-section">
+            <div class="container-page">
+                <x-section-heading
+                    :eyebrow="__('nav.news')"
+                    :title="__('home.news_title')"
+                    :body="__('home.news_body')"
+                    :href="route('news.index')"
+                />
+
+                <div class="mt-12 grid gap-6 md:grid-cols-3">
+                    @foreach ($posts as $post)
+                        <x-post-card :post="$post" />
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
+    <x-cta-band />
+
+</x-layouts.app>

@@ -1,0 +1,71 @@
+<?php
+
+return [
+    'title' => 'Admin',
+    'sign_in' => 'Sign in',
+    'sign_out' => 'Sign out',
+    'email' => 'Email',
+    'password' => 'Password',
+    'remember' => 'Remember me',
+    'failed' => 'These credentials do not match our records.',
+    'inactive' => 'This account has been deactivated.',
+
+    'dashboard' => 'Dashboard',
+    'enquiries' => 'Enquiries',
+    'products' => 'Products',
+    'product_categories' => 'Product categories',
+    'applications' => 'Applications',
+    'projects' => 'Projects',
+    'posts' => 'News & articles',
+    'downloads' => 'Documents',
+    'certificates' => 'Certificates',
+    'faqs' => 'FAQs',
+    'settings' => 'Settings',
+    'users' => 'Users',
+
+    'create' => 'Add',
+    'edit' => 'Edit',
+    'save' => 'Save',
+    'delete' => 'Delete',
+    'cancel' => 'Cancel',
+    'confirm_delete' => 'Delete this record? This cannot be undone.',
+    'created' => 'Created.',
+    'updated' => 'Changes saved.',
+    'deleted' => 'Record deleted.',
+    'no_records' => 'Nothing here yet.',
+
+    'status' => 'Status',
+    'active' => 'Active',
+    'inactive_state' => 'Inactive',
+    'featured' => 'Featured',
+    'position' => 'Order',
+    'actions' => 'Actions',
+    'search_placeholder' => 'Search…',
+
+    'self_role_locked' => 'You cannot change your own role or deactivate your own account.',
+
+    'translations' => 'Translations',
+    'translation_hint' => 'Enter each language separately. Empty languages fall back to Persian.',
+
+    'enquiry' => [
+        'new' => 'New',
+        'read' => 'Read',
+        'replied' => 'Replied',
+        'spam' => 'Spam',
+        'type_contact' => 'Contact',
+        'type_quote' => 'Quote',
+        'received' => 'Received',
+        'sender' => 'Sender',
+        'mark_as' => 'Mark as',
+        'internal_note' => 'Internal note',
+        'reply_by_email' => 'Reply by email',
+        'unhandled' => 'Unhandled',
+    ],
+
+    'stats' => [
+        'new_enquiries' => 'New enquiries',
+        'products' => 'Active products',
+        'projects' => 'Projects',
+        'posts' => 'Published posts',
+    ],
+];

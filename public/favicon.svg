@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Same three-granule mark as the site logo, on a solid ground so it stays
+       legible at 16px in both light and dark browser chrome. -->
+  <rect width="32" height="32" rx="3" fill="#101010"/>
+  <circle cx="11" cy="12" r="5.25" fill="#c2542f"/>
+  <circle cx="21.5" cy="17" r="3.5" fill="#ffffff" fill-opacity="0.85"/>
+  <circle cx="13.5" cy="22" r="2.25" fill="#ffffff" fill-opacity="0.45"/>
+</svg>

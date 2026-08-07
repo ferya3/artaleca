@@ -1,0 +1,146 @@
+@props(['title' => null])
+
+@php
+    use App\Support\Locales;
+
+    $user = auth()->user();
+
+    // The panel follows the operator's own language preference, independent of
+    // whichever locale the public site was last viewed in.
+    $adminLocale = $user?->locale ?? Locales::default();
+    $dir = Locales::direction($adminLocale);
+
+    $sections = [
+        __('admin.enquiries') => [
+            ['route' => 'admin.enquiries.index', 'label' => __('admin.enquiries'), 'badge' => \App\Models\ContactMessage::query()->unhandled()->count()],
+        ],
+        __('admin.products') => [
+            ['route' => 'admin.products.index', 'label' => __('admin.products')],
+            ['route' => 'admin.product-categories.index', 'label' => __('admin.product_categories')],
+            ['route' => 'admin.applications.index', 'label' => __('admin.applications')],
+        ],
+        __('admin.posts') => [
+            ['route' => 'admin.projects.index', 'label' => __('admin.projects')],
+            ['route' => 'admin.posts.index', 'label' => __('admin.posts')],
+            ['route' => 'admin.faqs.index', 'label' => __('admin.faqs')],
+        ],
+        __('admin.downloads') => [
+            ['route' => 'admin.downloads.index', 'label' => __('admin.downloads')],
+            ['route' => 'admin.certificates.index', 'label' => __('admin.certificates')],
+        ],
+    ];
+
+    if ($user?->isAdmin()) {
+        $sections[__('admin.settings')] = [
+            ['route' => 'admin.settings.edit', 'label' => __('admin.settings')],
+            ['route' => 'admin.users.index', 'label' => __('admin.users')],
+        ];
+    }
+@endphp
+
+<!DOCTYPE html>
+<html lang="{{ $adminLocale }}" dir="{{ $dir }}" class="h-full">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    {{-- The back office must never be indexed, whatever robots.txt says. --}}
+    <meta name="robots" content="noindex, nofollow">
+    <title>{{ $title ? $title.' — ' : '' }}{{ __('admin.title') }}</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="preload" href="/fonts/vazirmatn-variable.woff2" as="font" type="font/woff2" crossorigin>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="min-h-full bg-ink-50 text-ink-900">
+
+<div class="flex min-h-screen flex-col lg:flex-row">
+
+    {{-- ── Sidebar ─────────────────────────────────────────────────────── --}}
+    <aside class="border-b border-hairline bg-white lg:w-64 lg:shrink-0 lg:border-b-0 lg:border-e">
+        <div class="flex items-center justify-between px-5 py-4 lg:border-b lg:border-hairline">
+            <a href="{{ route('admin.dashboard') }}" class="text-ink-900">
+                <x-brand.logo />
+            </a>
+
+            <form method="POST" action="{{ route('admin.logout') }}" class="lg:hidden">
+                @csrf
+                <button type="submit" class="text-xs text-ink-500 hover:text-ink-900">{{ __('admin.sign_out') }}</button>
+            </form>
+        </div>
+
+        <nav class="px-3 py-4 lg:sticky lg:top-0" aria-label="{{ __('admin.title') }}">
+            <a href="{{ route('admin.dashboard') }}"
+               @if (request()->routeIs('admin.dashboard')) aria-current="page" @endif
+               class="mb-4 block px-3 py-2 text-sm font-medium transition-colors
+                      {{ request()->routeIs('admin.dashboard') ? 'bg-ink-950 text-white' : 'text-ink-700 hover:bg-ink-50' }}">
+                {{ __('admin.dashboard') }}
+            </a>
+
+            @foreach ($sections as $heading => $links)
+                <div class="mb-4">
+                    <p class="eyebrow eyebrow-muted px-3 pb-2">{{ $heading }}</p>
+                    <ul class="space-y-0.5">
+                        @foreach ($links as $link)
+                            @php $active = request()->routeIs(str_replace('.index', '.*', str_replace('.edit', '.*', $link['route']))); @endphp
+                            <li>
+                                <a href="{{ route($link['route']) }}"
+                                   @if ($active) aria-current="page" @endif
+                                   class="flex items-center justify-between px-3 py-2 text-sm transition-colors
+                                          {{ $active ? 'bg-clay-50 font-medium text-clay-700' : 'text-ink-600 hover:bg-ink-50' }}">
+                                    <span>{{ $link['label'] }}</span>
+                                    @if (! empty($link['badge']))
+                                        <span class="tabular ltr-run bg-clay-600 px-1.5 py-0.5 text-[0.625rem] font-bold text-white">{{ $link['badge'] }}</span>
+                                    @endif
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endforeach
+
+            <div class="mt-6 hidden border-t border-hairline pt-4 lg:block">
+                <p class="px-3 text-xs text-ink-500">{{ $user?->name }}</p>
+                <p class="px-3 text-[0.6875rem] text-ink-400">{{ $user?->role }}</p>
+
+                <div class="mt-3 flex flex-col gap-1">
+                    <a href="{{ route('home', ['locale' => $adminLocale]) }}" target="_blank" rel="noopener"
+                       class="px-3 py-1.5 text-xs text-ink-600 hover:text-ink-900">↗ {{ config('site.company.brand') }}</a>
+
+                    <form method="POST" action="{{ route('admin.logout') }}">
+                        @csrf
+                        <button type="submit" class="w-full px-3 py-1.5 text-start text-xs text-ink-600 hover:text-ink-900">
+                            {{ __('admin.sign_out') }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </aside>
+
+    {{-- ── Content ─────────────────────────────────────────────────────── --}}
+    <main class="min-w-0 flex-1">
+        <div class="mx-auto max-w-6xl px-5 py-8 md:px-8 md:py-10">
+
+            @if (session('status'))
+                <div role="status" class="mb-6 border-s-2 border-green-600 bg-green-50 px-4 py-3 text-sm text-green-900">
+                    {{ session('status') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div role="alert" class="mb-6 border-s-2 border-red-600 bg-red-50 px-4 py-3 text-sm text-red-900">
+                    <p class="font-semibold">{{ __('form.has_errors') }}</p>
+                    <ul class="mt-2 list-disc space-y-1 ps-4">
+                        @foreach ($errors->unique() as $message)
+                            <li>{{ $message }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            {{ $slot }}
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

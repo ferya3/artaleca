@@ -1,0 +1,32 @@
+<?php
+
+return [
+    'name' => 'Full name',
+    'company' => 'Company',
+    'email' => 'Email',
+    'phone' => 'Phone',
+    'country' => 'Country',
+    'subject' => 'Subject',
+    'message' => 'Message',
+    'product' => 'Grade of interest',
+    'quantity' => 'Volume required',
+    'quantity_placeholder' => 'e.g. 500 m³',
+    'delivery_terms' => 'Delivery terms',
+    'delivery_terms_hint' => 'Incoterms 2020',
+    'consent' => 'privacy policy consent',
+    'consent_label' => 'I agree that the details above may be stored and processed in order to answer this enquiry.',
+    'consent_required' => 'Please accept the privacy policy before sending the form.',
+
+    'contact_title' => 'Send a message',
+    'contact_intro' => 'For technical questions, a plant visit or a commercial partnership, use the form below.',
+    'contact_success' => 'Your message has been received. Our team will reply on the next working day.',
+
+    'quote_title' => 'Request a quotation',
+    'quote_intro' => 'The more precise the specification and volume, the faster and firmer the price we can return.',
+    'quote_success' => 'Your request has been received. Our sales desk will be in touch within one working day.',
+
+    'spam_detected' => 'This submission could not be verified.',
+    'expired' => 'This form has expired. Please refresh the page and try again.',
+    'has_errors' => 'Please correct the following:',
+    'select_placeholder' => '— Select —',
+];

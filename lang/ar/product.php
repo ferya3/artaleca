@@ -1,0 +1,40 @@
+<?php
+
+return [
+    'technical_data' => 'البيانات الفنية',
+    'properties' => 'الخصائص الفيزيائية',
+    'packaging' => 'التعبئة والشحن',
+    'standards' => 'المواصفات',
+    'applications' => 'مجالات الاستخدام',
+    'description' => 'وصف المنتج',
+    'datasheet' => 'ورقة البيانات الفنية',
+
+    'grain_size' => 'مقاس الحبيبات',
+    'grain_size_unit' => 'مم',
+    'bulk_density' => 'الكثافة الظاهرية السائبة',
+    'bulk_density_unit' => 'كجم/م³',
+    'particle_density' => 'كثافة الحبيبة',
+    'crushing_strength' => 'مقاومة التكسير',
+    'crushing_strength_unit' => 'ميجاباسكال',
+    'thermal_conductivity' => 'الموصلية الحرارية',
+    'thermal_conductivity_unit' => 'واط/م·ك',
+    'water_absorption' => 'امتصاص الماء خلال ٢٤ ساعة',
+    'water_absorption_unit' => '٪',
+    'ph_value' => 'الرقم الهيدروجيني',
+    'fire_resistance' => 'مقاومة الحرارة',
+    'fire_resistance_unit' => '°م',
+    'sku' => 'رمز المنتج',
+
+    'filter_by_category' => 'الفئة',
+    'filter_by_grain' => 'مقاس الحبيبات',
+    'filter_by_application' => 'مجال الاستخدام',
+    'sort_position' => 'الترتيب الافتراضي',
+    'sort_grain_asc' => 'مقاس الحبيبات (تصاعدي)',
+    'sort_grain_desc' => 'مقاس الحبيبات (تنازلي)',
+    'sort_density_asc' => 'الكثافة (تصاعدي)',
+
+    'request_quote' => 'اطلب عرض سعر لهذه الدرجة',
+    'ask_engineer' => 'اطرح سؤالاً فنياً',
+    'catalogue_intro' => 'يُنتَج ركام الطين الممدد من آرتا ليكا بمقاسات حبيبية قياسية. قارن مقاس الحبيبات والكثافة الظاهرية المطلوبة في مواصفات مشروعك بالجدول أدناه.',
+    'empty' => 'لا توجد درجة مطابقة لهذه المعايير. عدّل عوامل التصفية أو تواصل مع القسم الفني.',
+];

@@ -1,0 +1,282 @@
+@import 'tailwindcss';
+
+@source '../views';
+@source '../../app';
+
+/*
+|------------------------------------------------------------------------------
+| Typeface
+|------------------------------------------------------------------------------
+| One variable font covers all three scripts (Persian, Arabic, Latin), so the
+| entire site costs a single 111 KB font request instead of one family per
+| language. `font-display: swap` keeps first paint text-visible.
+*/
+
+@font-face {
+    font-family: 'Vazirmatn';
+    src: url('/fonts/vazirmatn-variable.woff2') format('woff2-variations');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+/*
+|------------------------------------------------------------------------------
+| Design tokens
+|------------------------------------------------------------------------------
+| Two ramps only. `ink` is a warm-cast neutral that reads as concrete rather
+| than as blue-grey UI chrome; `clay` is the fired-clay accent the product
+| itself is made of. Restricting the palette to two families is what keeps the
+| result looking like an industrial brand rather than a template.
+*/
+
+@theme {
+    --font-sans:
+        'Vazirmatn', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --font-mono:
+        ui-monospace, 'SF Mono', 'Cascadia Mono', 'Roboto Mono', Menlo, monospace;
+
+    --color-ink-50: #f8f8f7;
+    --color-ink-100: #eeeeec;
+    --color-ink-200: #dcdcd8;
+    --color-ink-300: #c1c1bb;
+    --color-ink-400: #9a9a93;
+    --color-ink-500: #7a7a73;
+    --color-ink-600: #5e5e58;
+    --color-ink-700: #474742;
+    --color-ink-800: #2f2f2c;
+    --color-ink-900: #1c1c1a;
+    --color-ink-950: #101010;
+
+    --color-clay-50: #fdf5f2;
+    --color-clay-100: #f9e5dc;
+    --color-clay-200: #f2c8b7;
+    --color-clay-300: #e6a087;
+    --color-clay-400: #d67553;
+    --color-clay-500: #c2542f;
+    --color-clay-600: #a84322;
+    --color-clay-700: #8a351c;
+    --color-clay-800: #6d2b18;
+    --color-clay-900: #4f2013;
+
+    /* Semantic aliases — templates reference these, not raw ramp steps. */
+    --color-surface: #ffffff;
+    --color-surface-muted: #f8f8f7;
+    --color-surface-dark: #101010;
+    --color-hairline: #dcdcd8;
+    --color-hairline-dark: #2f2f2c;
+
+    /* A single soft elevation, reserved for the sticky header. Everything else
+       separates with a hairline instead of a shadow. */
+    --shadow-header: 0 1px 0 0 rgb(0 0 0 / 0.06), 0 8px 24px -16px rgb(0 0 0 / 0.18);
+
+    --radius-none: 0;
+    --radius-sm: 2px;
+    --radius-md: 3px;
+
+    --spacing-section: 5.5rem;
+    --spacing-section-lg: 8rem;
+
+    --container-page: 80rem;
+}
+
+/*
+|------------------------------------------------------------------------------
+| Base
+|------------------------------------------------------------------------------
+*/
+
+@layer base {
+    :root {
+        color-scheme: light;
+        /* Persian and Arabic text sits lower in the em box than Latin; a
+           slightly looser default leading keeps all three scripts readable. */
+        --leading-body: 1.85;
+    }
+
+    html {
+        scroll-behavior: smooth;
+        -webkit-text-size-adjust: 100%;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+
+    body {
+        background-color: var(--color-surface);
+        color: var(--color-ink-900);
+        font-family: var(--font-sans);
+        line-height: var(--leading-body);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+    }
+
+    /* Persian/Arabic numerals inside technical tables must line up column-wise. */
+    table,
+    .tabular {
+        font-variant-numeric: tabular-nums;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+        line-height: 1.25;
+        text-wrap: balance;
+        font-weight: 700;
+        letter-spacing: -0.011em;
+    }
+
+    p {
+        text-wrap: pretty;
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--color-clay-500);
+        outline-offset: 3px;
+        border-radius: 1px;
+    }
+
+    /* Latin runs inside Persian/Arabic prose (SKUs, EN standards, units) need
+       an explicit isolate or the bidi algorithm reorders adjacent digits. */
+    [dir='rtl'] .ltr-run {
+        unicode-bidi: isolate;
+        direction: ltr;
+        display: inline-block;
+    }
+
+    ::selection {
+        background-color: var(--color-clay-500);
+        color: #fff;
+    }
+}
+
+/*
+|------------------------------------------------------------------------------
+| Components
+|------------------------------------------------------------------------------
+| Deliberately few. Anything used once stays as utilities in the template;
+| only genuinely repeated patterns are promoted to a class.
+*/
+
+@layer components {
+    .container-page {
+        width: 100%;
+        max-width: var(--container-page);
+        margin-inline: auto;
+        padding-inline: 1.25rem;
+    }
+
+    @media (min-width: 768px) {
+        .container-page {
+            padding-inline: 2rem;
+        }
+    }
+
+    /* Small uppercase label used above section headings and on spec rows.
+       Uppercasing is a no-op for Persian/Arabic, which is the correct
+       behaviour — the letter-spacing carries the effect there instead. */
+    .eyebrow {
+        font-size: 0.6875rem;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--color-clay-600);
+    }
+
+    .eyebrow-muted {
+        color: var(--color-ink-500);
+    }
+
+    /* Long-form editorial content rendered from the database. */
+    .prose-industrial {
+        max-width: 68ch;
+        color: var(--color-ink-700);
+    }
+
+    .prose-industrial > * + * {
+        margin-block-start: 1.25rem;
+    }
+
+    .prose-industrial h2 {
+        margin-block-start: 2.5rem;
+        font-size: 1.375rem;
+        color: var(--color-ink-900);
+    }
+
+    .prose-industrial h3 {
+        margin-block-start: 2rem;
+        font-size: 1.125rem;
+        color: var(--color-ink-900);
+    }
+
+    .prose-industrial ul,
+    .prose-industrial ol {
+        padding-inline-start: 1.25rem;
+        list-style-position: outside;
+    }
+
+    .prose-industrial ul {
+        list-style-type: disc;
+    }
+
+    .prose-industrial ol {
+        list-style-type: decimal;
+    }
+
+    .prose-industrial li + li {
+        margin-block-start: 0.5rem;
+    }
+
+    .prose-industrial a {
+        color: var(--color-clay-600);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    .prose-industrial strong {
+        color: var(--color-ink-900);
+        font-weight: 600;
+    }
+
+    .prose-industrial blockquote {
+        border-inline-start: 2px solid var(--color-clay-500);
+        padding-inline-start: 1.25rem;
+        color: var(--color-ink-800);
+        font-size: 1.0625rem;
+    }
+}
+
+/*
+|------------------------------------------------------------------------------
+| Utilities
+|------------------------------------------------------------------------------
+*/
+
+@utility hairline-grid {
+    /* The faint blueprint grid used behind dark hero/CTA bands. Two gradients,
+       no image request. */
+    background-image:
+        linear-gradient(to right, rgb(255 255 255 / 0.045) 1px, transparent 1px),
+        linear-gradient(to bottom, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+    background-size: 72px 72px;
+}
+
+@utility no-scrollbar {
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
