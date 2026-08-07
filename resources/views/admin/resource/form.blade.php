@@ -63,7 +63,10 @@
                     </div>
 
                     @if (! empty($field['hint']))
-                        <p class="mb-2.5 text-xs text-ink-500">{{ $field['hint'] }}</p>
+                        {{-- dir="auto" so an English hint inside the Persian
+                             panel is not reordered by the bidi algorithm — it
+                             is what moves a trailing full stop to the front. --}}
+                        <p class="mb-2.5 text-xs text-ink-500" dir="auto">{{ $field['hint'] }}</p>
                     @endif
 
                     @if ($translatable)

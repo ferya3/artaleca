@@ -75,20 +75,20 @@ class ProjectController extends ResourceController
             ['name' => 'volume_m3', 'label' => __('projects.volume'), 'type' => 'number', 'width' => 'half',
                 'rules' => ['nullable', 'integer', 'min:0']],
 
-            ['name' => 'summary', 'label' => __('product.description'), 'type' => 'textarea', 'translatable' => true,
+            ['name' => 'summary', 'label' => __('admin.fields.summary'), 'type' => 'textarea', 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:600']],
 
-            ['name' => 'body', 'label' => __('product.description'), 'type' => 'textarea', 'translatable' => true,
+            ['name' => 'body', 'label' => __('admin.fields.description'), 'type' => 'textarea', 'translatable' => true,
                 'rows' => 10, 'rules' => ['nullable', 'string', 'max:10000']],
 
             ['name' => 'scope', 'label' => __('projects.scope'), 'type' => 'list',
                 'hint' => 'One line per scope item.'],
 
-            ['name' => 'cover_image', 'label' => 'Cover image path', 'rules' => ['nullable', 'string', 'max:255']],
+            ['name' => 'cover_image', 'label' => __('admin.fields.cover_path'), 'rules' => ['nullable', 'string', 'max:255']],
 
-            ['name' => 'meta_title', 'label' => 'Meta title', 'translatable' => true,
+            ['name' => 'meta_title', 'label' => __('admin.fields.meta_title'), 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:70']],
-            ['name' => 'meta_description', 'label' => 'Meta description', 'type' => 'textarea', 'translatable' => true,
+            ['name' => 'meta_description', 'label' => __('admin.fields.meta_description'), 'type' => 'textarea', 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:170']],
 
             ['name' => 'is_featured', 'label' => __('admin.featured'), 'type' => 'checkbox', 'width' => 'half'],

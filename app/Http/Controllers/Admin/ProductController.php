@@ -39,7 +39,7 @@ class ProductController extends ResourceController
     protected function listColumns(): array
     {
         return [
-            'name' => __('form.product'),
+            'name' => __('admin.fields.name'),
             'sku' => __('product.sku'),
             'category.name' => __('product.filter_by_category'),
             'position' => __('admin.position'),
@@ -50,11 +50,11 @@ class ProductController extends ResourceController
     protected function fields(): array
     {
         return [
-            ['name' => 'name', 'label' => __('form.product'), 'translatable' => true,
+            ['name' => 'name', 'label' => __('admin.fields.name'), 'translatable' => true,
                 'rules' => ['required', 'string', 'max:180']],
 
             ['name' => 'slug', 'label' => 'Slug', 'width' => 'half',
-                'hint' => 'Latin, shared by all three languages.',
+                'hint' => __('admin.fields.slug_hint'),
                 'rules' => fn (?Model $r) => ['nullable', 'string', 'max:180', 'alpha_dash',
                     Rule::unique('products', 'slug')->ignore($r)]],
 
@@ -71,13 +71,13 @@ class ProductController extends ResourceController
             ['name' => 'position', 'label' => __('admin.position'), 'type' => 'number', 'width' => 'half',
                 'rules' => ['nullable', 'integer', 'min:0', 'max:9999']],
 
-            ['name' => 'tagline', 'label' => 'Tagline', 'translatable' => true,
+            ['name' => 'tagline', 'label' => __('admin.fields.tagline'), 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:255']],
 
-            ['name' => 'summary', 'label' => __('product.description'), 'type' => 'textarea', 'translatable' => true,
+            ['name' => 'summary', 'label' => __('admin.fields.summary'), 'type' => 'textarea', 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:600']],
 
-            ['name' => 'description', 'label' => __('product.description'), 'type' => 'textarea', 'translatable' => true,
+            ['name' => 'description', 'label' => __('admin.fields.description'), 'type' => 'textarea', 'translatable' => true,
                 'rows' => 10, 'rules' => ['nullable', 'string', 'max:8000']],
 
             // ── Technical data ──────────────────────────────────────────
@@ -108,14 +108,14 @@ class ProductController extends ResourceController
             ['name' => 'specs', 'label' => __('product.properties'), 'type' => 'pairs',
                 'hint' => 'One row per line: label | value'],
 
-            ['name' => 'hero_image', 'label' => 'Hero image path', 'width' => 'half',
+            ['name' => 'hero_image', 'label' => __('admin.fields.image_path'), 'width' => 'half',
                 'rules' => ['nullable', 'string', 'max:255']],
-            ['name' => 'datasheet_path', 'label' => __('product.datasheet'), 'width' => 'half',
+            ['name' => 'datasheet_path', 'label' => __('admin.fields.datasheet_path'), 'width' => 'half',
                 'rules' => ['nullable', 'string', 'max:255']],
 
-            ['name' => 'meta_title', 'label' => 'Meta title', 'translatable' => true,
+            ['name' => 'meta_title', 'label' => __('admin.fields.meta_title'), 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:70']],
-            ['name' => 'meta_description', 'label' => 'Meta description', 'type' => 'textarea', 'translatable' => true,
+            ['name' => 'meta_description', 'label' => __('admin.fields.meta_description'), 'type' => 'textarea', 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:170']],
 
             ['name' => 'is_featured', 'label' => __('admin.featured'), 'type' => 'checkbox', 'width' => 'half'],

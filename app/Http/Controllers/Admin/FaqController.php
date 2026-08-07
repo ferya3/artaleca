@@ -45,7 +45,7 @@ class FaqController extends ResourceController
             ['name' => 'question', 'label' => __('admin.faqs'), 'translatable' => true,
                 'rules' => ['required', 'string', 'max:300']],
 
-            ['name' => 'answer', 'label' => __('product.description'), 'type' => 'textarea', 'translatable' => true,
+            ['name' => 'answer', 'label' => __('admin.fields.description'), 'type' => 'textarea', 'translatable' => true,
                 'rows' => 6, 'rules' => ['required', 'string', 'max:4000']],
 
             ['name' => 'group', 'label' => __('product.filter_by_category'), 'type' => 'select', 'width' => 'half',

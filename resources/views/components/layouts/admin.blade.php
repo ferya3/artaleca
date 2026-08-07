@@ -10,28 +10,29 @@
     $adminLocale = $user?->locale ?? Locales::default();
     $dir = Locales::direction($adminLocale);
 
+    // Group headings name the *area*, never repeat the first link inside it.
     $sections = [
-        __('admin.enquiries') => [
+        __('admin.groups.inbox') => [
             ['route' => 'admin.enquiries.index', 'label' => __('admin.enquiries'), 'badge' => \App\Models\ContactMessage::query()->unhandled()->count()],
         ],
-        __('admin.products') => [
+        __('admin.groups.catalogue') => [
             ['route' => 'admin.products.index', 'label' => __('admin.products')],
             ['route' => 'admin.product-categories.index', 'label' => __('admin.product_categories')],
             ['route' => 'admin.applications.index', 'label' => __('admin.applications')],
         ],
-        __('admin.posts') => [
+        __('admin.groups.content') => [
             ['route' => 'admin.projects.index', 'label' => __('admin.projects')],
             ['route' => 'admin.posts.index', 'label' => __('admin.posts')],
             ['route' => 'admin.faqs.index', 'label' => __('admin.faqs')],
         ],
-        __('admin.downloads') => [
+        __('admin.groups.library') => [
             ['route' => 'admin.downloads.index', 'label' => __('admin.downloads')],
             ['route' => 'admin.certificates.index', 'label' => __('admin.certificates')],
         ],
     ];
 
     if ($user?->isAdmin()) {
-        $sections[__('admin.settings')] = [
+        $sections[__('admin.groups.system')] = [
             ['route' => 'admin.settings.edit', 'label' => __('admin.settings')],
             ['route' => 'admin.users.index', 'label' => __('admin.users')],
         ];

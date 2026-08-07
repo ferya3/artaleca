@@ -57,7 +57,7 @@ class DownloadController extends ResourceController
                     ->mapWithKeys(fn ($c) => [$c => __('downloads.categories.'.$c)])->all(),
                 'rules' => ['required', Rule::in(Download::CATEGORIES)]],
 
-            ['name' => 'description', 'label' => __('product.description'), 'type' => 'textarea', 'translatable' => true,
+            ['name' => 'description', 'label' => __('admin.fields.summary'), 'type' => 'textarea', 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:600']],
 
             /*

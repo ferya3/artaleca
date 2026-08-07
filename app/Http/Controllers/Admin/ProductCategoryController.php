@@ -53,17 +53,17 @@ class ProductCategoryController extends ResourceController
             ['name' => 'position', 'label' => __('admin.position'), 'type' => 'number', 'width' => 'half',
                 'rules' => ['nullable', 'integer', 'min:0', 'max:9999']],
 
-            ['name' => 'summary', 'label' => __('product.description'), 'type' => 'textarea', 'translatable' => true,
+            ['name' => 'summary', 'label' => __('admin.fields.summary'), 'type' => 'textarea', 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:600']],
 
-            ['name' => 'description', 'label' => __('product.description'), 'type' => 'textarea', 'translatable' => true,
+            ['name' => 'description', 'label' => __('admin.fields.description'), 'type' => 'textarea', 'translatable' => true,
                 'rows' => 8, 'rules' => ['nullable', 'string', 'max:6000']],
 
-            ['name' => 'image', 'label' => 'Image path', 'rules' => ['nullable', 'string', 'max:255']],
+            ['name' => 'image', 'label' => __('admin.fields.image_path'), 'rules' => ['nullable', 'string', 'max:255']],
 
-            ['name' => 'meta_title', 'label' => 'Meta title', 'translatable' => true,
+            ['name' => 'meta_title', 'label' => __('admin.fields.meta_title'), 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:70']],
-            ['name' => 'meta_description', 'label' => 'Meta description', 'type' => 'textarea', 'translatable' => true,
+            ['name' => 'meta_description', 'label' => __('admin.fields.meta_description'), 'type' => 'textarea', 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:170']],
 
             ['name' => 'is_active', 'label' => __('admin.active'), 'type' => 'checkbox'],

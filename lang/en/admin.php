@@ -10,6 +10,27 @@ return [
     'failed' => 'These credentials do not match our records.',
     'inactive' => 'This account has been deactivated.',
 
+    'fields' => [
+        'name' => 'Name',
+        'tagline' => 'Tagline',
+        'summary' => 'Summary',
+        'description' => 'Full description',
+        'image_path' => 'Image path',
+        'cover_path' => 'Cover image path',
+        'datasheet_path' => 'Datasheet path',
+        'meta_title' => 'Meta title (SEO)',
+        'meta_description' => 'Meta description (SEO)',
+        'slug_hint' => 'Latin, shared by all three languages. Leave blank to generate.',
+    ],
+
+    'groups' => [
+        'inbox' => 'Inbox',
+        'catalogue' => 'Catalogue',
+        'content' => 'Site content',
+        'library' => 'Document library',
+        'system' => 'System',
+    ],
+
     'dashboard' => 'Dashboard',
     'enquiries' => 'Enquiries',
     'products' => 'Products',

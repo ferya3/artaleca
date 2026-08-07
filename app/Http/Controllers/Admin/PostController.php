@@ -71,17 +71,17 @@ class PostController extends ResourceController
             ['name' => 'reading_minutes', 'label' => __('news.reading_time', ['minutes' => '']), 'type' => 'number',
                 'width' => 'half', 'rules' => ['nullable', 'integer', 'min:1', 'max:120']],
 
-            ['name' => 'excerpt', 'label' => __('product.description'), 'type' => 'textarea', 'translatable' => true,
+            ['name' => 'excerpt', 'label' => __('admin.fields.summary'), 'type' => 'textarea', 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:600']],
 
-            ['name' => 'body', 'label' => __('product.description'), 'type' => 'textarea', 'translatable' => true,
+            ['name' => 'body', 'label' => __('admin.fields.description'), 'type' => 'textarea', 'translatable' => true,
                 'rows' => 16, 'rules' => ['nullable', 'string', 'max:40000']],
 
-            ['name' => 'cover_image', 'label' => 'Cover image path', 'rules' => ['nullable', 'string', 'max:255']],
+            ['name' => 'cover_image', 'label' => __('admin.fields.cover_path'), 'rules' => ['nullable', 'string', 'max:255']],
 
-            ['name' => 'meta_title', 'label' => 'Meta title', 'translatable' => true,
+            ['name' => 'meta_title', 'label' => __('admin.fields.meta_title'), 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:70']],
-            ['name' => 'meta_description', 'label' => 'Meta description', 'type' => 'textarea', 'translatable' => true,
+            ['name' => 'meta_description', 'label' => __('admin.fields.meta_description'), 'type' => 'textarea', 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:170']],
 
             ['name' => 'is_featured', 'label' => __('admin.featured'), 'type' => 'checkbox', 'width' => 'half'],
