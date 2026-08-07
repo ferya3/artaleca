@@ -60,7 +60,7 @@
 
             {{-- ── Contact details ───────────────────────────────────── --}}
             <aside class="lg:col-span-5">
-                <div class="divide-y divide-hairline border border-hairline">
+                <div class="panel divide-y divide-hairline overflow-hidden">
 
                     <div class="p-6">
                         <h2 class="eyebrow mb-4">{{ __('common.headquarters') }}</h2>
@@ -114,7 +114,7 @@
                     href="https://www.openstreetmap.org/?mlat={{ $contact['plant']['geo']['lat'] }}&mlon={{ $contact['plant']['geo']['lng'] }}#map=13/{{ $contact['plant']['geo']['lat'] }}/{{ $contact['plant']['geo']['lng'] }}"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="mt-6 flex items-center justify-between border border-hairline bg-surface-muted px-5 py-4 text-sm transition-colors hover:border-ink-400"
+                    class="mt-6 flex items-center justify-between rounded-lg border border-hairline bg-surface-muted px-5 py-4 text-sm transition-colors hover:border-ink-400"
                 >
                     <span class="font-medium text-ink-900">{{ __('contact.find_us') }}</span>
                     <span class="ltr-run tabular text-xs text-ink-500">

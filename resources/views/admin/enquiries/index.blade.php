@@ -29,11 +29,11 @@
     </div>
 
     @if ($enquiries->isEmpty())
-        <p class="mt-6 border border-dashed border-ink-300 bg-white px-5 py-14 text-center text-sm text-ink-500">
+        <p class="mt-6 rounded-lg border border-dashed border-ink-300 bg-white px-5 py-14 text-center text-sm text-ink-500">
             {{ __('admin.no_records') }}
         </p>
     @else
-        <div class="mt-6 overflow-x-auto border border-hairline bg-white">
+        <div class="mt-6 overflow-x-auto panel">
             <table class="w-full min-w-[48rem] text-sm">
                 <thead>
                     <tr class="border-b border-hairline bg-ink-50">
@@ -58,7 +58,7 @@
                             </td>
 
                             <td class="px-4 py-3 align-top">
-                                <span class="border border-hairline px-1.5 py-0.5 text-[0.625rem] uppercase text-ink-500">
+                                <span class="rounded-sm rounded-md border border-hairline px-1.5 py-0.5 text-[0.625rem] uppercase text-ink-500">
                                     {{ __('admin.enquiry.type_'.$enquiry->type) }}
                                 </span>
                                 <span class="ltr-run ms-1.5 text-[0.625rem] uppercase text-ink-400">{{ $enquiry->locale }}</span>

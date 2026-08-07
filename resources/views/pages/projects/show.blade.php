@@ -30,7 +30,7 @@
                     eager
                     ratio="16/9"
                     sizes="(min-width: 1024px) 66vw, 100vw"
-                    class="border border-hairline"
+                    class="rounded-lg border border-hairline shadow-soft"
                 />
 
                 @if (filled($project->body))
@@ -55,7 +55,7 @@
                             <li>
                                 <img src="{{ $image }}" alt="{{ $project->title }} — {{ $index + 1 }}"
                                      loading="lazy" decoding="async"
-                                     class="aspect-[4/3] w-full border border-hairline object-cover">
+                                     class="aspect-[4/3] w-full rounded-lg border border-hairline object-cover">
                             </li>
                         @endforeach
                     </ul>
@@ -65,7 +65,7 @@
             <aside class="lg:col-span-4">
                 <div class="lg:sticky lg:top-28">
                     @if ($facts !== [])
-                        <dl class="divide-y divide-hairline border border-hairline bg-surface-muted">
+                        <dl class="divide-y divide-hairline overflow-hidden rounded-lg border border-hairline bg-surface-muted">
                             @foreach ($facts as $label => $value)
                                 <div class="flex items-baseline justify-between gap-4 px-5 py-4">
                                     <dt class="text-xs uppercase tracking-wider text-ink-500">{{ $label }}</dt>
@@ -76,7 +76,7 @@
                     @endif
 
                     @if ($project->products->isNotEmpty())
-                        <div class="mt-6 border border-hairline p-5">
+                        <div class="mt-6 panel-muted p-5">
                             <h2 class="text-sm font-bold text-ink-950">{{ __('projects.products_used') }}</h2>
                             <ul class="mt-3 space-y-2">
                                 @foreach ($project->products as $product)

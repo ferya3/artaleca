@@ -4,7 +4,7 @@
 
     $isNew = ! $user->exists;
     $isSelf = auth()->user()->is($user);
-    $inputClass = 'w-full border border-ink-300 bg-white px-3 py-2.5 text-sm focus:border-ink-900 focus:outline-none focus:ring-2 focus:ring-clay-500/25';
+    $inputClass = 'w-full border border-ink-300 bg-white px-3 py-2.5 text-sm focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-clay-500/12';
 @endphp
 
 <x-layouts.admin :title="__('admin.users')">
@@ -20,7 +20,7 @@
         @csrf
         @unless ($isNew) @method('PUT') @endunless
 
-        <div class="border border-hairline bg-white p-5">
+        <div class="panel p-5">
             <div class="grid gap-5 sm:grid-cols-2">
                 <div class="flex flex-col gap-1.5 sm:col-span-2">
                     <label for="name" class="text-sm font-medium text-ink-800">{{ __('form.name') }}</label>

@@ -17,7 +17,7 @@
                         <span class="inline-flex h-9 items-center px-3 text-sm text-ink-300">{{ __('common.pagination.previous') }}</span>
                     @else
                         <a href="{{ $paginator->previousPageUrl() }}" rel="prev"
-                           class="inline-flex h-9 items-center border border-hairline px-3 text-sm text-ink-700 transition-colors hover:border-ink-900 hover:text-ink-950">
+                           class="inline-flex h-9 items-center rounded-md border border-hairline px-3 text-sm text-ink-700 transition-colors hover:border-ink-400 hover:text-ink-950">
                             {{ __('common.pagination.previous') }}
                         </a>
                     @endif
@@ -33,10 +33,10 @@
                             <li>
                                 @if ($page == $paginator->currentPage())
                                     <span aria-current="page"
-                                          class="tabular inline-flex h-9 w-9 items-center justify-center bg-ink-950 text-sm font-semibold text-white">{{ $page }}</span>
+                                          class="tabular inline-flex h-9 w-9 items-center justify-center rounded-md bg-ink-950 text-sm font-semibold text-white">{{ $page }}</span>
                                 @else
                                     <a href="{{ $url }}"
-                                       class="tabular inline-flex h-9 w-9 items-center justify-center border border-hairline text-sm text-ink-700 transition-colors hover:border-ink-900 hover:text-ink-950">{{ $page }}</a>
+                                       class="tabular inline-flex h-9 w-9 items-center justify-center rounded-md border border-hairline text-sm text-ink-700 transition-colors hover:border-ink-400 hover:text-ink-950">{{ $page }}</a>
                                 @endif
                             </li>
                         @endforeach
@@ -46,7 +46,7 @@
                 <li>
                     @if ($paginator->hasMorePages())
                         <a href="{{ $paginator->nextPageUrl() }}" rel="next"
-                           class="inline-flex h-9 items-center border border-hairline px-3 text-sm text-ink-700 transition-colors hover:border-ink-900 hover:text-ink-950">
+                           class="inline-flex h-9 items-center rounded-md border border-hairline px-3 text-sm text-ink-700 transition-colors hover:border-ink-400 hover:text-ink-950">
                             {{ __('common.pagination.next') }}
                         </a>
                     @else

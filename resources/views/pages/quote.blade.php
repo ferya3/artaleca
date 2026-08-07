@@ -29,7 +29,7 @@
                             <span class="ms-1 text-xs font-normal text-ink-400">({{ __('common.optional') }})</span>
                         </label>
                         <select id="f-product_id" name="product_id"
-                                class="w-full border border-ink-300 bg-white px-3.5 py-3 text-sm text-ink-900 focus:border-ink-900 focus:outline-none focus:ring-2 focus:ring-clay-500/30">
+                                class="w-full border border-ink-300 bg-white px-3.5 py-3 text-sm text-ink-900 focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-clay-500/12">
                             <option value="">{{ __('form.select_placeholder') }}</option>
                             @foreach ($productOptions as $categoryName => $options)
                                 <optgroup label="{{ $categoryName }}">
@@ -88,7 +88,7 @@
             </div>
 
             <aside class="lg:col-span-5">
-                <div class="border border-hairline bg-surface-muted p-6 lg:sticky lg:top-28">
+                <div class="panel-muted p-6 lg:sticky lg:top-28">
                     <h2 class="text-lg font-bold text-ink-950">{{ __('home.export_title') }}</h2>
                     <p class="mt-3 text-sm leading-relaxed text-ink-600">{{ __('home.export_body') }}</p>
 

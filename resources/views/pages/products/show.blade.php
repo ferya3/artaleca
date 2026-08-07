@@ -23,7 +23,7 @@
                     eager
                     ratio="4/3"
                     sizes="(min-width: 1024px) 50vw, 100vw"
-                    class="border border-hairline"
+                    class="rounded-lg border border-hairline shadow-soft"
                 />
 
                 @if (count($gallery) > 1)
@@ -34,7 +34,7 @@
                                     type="button"
                                     data-gallery-thumb="{{ $image }}"
                                     aria-current="{{ $index === 0 ? 'true' : 'false' }}"
-                                    class="block w-full border border-hairline transition-colors hover:border-ink-900 aria-[current=true]:border-ink-950"
+                                    class="block w-full overflow-hidden rounded-md border border-hairline transition-colors hover:border-ink-400 aria-[current=true]:border-clay-500"
                                 >
                                     <img src="{{ $image }}" alt="{{ $product->name }} — {{ $index + 1 }}"
                                          loading="lazy" decoding="async"
@@ -79,7 +79,7 @@
                 @endphp
 
                 @if ($headline !== [])
-                    <dl class="mt-8 grid grid-cols-2 gap-px border border-hairline bg-hairline">
+                    <dl class="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-hairline bg-hairline">
                         @foreach ($headline as $label => [$value, $unit])
                             <div class="bg-white p-5">
                                 <dt class="text-xs uppercase tracking-wider text-ink-500">{{ $label }}</dt>
@@ -157,7 +157,7 @@
                             <li>
                                 <a href="{{ route('downloads.file', ['download' => $document]) }}"
                                    class="group flex flex-wrap items-center gap-4 py-4">
-                                    <span class="ltr-run flex h-10 w-10 shrink-0 items-center justify-center border border-hairline bg-white text-[0.625rem] font-bold uppercase text-ink-500 group-hover:border-clay-400 group-hover:text-clay-600">
+                                    <span class="ltr-run flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-hairline bg-white text-[0.625rem] font-bold uppercase text-ink-500 group-hover:border-clay-400 group-hover:text-clay-600">
                                         {{ $document->file_extension ?: 'PDF' }}
                                     </span>
                                     <span class="min-w-0 flex-1 text-sm font-medium text-ink-900 group-hover:text-clay-600">
@@ -188,14 +188,14 @@
                     <h2 class="mt-12 text-xl font-bold text-ink-950">{{ __('product.standards') }}</h2>
                     <ul class="mt-5 flex flex-wrap gap-2">
                         @foreach ($product->standards as $standard)
-                            <li class="ltr-run border border-hairline bg-white px-3.5 py-2 text-xs text-ink-700">{{ $standard }}</li>
+                            <li class="ltr-run rounded-md border border-hairline bg-white px-3.5 py-2 text-xs text-ink-700">{{ $standard }}</li>
                         @endforeach
                     </ul>
                 @endif
             </div>
 
             <div class="lg:col-span-5">
-                <div class="border border-hairline bg-white p-6">
+                <div class="panel p-6">
                     <h2 class="text-xl font-bold text-ink-950">{{ __('product.technical_data') }}</h2>
                     <x-spec-table :product="$product" class="mt-4" />
                     <p class="mt-5 border-t border-hairline pt-4 text-xs leading-relaxed text-ink-500">

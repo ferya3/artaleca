@@ -5,7 +5,7 @@
         <x-button :href="route('admin.users.create')" size="sm">{{ __('admin.create') }}</x-button>
     </div>
 
-    <div class="mt-6 overflow-x-auto border border-hairline bg-white">
+    <div class="mt-6 overflow-x-auto panel">
         <table class="w-full min-w-[36rem] text-sm">
             <thead>
                 <tr class="border-b border-hairline bg-ink-50">

@@ -17,7 +17,7 @@
                     eager
                     ratio="16/9"
                     sizes="(min-width: 1024px) 58vw, 100vw"
-                    class="border border-hairline"
+                    class="rounded-lg border border-hairline shadow-soft"
                 />
 
                 @if (filled($application->description))
@@ -29,7 +29,7 @@
 
             @if ($benefits !== [])
                 <aside class="lg:col-span-5">
-                    <div class="border border-hairline bg-surface-muted p-6 lg:sticky lg:top-28">
+                    <div class="panel-muted p-6 lg:sticky lg:top-28">
                         <h2 class="text-lg font-bold text-ink-950">{{ __('applications.benefits') }}</h2>
                         <ul class="mt-5 space-y-4">
                             @foreach ($benefits as $benefit)

@@ -8,7 +8,7 @@
 
         {{-- ── Message ────────────────────────────────────────────────── --}}
         <div class="lg:col-span-2">
-            <div class="border border-hairline bg-white p-6">
+            <div class="panel p-6">
                 <div class="flex flex-wrap items-start justify-between gap-4">
                     <div>
                         <h1 class="text-lg font-bold text-ink-950">{{ $enquiry->name }}</h1>
@@ -17,7 +17,7 @@
                         @endif
                     </div>
 
-                    <span class="border border-hairline px-2 py-1 text-[0.6875rem] uppercase tracking-wider text-ink-500">
+                    <span class="rounded-sm rounded-md border border-hairline px-2 py-1 text-[0.6875rem] uppercase tracking-wider text-ink-500">
                         {{ __('admin.enquiry.type_'.$enquiry->type) }}
                     </span>
                 </div>
@@ -38,7 +38,7 @@
 
             {{-- ── Triage ─────────────────────────────────────────────── --}}
             <form method="POST" action="{{ route('admin.enquiries.update', $enquiry) }}"
-                  class="mt-6 border border-hairline bg-white p-6">
+                  class="mt-6 panel p-6">
                 @csrf
                 @method('PATCH')
 
@@ -46,7 +46,7 @@
                     <div class="flex flex-col gap-1.5">
                         <label for="status" class="text-sm font-medium text-ink-800">{{ __('admin.enquiry.mark_as') }}</label>
                         <select id="status" name="status"
-                                class="border border-ink-300 px-3 py-2.5 text-sm focus:border-ink-900 focus:outline-none">
+                                class="border border-ink-300 px-3 py-2.5 text-sm focus:border-ink-500 focus:outline-none">
                             @foreach (\App\Models\ContactMessage::STATUSES as $status)
                                 <option value="{{ $status }}" @selected(old('status', $enquiry->status) === $status)>
                                     {{ __('admin.enquiry.'.$status) }}
@@ -58,7 +58,7 @@
                     <div class="flex flex-col gap-1.5 sm:col-span-2">
                         <label for="internal_note" class="text-sm font-medium text-ink-800">{{ __('admin.enquiry.internal_note') }}</label>
                         <textarea id="internal_note" name="internal_note" rows="4"
-                                  class="border border-ink-300 px-3 py-2.5 text-sm focus:border-ink-900 focus:outline-none">{{ old('internal_note', $enquiry->internal_note) }}</textarea>
+                                  class="border border-ink-300 px-3 py-2.5 text-sm focus:border-ink-500 focus:outline-none">{{ old('internal_note', $enquiry->internal_note) }}</textarea>
                     </div>
                 </div>
 
@@ -99,7 +99,7 @@
                 ], 'filled');
             @endphp
 
-            <dl class="divide-y divide-hairline border border-hairline bg-white">
+            <dl class="divide-y divide-hairline overflow-hidden rounded-lg border border-hairline bg-white">
                 @foreach ($facts as $label => $value)
                     <div class="px-5 py-3">
                         <dt class="text-[0.6875rem] uppercase tracking-wider text-ink-500">{{ $label }}</dt>

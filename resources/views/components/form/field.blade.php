@@ -21,11 +21,11 @@
         ($hint ? $hintId.' ' : '').($hasError ? $errorId : '')
     ) ?: null;
 
-    $control = 'w-full border bg-white px-3.5 py-3 text-sm text-ink-900 transition-colors
-                placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-clay-500/30 '
+    $control = 'w-full rounded-md border bg-white px-3.5 py-3 text-sm text-ink-900 transition-colors
+                placeholder:text-ink-400 focus:outline-none focus:ring-4 focus:ring-clay-500/12 '
         .($hasError
-            ? 'border-red-500 focus:border-red-500'
-            : 'border-ink-300 focus:border-ink-900');
+            ? 'border-red-400 focus:border-red-500'
+            : 'border-ink-300 focus:border-ink-500');
 @endphp
 
 <div {{ $attributes->merge(['class' => 'flex flex-col gap-1.5']) }}>

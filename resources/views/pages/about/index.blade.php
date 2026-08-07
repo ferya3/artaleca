@@ -23,7 +23,7 @@
                 ratio="4/3"
                 :alt="__('about.title')"
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                class="border border-hairline lg:self-start"
+                class="rounded-lg border border-hairline shadow-soft lg:self-start"
             />
         </div>
     </section>

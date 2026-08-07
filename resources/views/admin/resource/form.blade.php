@@ -7,7 +7,7 @@
         : route('admin.'.$routeName.'.update', $record);
 
     $inputClass = 'w-full border border-ink-300 bg-white px-3 py-2.5 text-sm text-ink-900
-                   focus:border-ink-900 focus:outline-none focus:ring-2 focus:ring-clay-500/25';
+                   focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-clay-500/12';
 @endphp
 
 <x-layouts.admin :title="$title">
@@ -52,7 +52,7 @@
                         : ($field['options'] ?? []);
                 @endphp
 
-                <div class="{{ $wide ? 'md:col-span-2' : '' }} border border-hairline bg-white p-4">
+                <div class="{{ $wide ? 'md:col-span-2' : '' }} panel p-4">
                     <div class="mb-2 flex items-baseline justify-between gap-3">
                         <label class="text-sm font-medium text-ink-800" @unless($translatable) for="f-{{ $name }}" @endunless>
                             {{ $field['label'] ?? $name }}
@@ -141,7 +141,7 @@
                         <div class="flex flex-wrap items-start gap-4">
                             @if ($current)
                                 <img src="{{ $current }}" alt=""
-                                     class="h-24 w-32 shrink-0 border border-hairline object-cover">
+                                     class="h-24 w-32 shrink-0 rounded-lg border border-hairline object-cover">
                             @endif
 
                             <div class="min-w-0 flex-1 space-y-2">
@@ -166,7 +166,7 @@
                         @if ($images !== [])
                             <ul class="mb-3 grid grid-cols-3 gap-3 sm:grid-cols-5">
                                 @foreach ($images as $image)
-                                    <li class="border border-hairline p-1.5">
+                                    <li class="rounded-md border border-hairline p-1.5">
                                         <img src="{{ $image }}" alt="" class="aspect-[4/3] w-full object-cover">
                                         <label class="mt-1.5 flex items-center gap-1.5 text-[0.625rem] text-ink-500">
                                             <input type="checkbox" name="{{ $name }}_remove[]" value="{{ $image }}"
@@ -201,7 +201,7 @@
                                 : [];
                         @endphp
 
-                        <div class="max-h-56 space-y-1.5 overflow-y-auto border border-hairline p-3">
+                        <div class="max-h-56 space-y-1.5 overflow-y-auto rounded-md border border-hairline p-3">
                             @forelse ($options as $value => $label)
                                 <label class="flex items-center gap-2.5 text-sm text-ink-700">
                                     <input type="checkbox" name="{{ $name }}[]" value="{{ $value }}"

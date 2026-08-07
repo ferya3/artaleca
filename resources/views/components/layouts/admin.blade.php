@@ -75,7 +75,7 @@
         <nav class="px-3 py-4 lg:sticky lg:top-0" aria-label="{{ __('admin.title') }}">
             <a href="{{ route('admin.dashboard') }}"
                @if (request()->routeIs('admin.dashboard')) aria-current="page" @endif
-               class="mb-4 block px-3 py-2 text-sm font-medium transition-colors
+               class="mb-4 block rounded-md px-3 py-2 text-sm font-medium transition-colors
                       {{ request()->routeIs('admin.dashboard') ? 'bg-ink-950 text-white' : 'text-ink-700 hover:bg-ink-50' }}">
                 {{ __('admin.dashboard') }}
             </a>
@@ -89,11 +89,11 @@
                             <li>
                                 <a href="{{ route($link['route']) }}"
                                    @if ($active) aria-current="page" @endif
-                                   class="flex items-center justify-between px-3 py-2 text-sm transition-colors
+                                   class="flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors
                                           {{ $active ? 'bg-clay-50 font-medium text-clay-700' : 'text-ink-600 hover:bg-ink-50' }}">
                                     <span>{{ $link['label'] }}</span>
                                     @if (! empty($link['badge']))
-                                        <span class="tabular ltr-run bg-clay-600 px-1.5 py-0.5 text-[0.625rem] font-bold text-white">{{ $link['badge'] }}</span>
+                                        <span class="tabular ltr-run rounded-sm bg-clay-600 px-1.5 py-0.5 text-[0.625rem] font-bold text-white">{{ $link['badge'] }}</span>
                                     @endif
                                 </a>
                             </li>
@@ -126,13 +126,13 @@
         <div class="mx-auto max-w-6xl px-5 py-8 md:px-8 md:py-10">
 
             @if (session('status'))
-                <div role="status" class="mb-6 border-s-2 border-green-600 bg-green-50 px-4 py-3 text-sm text-green-900">
+                <div role="status" class="mb-6 rounded-md border-s-2 border-green-600 bg-green-50 px-4 py-3 text-sm text-green-900">
                     {{ session('status') }}
                 </div>
             @endif
 
             @if ($errors->any())
-                <div role="alert" class="mb-6 border-s-2 border-red-600 bg-red-50 px-4 py-3 text-sm text-red-900">
+                <div role="alert" class="mb-6 rounded-md border-s-2 border-red-600 bg-red-50 px-4 py-3 text-sm text-red-900">
                     <p class="font-semibold">{{ __('form.has_errors') }}</p>
                     <ul class="mt-2 list-disc space-y-1 ps-4">
                         @foreach ($errors->unique() as $message)

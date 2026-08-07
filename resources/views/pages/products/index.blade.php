@@ -17,13 +17,13 @@
                 method="GET"
                 action="{{ $activeCategory ? route('products.category', ['category' => $activeCategory]) : route('products.index') }}"
                 data-auto-submit
-                class="mb-10 border border-hairline bg-surface-muted p-4 md:p-5"
+                class="mb-10 panel-muted p-4 md:p-5"
             >
                 <div class="grid gap-4 md:grid-cols-4">
                     <div class="flex flex-col gap-1.5">
                         <label for="filter-grain" class="text-xs font-medium text-ink-600">{{ __('product.filter_by_grain') }}</label>
                         <select id="filter-grain" name="grain"
-                                class="border border-ink-300 bg-white px-3 py-2.5 text-sm text-ink-900 focus:border-ink-900 focus:outline-none">
+                                class="border border-ink-300 bg-white px-3 py-2.5 text-sm text-ink-900 focus:border-ink-500 focus:outline-none">
                             <option value="">{{ __('common.all') }}</option>
                             @foreach (['0-3', '3-10', '10-20', '20-30'] as $range)
                                 <option value="{{ $range }}" @selected(request('grain') === $range)>
@@ -36,7 +36,7 @@
                     <div class="flex flex-col gap-1.5">
                         <label for="filter-sort" class="text-xs font-medium text-ink-600">{{ __('common.sort') }}</label>
                         <select id="filter-sort" name="sort"
-                                class="border border-ink-300 bg-white px-3 py-2.5 text-sm text-ink-900 focus:border-ink-900 focus:outline-none">
+                                class="border border-ink-300 bg-white px-3 py-2.5 text-sm text-ink-900 focus:border-ink-500 focus:outline-none">
                             @foreach (['position', 'grain_asc', 'grain_desc', 'density_asc'] as $sort)
                                 <option value="{{ $sort }}" @selected(request('sort', 'position') === $sort)>
                                     {{ __('product.sort_'.$sort) }}
@@ -50,7 +50,7 @@
                         <div class="flex gap-2">
                             <input id="filter-q" type="search" name="q" value="{{ request('q') }}"
                                    placeholder="{{ __('search.placeholder') }}"
-                                   class="w-full border border-ink-300 bg-white px-3 py-2.5 text-sm text-ink-900 placeholder:text-ink-400 focus:border-ink-900 focus:outline-none">
+                                   class="w-full border border-ink-300 bg-white px-3 py-2.5 text-sm text-ink-900 placeholder:text-ink-400 focus:border-ink-500 focus:outline-none">
                             <x-button type="submit" size="sm" data-filter-submit class="shrink-0">
                                 {{ __('common.filter') }}
                             </x-button>
@@ -67,7 +67,7 @@
                         <li>
                             <a href="{{ route('products.index') }}"
                                @if (! $activeCategory) aria-current="page" @endif
-                               class="inline-block whitespace-nowrap border px-4 py-2 text-sm transition-colors
+                               class="inline-block whitespace-nowrap rounded-md border px-4 py-2 text-sm transition-colors
                                       {{ ! $activeCategory ? 'border-ink-950 bg-ink-950 text-white' : 'border-hairline text-ink-700 hover:border-ink-400' }}">
                                 {{ __('nav.all_products') }}
                             </a>
@@ -77,7 +77,7 @@
                             <li>
                                 <a href="{{ route('products.category', ['category' => $category]) }}"
                                    @if ($isActive) aria-current="page" @endif
-                                   class="inline-block whitespace-nowrap border px-4 py-2 text-sm transition-colors
+                                   class="inline-block whitespace-nowrap rounded-md border px-4 py-2 text-sm transition-colors
                                           {{ $isActive ? 'border-ink-950 bg-ink-950 text-white' : 'border-hairline text-ink-700 hover:border-ink-400' }}">
                                     {{ $category->name }}
                                 </a>

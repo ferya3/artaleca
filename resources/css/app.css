@@ -36,17 +36,19 @@
     --font-mono:
         ui-monospace, 'SF Mono', 'Cascadia Mono', 'Roboto Mono', Menlo, monospace;
 
-    --color-ink-50: #f8f8f7;
-    --color-ink-100: #eeeeec;
-    --color-ink-200: #dcdcd8;
-    --color-ink-300: #c1c1bb;
-    --color-ink-400: #9a9a93;
-    --color-ink-500: #7a7a73;
-    --color-ink-600: #5e5e58;
-    --color-ink-700: #474742;
-    --color-ink-800: #2f2f2c;
-    --color-ink-900: #1c1c1a;
-    --color-ink-950: #101010;
+    /* Warm neutrals, lifted a step off pure black and pure white so nothing
+       on the page meets at maximum contrast. */
+    --color-ink-50: #faf9f7;
+    --color-ink-100: #f2f1ee;
+    --color-ink-200: #e4e2dd;
+    --color-ink-300: #cac7c0;
+    --color-ink-400: #a3a09a;
+    --color-ink-500: #807d77;
+    --color-ink-600: #63615c;
+    --color-ink-700: #4b4945;
+    --color-ink-800: #333230;
+    --color-ink-900: #232220;
+    --color-ink-950: #1a1917;
 
     --color-clay-50: #fdf5f2;
     --color-clay-100: #f9e5dc;
@@ -61,18 +63,32 @@
 
     /* Semantic aliases — templates reference these, not raw ramp steps. */
     --color-surface: #ffffff;
-    --color-surface-muted: #f8f8f7;
-    --color-surface-dark: #101010;
-    --color-hairline: #dcdcd8;
-    --color-hairline-dark: #2f2f2c;
+    --color-surface-muted: #faf9f7;
+    --color-surface-dark: #1a1917;
+    --color-hairline: #e8e6e1;
+    --color-hairline-dark: #333230;
 
-    /* A single soft elevation, reserved for the sticky header. Everything else
-       separates with a hairline instead of a shadow. */
-    --shadow-header: 0 1px 0 0 rgb(0 0 0 / 0.06), 0 8px 24px -16px rgb(0 0 0 / 0.18);
+    /*
+     * Elevation is how surfaces separate now; the hairline is the quiet
+     * fallback rather than the only tool. Both shadows are tinted with the
+     * warm ink rather than pure black, and both are wide and shallow — the
+     * point is a soft edge, not a floating card.
+     */
+    --shadow-soft: 0 1px 2px rgb(26 25 23 / 0.04), 0 2px 8px -2px rgb(26 25 23 / 0.05);
+    --shadow-lift: 0 2px 4px rgb(26 25 23 / 0.04), 0 14px 32px -14px rgb(26 25 23 / 0.16);
+    --shadow-header: 0 1px 0 0 rgb(26 25 23 / 0.04), 0 12px 32px -24px rgb(26 25 23 / 0.22);
 
+    /*
+     * A real radius scale. `md` is the workhorse (cards, inputs, buttons);
+     * `lg` is for the large media and panel blocks so the curve stays
+     * proportional to the box it is on.
+     */
     --radius-none: 0;
-    --radius-sm: 2px;
-    --radius-md: 3px;
+    --radius-xs: 0.25rem;
+    --radius-sm: 0.375rem;
+    --radius-md: 0.625rem;
+    --radius-lg: 0.875rem;
+    --radius-xl: 1.25rem;
 
     --spacing-section: 5.5rem;
     --spacing-section-lg: 8rem;
@@ -142,10 +158,26 @@
         text-wrap: pretty;
     }
 
+    /*
+     * Every form control shares one radius, set here rather than repeated as a
+     * utility on forty inputs: the public forms, the catalogue filter bar and
+     * the whole admin panel then stay consistent by construction.
+     */
+    input:not([type='checkbox']):not([type='radio']),
+    select,
+    textarea,
+    button {
+        border-radius: var(--radius-md);
+    }
+
+    input[type='checkbox'] {
+        border-radius: var(--radius-xs);
+    }
+
     :focus-visible {
         outline: 2px solid var(--color-clay-500);
         outline-offset: 3px;
-        border-radius: 1px;
+        border-radius: var(--radius-sm);
     }
 
     /* Latin runs inside Persian/Arabic prose (SKUs, EN standards, units) need
@@ -255,6 +287,38 @@
         padding-inline-start: 1.25rem;
         color: var(--color-ink-800);
         font-size: 1.0625rem;
+    }
+
+    /*
+     * The one surface treatment the site repeats: a rounded panel that reads as
+     * a raised sheet rather than a boxed-in area. Promoted to a class because it
+     * appears on ~40 blocks across the public site and the admin, and having a
+     * single definition is what stops them drifting apart.
+     */
+    .panel {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-hairline);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-soft);
+    }
+
+    .panel-muted {
+        background-color: var(--color-surface-muted);
+        border: 1px solid var(--color-hairline);
+        border-radius: var(--radius-lg);
+    }
+
+    /* Same sheet, but interactive: the lift on hover is the whole affordance,
+       so no border colour change is needed on top of it. */
+    .panel-interactive {
+        transition:
+            box-shadow 200ms ease,
+            border-color 200ms ease;
+    }
+
+    .panel-interactive:hover {
+        border-color: var(--color-ink-200);
+        box-shadow: var(--shadow-lift);
     }
 }
 

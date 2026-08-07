@@ -30,8 +30,8 @@
 
     <section class="border-t border-hairline bg-surface-muted py-section">
         <div class="container-page grid gap-8 md:grid-cols-2">
-            <x-media seed="arta-kiln" ratio="4/3" :alt="__('about.plant_title')" class="border border-hairline" sizes="(min-width: 768px) 50vw, 100vw" />
-            <x-media seed="arta-screening" ratio="4/3" :alt="__('about.plant_title')" class="border border-hairline" sizes="(min-width: 768px) 50vw, 100vw" />
+            <x-media seed="arta-kiln" ratio="4/3" :alt="__('about.plant_title')" class="rounded-lg border border-hairline shadow-soft" sizes="(min-width: 768px) 50vw, 100vw" />
+            <x-media seed="arta-screening" ratio="4/3" :alt="__('about.plant_title')" class="rounded-lg border border-hairline shadow-soft" sizes="(min-width: 768px) 50vw, 100vw" />
         </div>
     </section>
 

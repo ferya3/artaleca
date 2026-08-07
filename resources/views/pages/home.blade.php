@@ -38,7 +38,7 @@
                         eager
                         :alt="__('home.hero_title')"
                         sizes="(min-width: 1024px) 50vw, 100vw"
-                        class="border border-hairline-dark"
+                        class="rounded-lg border border-hairline-dark"
                     />
                 </div>
             </div>
@@ -120,7 +120,7 @@
                 ratio="4/3"
                 :alt="__('home.quality_title')"
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                class="border border-hairline"
+                class="rounded-lg border border-hairline shadow-soft"
             />
 
             <div>
@@ -131,7 +131,7 @@
                 @if ($certificates->isNotEmpty())
                     <ul class="mt-8 flex flex-wrap gap-2">
                         @foreach ($certificates as $certificate)
-                            <li class="border border-hairline px-3.5 py-2 text-xs text-ink-600">
+                            <li class="rounded-md border border-hairline px-3.5 py-2 text-xs text-ink-600">
                                 {{ $certificate->title }}
                                 @if ($certificate->year)
                                     <span class="ltr-run tabular ms-1 text-ink-400">{{ $certificate->year }}</span>

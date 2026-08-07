@@ -1,6 +1,6 @@
 @props(['application'])
 
-<article {{ $attributes->merge(['class' => 'group relative flex flex-col border border-hairline bg-white p-6 transition-colors hover:border-ink-400']) }}>
+<article {{ $attributes->merge(['class' => 'panel panel-interactive group relative flex flex-col p-6']) }}>
     <h3 class="text-lg font-bold text-ink-950">
         <a href="{{ route('applications.show', ['application' => $application]) }}"
            class="before:absolute before:inset-0 transition-colors group-hover:text-clay-600">

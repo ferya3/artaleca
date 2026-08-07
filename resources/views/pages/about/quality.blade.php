@@ -43,7 +43,7 @@
 
             {{-- ── Sampling to certificate ───────────────────────────── --}}
             <div class="lg:col-span-5">
-                <div class="border border-hairline bg-surface-muted p-6">
+                <div class="panel-muted p-6">
                     <h2 class="text-lg font-bold text-ink-950">{{ __('about.quality_process_title') }}</h2>
 
                     <ol class="mt-5 space-y-4">

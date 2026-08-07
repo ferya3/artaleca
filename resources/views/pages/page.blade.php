@@ -12,7 +12,7 @@
                     eager
                     ratio="16/9"
                     sizes="(min-width: 1024px) 68rem, 100vw"
-                    class="mb-12 border border-hairline"
+                    class="mb-12 rounded-lg border border-hairline shadow-soft"
                 />
             @endif
 

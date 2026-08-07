@@ -49,7 +49,7 @@
                                         >
                                             {{-- A file-type badge rather than a generic icon: the
                                                  extension is the useful information. --}}
-                                            <span class="ltr-run flex h-11 w-11 shrink-0 items-center justify-center border border-hairline bg-white text-[0.625rem] font-bold uppercase text-ink-500 group-hover:border-clay-400 group-hover:text-clay-600">
+                                            <span class="ltr-run flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-hairline bg-white text-[0.625rem] font-bold uppercase text-ink-500 group-hover:border-clay-400 group-hover:text-clay-600">
                                                 {{ $file->file_extension ?: 'PDF' }}
                                             </span>
 

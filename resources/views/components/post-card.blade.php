@@ -1,6 +1,6 @@
 @props(['post', 'eager' => false])
 
-<article {{ $attributes->merge(['class' => 'group relative flex flex-col border border-hairline bg-white transition-colors hover:border-ink-400']) }}>
+<article {{ $attributes->merge(['class' => 'panel panel-interactive group relative flex flex-col overflow-hidden']) }}>
     <x-media
         :src="$post->cover_image"
         :seed="$post->slug"

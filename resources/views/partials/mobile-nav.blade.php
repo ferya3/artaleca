@@ -10,7 +10,7 @@
 --}}
 <details data-mobile-menu class="lg:hidden [&[open]_.menu-open-icon]:hidden [&[open]_.menu-close-icon]:block">
     <summary
-        class="flex h-11 w-11 cursor-pointer list-none items-center justify-center text-ink-800 marker:hidden [&::-webkit-details-marker]:hidden"
+        class="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-md text-ink-800 transition-colors hover:bg-ink-50 marker:hidden [&::-webkit-details-marker]:hidden"
         aria-label="{{ __('nav.open_menu') }}"
     >
         <svg viewBox="0 0 22 22" class="menu-open-icon h-5 w-5" fill="none" aria-hidden="true">
@@ -68,11 +68,11 @@
 
             <div class="mt-6 grid gap-3">
                 <a href="{{ route('quote') }}"
-                   class="bg-ink-950 px-5 py-3.5 text-center text-sm font-semibold text-white">
+                   class="rounded-md bg-ink-950 px-5 py-3.5 text-center text-sm font-semibold text-white shadow-soft">
                     {{ __('nav.quote') }}
                 </a>
                 <a href="{{ route('search') }}"
-                   class="border border-hairline px-5 py-3.5 text-center text-sm font-medium text-ink-800">
+                   class="rounded-md border border-hairline px-5 py-3.5 text-center text-sm font-medium text-ink-800">
                     {{ __('nav.search') }}
                 </a>
             </div>
@@ -86,7 +86,7 @@
                                 href="{{ $alternates[$code] }}"
                                 hreflang="{{ $meta['hreflang'] }}"
                                 lang="{{ $code }}"
-                                class="inline-block border px-4 py-2 text-sm transition-colors
+                                class="inline-block rounded-md border px-4 py-2 text-sm transition-colors
                                        {{ $code === Locales::current()
                                            ? 'border-ink-950 bg-ink-950 text-white'
                                            : 'border-hairline text-ink-700' }}"

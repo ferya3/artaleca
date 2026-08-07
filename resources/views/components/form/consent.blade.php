@@ -11,7 +11,7 @@
             required
             @checked(old('consent'))
             @if ($hasError) aria-invalid="true" aria-describedby="consent-error" @endif
-            class="mt-1 h-4 w-4 shrink-0 border-ink-400 text-clay-600 focus:ring-clay-500/40"
+            class="mt-1 h-4 w-4 shrink-0 rounded-xs border-ink-400 text-clay-600 focus:ring-clay-500/40"
         >
         <span>
             {{ __('form.consent_label') }}

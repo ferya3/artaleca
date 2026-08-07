@@ -35,7 +35,7 @@
                 eager
                 ratio="16/9"
                 sizes="(min-width: 1024px) 68rem, 100vw"
-                class="border border-hairline"
+                class="rounded-lg border border-hairline shadow-soft"
             />
 
             @if (filled($post->body))

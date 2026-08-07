@@ -18,7 +18,7 @@ server-rendered Blade, Tailwind CSS v4 and effectively no client-side framework.
 | JavaScript | ~2 KB of vanilla progressive enhancement. No React/Vue/Alpine. |
 | Fonts | One self-hosted Vazirmatn variable font (111 KB) covering all three scripts |
 
-**Production bundle:** ~8.7 KB CSS and ~0.6 KB JS, gzipped, plus one font request.
+**Production bundle:** ~9.1 KB CSS and ~0.6 KB JS, gzipped, plus one font request.
 
 ### Why no JavaScript framework
 
@@ -35,6 +35,35 @@ hydration step without changing what the user can do. The interactions that
 `resources/js/app.js` only adds what HTML cannot express: a body-scroll lock
 behind the mobile menu, header elevation on scroll, gallery thumbnails, and
 auto-submitting filters. The site is fully usable with JavaScript disabled.
+
+---
+
+## Design system
+
+Everything visual comes from tokens declared once in `resources/css/app.css`
+under `@theme`; templates reference the semantic names, never raw values.
+
+- **Two colour ramps.** `ink` is a warm-cast neutral that reads as concrete
+  rather than as blue-grey UI chrome, and `clay` is the fired-clay accent of the
+  product itself. Both ramps stop short of pure black and pure white, so nothing
+  on the page meets at maximum contrast.
+- **One radius scale.** `md` is the workhorse for buttons, inputs, chips and
+  small tiles; `lg` is for cards, media and panels, so the curve stays
+  proportional to the box it sits on. Form controls get their radius from a base
+  rule rather than a utility, which is what keeps the public forms, the
+  catalogue filters and the admin panel identical without repeating a class.
+- **Elevation, not just hairlines.** Two shadows — `soft` at rest and `lift` on
+  hover — both wide, shallow and tinted with the warm ink rather than pure
+  black. The point is a soft edge, not a floating card; a hairline is still
+  there underneath as the quiet fallback.
+- **Three promoted classes.** `.panel`, `.panel-muted` and `.panel-interactive`
+  carry the one surface treatment the site repeats ~40 times. Anything used once
+  stays as utilities in the template.
+
+No gradients outside the faint blueprint grid behind the dark bands, no
+glassmorphism, and **zero `@keyframes`** in the built stylesheet — the only
+motion is colour and shadow transitions, and `prefers-reduced-motion` cuts even
+those.
 
 ---
 

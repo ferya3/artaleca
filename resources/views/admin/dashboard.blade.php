@@ -2,7 +2,7 @@
 
     <h1 class="text-xl font-bold text-ink-950">{{ __('admin.dashboard') }}</h1>
 
-    <dl class="mt-6 grid grid-cols-2 gap-px bg-hairline lg:grid-cols-4">
+    <dl class="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-hairline bg-hairline shadow-soft lg:grid-cols-4">
         @foreach ($stats as $key => $value)
             <div class="bg-white px-5 py-6">
                 <dd class="tabular ltr-run text-3xl font-bold {{ $key === 'new_enquiries' && $value > 0 ? 'text-clay-600' : 'text-ink-950' }}">
@@ -22,11 +22,11 @@
         </div>
 
         @if ($recent->isEmpty())
-            <p class="mt-4 border border-dashed border-ink-300 bg-white px-5 py-10 text-center text-sm text-ink-500">
+            <p class="mt-4 rounded-lg border border-dashed border-ink-300 bg-white px-5 py-10 text-center text-sm text-ink-500">
                 {{ __('admin.no_records') }}
             </p>
         @else
-            <div class="mt-4 overflow-x-auto border border-hairline bg-white">
+            <div class="mt-4 overflow-x-auto panel">
                 <table class="w-full min-w-[44rem] text-sm">
                     <thead>
                         <tr class="border-b border-hairline bg-ink-50 text-start">
@@ -48,7 +48,7 @@
                                     @endif
                                 </td>
                                 <td class="px-4 py-3 text-ink-600">
-                                    <span class="border border-hairline px-1.5 py-0.5 text-[0.625rem] uppercase text-ink-500">
+                                    <span class="rounded-sm rounded-md border border-hairline px-1.5 py-0.5 text-[0.625rem] uppercase text-ink-500">
                                         {{ __('admin.enquiry.type_'.$enquiry->type) }}
                                     </span>
                                     <span class="ms-2">{{ Str::limit($enquiry->subject ?: $enquiry->message, 48) }}</span>

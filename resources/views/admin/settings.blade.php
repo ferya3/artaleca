@@ -1,6 +1,6 @@
 @php
     $inputClass = 'w-full border border-ink-300 bg-white px-3 py-2.5 text-sm text-ink-900
-                   focus:border-ink-900 focus:outline-none focus:ring-2 focus:ring-clay-500/25';
+                   focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-clay-500/12';
 @endphp
 
 <x-layouts.admin :title="__('admin.settings')">
@@ -28,7 +28,7 @@
                             $stored = $values[$key] ?? null;
                         @endphp
 
-                        <div class="border border-hairline bg-white p-4">
+                        <div class="panel p-4">
                             <div class="mb-3 flex items-baseline justify-between gap-3">
                                 <p class="text-sm font-medium text-ink-800">{{ $definition['label'] }}</p>
                                 <code class="ltr-run text-[0.625rem] text-ink-400">{{ $key }}</code>
@@ -55,7 +55,7 @@
                             @elseif ($type === 'image')
                                 <div class="flex flex-wrap items-start gap-4">
                                     @if (is_string($stored) && filled($stored))
-                                        <img src="{{ $stored }}" alt="" class="h-20 w-36 shrink-0 border border-hairline object-cover">
+                                        <img src="{{ $stored }}" alt="" class="h-20 w-36 shrink-0 rounded-lg border border-hairline object-cover">
                                     @endif
                                     <input type="file" name="{{ $field }}"
                                            accept="{{ collect(config('site.uploads.image_mimes'))->map(fn ($m) => '.'.$m)->implode(',') }}"

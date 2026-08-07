@@ -8,7 +8,7 @@
 
 {{-- The whole card is one link (stretched-link pattern) so the tap target on
      mobile is the full tile, while the accessible name stays just the title. --}}
-<article {{ $attributes->merge(['class' => 'group relative flex flex-col border border-hairline bg-white transition-colors hover:border-ink-400']) }}>
+<article {{ $attributes->merge(['class' => 'panel panel-interactive group relative flex flex-col overflow-hidden']) }}>
     <x-media
         :src="$product->primaryImage()"
         :seed="$product->slug"

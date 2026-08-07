@@ -8,7 +8,7 @@
                 <label for="q" class="sr-only">{{ __('admin.search_placeholder') }}</label>
                 <input id="q" type="search" name="q" value="{{ $search }}"
                        placeholder="{{ __('admin.search_placeholder') }}"
-                       class="w-44 border border-ink-300 bg-white px-3 py-2 text-sm focus:border-ink-900 focus:outline-none sm:w-56">
+                       class="w-44 border border-ink-300 bg-white px-3 py-2 text-sm focus:border-ink-500 focus:outline-none sm:w-56">
             </form>
 
             <x-button :href="route('admin.'.$routeName.'.create')" size="sm">
@@ -18,11 +18,11 @@
     </div>
 
     @if ($records->isEmpty())
-        <p class="mt-6 border border-dashed border-ink-300 bg-white px-5 py-14 text-center text-sm text-ink-500">
+        <p class="mt-6 rounded-lg border border-dashed border-ink-300 bg-white px-5 py-14 text-center text-sm text-ink-500">
             {{ __('admin.no_records') }}
         </p>
     @else
-        <div class="mt-6 overflow-x-auto border border-hairline bg-white">
+        <div class="mt-6 overflow-x-auto panel">
             <table class="w-full min-w-[42rem] text-sm">
                 <thead>
                     <tr class="border-b border-hairline bg-ink-50">

@@ -14,7 +14,7 @@
                 value="{{ $term }}"
                 placeholder="{{ __('search.placeholder') }}"
                 autofocus
-                class="w-full border border-ink-300 bg-white px-4 py-3 text-sm text-ink-900 placeholder:text-ink-400 focus:border-ink-900 focus:outline-none focus:ring-2 focus:ring-clay-500/30"
+                class="w-full border border-ink-300 bg-white px-4 py-3 text-sm text-ink-900 placeholder:text-ink-400 focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-clay-500/12"
             >
             <x-button type="submit" class="shrink-0">{{ __('nav.search') }}</x-button>
         </form>

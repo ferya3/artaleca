@@ -81,8 +81,8 @@
                         </a>
 
                         <div
-                            class="invisible absolute top-full start-0 z-10 w-72 translate-y-1 border border-hairline
-                                   bg-white opacity-0 shadow-header transition-all duration-150
+                            class="invisible absolute top-full start-0 z-10 w-72 translate-y-1 overflow-hidden
+                                   rounded-lg border border-hairline bg-white opacity-0 shadow-lift transition-all duration-150
                                    group-hover:visible group-hover:translate-y-0 group-hover:opacity-100
                                    group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100"
                         >
@@ -123,7 +123,7 @@
         <div class="flex items-center gap-2">
             <a
                 href="{{ route('search') }}"
-                class="hidden h-10 w-10 items-center justify-center text-ink-600 transition-colors hover:text-ink-950 lg:flex"
+                class="hidden h-10 w-10 items-center justify-center rounded-md text-ink-600 transition-colors hover:bg-ink-50 hover:text-ink-950 lg:flex"
                 aria-label="{{ __('nav.search') }}"
             >
                 <svg viewBox="0 0 20 20" class="h-4.5 w-4.5" fill="none" aria-hidden="true">
@@ -134,7 +134,7 @@
 
             <a
                 href="{{ route('quote') }}"
-                class="hidden bg-ink-950 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-clay-600 lg:inline-flex"
+                class="hidden rounded-md bg-ink-950 px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition-[background-color,box-shadow] duration-200 hover:bg-clay-600 hover:shadow-lift lg:inline-flex"
             >{{ __('nav.quote') }}</a>
 
             @include('partials.mobile-nav', ['nav' => $nav, 'alternates' => $alternates])

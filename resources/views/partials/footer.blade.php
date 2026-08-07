@@ -24,7 +24,7 @@
                         href="{{ $href }}"
                         rel="noopener noreferrer me"
                         target="_blank"
-                        class="flex h-9 w-9 items-center justify-center border border-hairline-dark text-ink-400 transition-colors hover:border-clay-500 hover:text-white"
+                        class="flex h-9 w-9 items-center justify-center rounded-md border border-hairline-dark text-ink-400 transition-colors hover:border-clay-500 hover:text-white"
                         aria-label="{{ ucfirst($network) }}"
                     >
                         <span class="text-[0.6875rem] font-semibold uppercase" aria-hidden="true">{{ substr($network, 0, 2) }}</span>

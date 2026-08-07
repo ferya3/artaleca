@@ -13,7 +13,7 @@
     {{-- The proof strip: the numbers that answer "is this company big enough for
          my project?" before a visitor reads a single paragraph. --}}
     <dl {{ $attributes->merge([
-        'class' => 'grid grid-cols-2 gap-px md:grid-cols-3 lg:grid-cols-5 '
+        'class' => 'grid grid-cols-2 gap-px overflow-hidden rounded-lg md:grid-cols-3 lg:grid-cols-5 '
             .($dark ? 'bg-hairline-dark' : 'bg-hairline'),
     ]) }}>
         @foreach ($items as $item)
