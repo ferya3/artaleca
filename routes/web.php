@@ -7,8 +7,10 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LegalController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProjectController;
@@ -52,12 +54,16 @@ Route::prefix('{locale}')
         Route::get('about/plant', [AboutController::class, 'plant'])->name('about.plant');
 
         /*
-         * Products are nested under their category so the URL carries the
-         * hierarchy the breadcrumb and the schema.org trail already describe.
+         * Flat product URLs — /products/leca-structure-4-10 — with categories
+         * on their own branch so a category slug can never be mistaken for a
+         * product one.
          */
         Route::get('products', [ProductController::class, 'index'])->name('products.index');
-        Route::get('products/{category:slug}', [ProductController::class, 'category'])->name('products.category');
-        Route::get('products/{category:slug}/{product:slug}', [ProductController::class, 'show'])->name('products.show');
+        Route::get('products/category/{category:slug}', [ProductController::class, 'category'])->name('products.category');
+        Route::get('products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
+        Route::get('products/{product:slug}/datasheet', [ProductController::class, 'datasheet'])
+            ->middleware('throttle:30,1')
+            ->name('products.datasheet');
 
         Route::get('applications', [ApplicationController::class, 'index'])->name('applications.index');
         Route::get('applications/{application:slug}', [ApplicationController::class, 'show'])->name('applications.show');
@@ -65,8 +71,10 @@ Route::prefix('{locale}')
         Route::get('projects', [ProjectController::class, 'index'])->name('projects.index');
         Route::get('projects/{project:slug}', [ProjectController::class, 'show'])->name('projects.show');
 
-        Route::get('news', [PostController::class, 'index'])->name('news.index');
-        Route::get('news/{post:slug}', [PostController::class, 'show'])->name('news.show');
+        Route::get('articles', [PostController::class, 'index'])->name('articles.index');
+        Route::get('articles/{post:slug}', [PostController::class, 'show'])->name('articles.show');
+
+        Route::get('projects-gallery', [GalleryController::class, 'index'])->name('gallery');
 
         Route::get('downloads', [DownloadController::class, 'index'])->name('downloads.index');
         Route::get('downloads/{download:slug}', [DownloadController::class, 'download'])
@@ -88,4 +96,12 @@ Route::prefix('{locale}')
 
         Route::get('privacy', [LegalController::class, 'privacy'])->name('legal.privacy');
         Route::get('terms', [LegalController::class, 'terms'])->name('legal.terms');
+
+        /*
+         * Editor-created pages. Registered last so it can only ever match a
+         * path no named route claimed — a page slug can never shadow a section.
+         */
+        Route::get('{page:slug}', [PageController::class, 'show'])
+            ->where('page', '[a-z0-9-]+')
+            ->name('pages.show');
     });

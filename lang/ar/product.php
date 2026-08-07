@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'features' => 'الخصائص',
+    'advantages' => 'المزايا الهندسية',
+    'documents' => 'وثائق هذه الدرجة',
+
     'technical_data' => 'البيانات الفنية',
     'properties' => 'الخصائص الفيزيائية',
     'packaging' => 'التعبئة والشحن',

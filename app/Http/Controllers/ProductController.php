@@ -11,6 +11,8 @@ use App\Support\Schema;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ProductController extends Controller
 {
@@ -64,34 +66,70 @@ class ProductController extends Controller
         ]);
     }
 
-    public function show(ProductCategory $category, Product $product): View
+    public function show(Product $product): View
     {
-        abort_unless($product->is_active && $product->product_category_id === $category->id, 404);
+        abort_unless($product->is_active, 404);
 
-        $product->load(['category', 'applications' => fn ($q) => $q->where('is_active', true)]);
+        $product->load([
+            'category',
+            'applications' => fn ($q) => $q->where('is_active', true)->orderBy('position'),
+            'downloads' => fn ($q) => $q->where('is_active', true)->orderBy('position'),
+        ]);
 
         $related = Product::query()
             ->active()
             ->where('product_category_id', $product->product_category_id)
             ->whereKeyNot($product->getKey())
             ->ordered()
-            ->with('category')
             ->take(3)
             ->get();
+
+        // The URL is flat, but the breadcrumb still carries the hierarchy — it
+        // is what tells a visitor (and BreadcrumbList) where the grade sits.
+        $trail = [['label' => __('nav.products'), 'url' => route('products.index')]];
+
+        if ($product->category) {
+            $trail[] = [
+                'label' => (string) $product->category->name,
+                'url' => route('products.category', ['category' => $product->category]),
+            ];
+        }
+
+        $trail[] = ['label' => (string) $product->name, 'url' => null];
 
         seo()
             ->title($product->meta_title ?? $product->name)
             ->description($product->meta_description ?? $product->summary)
             ->image($product->primaryImage())
             ->type('product')
-            ->breadcrumbs($this->trail([
-                ['label' => __('nav.products'), 'url' => route('products.index')],
-                ['label' => (string) $category->name, 'url' => route('products.category', ['category' => $category])],
-                ['label' => (string) $product->name, 'url' => null],
-            ]))
+            ->breadcrumbs($this->trail($trail))
             ->schema(Schema::product($product));
 
         return view('pages.products.show', compact('product', 'related'));
+    }
+
+    /**
+     * Stream a product's datasheet from private storage.
+     *
+     * Datasheets live on the private disk like every other document, so they
+     * are served through the app rather than linked directly — an unpublished
+     * product cannot leak its datasheet through a guessable URL.
+     */
+    public function datasheet(Product $product): StreamedResponse
+    {
+        abort_unless($product->is_active && filled($product->datasheet_path), 404);
+
+        $disk = Storage::disk('documents');
+        $path = ltrim($product->datasheet_path, '/');
+
+        abort_if(str_contains($path, '..'), 404);
+        abort_unless($disk->exists($path), 404);
+
+        return $disk->download(
+            $path,
+            str($product->slug)->slug().'-datasheet.'.pathinfo($path, PATHINFO_EXTENSION),
+            ['X-Content-Type-Options' => 'nosniff'],
+        );
     }
 
     /**
@@ -153,11 +191,7 @@ class ProductController extends Controller
     {
         return $products->map(fn (Product $product) => [
             'name' => (string) $product->name,
-            'url' => route('products.show', [
-                'locale' => Locales::current(),
-                'category' => $product->category,
-                'product' => $product,
-            ]),
+            'url' => route('products.show', ['locale' => Locales::current(), 'product' => $product]),
         ])->values()->all();
     }
 }

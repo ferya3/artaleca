@@ -6,7 +6,7 @@
                 <x-breadcrumbs class="mb-6" />
 
                 <p class="eyebrow mb-3 flex flex-wrap items-center gap-x-2">
-                    <span>{{ __('news.types.'.$post->type) }}</span>
+                    <span>{{ __('articles.types.'.$post->type) }}</span>
                     @if ($post->published_at)
                         <span class="text-ink-300" aria-hidden="true">·</span>
                         <time datetime="{{ $post->published_at->toDateString() }}" class="tabular eyebrow-muted">
@@ -15,7 +15,7 @@
                     @endif
                     @if ($post->reading_minutes)
                         <span class="text-ink-300" aria-hidden="true">·</span>
-                        <span class="eyebrow-muted">{{ __('news.reading_time', ['minutes' => $post->reading_minutes]) }}</span>
+                        <span class="eyebrow-muted">{{ __('articles.reading_time', ['minutes' => $post->reading_minutes]) }}</span>
                     @endif
                 </p>
 
@@ -43,8 +43,8 @@
             @endif
 
             <div class="mx-auto mt-12 max-w-[68ch] border-t border-hairline pt-6">
-                <x-button :href="route('news.index')" variant="ghost" size="sm">
-                    {{ __('news.back_to_list') }}
+                <x-button :href="route('articles.index')" variant="ghost" size="sm">
+                    {{ __('articles.back_to_list') }}
                 </x-button>
             </div>
         </div>
@@ -53,7 +53,7 @@
     @if ($related->isNotEmpty())
         <section class="border-t border-hairline bg-surface-muted py-section">
             <div class="container-page">
-                <x-section-heading :title="__('common.related_articles')" :href="route('news.index')" />
+                <x-section-heading :title="__('common.related_articles')" :href="route('articles.index')" />
                 <div class="mt-10 grid gap-6 md:grid-cols-3">
                     @foreach ($related as $item)
                         <x-post-card :post="$item" />

@@ -8,6 +8,7 @@ use App\Models\Faq;
 use App\Models\Post;
 use App\Models\Product;
 use App\Models\Project;
+use App\Models\Setting;
 use Illuminate\Support\Collection;
 
 /**
@@ -55,6 +56,54 @@ final class Schema
         ]);
     }
 
+    /**
+     * LocalBusiness for the plant.
+     *
+     * Only emitted when an administrator has switched it on and supplied a
+     * street and locality — publishing a LocalBusiness node with placeholder
+     * data is worse than publishing none, because search engines will show it.
+     */
+    public static function localBusiness(): ?array
+    {
+        if (! Setting::get('business.enabled')) {
+            return null;
+        }
+
+        $street = Setting::get('business.street');
+        $locality = Setting::get('business.locality');
+
+        if (blank($street) || blank($locality)) {
+            return null;
+        }
+
+        $latitude = Setting::get('business.latitude');
+        $longitude = Setting::get('business.longitude');
+
+        return array_filter([
+            '@type' => 'LocalBusiness',
+            '@id' => url('/').'#plant',
+            'name' => config('site.company.legal_name'),
+            'url' => url('/'),
+            'image' => url(config('site.seo.default_og_image')),
+            'telephone' => config('site.contact.sales_phone'),
+            'email' => config('site.contact.sales_email'),
+            'parentOrganization' => ['@id' => url('/').'#organization'],
+            'address' => array_filter([
+                '@type' => 'PostalAddress',
+                'streetAddress' => $street,
+                'addressLocality' => $locality,
+                'postalCode' => Setting::get('business.postal_code'),
+                'addressCountry' => 'IR',
+            ]),
+            'geo' => filled($latitude) && filled($longitude) ? [
+                '@type' => 'GeoCoordinates',
+                'latitude' => (float) $latitude,
+                'longitude' => (float) $longitude,
+            ] : null,
+            'openingHours' => Setting::get('business.opening_hours') ?: null,
+        ]);
+    }
+
     public static function website(): array
     {
         return [
@@ -96,11 +145,7 @@ final class Schema
 
         return array_filter([
             '@type' => 'Product',
-            '@id' => route('products.show', [
-                'locale' => Locales::current(),
-                'category' => $product->category,
-                'product' => $product,
-            ]).'#product',
+            '@id' => route('products.show', ['locale' => Locales::current(), 'product' => $product]).'#product',
             'name' => $product->name,
             'sku' => $product->sku,
             'description' => $product->summary ?? $product->tagline,
@@ -129,7 +174,7 @@ final class Schema
             'publisher' => ['@id' => url('/').'#organization'],
             'mainEntityOfPage' => [
                 '@type' => 'WebPage',
-                '@id' => route('news.show', ['locale' => Locales::current(), 'post' => $post]),
+                '@id' => route('articles.show', ['locale' => Locales::current(), 'post' => $post]),
             ],
         ]);
     }

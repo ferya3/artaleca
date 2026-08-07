@@ -45,8 +45,8 @@ class PostController extends ResourceController
     {
         return [
             'title' => __('admin.posts'),
-            'type' => __('news.types.all'),
-            'published_at' => __('news.published_on', ['date' => '']),
+            'type' => __('articles.types.all'),
+            'published_at' => __('articles.published_on', ['date' => '']),
             'is_active' => __('admin.status'),
         ];
     }
@@ -61,14 +61,14 @@ class PostController extends ResourceController
                 'rules' => fn (?Model $r) => ['nullable', 'string', 'max:200', 'alpha_dash',
                     Rule::unique('posts', 'slug')->ignore($r)]],
 
-            ['name' => 'type', 'label' => __('news.types.all'), 'type' => 'select', 'width' => 'half',
-                'options' => fn () => collect(Post::TYPES)->mapWithKeys(fn ($t) => [$t => __('news.types.'.$t)])->all(),
+            ['name' => 'type', 'label' => __('articles.types.all'), 'type' => 'select', 'width' => 'half',
+                'options' => fn () => collect(Post::TYPES)->mapWithKeys(fn ($t) => [$t => __('articles.types.'.$t)])->all(),
                 'rules' => ['required', Rule::in(Post::TYPES)]],
 
-            ['name' => 'published_at', 'label' => __('news.published_on', ['date' => '']), 'type' => 'datetime-local',
+            ['name' => 'published_at', 'label' => __('articles.published_on', ['date' => '']), 'type' => 'datetime-local',
                 'width' => 'half', 'rules' => ['nullable', 'date']],
 
-            ['name' => 'reading_minutes', 'label' => __('news.reading_time', ['minutes' => '']), 'type' => 'number',
+            ['name' => 'reading_minutes', 'label' => __('articles.reading_time', ['minutes' => '']), 'type' => 'number',
                 'width' => 'half', 'rules' => ['nullable', 'integer', 'min:1', 'max:120']],
 
             ['name' => 'excerpt', 'label' => __('admin.fields.summary'), 'type' => 'textarea', 'translatable' => true,
@@ -77,7 +77,7 @@ class PostController extends ResourceController
             ['name' => 'body', 'label' => __('admin.fields.description'), 'type' => 'textarea', 'translatable' => true,
                 'rows' => 16, 'rules' => ['nullable', 'string', 'max:40000']],
 
-            ['name' => 'cover_image', 'label' => __('admin.fields.cover_path'), 'rules' => ['nullable', 'string', 'max:255']],
+            ['name' => 'cover_image', 'label' => __('admin.fields.cover_path'), 'type' => 'image'],
 
             ['name' => 'meta_title', 'label' => __('admin.fields.meta_title'), 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:70']],

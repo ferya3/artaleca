@@ -34,19 +34,42 @@ class Setting extends Model
         ];
     }
 
+    /** Per-request memo, so one page render reads the store once. */
+    private const CONTAINER_KEY = 'settings.resolved';
+
     protected static function booted(): void
     {
-        static::saved(fn () => Cache::forget(self::CACHE_KEY));
-        static::deleted(fn () => Cache::forget(self::CACHE_KEY));
+        static::saved(fn () => self::flushCache());
+        static::deleted(fn () => self::flushCache());
     }
 
-    /** @return array<string, mixed> */
+    private static function flushCache(): void
+    {
+        Cache::forget(self::CACHE_KEY);
+        app()->forgetInstance(self::CONTAINER_KEY);
+    }
+
+    /**
+     * The whole settings table as a key => value map.
+     *
+     * Memoised in the container as well as cached: a single page render calls
+     * `get()` a dozen times (figures, SEO defaults, LocalBusiness), and with a
+     * database cache driver each of those would otherwise be its own query.
+     * `scoped` means the memo is discarded between requests under Octane —
+     * ResetScopedState clears it — so a saved setting is never stale.
+     *
+     * @return array<string, mixed>
+     */
     public static function map(): array
     {
-        return Cache::rememberForever(
-            self::CACHE_KEY,
-            fn () => static::query()->pluck('value', 'key')->all()
-        );
+        if (! app()->bound(self::CONTAINER_KEY)) {
+            app()->scoped(self::CONTAINER_KEY, fn () => Cache::rememberForever(
+                self::CACHE_KEY,
+                fn () => static::query()->pluck('value', 'key')->all(),
+            ));
+        }
+
+        return app()->make(self::CONTAINER_KEY);
     }
 
     /**

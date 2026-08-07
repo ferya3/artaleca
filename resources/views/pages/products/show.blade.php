@@ -98,7 +98,7 @@
                     </x-button>
 
                     @if (filled($product->datasheet_path))
-                        <x-button :href="$product->datasheet_path" variant="outline" download>
+                        <x-button :href="route('products.datasheet', ['product' => $product])" variant="outline">
                             {{ __('common.download_pdf') }}
                         </x-button>
                     @else
@@ -119,6 +119,55 @@
                 @if (filled($product->description))
                     <h2 class="text-xl font-bold text-ink-950">{{ __('product.description') }}</h2>
                     <div class="prose-industrial mt-5">{!! nl2br(e($product->description)) !!}</div>
+                @endif
+
+                @php
+                    $features = $product->bullets('features');
+                    $advantages = $product->bullets('advantages');
+                @endphp
+
+                @if ($features !== [])
+                    <h2 class="mt-12 text-xl font-bold text-ink-950">{{ __('product.features') }}</h2>
+                    <ul class="mt-5 grid gap-3 sm:grid-cols-2">
+                        @foreach ($features as $feature)
+                            <li class="flex gap-3 text-sm leading-relaxed text-ink-700">
+                                <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-ink-400" aria-hidden="true"></span>
+                                <span>{{ $feature }}</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+
+                @if ($advantages !== [])
+                    <h2 class="mt-12 text-xl font-bold text-ink-950">{{ __('product.advantages') }}</h2>
+                    <ul class="mt-5 space-y-3">
+                        @foreach ($advantages as $advantage)
+                            <li class="flex gap-3 text-sm leading-relaxed text-ink-700">
+                                <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-500" aria-hidden="true"></span>
+                                <span>{{ $advantage }}</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+
+                @if ($product->downloads->isNotEmpty())
+                    <h2 class="mt-12 text-xl font-bold text-ink-950">{{ __('product.documents') }}</h2>
+                    <ul class="mt-5 divide-y divide-hairline border-y border-hairline">
+                        @foreach ($product->downloads as $document)
+                            <li>
+                                <a href="{{ route('downloads.file', ['download' => $document]) }}"
+                                   class="group flex flex-wrap items-center gap-4 py-4">
+                                    <span class="ltr-run flex h-10 w-10 shrink-0 items-center justify-center border border-hairline bg-white text-[0.625rem] font-bold uppercase text-ink-500 group-hover:border-clay-400 group-hover:text-clay-600">
+                                        {{ $document->file_extension ?: 'PDF' }}
+                                    </span>
+                                    <span class="min-w-0 flex-1 text-sm font-medium text-ink-900 group-hover:text-clay-600">
+                                        {{ $document->title }}
+                                    </span>
+                                    <span class="ltr-run tabular shrink-0 text-xs text-ink-400">{{ $document->humanSize() }}</span>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
                 @endif
 
                 @if (filled($product->packaging))

@@ -9,10 +9,14 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DownloadController;
 use App\Http\Controllers\Admin\EnquiryController;
 use App\Http\Controllers\Admin\FaqController;
+use App\Http\Controllers\Admin\GalleryController;
+use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProjectController;
+use App\Http\Controllers\Admin\RedirectController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +61,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
             'downloads' => DownloadController::class,
             'certificates' => CertificateController::class,
             'faqs' => FaqController::class,
+            'pages' => PageController::class,
+            'partners' => PartnerController::class,
+            'gallery' => GalleryController::class,
+            'redirects' => RedirectController::class,
         ];
 
         foreach ($resources as $uri => $controller) {

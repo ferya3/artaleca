@@ -12,7 +12,7 @@
 
     <div class="flex flex-1 flex-col p-5">
         <p class="eyebrow eyebrow-muted mb-2 flex flex-wrap items-center gap-x-2">
-            <span>{{ __('news.types.'.$post->type) }}</span>
+            <span>{{ __('articles.types.'.$post->type) }}</span>
             @if ($post->published_at)
                 <span class="text-ink-300" aria-hidden="true">·</span>
                 <time datetime="{{ $post->published_at->toDateString() }}" class="tabular">
@@ -22,7 +22,7 @@
         </p>
 
         <h3 class="text-lg font-bold leading-snug text-ink-950">
-            <a href="{{ route('news.show', ['post' => $post]) }}"
+            <a href="{{ route('articles.show', ['post' => $post]) }}"
                class="before:absolute before:inset-0 transition-colors group-hover:text-clay-600">
                 {{ $post->title }}
             </a>
@@ -34,7 +34,7 @@
 
         @if ($post->reading_minutes)
             <p class="mt-auto pt-4 text-xs text-ink-500">
-                {{ __('news.reading_time', ['minutes' => $post->reading_minutes]) }}
+                {{ __('articles.reading_time', ['minutes' => $post->reading_minutes]) }}
             </p>
         @endif
     </div>

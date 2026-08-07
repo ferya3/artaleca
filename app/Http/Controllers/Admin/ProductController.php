@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Download;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Illuminate\Database\Eloquent\Model;
@@ -80,6 +81,12 @@ class ProductController extends ResourceController
             ['name' => 'description', 'label' => __('admin.fields.description'), 'type' => 'textarea', 'translatable' => true,
                 'rows' => 10, 'rules' => ['nullable', 'string', 'max:8000']],
 
+            ['name' => 'features', 'label' => __('admin.fields.features'), 'type' => 'list',
+                'hint' => 'One feature per line.'],
+
+            ['name' => 'advantages', 'label' => __('admin.fields.advantages'), 'type' => 'list',
+                'hint' => 'One advantage per line.'],
+
             // ── Technical data ──────────────────────────────────────────
             ['name' => 'grain_min_mm', 'label' => __('product.grain_size').' — min (mm)', 'type' => 'number',
                 'step' => '0.1', 'width' => 'half', 'rules' => ['nullable', 'numeric', 'min:0', 'max:999']],
@@ -108,10 +115,18 @@ class ProductController extends ResourceController
             ['name' => 'specs', 'label' => __('product.properties'), 'type' => 'pairs',
                 'hint' => 'One row per line: label | value'],
 
-            ['name' => 'hero_image', 'label' => __('admin.fields.image_path'), 'width' => 'half',
-                'rules' => ['nullable', 'string', 'max:255']],
-            ['name' => 'datasheet_path', 'label' => __('admin.fields.datasheet_path'), 'width' => 'half',
-                'rules' => ['nullable', 'string', 'max:255']],
+            ['name' => 'hero_image', 'label' => __('admin.fields.image_path'), 'type' => 'image', 'width' => 'half'],
+
+            ['name' => 'datasheet_path', 'label' => __('admin.fields.datasheet_path'), 'type' => 'document', 'width' => 'half'],
+
+            ['name' => 'gallery', 'label' => __('admin.fields.gallery'), 'type' => 'gallery',
+                'hint' => __('admin.fields.gallery_hint')],
+
+            ['name' => 'downloads', 'label' => __('admin.fields.related_downloads'), 'type' => 'relation',
+                'relation' => 'downloads',
+                'options' => fn () => Download::query()->where('is_active', true)->orderBy('position')
+                    ->pluck('title', 'id')
+                    ->map(fn ($t) => is_array($t) ? ($t[app()->getLocale()] ?? reset($t)) : $t)->all()],
 
             ['name' => 'meta_title', 'label' => __('admin.fields.meta_title'), 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:70']],

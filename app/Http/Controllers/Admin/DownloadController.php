@@ -61,19 +61,20 @@ class DownloadController extends ResourceController
                 'rules' => ['nullable', 'string', 'max:600']],
 
             /*
-             * Path relative to the private `documents` disk, not a public URL.
+             * Uploaded to the *private* documents disk, never to public/.
              * DownloadController streams it, so an inactive document stays
-             * unreachable and downloads can be counted.
+             * unreachable and downloads can be counted. Size and extension are
+             * read from the upload rather than typed by the editor.
              */
-            ['name' => 'file_path', 'label' => 'File path (documents disk)',
-                'hint' => 'e.g. catalogues/arta-leca-catalogue-fa.pdf',
-                'rules' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z0-9._\/-]+$/', 'not_regex:/\.\./']],
-
-            ['name' => 'file_extension', 'label' => 'Extension', 'width' => 'half',
-                'rules' => ['nullable', 'string', 'max:10', 'alpha_num']],
-
-            ['name' => 'file_size', 'label' => 'Size (bytes)', 'type' => 'number', 'width' => 'half',
-                'rules' => ['nullable', 'integer', 'min:0']],
+            ['name' => 'file_path', 'label' => __('admin.fields.file'), 'type' => 'document',
+                // Required when creating (the column is NOT NULL and a download
+                // without a file is a 404), optional when editing so saving a
+                // title change does not force a re-upload.
+                'rules' => fn (?Model $r) => array_merge(
+                    [$r?->exists ? 'nullable' : 'required'],
+                    ['file', 'mimes:'.implode(',', config('site.uploads.document_mimes')),
+                        'max:'.config('site.uploads.max_document_kb')],
+                )],
 
             ['name' => 'locale', 'label' => __('nav.language'), 'type' => 'select', 'width' => 'half',
                 'options' => fn () => collect(Locales::all())->map(fn ($m) => $m['native'])->all(),

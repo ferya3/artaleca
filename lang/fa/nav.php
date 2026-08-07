@@ -10,6 +10,7 @@ return [
     'applications' => 'کاربردها',
     'projects' => 'پروژه‌ها',
     'news' => 'اخبار و مقالات',
+    'gallery' => 'گالری',
     'downloads' => 'دانلود',
     'faq' => 'پرسش‌های متداول',
     'contact' => 'تماس با ما',

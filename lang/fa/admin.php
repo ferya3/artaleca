@@ -15,12 +15,20 @@ return [
         'tagline' => 'شعار کوتاه',
         'summary' => 'خلاصه',
         'description' => 'شرح کامل',
-        'image_path' => 'مسیر تصویر',
-        'cover_path' => 'مسیر تصویر شاخص',
-        'datasheet_path' => 'مسیر دیتاشیت',
+        'features' => 'ویژگی‌ها',
+        'advantages' => 'مزایا',
+        'image_path' => 'تصویر',
+        'cover_path' => 'تصویر شاخص',
+        'gallery' => 'گالری تصاویر',
+        'datasheet_path' => 'دیتاشیت',
+        'file' => 'فایل',
+        'logo' => 'لوگو',
+        'website' => 'وب‌سایت',
         'meta_title' => 'عنوان متا (SEO)',
         'meta_description' => 'توضیح متا (SEO)',
         'slug_hint' => 'لاتین؛ بین هر سه زبان مشترک است. خالی بگذارید تا خودکار ساخته شود.',
+        'gallery_hint' => 'می‌توانید چند تصویر را هم‌زمان انتخاب کنید.',
+        'related_downloads' => 'مستندات مرتبط',
     ],
 
     'groups' => [
@@ -38,9 +46,13 @@ return [
     'applications' => 'کاربردها',
     'projects' => 'پروژه‌ها',
     'posts' => 'اخبار و مقالات',
+    'pages' => 'صفحات',
+    'partners' => 'همکاران و مشتریان',
+    'gallery' => 'گالری',
     'downloads' => 'مستندات',
     'certificates' => 'گواهینامه‌ها',
     'faqs' => 'پرسش‌های متداول',
+    'redirects' => 'ریدایرکت‌ها',
     'settings' => 'تنظیمات',
     'users' => 'کاربران',
 
@@ -49,6 +61,7 @@ return [
     'save' => 'ذخیره',
     'delete' => 'حذف',
     'cancel' => 'انصراف',
+    'remove_file' => 'حذف فایل فعلی',
     'confirm_delete' => 'از حذف این مورد مطمئن هستید؟ این عمل بازگشت‌پذیر نیست.',
     'created' => 'با موفقیت ثبت شد.',
     'updated' => 'تغییرات ذخیره شد.',
@@ -67,6 +80,36 @@ return [
 
     'translations' => 'ترجمه‌ها',
     'translation_hint' => 'مقدار هر زبان را جداگانه وارد کنید. زبان‌های خالی به فارسی بازمی‌گردند.',
+
+    'settings_groups' => [
+        'figures' => 'اعداد کلیدی',
+        'copy' => 'متن‌های صفحه اصلی',
+        'seo' => 'تنظیمات سئو',
+        'business' => 'اطلاعات کسب‌وکار (LocalBusiness)',
+    ],
+
+    'settings_fields' => [
+        'hero_headline' => 'تیتر اصلی صفحه نخست',
+        'hero_body' => 'توضیح کوتاه صفحه نخست',
+        'quality_body' => 'متن بخش کنترل کیفیت',
+        'cta_title' => 'تیتر بخش فراخوان',
+        'cta_body' => 'متن بخش فراخوان',
+        'contact_note' => 'یادداشت زمان پاسخ‌گویی',
+        'seo_title' => 'عنوان پیش‌فرض صفحات',
+        'seo_description' => 'توضیح متای پیش‌فرض',
+        'og_image' => 'تصویر اشتراک‌گذاری (Open Graph)',
+        'localbusiness_enabled' => 'انتشار داده ساختاریافته LocalBusiness',
+        'locality' => 'شهر',
+    ],
+
+    'redirect' => [
+        'source' => 'مسیر قدیمی',
+        'destination' => 'مقصد',
+        'status' => 'کد وضعیت',
+        'hits' => 'تعداد استفاده',
+        'source_hint' => 'فقط مسیر، بدون دامنه. مثال: /old-page',
+        'destination_hint' => 'مسیر داخلی یا نشانی کامل بیرونی.',
+    ],
 
     'enquiry' => [
         'new' => 'جدید',

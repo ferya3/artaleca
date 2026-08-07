@@ -75,7 +75,7 @@ class LocaleRoutingTest extends TestCase
     {
         $product = $this->makeProduct();
 
-        $this->get("/fa/products/{$product->category->slug}/{$product->slug}")
+        $this->get("/fa/products/{$product->slug}")
             ->assertOk()
             ->assertSee('لیکا ۴–۱۰');
     }

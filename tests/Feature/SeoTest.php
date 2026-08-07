@@ -64,7 +64,7 @@ class SeoTest extends TestCase
     {
         $product = $this->makeProduct();
 
-        $response = $this->get("/fa/products/{$product->category->slug}/{$product->slug}");
+        $response = $this->get("/fa/products/{$product->slug}");
 
         $response->assertSee('"@type":"Product"', false);
         $response->assertSee('"@type":"BreadcrumbList"', false);
@@ -88,7 +88,7 @@ class SeoTest extends TestCase
 
         foreach (['fa', 'en', 'ar'] as $locale) {
             $response->assertSee(
-                '<loc>'.url("/{$locale}/products/{$product->category->slug}/{$product->slug}").'</loc>',
+                '<loc>'.url("/{$locale}/products/{$product->slug}").'</loc>',
                 false,
             );
         }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Models\Application;
+use App\Models\Page;
 use App\Models\Post;
 use App\Models\Product;
 use App\Models\ProductCategory;
@@ -72,11 +73,9 @@ class SitemapController extends Controller
             );
         }
 
-        foreach (Product::query()->active()->with('category')->ordered()->get() as $product) {
+        foreach (Product::query()->active()->ordered()->get() as $product) {
             $entries[] = $this->entry(
-                fn (string $l) => route('products.show', [
-                    'locale' => $l, 'category' => $product->category, 'product' => $product,
-                ]),
+                fn (string $l) => route('products.show', ['locale' => $l, 'product' => $product]),
                 $product->updated_at, 0.9, 'weekly',
             );
         }
@@ -97,8 +96,15 @@ class SitemapController extends Controller
 
         foreach (Post::query()->published()->latestFirst()->get() as $post) {
             $entries[] = $this->entry(
-                fn (string $l) => route('news.show', ['locale' => $l, 'post' => $post]),
+                fn (string $l) => route('articles.show', ['locale' => $l, 'post' => $post]),
                 $post->updated_at, 0.6, 'monthly',
+            );
+        }
+
+        foreach (Page::query()->active()->ordered()->get() as $page) {
+            $entries[] = $this->entry(
+                fn (string $l) => route('pages.show', ['locale' => $l, 'page' => $page]),
+                $page->updated_at, 0.5, 'monthly',
             );
         }
 
@@ -116,8 +122,9 @@ class SitemapController extends Controller
             'products.index' => [0.9, 'weekly'],
             'applications.index' => [0.8, 'monthly'],
             'projects.index' => [0.8, 'monthly'],
-            'news.index' => [0.7, 'weekly'],
+            'articles.index' => [0.7, 'weekly'],
             'downloads.index' => [0.7, 'monthly'],
+            'gallery' => [0.5, 'monthly'],
             'faq' => [0.5, 'monthly'],
             'contact' => [0.7, 'yearly'],
         ];

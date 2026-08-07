@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'features' => 'ویژگی‌ها',
+    'advantages' => 'مزایای مهندسی',
+    'documents' => 'مستندات این محصول',
+
     'technical_data' => 'مشخصات فنی',
     'properties' => 'خواص فیزیکی',
     'packaging' => 'بسته‌بندی و حمل',

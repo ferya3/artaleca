@@ -148,6 +148,44 @@
         </div>
     </section>
 
+    {{-- ── Certifications & partners ──────────────────────────────────── --}}
+    @if ($partners->isNotEmpty())
+        <section class="border-t border-hairline py-section">
+            <div class="container-page">
+                <x-section-heading
+                    :eyebrow="__('common.certificates')"
+                    :title="__('partners.home_title')"
+                    :body="__('partners.home_body')"
+                />
+
+                {{-- A quiet logo rail, not a carousel: eight marks in a grid
+                     read faster than eight marks that move. --}}
+                <ul class="mt-10 grid grid-cols-2 gap-px bg-hairline sm:grid-cols-3 lg:grid-cols-6">
+                    @foreach ($partners as $partner)
+                        <li class="flex items-center justify-center bg-white p-6">
+                            @if ($partner->website)
+                                <a href="{{ $partner->website }}" target="_blank" rel="noopener noreferrer"
+                                   class="flex w-full items-center justify-center">
+                            @endif
+
+                            @if ($partner->logo)
+                                <img src="{{ $partner->logo }}" alt="{{ $partner->name }}"
+                                     loading="lazy" decoding="async"
+                                     class="h-10 w-auto max-w-full object-contain opacity-70 transition-opacity hover:opacity-100">
+                            @else
+                                <span class="text-center text-xs font-medium text-ink-600">{{ $partner->name }}</span>
+                            @endif
+
+                            @if ($partner->website)
+                                </a>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </section>
+    @endif
+
     {{-- ── Projects ───────────────────────────────────────────────────── --}}
     @if ($projects->isNotEmpty())
         <section class="border-y border-hairline bg-surface-muted py-section">
@@ -176,7 +214,7 @@
                     :eyebrow="__('nav.news')"
                     :title="__('home.news_title')"
                     :body="__('home.news_body')"
-                    :href="route('news.index')"
+                    :href="route('articles.index')"
                 />
 
                 <div class="mt-12 grid gap-6 md:grid-cols-3">

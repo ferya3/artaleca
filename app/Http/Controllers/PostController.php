@@ -32,7 +32,7 @@ class PostController extends Controller
             ]))
             ->noindex($posts->currentPage() > 1);
 
-        return view('pages.news.index', [
+        return view('pages.articles.index', [
             'posts' => $posts,
             'activeType' => $validated['type'] ?? null,
         ]);
@@ -56,11 +56,11 @@ class PostController extends Controller
             ->image($post->cover_image)
             ->type('article')
             ->breadcrumbs($this->trail([
-                ['label' => __('nav.news'), 'url' => route('news.index')],
+                ['label' => __('nav.news'), 'url' => route('articles.index')],
                 ['label' => (string) $post->title, 'url' => null],
             ]))
             ->schema(Schema::article($post));
 
-        return view('pages.news.show', compact('post', 'related'));
+        return view('pages.articles.show', compact('post', 'related'));
     }
 }

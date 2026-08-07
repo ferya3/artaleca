@@ -1,7 +1,7 @@
 @props(['product', 'eager' => false])
 
 @php
-    $url = route('products.show', ['category' => $product->category, 'product' => $product]);
+    $url = route('products.show', ['product' => $product]);
     $grain = $product->grainRange();
     $density = $product->bulkDensityRange();
 @endphp

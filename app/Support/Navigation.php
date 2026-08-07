@@ -52,8 +52,8 @@ final class Navigation
             ],
             [
                 'label' => __('nav.news'),
-                'route' => 'news.index',
-                'match' => 'news.',
+                'route' => 'articles.index',
+                'match' => 'articles.',
             ],
             [
                 'label' => __('nav.downloads'),
@@ -138,6 +138,7 @@ final class Navigation
                 ['label' => __('nav.all_products'), 'route' => 'products.index'],
                 ['label' => __('nav.applications'), 'route' => 'applications.index'],
                 ['label' => __('nav.downloads'), 'route' => 'downloads.index'],
+                ['label' => __('nav.gallery'), 'route' => 'gallery'],
             ],
             __('nav.about') => [
                 ['label' => __('nav.about'), 'route' => 'about'],
@@ -149,7 +150,7 @@ final class Navigation
                 ['label' => __('nav.contact'), 'route' => 'contact'],
                 ['label' => __('nav.quote'), 'route' => 'quote'],
                 ['label' => __('nav.faq'), 'route' => 'faq'],
-                ['label' => __('nav.news'), 'route' => 'news.index'],
+                ['label' => __('nav.news'), 'route' => 'articles.index'],
             ],
         ];
     }

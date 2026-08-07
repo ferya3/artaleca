@@ -61,5 +61,43 @@ class SettingSeeder extends Seeder
         foreach ($settings as $key => $setting) {
             Setting::put($key, $setting['value'], $setting['group']);
         }
+
+        // Headline numbers: seeded from config so a fresh install matches the
+        // brochure, then owned by the admin screen from that point on.
+        foreach (config('site.figures') as $key => $value) {
+            Setting::put('figures.'.$key, (int) $value, 'figures', translatable: false);
+        }
+
+        $seo = [
+            'seo.default_title' => $this->t(
+                'سبکدانه لیکا | تولید صنعتی با دانه‌بندی تضمین‌شده',
+                'LECA lightweight aggregate | Industrial production, guaranteed grading',
+                'ركام ليكا خفيف الوزن | إنتاج صناعي بتدرّج مضمون',
+            ),
+            'seo.default_description' => $this->t(
+                __('seo.default_description', [], 'fa'),
+                __('seo.default_description', [], 'en'),
+                __('seo.default_description', [], 'ar'),
+            ),
+        ];
+
+        foreach ($seo as $key => $value) {
+            Setting::put($key, $value, 'seo');
+        }
+
+        Setting::put('seo.twitter_handle', config('site.seo.twitter_handle'), 'seo', translatable: false);
+
+        // LocalBusiness stays switched off until an administrator confirms the
+        // address is real — publishing placeholder geodata is worse than none.
+        $plant = config('site.contact.plant');
+
+        Setting::put('business.enabled', false, 'business', translatable: false);
+        Setting::put('business.street', $this->t(
+            $plant['lines']['fa'], $plant['lines']['en'], $plant['lines']['ar'],
+        ), 'business');
+        Setting::put('business.locality', $this->t('قم', 'Qom', 'قم'), 'business');
+        Setting::put('business.latitude', (string) $plant['geo']['lat'], 'business', translatable: false);
+        Setting::put('business.longitude', (string) $plant['geo']['lng'], 'business', translatable: false);
+        Setting::put('business.opening_hours', 'Sa-We 08:00-17:00', 'business', translatable: false);
     }
 }

@@ -23,17 +23,21 @@
         __('admin.groups.content') => [
             ['route' => 'admin.projects.index', 'label' => __('admin.projects')],
             ['route' => 'admin.posts.index', 'label' => __('admin.posts')],
+            ['route' => 'admin.pages.index', 'label' => __('admin.pages')],
             ['route' => 'admin.faqs.index', 'label' => __('admin.faqs')],
         ],
         __('admin.groups.library') => [
             ['route' => 'admin.downloads.index', 'label' => __('admin.downloads')],
+            ['route' => 'admin.gallery.index', 'label' => __('admin.gallery')],
             ['route' => 'admin.certificates.index', 'label' => __('admin.certificates')],
+            ['route' => 'admin.partners.index', 'label' => __('admin.partners')],
         ],
     ];
 
     if ($user?->isAdmin()) {
         $sections[__('admin.groups.system')] = [
             ['route' => 'admin.settings.edit', 'label' => __('admin.settings')],
+            ['route' => 'admin.redirects.index', 'label' => __('admin.redirects')],
             ['route' => 'admin.users.index', 'label' => __('admin.users')],
         ];
     }

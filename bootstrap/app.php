@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureUserIsStaff;
+use App\Http\Middleware\HandleRedirects;
 use App\Http\Middleware\ResetScopedState;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
@@ -28,6 +29,13 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             SecurityHeaders::class,
         ]);
+
+        /*
+         * Global, not route middleware: a URL that matches no route never
+         * enters the `web` group, so a redirect registered there would never
+         * fire for exactly the 404s it exists to catch.
+         */
+        $middleware->append(HandleRedirects::class);
 
         $middleware->alias([
             'locale' => SetLocale::class,

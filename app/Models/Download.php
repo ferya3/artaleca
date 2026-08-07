@@ -9,6 +9,7 @@ use App\Concerns\Publishable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Download extends Model
 {
@@ -36,6 +37,11 @@ class Download extends Model
             'position' => 'integer',
             'is_active' => 'boolean',
         ];
+    }
+
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class);
     }
 
     /** Language-neutral files (locale = null) are offered in every language. */

@@ -10,7 +10,7 @@ server-rendered Blade, Tailwind CSS v4 and effectively no client-side framework.
 
 | | |
 |---|---|
-| Framework | Laravel 13 (PHP 8.4) |
+| Framework | Laravel 13 (PHP 8.3+) |
 | Database | MySQL / MariaDB in production, SQLite for local work and tests |
 | Views | Blade — server-rendered, no SPA |
 | Styling | Tailwind CSS v4 via `@theme` design tokens |
@@ -18,7 +18,7 @@ server-rendered Blade, Tailwind CSS v4 and effectively no client-side framework.
 | JavaScript | ~2 KB of vanilla progressive enhancement. No React/Vue/Alpine. |
 | Fonts | One self-hosted Vazirmatn variable font (111 KB) covering all three scripts |
 
-**Production bundle:** ~8.5 KB CSS and ~0.6 KB JS, gzipped, plus one font request.
+**Production bundle:** ~8.7 KB CSS and ~0.6 KB JS, gzipped, plus one font request.
 
 ### Why no JavaScript framework
 
@@ -61,7 +61,7 @@ environment it is randomly generated and printed once unless `ADMIN_PASSWORD` is
 set. Sign in at `/admin`.
 
 ```bash
-vendor/bin/phpunit    # 87 tests
+vendor/bin/phpunit    # 116 tests
 vendor/bin/pint       # code style
 ```
 
@@ -77,20 +77,22 @@ structured data and the navigation are all describing the same tree.
 /{locale}/                            Home
 /{locale}/about                       About  ├─ /quality  ├─ /plant
 /{locale}/products                    Catalogue (filterable)
-/{locale}/products/{category}         Category
-/{locale}/products/{category}/{grade} Product detail
+/{locale}/products/category/{slug}    Category
+/{locale}/products/{slug}             Product detail
 /{locale}/applications                Industries & applications
 /{locale}/applications/{slug}         Application detail
 /{locale}/projects                    Reference projects
 /{locale}/projects/{slug}             Project detail
-/{locale}/news                        News & technical articles
-/{locale}/news/{slug}                 Article
+/{locale}/articles                    News & technical articles
+/{locale}/articles/{slug}             Article
+/{locale}/projects-gallery            Image gallery
 /{locale}/downloads                   Catalogues, datasheets, certificates
 /{locale}/faq                         FAQ
 /{locale}/contact                     Contact form
 /{locale}/quote                       RFQ form                       (noindex)
 /{locale}/search                      Search                         (noindex)
 /{locale}/privacy  /{locale}/terms    Legal
+/{locale}/{slug}                      Editor-created pages (catch-all, last)
 /sitemap.xml  /robots.txt             Root-level, all locales in one sitemap
 /admin/…                              Back office (outside the locale prefix)
 ```
@@ -149,9 +151,14 @@ seo()->title($product->name)
 - **Canonical** — query strings are dropped except the ones that genuinely
   change the content (`page`, `category`, `q`, `grain`…), so tracking tags
   cannot split ranking signals across duplicate URLs.
-- **Structured data** — Organization and WebSite site-wide, plus Product,
-  Article, FAQPage, BreadcrumbList and ItemList where relevant, emitted as a
-  single `@graph`.
+- **Structured data** — Organization and WebSite site-wide, plus LocalBusiness,
+  Product, Article, FAQPage, BreadcrumbList and ItemList where relevant,
+  emitted as a single `@graph`. LocalBusiness stays unpublished until an
+  administrator switches it on *and* supplies a real street and locality —
+  placeholder geodata is worse than none, because search engines display it.
+- **Redirects** — an editor-managed 301/302 table, applied by global middleware
+  only when a request would otherwise 404, so the lookup costs nothing on URLs
+  that resolve.
 - **Sitemap** — one `sitemap.xml` covering all three locales, each URL carrying
   its complete alternate set. Cached for six hours, invalidated on content save.
 - **robots.txt** — blocks the admin, search and RFQ pages; blocks everything
@@ -204,6 +211,18 @@ seo()->title($product->name)
 ## Admin
 
 `/admin` is a single interface outside the locale prefix, with per-user language.
+
+Everything the site renders is editable: pages, products, categories,
+applications, projects, articles, FAQs, certifications, partners, the gallery,
+documents, enquiries, redirects, the headline numbers, and both the site-wide
+copy and SEO defaults. Nothing that an editor might reasonably want to change
+is hard-coded in a template.
+
+**Files are uploaded, never typed as paths.** The stored filename is generated
+and the extension comes from the file's sniffed MIME type, so an editor cannot
+overwrite an existing asset or store something executable. Images go to the
+public media disk; documents go to the private one and are streamed by a
+controller.
 
 Content is managed through one **schema-driven CRUD layer**
 (`Admin\ResourceController`): each resource declares its model, a field schema

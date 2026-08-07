@@ -162,8 +162,11 @@ class ResourceCrudTest extends TestCase
         $this->assertFalse(Cache::has('nav.product-categories'));
     }
 
-    /** A document path is an editor-supplied string, so it must not traverse. */
-    public function test_a_traversing_document_path_is_rejected(): void
+    /**
+     * Documents are uploaded, not typed as a path — so a string that looks like
+     * a traversal is simply not a valid file and is rejected outright.
+     */
+    public function test_a_document_path_cannot_be_supplied_as_a_string(): void
     {
         $this->actingAs($this->makeAdmin())->post('/admin/downloads', [
             'title' => ['fa' => 'سند', 'en' => 'Doc', 'ar' => 'وثيقة'],
@@ -172,5 +175,7 @@ class ResourceCrudTest extends TestCase
             'file_path' => '../../../.env',
             'is_active' => '1',
         ])->assertSessionHasErrors('file_path');
+
+        $this->assertDatabaseCount('downloads', 0);
     }
 }

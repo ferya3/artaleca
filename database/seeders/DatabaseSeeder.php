@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             ApplicationSeeder::class,
             ProjectSeeder::class,
             EditorialSeeder::class,
+            CmsSeeder::class,
             SettingSeeder::class,
         ]);
 

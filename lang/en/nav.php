@@ -10,6 +10,7 @@ return [
     'applications' => 'Applications',
     'projects' => 'Projects',
     'news' => 'News & insights',
+    'gallery' => 'Gallery',
     'downloads' => 'Downloads',
     'faq' => 'FAQ',
     'contact' => 'Contact',

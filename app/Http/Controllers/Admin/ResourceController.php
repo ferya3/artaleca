@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Support\Locales;
+use App\Support\Media;
 use App\Support\Navigation;
 use App\Support\Search;
 use Illuminate\Contracts\View\View;
@@ -20,9 +21,9 @@ use Illuminate\Support\Str;
  *
  * Each subclass declares its model, its field schema and its list columns; the
  * index/create/edit/update/destroy flow, the validation rules, the translatable
- * JSON handling and both Blade views are shared. Adding a resource is a ~40
- * line class rather than five controllers and five templates, and every
- * resource behaves identically for the editor.
+ * JSON handling, file uploads and both Blade views are shared. Adding a
+ * resource is a ~40 line class rather than five controllers and five
+ * templates, and every resource behaves identically for the editor.
  */
 abstract class ResourceController extends Controller
 {
@@ -39,9 +40,10 @@ abstract class ResourceController extends Controller
 
     /**
      * Field definitions. Recognised keys:
-     *   name, label, type, translatable, rules, options, hint, width, help
+     *   name, label, type, translatable, rules, options, hint, width, rows, step
      *
-     * Types: text | textarea | number | select | checkbox | date | list | pairs
+     * Types: text | textarea | number | select | checkbox | datetime-local
+     *      | list | pairs | image | gallery | document | relation
      *
      * @return list<array<string, mixed>>
      */
@@ -104,9 +106,7 @@ abstract class ResourceController extends Controller
     {
         $this->authorize('create', $this->model());
 
-        $model = new ($this->model());
-
-        return view('admin.resource.form', $this->formData($model));
+        return view('admin.resource.form', $this->formData(new ($this->model())));
     }
 
     public function store(Request $request): RedirectResponse
@@ -114,9 +114,10 @@ abstract class ResourceController extends Controller
         $this->authorize('create', $this->model());
 
         $model = new ($this->model());
-        $this->fill($model, $request->validate($this->rules(null)));
+        $this->fill($model, $request->validate($this->rules(null)), $request);
         $model->save();
 
+        $this->syncRelations($model, $request);
         $this->afterSave($model, $request);
 
         return redirect()
@@ -135,9 +136,10 @@ abstract class ResourceController extends Controller
     {
         $this->authorize('update', $record);
 
-        $this->fill($record, $request->validate($this->rules($record)));
+        $this->fill($record, $request->validate($this->rules($record)), $request);
         $record->save();
 
+        $this->syncRelations($record, $request);
         $this->afterSave($record, $request);
 
         return redirect()
@@ -173,12 +175,14 @@ abstract class ResourceController extends Controller
         $rules = [];
 
         foreach ($this->fields() as $field) {
+            $name = $field['name'];
+            $type = $field['type'] ?? 'text';
             $base = $this->resolveRules($field, $record);
 
             if ($field['translatable'] ?? false) {
                 foreach (Locales::codes() as $locale) {
                     if ($locale === Locales::default()) {
-                        $rules[$field['name'].'.'.$locale] = $base;
+                        $rules[$name.'.'.$locale] = $base;
 
                         continue;
                     }
@@ -188,9 +192,9 @@ abstract class ResourceController extends Controller
                      * rather than cosmetic: ConvertEmptyStringsToNull turns a
                      * blank input into null, which the `string` rule would
                      * otherwise reject — making it impossible to save a record
-                     * that is only translated into one language.
+                     * translated into only one language.
                      */
-                    $rules[$field['name'].'.'.$locale] = array_values(array_unique(array_merge(
+                    $rules[$name.'.'.$locale] = array_values(array_unique(array_merge(
                         ['nullable'],
                         array_diff($base, ['required']),
                     )));
@@ -199,16 +203,44 @@ abstract class ResourceController extends Controller
                 continue;
             }
 
-            if (in_array($field['type'] ?? 'text', ['list', 'pairs'], true)) {
-                $rules[$field['name']] = ['nullable', 'string'];
+            // An explicit `rules` key always wins, which is how a subclass makes
+            // a file required on create but optional on edit.
+            $explicit = array_key_exists('rules', $field) ? $base : null;
 
-                continue;
-            }
-
-            $rules[$field['name']] = $base;
+            match ($type) {
+                'list', 'pairs' => $rules[$name] = ['nullable', 'string'],
+                'image' => $rules[$name] = $explicit ?? $this->imageRules(),
+                'gallery' => [
+                    $rules[$name] = ['nullable', 'array', 'max:20'],
+                    $rules[$name.'.*'] = $this->imageRules(),
+                ],
+                'document' => $rules[$name] = $explicit ?? $this->documentRules(),
+                'relation' => $rules[$name] = ['nullable', 'array'],
+                default => $rules[$name] = $base,
+            };
         }
 
         return $rules;
+    }
+
+    /** @return list<string> */
+    protected function documentRules(): array
+    {
+        return [
+            'nullable', 'file',
+            'mimes:'.implode(',', config('site.uploads.document_mimes')),
+            'max:'.config('site.uploads.max_document_kb'),
+        ];
+    }
+
+    /** @return list<string> */
+    protected function imageRules(): array
+    {
+        return [
+            'nullable', 'image',
+            'mimes:'.implode(',', config('site.uploads.image_mimes')),
+            'max:'.config('site.uploads.max_image_kb'),
+        ];
     }
 
     /** @return list<mixed> */
@@ -222,11 +254,18 @@ abstract class ResourceController extends Controller
     }
 
     /** @param  array<string, mixed>  $data */
-    protected function fill(Model $model, array $data): void
+    protected function fill(Model $model, array $data, Request $request): void
     {
         foreach ($this->fields() as $field) {
             $name = $field['name'];
             $type = $field['type'] ?? 'text';
+
+            // Uploads and relations arrive outside the validated scalar payload.
+            if (in_array($type, ['image', 'document', 'gallery', 'relation'], true)) {
+                $this->fillUpload($model, $field, $request);
+
+                continue;
+            }
 
             if (! array_key_exists($name, $data)) {
                 // An unchecked checkbox is simply absent from the payload.
@@ -256,6 +295,82 @@ abstract class ResourceController extends Controller
 
         if ($model->isFillable('slug') && blank($model->slug)) {
             $model->slug = $this->uniqueSlug($model);
+        }
+    }
+
+    /** @param  array<string, mixed>  $field */
+    private function fillUpload(Model $model, array $field, Request $request): void
+    {
+        $name = $field['name'];
+        $type = $field['type'];
+
+        if ($type === 'relation') {
+            return; // handled in syncRelations, after the model has an id
+        }
+
+        if ($type === 'gallery') {
+            $existing = array_values(array_filter((array) ($model->{$name} ?? [])));
+
+            // Removals are submitted as a list of paths to drop, so reordering
+            // or deleting one image never re-uploads the rest.
+            foreach ((array) $request->input($name.'_remove', []) as $remove) {
+                if (($index = array_search($remove, $existing, true)) !== false) {
+                    Media::deleteImage($remove);
+                    unset($existing[$index]);
+                }
+            }
+
+            foreach ((array) $request->file($name, []) as $file) {
+                $existing[] = Media::storeImage($file, $this->routeName());
+            }
+
+            $model->{$name} = array_values($existing);
+
+            return;
+        }
+
+        if (! $request->hasFile($name)) {
+            // No file chosen: keep whatever is stored. An explicit clear
+            // checkbox is the only way to remove one.
+            if ($request->boolean($name.'_clear')) {
+                $type === 'image' ? Media::deleteImage($model->{$name}) : null;
+                $model->{$name} = null;
+            }
+
+            return;
+        }
+
+        if ($type === 'image') {
+            Media::deleteImage($model->{$name});
+            $model->{$name} = Media::storeImage($request->file($name), $this->routeName());
+
+            return;
+        }
+
+        $file = $request->file($name);
+        $model->{$name} = Media::storeDocument($file, $this->routeName());
+
+        // Keep the download metadata honest without asking the editor for it.
+        if ($model->isFillable('file_size')) {
+            $model->file_size = $file->getSize();
+        }
+        if ($model->isFillable('file_extension')) {
+            $model->file_extension = strtolower((string) $file->extension());
+        }
+    }
+
+    /** Attach many-to-many selections once the model is guaranteed an id. */
+    protected function syncRelations(Model $model, Request $request): void
+    {
+        foreach ($this->fields() as $field) {
+            if (($field['type'] ?? null) !== 'relation') {
+                continue;
+            }
+
+            $relation = $field['relation'] ?? $field['name'];
+            $ids = array_filter((array) $request->input($field['name'], []));
+
+            $model->{$relation}()->sync($ids);
         }
     }
 

@@ -53,7 +53,7 @@ class CertificateController extends ResourceController
             ['name' => 'year', 'label' => __('projects.year'), 'type' => 'number', 'width' => 'half',
                 'rules' => ['nullable', 'integer', 'min:1900', 'max:2200']],
 
-            ['name' => 'image', 'label' => __('admin.fields.image_path'), 'rules' => ['nullable', 'string', 'max:255']],
+            ['name' => 'image', 'label' => __('admin.fields.image_path'), 'type' => 'image'],
 
             ['name' => 'position', 'label' => __('admin.position'), 'type' => 'number', 'width' => 'half',
                 'rules' => ['nullable', 'integer', 'min:0', 'max:9999']],

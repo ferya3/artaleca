@@ -36,7 +36,7 @@
         @endif
     </div>
 
-    <form method="POST" action="{{ $action }}" class="mt-8">
+    <form method="POST" action="{{ $action }}" enctype="multipart/form-data" class="mt-8">
         @csrf
         @unless ($isNew) @method('PUT') @endunless
 
@@ -134,6 +134,85 @@
                         @endphp
                         <textarea id="f-{{ $name }}" name="{{ $name }}" rows="{{ $field['rows'] ?? 5 }}"
                                   class="{{ $inputClass }} font-mono text-xs">{{ old($name, $pairs) }}</textarea>
+
+                    @elseif ($type === 'image')
+                        @php $current = $record->{$name} ?? null; @endphp
+
+                        <div class="flex flex-wrap items-start gap-4">
+                            @if ($current)
+                                <img src="{{ $current }}" alt=""
+                                     class="h-24 w-32 shrink-0 border border-hairline object-cover">
+                            @endif
+
+                            <div class="min-w-0 flex-1 space-y-2">
+                                <input id="f-{{ $name }}" type="file" name="{{ $name }}"
+                                       accept="{{ collect(config('site.uploads.image_mimes'))->map(fn ($m) => '.'.$m)->implode(',') }}"
+                                       class="w-full text-sm text-ink-600 file:me-3 file:border-0 file:bg-ink-950 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white">
+
+                                @if ($current)
+                                    {{-- Uploading nothing keeps the existing file; this is the
+                                         only way to actually remove one. --}}
+                                    <label class="flex items-center gap-2 text-xs text-ink-500">
+                                        <input type="checkbox" name="{{ $name }}_clear" value="1" class="h-3.5 w-3.5 border-ink-400 text-clay-600">
+                                        {{ __('admin.remove_file') }}
+                                    </label>
+                                @endif
+                            </div>
+                        </div>
+
+                    @elseif ($type === 'gallery')
+                        @php $images = array_values(array_filter((array) ($record->{$name} ?? []))); @endphp
+
+                        @if ($images !== [])
+                            <ul class="mb-3 grid grid-cols-3 gap-3 sm:grid-cols-5">
+                                @foreach ($images as $image)
+                                    <li class="border border-hairline p-1.5">
+                                        <img src="{{ $image }}" alt="" class="aspect-[4/3] w-full object-cover">
+                                        <label class="mt-1.5 flex items-center gap-1.5 text-[0.625rem] text-ink-500">
+                                            <input type="checkbox" name="{{ $name }}_remove[]" value="{{ $image }}"
+                                                   class="h-3 w-3 border-ink-400 text-clay-600">
+                                            {{ __('admin.delete') }}
+                                        </label>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+
+                        <input id="f-{{ $name }}" type="file" name="{{ $name }}[]" multiple
+                               accept="{{ collect(config('site.uploads.image_mimes'))->map(fn ($m) => '.'.$m)->implode(',') }}"
+                               class="w-full text-sm text-ink-600 file:me-3 file:border-0 file:bg-ink-950 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white">
+
+                    @elseif ($type === 'document')
+                        @php $current = $record->{$name} ?? null; @endphp
+
+                        @if ($current)
+                            <p class="ltr-run mb-2 text-xs text-ink-500">{{ $current }}</p>
+                        @endif
+
+                        <input id="f-{{ $name }}" type="file" name="{{ $name }}"
+                               accept="{{ collect(config('site.uploads.document_mimes'))->map(fn ($m) => '.'.$m)->implode(',') }}"
+                               class="w-full text-sm text-ink-600 file:me-3 file:border-0 file:bg-ink-950 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white">
+
+                    @elseif ($type === 'relation')
+                        @php
+                            $relation = $field['relation'] ?? $name;
+                            $selected = $record->exists
+                                ? $record->{$relation}()->pluck($record->{$relation}()->getRelated()->getKeyName())->all()
+                                : [];
+                        @endphp
+
+                        <div class="max-h-56 space-y-1.5 overflow-y-auto border border-hairline p-3">
+                            @forelse ($options as $value => $label)
+                                <label class="flex items-center gap-2.5 text-sm text-ink-700">
+                                    <input type="checkbox" name="{{ $name }}[]" value="{{ $value }}"
+                                           @checked(in_array($value, old($name, $selected) ?? [], false))
+                                           class="h-4 w-4 border-ink-400 text-clay-600">
+                                    {{ $label }}
+                                </label>
+                            @empty
+                                <p class="text-xs text-ink-400">{{ __('admin.no_records') }}</p>
+                            @endforelse
+                        </div>
 
                     @elseif ($type === 'datetime-local')
                         <input id="f-{{ $name }}" type="datetime-local" name="{{ $name }}" dir="ltr"

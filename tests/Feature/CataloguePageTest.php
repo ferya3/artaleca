@@ -39,7 +39,7 @@ class CataloguePageTest extends TestCase
     {
         $product = $this->makeProduct(['is_active' => false]);
 
-        $this->get("/fa/products/{$product->category->slug}/{$product->slug}")->assertNotFound();
+        $this->get("/fa/products/{$product->slug}")->assertNotFound();
     }
 
     /**
@@ -96,7 +96,7 @@ class CataloguePageTest extends TestCase
     {
         $product = $this->makeProduct();
 
-        $this->get("/fa/products/{$product->category->slug}/{$product->slug}")
+        $this->get("/fa/products/{$product->slug}")
             ->assertOk()
             ->assertSee('4–10')
             ->assertSee('320–400')
@@ -109,7 +109,7 @@ class CataloguePageTest extends TestCase
 
         $paths = [
             '/fa', '/fa/about', '/fa/about/quality', '/fa/about/plant',
-            '/fa/products', '/fa/applications', '/fa/projects', '/fa/news',
+            '/fa/products', '/fa/applications', '/fa/projects', '/fa/articles',
             '/fa/downloads', '/fa/faq', '/fa/contact', '/fa/quote',
             '/fa/privacy', '/fa/terms', '/fa/search',
         ];

@@ -81,7 +81,7 @@
                             <ul class="mt-3 space-y-2">
                                 @foreach ($project->products as $product)
                                     <li>
-                                        <a href="{{ route('products.show', ['category' => $product->category, 'product' => $product]) }}"
+                                        <a href="{{ route('products.show', ['product' => $product]) }}"
                                            class="text-sm text-clay-600 hover:underline">{{ $product->name }}</a>
                                     </li>
                                 @endforeach

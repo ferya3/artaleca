@@ -15,12 +15,20 @@ return [
         'tagline' => 'Tagline',
         'summary' => 'Summary',
         'description' => 'Full description',
-        'image_path' => 'Image path',
-        'cover_path' => 'Cover image path',
-        'datasheet_path' => 'Datasheet path',
+        'features' => 'Features',
+        'advantages' => 'Advantages',
+        'image_path' => 'Image',
+        'cover_path' => 'Cover image',
+        'gallery' => 'Image gallery',
+        'datasheet_path' => 'Datasheet',
+        'file' => 'File',
+        'logo' => 'Logo',
+        'website' => 'Website',
         'meta_title' => 'Meta title (SEO)',
         'meta_description' => 'Meta description (SEO)',
         'slug_hint' => 'Latin, shared by all three languages. Leave blank to generate.',
+        'gallery_hint' => 'You can select several images at once.',
+        'related_downloads' => 'Related documents',
     ],
 
     'groups' => [
@@ -38,9 +46,13 @@ return [
     'applications' => 'Applications',
     'projects' => 'Projects',
     'posts' => 'News & articles',
+    'pages' => 'Pages',
+    'partners' => 'Partners & clients',
+    'gallery' => 'Gallery',
     'downloads' => 'Documents',
     'certificates' => 'Certificates',
     'faqs' => 'FAQs',
+    'redirects' => 'Redirects',
     'settings' => 'Settings',
     'users' => 'Users',
 
@@ -49,6 +61,7 @@ return [
     'save' => 'Save',
     'delete' => 'Delete',
     'cancel' => 'Cancel',
+    'remove_file' => 'Remove current file',
     'confirm_delete' => 'Delete this record? This cannot be undone.',
     'created' => 'Created.',
     'updated' => 'Changes saved.',
@@ -67,6 +80,36 @@ return [
 
     'translations' => 'Translations',
     'translation_hint' => 'Enter each language separately. Empty languages fall back to Persian.',
+
+    'settings_groups' => [
+        'figures' => 'Key numbers',
+        'copy' => 'Homepage copy',
+        'seo' => 'SEO settings',
+        'business' => 'Business details (LocalBusiness)',
+    ],
+
+    'settings_fields' => [
+        'hero_headline' => 'Homepage headline',
+        'hero_body' => 'Homepage lead paragraph',
+        'quality_body' => 'Quality section body',
+        'cta_title' => 'CTA band title',
+        'cta_body' => 'CTA band body',
+        'contact_note' => 'Response-time note',
+        'seo_title' => 'Default page title',
+        'seo_description' => 'Default meta description',
+        'og_image' => 'Share image (Open Graph)',
+        'localbusiness_enabled' => 'Publish LocalBusiness structured data',
+        'locality' => 'City',
+    ],
+
+    'redirect' => [
+        'source' => 'Old path',
+        'destination' => 'Destination',
+        'status' => 'Status code',
+        'hits' => 'Times used',
+        'source_hint' => 'Path only, no domain. e.g. /old-page',
+        'destination_hint' => 'An internal path or a full external URL.',
+    ],
 
     'enquiry' => [
         'new' => 'New',

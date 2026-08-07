@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'features' => 'Features',
+    'advantages' => 'Engineering advantages',
+    'documents' => 'Documents for this grade',
+
     'technical_data' => 'Technical data',
     'properties' => 'Physical properties',
     'packaging' => 'Packaging & shipping',
