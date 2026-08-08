@@ -8,8 +8,12 @@
         <x-hero-motion />
 
         <div class="container-page relative">
-            <div class="grid items-center gap-12 py-16 lg:grid-cols-12 lg:gap-16 lg:py-24">
-                <div class="lg:col-span-6">
+            {{-- Stacked on a phone with the image leading and no padding above
+                 it, so the photograph starts at the very top of the viewport.
+                 At `lg` the two become columns again and `order-none` hands the
+                 placement back to source order. --}}
+            <div class="grid items-center gap-8 pb-14 md:gap-12 md:py-16 lg:grid-cols-12 lg:gap-16 lg:py-24">
+                <div class="order-2 lg:order-none lg:col-span-6">
                     <p class="eyebrow text-clay-400!">{{ __('home.hero_eyebrow') }}</p>
 
                     {{-- 30px on a phone rather than 36px: at the larger size a
@@ -40,7 +44,12 @@
                      photograph reads as part of the hero rather than as a card
                      dropped into it. The negative inline margin cancels the
                      container's padding; the section already clips overflow. --}}
-                <div class="-mx-5 md:mx-0 lg:col-span-6">
+                <div class="order-1 -mx-5 md:mx-0 lg:order-none lg:col-span-6">
+                    {{-- A fixed 50vh on a phone rather than the 4/3 ratio: half
+                         the screen is the brief, and an explicit height on a
+                         block whose width is already definite simply wins over
+                         the component's inline `aspect-ratio`. `md:h-auto`
+                         hands the ratio back. --}}
                     <x-media
                         seed="arta-hero"
                         ratio="4/3"
@@ -48,7 +57,7 @@
                         eager
                         :alt="__('home.hero_title')"
                         sizes="(min-width: 1024px) 50vw, 100vw"
-                        class="rounded-none border-0 md:rounded-lg md:border md:border-hairline-dark"
+                        class="h-[50vh] rounded-none border-0 md:h-auto md:rounded-lg md:border md:border-hairline-dark"
                     />
                 </div>
             </div>
