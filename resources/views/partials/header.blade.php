@@ -7,10 +7,23 @@
     $alternates = Url::alternates();
 @endphp
 
+{{--
+    Opaque, and deliberately *not* `backdrop-blur`. A backdrop-filter makes the
+    element a containing block for its `position: fixed` descendants, which
+    silently collapsed the full-screen mobile menu inside it to a 64px-tall
+    strip — the menu opened, but measured zero pixels high. Solid white also
+    costs no per-frame blur and keeps the header off the §24 glassmorphism list.
+
+    `data-hidden` slides the whole bar out of the way on downward scroll; the
+    transition is on transform and opacity only, so it composites on the GPU
+    without laying anything out again.
+--}}
 <header
     data-site-header
-    class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm transition-shadow
-           border-b border-transparent data-scrolled:border-hairline data-scrolled:shadow-header"
+    class="sticky top-0 z-50 bg-white
+           transition-[transform,opacity,box-shadow,border-color] duration-300 ease-out
+           border-b border-transparent data-scrolled:border-hairline data-scrolled:shadow-header
+           data-hidden:-translate-y-full data-hidden:opacity-0"
 >
     {{-- Utility strip: contact routes for a visitor who arrived ready to buy,
          and the language switcher. Hidden on mobile, where it becomes part of

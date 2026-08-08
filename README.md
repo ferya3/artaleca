@@ -15,10 +15,10 @@ server-rendered Blade, Tailwind CSS v4 and effectively no client-side framework.
 | Views | Blade — server-rendered, no SPA |
 | Styling | Tailwind CSS v4 via `@theme` design tokens |
 | Build | Vite 8 |
-| JavaScript | ~1.6 KB of vanilla progressive enhancement. No React/Vue/Alpine. |
+| JavaScript | ~2 KB of vanilla progressive enhancement. No React/Vue/Alpine. |
 | Fonts | One self-hosted Vazirmatn variable font (111 KB) covering all three scripts |
 
-**Production bundle:** ~9.1 KB CSS and ~0.7 KB JS, gzipped, plus one font request.
+**Production bundle:** ~9.6 KB CSS and ~0.8 KB JS, gzipped, plus one font request.
 
 ### Why no JavaScript framework
 
@@ -33,8 +33,8 @@ hydration step without changing what the user can do. The interactions that
 - forms are ordinary `POST`s.
 
 `resources/js/app.js` only adds what HTML cannot express: a body-scroll lock
-behind the mobile menu, header elevation on scroll, gallery thumbnails, and
-auto-submitting filters. The site is fully usable with JavaScript disabled.
+behind the mobile menu, the header's elevation and hide-on-scroll, gallery
+thumbnails, and auto-submitting filters. The site is fully usable with JavaScript disabled.
 
 ---
 
@@ -60,10 +60,30 @@ under `@theme`; templates reference the semantic names, never raw values.
   carry the one surface treatment the site repeats ~40 times. Anything used once
   stays as utilities in the template.
 
-No gradients outside the faint blueprint grid behind the dark bands, no
-glassmorphism, and **zero `@keyframes`** in the built stylesheet — the only
-motion is colour and shadow transitions, and `prefers-reduced-motion` cuts even
-those.
+No gradients outside the hero's kiln glow and the faint blueprint grid behind
+the dark bands, and no glassmorphism — the header is deliberately opaque rather
+than blurred, which also avoids `backdrop-filter` making it a containing block
+for the fixed mobile menu inside it.
+
+### Motion
+
+Motion is confined to two places, and both animate **only `transform` and
+`opacity`**, so they run on the compositor and never contend with the main
+thread for the LCP text:
+
+- **The hero background.** A rotary-kiln glow breathing behind two granule
+  fields drifting at different speeds over the blueprint grid — the material
+  and the process, not a decorative gradient. Each layer translates by exactly
+  one pattern tile, which is what makes the loop seamless rather than visibly
+  snapping back.
+- **The header.** It slides away on downward scroll and returns on the first
+  upward movement. The thresholds are asymmetric on purpose — 64px to hide, 8px
+  to come back — because a reader scrolling up is usually reaching for the
+  navigation. It never hides while the mobile menu is open, since the close
+  button lives inside it.
+
+`prefers-reduced-motion` freezes all of it through one base rule, and the
+header's hide-on-scroll does not bind at all under that setting.
 
 ---
 
@@ -90,7 +110,7 @@ environment it is randomly generated and printed once unless `ADMIN_PASSWORD` is
 set. Sign in at `/admin`.
 
 ```bash
-vendor/bin/phpunit    # 152 tests
+vendor/bin/phpunit    # 156 tests
 vendor/bin/pint       # code style
 ```
 

@@ -337,6 +337,125 @@
     background-size: 72px 72px;
 }
 
+/*
+|------------------------------------------------------------------------------
+| Hero motion
+|------------------------------------------------------------------------------
+| The only animation on the site. It is confined to the hero's background, sits
+| behind the copy, and animates nothing but `transform` and `opacity` — so it
+| composites on the GPU and never competes with the LCP text for the main
+| thread. Each drift translates by exactly one pattern tile, which is what makes
+| the loop seamless instead of visibly snapping.
+|
+| Everything here is frozen by the reduced-motion rule in the base layer.
+*/
+
+@layer components {
+    .hero-motion {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+    }
+
+    .hero-motion > * {
+        position: absolute;
+    }
+
+    /* The layers are oversized and offset so a translating tile never exposes
+       an edge as it travels. */
+    .hero-motion__grid,
+    .hero-motion__granules {
+        inset: -20% -20% -20% -20%;
+        will-change: transform;
+    }
+
+    .hero-motion__grid {
+        opacity: 0.4;
+        animation: hero-drift-grid 42s linear infinite;
+    }
+
+    .hero-motion__granules--far {
+        opacity: 1;
+        animation: hero-drift-far 66s linear infinite;
+    }
+
+    .hero-motion__granules--near {
+        opacity: 1;
+        animation: hero-drift-near 96s linear infinite;
+    }
+
+    .hero-motion__granules svg {
+        width: 100%;
+        height: 100%;
+    }
+
+    /* The kiln: a warm off-centre glow that swells and fades rather than
+       pulsing, so it reads as heat rather than as a loading indicator. */
+    .hero-motion__glow {
+        inset: -30%;
+        background: radial-gradient(
+            42% 42% at 68% 38%,
+            rgb(194 84 47 / 0.13) 0%,
+            rgb(168 67 34 / 0.05) 42%,
+            transparent 72%
+        );
+        will-change: transform, opacity;
+        animation: hero-kiln 19s ease-in-out infinite;
+    }
+
+    [dir='rtl'] .hero-motion__glow {
+        /* Mirrored so the heat source stays on the side the hero image sits on
+           rather than landing behind the headline. */
+        background: radial-gradient(
+            42% 42% at 32% 38%,
+            rgb(194 84 47 / 0.13) 0%,
+            rgb(168 67 34 / 0.05) 42%,
+            transparent 72%
+        );
+    }
+}
+
+/* Translations are one full tile: 72px grid, 180px far granules, 260px near. */
+@keyframes hero-drift-grid {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+    to {
+        transform: translate3d(72px, 72px, 0);
+    }
+}
+
+@keyframes hero-drift-far {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+    to {
+        transform: translate3d(-180px, 90px, 0);
+    }
+}
+
+@keyframes hero-drift-near {
+    from {
+        transform: translate3d(0, 0, 0);
+    }
+    to {
+        transform: translate3d(260px, -130px, 0);
+    }
+}
+
+@keyframes hero-kiln {
+    0%,
+    100% {
+        transform: scale(1) translate3d(0, 0, 0);
+        opacity: 0.6;
+    }
+    50% {
+        transform: scale(1.14) translate3d(2%, -1.5%, 0);
+        opacity: 1;
+    }
+}
+
 @utility no-scrollbar {
     scrollbar-width: none;
 

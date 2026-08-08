@@ -47,15 +47,23 @@ function lockScrollWithMobileMenu() {
 }
 
 /**
- * Add a hairline + elevation to the sticky header once the page scrolls, so it
- * sits flush with the hero at rest and separates from content in motion.
+ * Two behaviours on one element:
+ *
+ *  - a hairline + elevation once the page scrolls, so the header sits flush
+ *    with the hero at rest and separates from content in motion, and
+ *  - hiding the bar on downward scroll, returning it on the first upward
+ *    movement, so reading a long page is not done through a permanent band.
+ *
+ * The reveal is intentionally asymmetric: it takes a deliberate 64px of
+ * downward scroll to hide, but only 8px upward to come back, because a reader
+ * who scrolls up is usually reaching for the navigation.
  */
-function elevateHeaderOnScroll() {
+function bindHeaderScrollBehaviour() {
     const header = document.querySelector('[data-site-header]');
     if (!header) return;
 
-    // A sentinel + IntersectionObserver avoids a scroll listener firing on
-    // every frame.
+    // A sentinel + IntersectionObserver keeps the elevation state off the
+    // scroll handler entirely.
     const sentinel = document.createElement('div');
     sentinel.setAttribute('aria-hidden', 'true');
     sentinel.style.cssText = 'position:absolute;top:0;height:1px;width:1px;';
@@ -65,6 +73,49 @@ function elevateHeaderOnScroll() {
         ([entry]) => header.toggleAttribute('data-scrolled', !entry.isIntersecting),
         { threshold: 0 },
     ).observe(sentinel);
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const menu = document.querySelector('[data-mobile-menu]');
+    const HIDE_AFTER = 64;
+    const REVEAL_AFTER = 8;
+
+    let last = window.scrollY;
+    let ticking = false;
+
+    const update = () => {
+        ticking = false;
+        const y = window.scrollY;
+        const delta = y - last;
+
+        // Never hide the bar while the mobile menu is open — its close button
+        // lives in the header, so sliding it away would trap the reader.
+        if (menu?.open || y <= HIDE_AFTER) {
+            header.removeAttribute('data-hidden');
+            last = y;
+            return;
+        }
+
+        if (delta > 0 && !header.hasAttribute('data-hidden')) {
+            header.setAttribute('data-hidden', '');
+        } else if (delta < -REVEAL_AFTER) {
+            header.removeAttribute('data-hidden');
+        }
+
+        // Only commit the reference point once it has actually moved enough,
+        // so momentum scrolling cannot flicker the bar in and out.
+        if (Math.abs(delta) > REVEAL_AFTER) last = y;
+    };
+
+    addEventListener(
+        'scroll',
+        () => {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(update);
+        },
+        { passive: true },
+    );
 }
 
 /**
@@ -119,6 +170,6 @@ function bindAutoSubmitFilters() {
 
 dismissOnOutsideInteraction();
 lockScrollWithMobileMenu();
-elevateHeaderOnScroll();
+bindHeaderScrollBehaviour();
 bindGalleries();
 bindAutoSubmitFilters();

@@ -5,7 +5,7 @@
          copy rather than behind it, so the text never needs a scrim and the
          LCP element is predictable. --}}
     <section class="relative overflow-hidden bg-ink-950 text-white">
-        <div class="hairline-grid absolute inset-0" aria-hidden="true"></div>
+        <x-hero-motion />
 
         <div class="container-page relative">
             <div class="grid items-center gap-12 py-16 lg:grid-cols-12 lg:gap-16 lg:py-24">
