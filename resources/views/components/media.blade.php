@@ -55,9 +55,33 @@
     }
 @endphp
 
+@php
+    /*
+     * The ratio is a class, not `style="aspect-ratio: …"`.
+     *
+     * A nonce authorises <style> elements; it does nothing for style
+     * *attributes*, which `style-src-attr` blocks outright. The inline version
+     * was therefore silently discarded on every image on the site — the box
+     * reserved no height at all, which the placeholder SVG happened to hide
+     * because it brings its own intrinsic size. A real uploaded photograph is
+     * `h-full` inside that box and would have collapsed.
+     *
+     * Mapping to literal class names also keeps them statically visible to
+     * Tailwind's scanner, which an interpolated `aspect-[{{ $ratio }}]` would
+     * not be.
+     */
+    $aspect = match ($ratio) {
+        '16/9' => 'aspect-[16/9]',
+        '3/2' => 'aspect-[3/2]',
+        '1/1' => 'aspect-square',
+        default => 'aspect-[4/3]',
+    };
+@endphp
+
 <div {{ $attributes->merge([
-    'class' => 'relative overflow-hidden '.($placeholder && ($tone === 'dark') ? 'bg-ink-900' : 'bg-ink-100'),
-]) }} style="aspect-ratio: {{ $ratio }};">
+    'class' => 'relative overflow-hidden '.$aspect.' '
+        .($placeholder && ($tone === 'dark') ? 'bg-ink-900' : 'bg-ink-100'),
+]) }}>
     @if ($placeholder)
         <svg viewBox="0 0 400 300" class="h-full w-full" preserveAspectRatio="xMidYMid slice" role="img"
              @if (filled($alt)) aria-label="{{ $alt }}" @else aria-hidden="true" @endif>

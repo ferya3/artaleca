@@ -93,44 +93,51 @@ function bindHeaderReveal() {
     );
 
     /*
-     * Switching language navigates to a different URL, so the new page starts
-     * at the top and the header would hide itself — from inside the header the
-     * visitor just clicked. That reads as the bar breaking rather than as a
-     * deliberate reveal, so a language link hands the next page a one-shot flag
-     * and the header comes back already open, with the transition suppressed so
-     * it is simply there rather than sliding in.
+     * Switching language keeps your place.
+     *
+     * A language link navigates to a different URL, so the new page would
+     * otherwise start at the top — and the header, which is `fixed` and out of
+     * flow, would then sit over the first 118px of the page while the visitor
+     * looks at content they did not ask to be taken to. Forcing the bar open
+     * there only makes it worse: it covers the eyebrow and half the headline.
+     *
+     * Restoring the offset solves the whole thing at once. The visitor stays
+     * where they were reading, `update()` reveals the header on its own because
+     * the page is scrolled, and nothing is covered by it.
+     *
+     * Persian, English and Arabic set the same content at different lengths, so
+     * the offset is close rather than exact — which is the right trade for the
+     * alternative of being thrown back to the top.
      */
-    const KEEP = 'header:keep';
+    const MARK = 'header:offset';
 
     document.querySelectorAll('[data-keep-header]').forEach((link) => {
         link.addEventListener('click', () => {
             try {
-                sessionStorage.setItem(KEEP, '1');
+                sessionStorage.setItem(MARK, String(window.scrollY));
             } catch {
-                // Private mode with storage denied: the header hides, which is
-                // the normal behaviour rather than a failure.
+                // Storage denied in private mode: the page lands at the top,
+                // which is the ordinary behaviour rather than a failure.
             }
         });
     });
 
-    let keep = false;
+    let restored = null;
     try {
-        keep = sessionStorage.getItem(KEEP) === '1';
-        sessionStorage.removeItem(KEEP);
+        restored = sessionStorage.getItem(MARK);
+        sessionStorage.removeItem(MARK);
     } catch {
         /* storage unavailable */
     }
 
-    if (keep) {
-        header.style.transition = 'none';
-        header.setAttribute('data-revealed', '');
-        requestAnimationFrame(() => header.style.removeProperty('transition'));
-
-        return;
+    if (restored !== null && Number(restored) > 0) {
+        // The browser's own restoration would fight this one on a reload.
+        history.scrollRestoration = 'manual';
+        window.scrollTo({ top: Number(restored), behavior: 'instant' });
     }
 
-    // A reload can restore a scroll position well down the page, where the
-    // header should already be showing before the first scroll event fires.
+    // Also covers a reload that restores a position well down the page, where
+    // the header should be showing before the first scroll event fires.
     update();
 }
 

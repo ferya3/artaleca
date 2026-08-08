@@ -110,6 +110,14 @@ thread for the LCP text:
   come back. It also stays put whenever the mobile menu is open, since the
   close button lives inside it.
 
+  Switching language restores the scroll offset rather than forcing the bar
+  open. A language link is clicked *from inside the header*, so landing at the
+  top of the new page put the fixed bar over the first 118px of content the
+  visitor had not asked to be taken to. Keeping their place reveals the header
+  on its own, because the page is scrolled — the three translations set the
+  same content at different lengths, so the offset is close rather than exact,
+  which is the right trade against being thrown back to the top.
+
 `prefers-reduced-motion` freezes all of it through one base rule, and the
 header's hide-on-scroll does not bind at all under that setting.
 
@@ -138,7 +146,7 @@ environment it is randomly generated and printed once unless `ADMIN_PASSWORD` is
 set. Sign in at `/admin`.
 
 ```bash
-vendor/bin/phpunit    # 159 tests
+vendor/bin/phpunit    # 165 tests
 vendor/bin/pint       # code style
 ```
 

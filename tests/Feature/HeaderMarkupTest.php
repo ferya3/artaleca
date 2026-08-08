@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class HeaderMarkupTest extends TestCase
@@ -111,6 +113,58 @@ class HeaderMarkupTest extends TestCase
             $html,
             'The figures strip must be display:none below md, not merely visually shrunk.',
         );
+    }
+
+    /**
+     * No `style` attributes anywhere in a rendered page.
+     *
+     * This is a CSP guard, not a style preference. A nonce authorises <style>
+     * *elements*; it does nothing for style *attributes*, which `style-src-attr`
+     * blocks outright. An inline `style="aspect-ratio: 4/3"` on the media
+     * component was therefore being discarded on every image on the site, and
+     * nothing looked wrong because the placeholder SVG brings its own intrinsic
+     * size — a real uploaded photograph would have collapsed to nothing.
+     *
+     * Silent is the operative word: the browser reports it to the console and
+     * renders on, so only a test catches it.
+     */
+    #[DataProvider('pagesWithMedia')]
+    public function test_a_page_renders_no_inline_style_attributes(string $path): void
+    {
+        $html = $this->get($path)->assertOk()->getContent();
+
+        // The <noscript> block is a <style> element carrying the nonce, which
+        // CSP does allow; attributes are what must not appear.
+        preg_match_all('/<[a-z][^>]*\sstyle=(["\'])(?!\1)/i', $html, $matches);
+
+        $this->assertSame(
+            [],
+            $matches[0],
+            $path.' renders '.count($matches[0]).' inline style attribute(s); '
+            .'style-src-attr blocks them and the declaration is silently dropped.',
+        );
+    }
+
+    /** @return list<array{0:string}> */
+    public static function pagesWithMedia(): array
+    {
+        return [
+            'home' => ['/fa'],
+            'catalogue' => ['/fa/products'],
+            'projects' => ['/fa/projects'],
+            'articles' => ['/fa/articles'],
+            'gallery' => ['/fa/projects-gallery'],
+        ];
+    }
+
+    /** The ratio has to survive as a class, since it can no longer be a style. */
+    public function test_the_media_ratio_is_expressed_as_a_class(): void
+    {
+        // Cards only render where there is content to put in them.
+        $this->seed(DatabaseSeeder::class);
+
+        $this->get('/fa/projects')->assertOk()->assertSee('aspect-[3/2]', false);
+        $this->get('/fa/articles')->assertOk()->assertSee('aspect-[16/9]', false);
     }
 
     /** The hero's motion layer is decorative and must not reach the a11y tree. */
