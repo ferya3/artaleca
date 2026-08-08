@@ -55,7 +55,7 @@
                             @elseif ($type === 'image')
                                 <div class="flex flex-wrap items-start gap-4">
                                     @if (is_string($stored) && filled($stored))
-                                        <img src="{{ $stored }}" alt="" class="h-20 w-36 shrink-0 rounded-lg border border-hairline object-cover">
+                                        <img src="{{ \App\Support\Image::thumb($stored, 480) }}" alt="" loading="lazy" decoding="async" class="h-20 w-36 shrink-0 rounded-lg border border-hairline object-cover">
                                     @endif
                                     <input type="file" name="{{ $field }}"
                                            accept="{{ collect(config('site.uploads.image_mimes'))->map(fn ($m) => '.'.$m)->implode(',') }}"

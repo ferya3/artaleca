@@ -140,7 +140,7 @@
 
                         <div class="flex flex-wrap items-start gap-4">
                             @if ($current)
-                                <img src="{{ $current }}" alt=""
+                                <img src="{{ \App\Support\Image::thumb($current, 480) }}" alt="" loading="lazy" decoding="async"
                                      class="h-24 w-32 shrink-0 rounded-lg border border-hairline object-cover">
                             @endif
 
@@ -167,7 +167,7 @@
                             <ul class="mb-3 grid grid-cols-3 gap-3 sm:grid-cols-5">
                                 @foreach ($images as $image)
                                     <li class="rounded-md border border-hairline p-1.5">
-                                        <img src="{{ $image }}" alt="" class="aspect-[4/3] w-full object-cover">
+                                        <img src="{{ \App\Support\Image::thumb($image, 480) }}" alt="" loading="lazy" decoding="async" class="aspect-[4/3] w-full object-cover">
                                         <label class="mt-1.5 flex items-center gap-1.5 text-[0.625rem] text-ink-500">
                                             <input type="checkbox" name="{{ $name }}_remove[]" value="{{ $image }}"
                                                    class="h-3 w-3 border-ink-400 text-clay-600">

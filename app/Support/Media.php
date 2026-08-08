@@ -25,14 +25,32 @@ final class Media
 
     /**
      * Store an image and return the public URL path used in `<img src>`.
+     *
+     * The file goes through `Image::optimise()` first: capped in size, stripped
+     * of EXIF, and written alongside a set of WebP derivatives. That returns a
+     * filename carrying the intrinsic dimensions, which is what lets templates
+     * emit `width`/`height` and a real `srcset` without touching the disk.
+     *
+     * If optimisation is not possible — an animation, an unsupported format, an
+     * image too large to decode safely — the original is stored untouched. An
+     * editor never loses an upload to an optimisation that could not run.
      */
     public static function storeImage(UploadedFile $file, string $folder = 'uploads'): string
     {
-        $path = $file->storeAs(
-            self::folder($folder),
-            self::filename($file),
-            ['disk' => self::DISK],
+        $folder = self::folder($folder);
+        $random = Str::random(32);
+
+        $optimised = Image::optimise(
+            $file,
+            Storage::disk(self::DISK)->path($folder),
+            $random,
         );
+
+        if ($optimised !== null) {
+            return '/storage/media/'.$folder.'/'.$optimised;
+        }
+
+        $path = $file->storeAs($folder, self::filename($file, $random), ['disk' => self::DISK]);
 
         return '/storage/media/'.$path;
     }
@@ -52,7 +70,10 @@ final class Media
         );
     }
 
-    /** Remove a previously stored image, ignoring anything outside the media disk. */
+    /**
+     * Remove a previously stored image and every derivative generated from it,
+     * ignoring anything outside the media disk.
+     */
     public static function deleteImage(?string $url): void
     {
         if (blank($url) || ! Str::startsWith($url, '/storage/media/')) {
@@ -61,8 +82,19 @@ final class Media
 
         $path = Str::after($url, '/storage/media/');
 
-        if (! str_contains($path, '..')) {
-            Storage::disk(self::DISK)->delete($path);
+        if (str_contains($path, '..')) {
+            return;
+        }
+
+        $disk = Storage::disk(self::DISK);
+        $disk->delete($path);
+
+        // The WebP siblings are derived from the master, so they are only ever
+        // reachable through it — leaving them behind would leak disk forever.
+        if ($dimensions = Image::dimensions($path)) {
+            foreach (Image::variantWidths($dimensions[0]) as $width) {
+                $disk->delete(Image::variantPath($path, $width));
+            }
         }
     }
 
@@ -76,7 +108,7 @@ final class Media
      * `<random>.<ext>`, with the extension taken from the sniffed MIME type and
      * checked against an allow-list — never from the client-supplied name.
      */
-    private static function filename(UploadedFile $file): string
+    private static function filename(UploadedFile $file, ?string $random = null): string
     {
         $allowed = array_merge(
             config('site.uploads.image_mimes'),
@@ -89,6 +121,6 @@ final class Media
             $extension = 'bin';
         }
 
-        return Str::random(32).'.'.$extension;
+        return ($random ?? Str::random(32)).'.'.$extension;
     }
 }

@@ -41,13 +41,13 @@
                 <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($images as $image)
                         <li class="panel overflow-hidden">
-                            <img
-                                src="{{ $image->path }}"
-                                alt="{{ $image->altText() }}"
-                                loading="{{ $loop->index < 6 ? 'eager' : 'lazy' }}"
-                                decoding="async"
+                            <x-picture
+                                :src="$image->path"
+                                :alt="$image->altText()"
+                                :eager="$loop->index < 3"
+                                sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                                 class="aspect-[4/3] w-full object-cover"
-                            >
+                            />
                             @if (filled($image->title))
                                 <p class="px-4 py-3 text-sm text-ink-700">{{ $image->title }}</p>
                             @endif

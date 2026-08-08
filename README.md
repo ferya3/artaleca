@@ -15,10 +15,10 @@ server-rendered Blade, Tailwind CSS v4 and effectively no client-side framework.
 | Views | Blade — server-rendered, no SPA |
 | Styling | Tailwind CSS v4 via `@theme` design tokens |
 | Build | Vite 8 |
-| JavaScript | ~2 KB of vanilla progressive enhancement. No React/Vue/Alpine. |
+| JavaScript | ~1.6 KB of vanilla progressive enhancement. No React/Vue/Alpine. |
 | Fonts | One self-hosted Vazirmatn variable font (111 KB) covering all three scripts |
 
-**Production bundle:** ~9.1 KB CSS and ~0.6 KB JS, gzipped, plus one font request.
+**Production bundle:** ~9.1 KB CSS and ~0.7 KB JS, gzipped, plus one font request.
 
 ### Why no JavaScript framework
 
@@ -90,7 +90,7 @@ environment it is randomly generated and printed once unless `ADMIN_PASSWORD` is
 set. Sign in at `/admin`.
 
 ```bash
-vendor/bin/phpunit    # 116 tests
+vendor/bin/phpunit    # 152 tests
 vendor/bin/pint       # code style
 ```
 
@@ -198,11 +198,13 @@ seo()->title($product->name)
 
 ## Performance
 
-- Server-rendered HTML; no hydration step, no client-side routing.
+Targets: LCP < 2.5 s, INP < 200 ms, CLS < 0.1. The structural decisions that
+get there:
+
+- Server-rendered HTML; no hydration step, no client-side routing. INP is
+  bounded by there being almost no main-thread JavaScript to block it.
 - One self-hosted variable font covering Persian, Arabic and Latin, preloaded.
   No CDN origin on the critical path.
-- Below-the-fold images are `loading="lazy"`; the LCP image is `eager` with
-  `fetchpriority="high"`.
 - Navigation and site settings — read on every request — are cached; the caches
   are invalidated whenever content is saved (`Navigation::flush()`).
 - Products expose their filterable properties (grain size, bulk density) as real
@@ -211,13 +213,73 @@ seo()->title($product->name)
   "granule field" SVG derived from the record's slug: on-brand, stable per
   record, and zero extra requests.
 
+### Images
+
+No large image reaches the site unoptimised, because optimisation happens on
+upload rather than being left to whoever uploads it. `App\Support\Image` runs on
+PHP's bundled GD — no image library is added for three operations GD already
+does — and every upload is:
+
+1. **capped** to a 2400px longest edge, since nothing on the site displays
+   larger and the original costs megabytes;
+2. **re-encoded**, which strips EXIF — that removes the GPS coordinates phones
+   embed as well as a payload shipped to every visitor for nothing;
+3. **given WebP derivatives** at 480 / 768 / 1024 / 1440 / 1920.
+
+The intrinsic size is written into the filename (`<random>-1600x1200.jpg`).
+That single convention is what lets a template emit `width`/`height` — holding
+the layout against CLS — *and* build the complete `srcset`, without one
+filesystem call per image on the render path. `<x-picture>` is the only place
+that markup lives.
+
+Preload is reserved for the one image likely to be the LCP element: the first
+`eager` image on the page, and nothing else. A second preload would not make the
+page faster, it would make both compete for the same bandwidth.
+
+An animation, an unsupported format, or an image too large to decode safely is
+stored untouched instead — an editor never loses an upload to an optimisation
+that could not run — and images stored before the pipeline existed degrade to a
+plain `<img>` rather than pointing at derivatives that were never written.
+
+### Query budgets
+
+Every public page costs between 0 and 7 queries, and `PagePerformanceTest`
+keeps it that way. Alongside per-page ceilings it asserts the property that
+cannot go stale: adding twenty products must not change what the catalogue
+costs. A lazily-loaded relation in a card shows up there immediately, however
+the ceilings are tuned.
+
+Compression, cache headers and CDN setup belong to the web server —
+see [docs/deploy-ubuntu.md](docs/deploy-ubuntu.md), which also lists the `curl`
+commands to verify each one actually took effect.
+
 ---
 
 ## Security
 
+Most of this is verified rather than asserted: `SecurityHardeningTest` checks
+the headers, the nonce, the JSON-LD escaping, the admin's closure to anonymous
+visitors, the login's refusal to disclose accounts, its rate limit, and the
+upload and traversal defences.
+
 - **CSP is nonce-based**, not `unsafe-inline`. A fresh nonce per request is
   shared with Blade and stamped on the few inline blocks the layout emits, so
-  anything injected later simply does not execute.
+  anything injected later simply does not execute. Setting `ASSET_URL` adds that
+  origin to the asset-serving directives only — never to `form-action` or
+  `frame-ancestors`.
+- **The structured-data block is escaped with `JSON_HEX_TAG`.** That one is
+  load-bearing: the `@graph` is built from editor-supplied text, and inside a
+  `<script>` the HTML parser finds `</script` before the JSON parser runs — so
+  a product name containing `</script><script>…` would otherwise break out and
+  execute.
+- Uploads cannot execute. The stored name and extension come from the sniffed
+  MIME type, so a `.php` cannot be written in the first place; the web server
+  additionally refuses to run anything under the upload tree, and directory
+  listing is off unconditionally rather than only when `mod_negotiation`
+  happens to be loaded.
+- The session cookie defaults to `secure` whenever `APP_ENV=production`, rather
+  than to whatever `.env` remembers to say. A flag that must be remembered is
+  one that eventually is not, and that failure is silent.
 - Baseline headers: `X-Content-Type-Options`, `X-Frame-Options`,
   `Referrer-Policy`, `Permissions-Policy`, COOP/CORP, and HSTS over HTTPS.
 - **Forms use a honeypot plus a signed render timestamp** instead of a

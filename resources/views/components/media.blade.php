@@ -68,17 +68,15 @@
             @endforeach
         </svg>
     @else
-        <img
-            src="{{ $src }}"
-            alt="{{ $alt }}"
-            sizes="{{ $sizes }}"
+        {{-- An eager image is by definition above the fold, so it is also the
+             page's LCP candidate and the only one worth preloading. --}}
+        <x-picture
+            :src="$src"
+            :alt="$alt"
+            :sizes="$sizes"
+            :eager="$eager"
+            :preload="$eager"
             class="h-full w-full object-cover"
-            {{-- Above-the-fold imagery is fetched eagerly and given high
-                 priority; everything else defers so it never competes with
-                 the LCP element. --}}
-            loading="{{ $eager ? 'eager' : 'lazy' }}"
-            fetchpriority="{{ $eager ? 'high' : 'auto' }}"
-            decoding="{{ $eager ? 'sync' : 'async' }}"
-        >
+        />
     @endif
 </div>

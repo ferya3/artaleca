@@ -1,3 +1,9 @@
+{{-- A `use` has to sit outside the component tag: Blade compiles a component's
+     slot into a closure, and an import inside one is a PHP parse error. --}}
+@php
+    use App\Support\Image;
+@endphp
+
 <x-layouts.app>
 
     @php
@@ -23,6 +29,7 @@
                     eager
                     ratio="4/3"
                     sizes="(min-width: 1024px) 50vw, 100vw"
+                    data-gallery-main
                     class="rounded-lg border border-hairline shadow-soft"
                 />
 
@@ -30,13 +37,19 @@
                     <ul class="mt-3 grid grid-cols-4 gap-3">
                         @foreach ($gallery as $index => $image)
                             <li>
+                                {{-- The thumbnail carries the full image's srcset
+                                     as well as its src: the main image is a
+                                     <picture>, so swapping only `src` would be
+                                     overridden by the <source> still in place. --}}
                                 <button
                                     type="button"
                                     data-gallery-thumb="{{ $image }}"
+                                    data-gallery-srcset="{{ Image::srcset($image) }}"
                                     aria-current="{{ $index === 0 ? 'true' : 'false' }}"
                                     class="block w-full overflow-hidden rounded-md border border-hairline transition-colors hover:border-ink-400 aria-[current=true]:border-clay-500"
                                 >
-                                    <img src="{{ $image }}" alt="{{ $product->name }} — {{ $index + 1 }}"
+                                    <img src="{{ Image::thumb($image, 480) }}"
+                                         alt="{{ $product->name }} — {{ $index + 1 }}"
                                          loading="lazy" decoding="async"
                                          class="aspect-[4/3] w-full object-cover">
                                 </button>

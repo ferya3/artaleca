@@ -74,16 +74,25 @@ function elevateHeaderOnScroll() {
  */
 function bindGalleries() {
     document.querySelectorAll('[data-gallery]').forEach((gallery) => {
-        const main = gallery.querySelector('[data-gallery-main]');
-        if (!main) return;
+        const frame = gallery.querySelector('[data-gallery-main]');
+        if (!frame) return;
+
+        const image = frame.querySelector('img');
+        if (!image) return;
+
+        // The main image is a <picture>: a <source srcset> outranks the <img>
+        // src, so swapping src alone would change nothing on screen. Both have
+        // to move together, which is why the thumbnail carries the srcset too.
+        const source = frame.querySelector('source');
 
         gallery.querySelectorAll('[data-gallery-thumb]').forEach((thumb) => {
             thumb.addEventListener('click', () => {
                 const full = thumb.dataset.galleryThumb;
                 if (!full) return;
 
-                main.src = full;
-                main.alt = thumb.querySelector('img')?.alt ?? main.alt;
+                if (source) source.srcset = thumb.dataset.gallerySrcset ?? '';
+                image.src = full;
+                image.alt = thumb.querySelector('img')?.alt ?? image.alt;
 
                 gallery
                     .querySelectorAll('[data-gallery-thumb]')

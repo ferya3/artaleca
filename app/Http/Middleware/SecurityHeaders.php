@@ -74,20 +74,27 @@ class SecurityHeaders
 
     protected function contentSecurityPolicy(string $nonce): string
     {
+        // Putting assets on a CDN means they stop being same-origin, so a policy
+        // of `'self'` alone would block the site's own stylesheet. The CDN
+        // origin is added to exactly the directives that serve static files —
+        // never to `form-action` or `frame-ancestors`, which have nothing to do
+        // with asset delivery and would only widen the policy for no reason.
+        $cdn = self::origin((string) config('app.asset_url'));
+
         $directives = [
             "default-src 'self'",
             "base-uri 'self'",
             "object-src 'none'",
             "frame-ancestors 'self'",
             "form-action 'self'",
-            "img-src 'self' data: blob:",
-            "font-src 'self'",
+            'img-src '.trim("'self' data: blob: {$cdn}"),
+            'font-src '.trim("'self' {$cdn}"),
             "connect-src 'self'",
-            "media-src 'self'",
+            'media-src '.trim("'self' {$cdn}"),
             "manifest-src 'self'",
             "worker-src 'self' blob:",
-            "script-src 'self' 'nonce-{$nonce}'",
-            "style-src 'self' 'nonce-{$nonce}'",
+            'script-src '.trim("'self' 'nonce-{$nonce}' {$cdn}"),
+            'style-src '.trim("'self' 'nonce-{$nonce}' {$cdn}"),
         ];
 
         // Vite's dev server injects its client over http/ws on a separate port
@@ -106,5 +113,29 @@ class SecurityHeaders
         }
 
         return implode('; ', $directives);
+    }
+
+    /**
+     * Scheme and host only.
+     *
+     * A CSP source is an origin, not a URL: passing the configured value
+     * through verbatim would put a path into the policy, which browsers treat
+     * as a path restriction and silently fail to match.
+     */
+    private static function origin(string $url): string
+    {
+        if (blank($url)) {
+            return '';
+        }
+
+        $parts = parse_url($url);
+
+        if (empty($parts['host'])) {
+            return '';
+        }
+
+        $port = isset($parts['port']) ? ':'.$parts['port'] : '';
+
+        return ($parts['scheme'] ?? 'https').'://'.$parts['host'].$port;
     }
 }

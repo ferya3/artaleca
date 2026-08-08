@@ -1,6 +1,11 @@
+# Directory listing is refused unconditionally, not only when mod_negotiation
+# happens to be loaded — an unguarded index is how an upload folder becomes a
+# file browser.
+Options -Indexes
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
-        Options -MultiViews -Indexes
+        Options -MultiViews
     </IfModule>
 
     RewriteEngine On
@@ -22,4 +27,52 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+</IfModule>
+
+# Nothing under the editor-writable upload tree is ever executed. The filename
+# and extension are already generated from the sniffed MIME type rather than
+# from the upload, so this is a second lock on a door that should be shut — but
+# an upload directory that can run code is the single worst outcome here.
+<IfModule mod_rewrite.c>
+    RewriteRule ^storage/.*\.(php[0-9]?|phtml|phar|cgi|pl|py|sh|htaccess)$ - [F,L,NC]
+</IfModule>
+
+<IfModule mod_php.c>
+    <Directory "storage">
+        php_flag engine off
+    </Directory>
+</IfModule>
+
+# Dotfiles are never served — .env is outside the document root already, but a
+# misplaced copy should not become a public URL.
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+    # Build assets carry a content hash in their filename, so a changed file is
+    # a changed URL and the cached copy can never go stale. That is exactly the
+    # case `immutable` exists for: no revalidation request at all, for a year.
+    <FilesMatch "\.(js|css)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+
+    # Uploaded media has a random generated filename and the font is versioned
+    # by hand, so both are equally safe to pin.
+    <FilesMatch "\.(woff2|avif|webp|jpe?g|png|gif|svg|ico)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+
+    # Documents are editor-replaceable under a stable URL, so they revalidate.
+    <FilesMatch "\.(pdf|docx?|xlsx?)$">
+        Header set Cache-Control "public, max-age=3600, must-revalidate"
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/javascript application/json application/xml image/svg+xml
+</IfModule>
+
+<IfModule mod_brotli.c>
+    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css application/javascript application/json application/xml image/svg+xml
 </IfModule>

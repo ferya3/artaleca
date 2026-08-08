@@ -63,8 +63,27 @@
      language, so it is preloaded rather than discovered inside the stylesheet. --}}
 <link rel="preload" href="/fonts/vazirmatn-variable.woff2" as="font" type="font/woff2" crossorigin>
 
+{{-- Filled by <x-media> for the single above-the-fold image, and by nothing
+     else: a preload that is not on the critical path only steals bandwidth
+     from one that is. --}}
+@stack('head')
+
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 @if ($schema)
-    <script type="application/ld+json" @nonce>{!! json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) !!}</script>
+    {{--
+        JSON_HEX_TAG is load-bearing, not cosmetic. The graph is built from
+        editor-supplied text (product names, article titles), and inside a
+        <script> block the HTML parser looks for `</script` before the JSON
+        parser ever runs — so a title containing `</script><script>…` would
+        break out and execute. Encoding < and > as </> is still valid
+        JSON, and search engines read it identically.
+
+        JSON_UNESCAPED_SLASHES is deliberately absent for the same reason: it
+        would leave `</script>` intact in any URL-bearing value.
+    --}}
+    <script type="application/ld+json" @nonce>{!! json_encode(
+        $schema,
+        JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT,
+    ) !!}</script>
 @endif

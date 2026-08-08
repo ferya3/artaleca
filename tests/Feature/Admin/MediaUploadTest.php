@@ -68,7 +68,9 @@ class MediaUploadTest extends TestCase
 
         $this->assertStringNotContainsString('evil', $stored);
         $this->assertStringNotContainsString('..', $stored);
-        $this->assertMatchesRegularExpression('#^/storage/media/products/[A-Za-z0-9]{32}\.jpg$#', $stored);
+        // `<32 random chars>-<width>x<height>.<sniffed ext>`. The dimensions are
+        // written by the optimisation pass and read back by the templates.
+        $this->assertMatchesRegularExpression('#^/storage/media/products/[A-Za-z0-9]{32}-\d+x\d+\.jpg$#', $stored);
     }
 
     public function test_a_non_image_upload_is_rejected(): void

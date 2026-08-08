@@ -56,6 +56,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Asset URL
+    |--------------------------------------------------------------------------
+    |
+    | Set this to a CDN origin to serve the build output, fonts and uploaded
+    | media from it instead of from the application host. Leaving it empty keeps
+    | every asset same-origin, which is the default. When it is set, the origin
+    | is added to the asset-serving CSP directives automatically — see
+    | App\Http\Middleware\SecurityHeaders.
+    |
+    */
+
+    'asset_url' => env('ASSET_URL'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

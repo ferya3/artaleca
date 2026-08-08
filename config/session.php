@@ -169,7 +169,14 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE'),
+    /*
+     * Defaults to on in production rather than to null. A secure-cookie flag
+     * that has to be remembered in .env is one that eventually is not, and the
+     * failure is silent: the session cookie simply starts travelling over
+     * plain HTTP. It can still be forced off explicitly for a non-TLS staging
+     * box.
+     */
+    'secure' => env('SESSION_SECURE_COOKIE', env('APP_ENV') === 'production'),
 
     /*
     |--------------------------------------------------------------------------

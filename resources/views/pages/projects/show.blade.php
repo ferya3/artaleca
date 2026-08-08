@@ -53,9 +53,12 @@
                     <ul class="mt-12 grid grid-cols-2 gap-4 md:grid-cols-3">
                         @foreach ($project->galleryImages() as $index => $image)
                             <li>
-                                <img src="{{ $image }}" alt="{{ $project->title }} — {{ $index + 1 }}"
-                                     loading="lazy" decoding="async"
-                                     class="aspect-[4/3] w-full rounded-lg border border-hairline object-cover">
+                                <x-picture
+                                    :src="$image"
+                                    :alt="$project->title.' — '.($index + 1)"
+                                    sizes="(min-width: 768px) 33vw, 50vw"
+                                    class="aspect-[4/3] w-full rounded-lg border border-hairline object-cover"
+                                />
                             </li>
                         @endforeach
                     </ul>
