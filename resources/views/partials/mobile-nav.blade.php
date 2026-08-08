@@ -86,6 +86,7 @@
                                 href="{{ $alternates[$code] }}"
                                 hreflang="{{ $meta['hreflang'] }}"
                                 lang="{{ $code }}"
+                                data-keep-header
                                 class="inline-block rounded-md border px-4 py-2 text-sm transition-colors
                                        {{ $code === Locales::current()
                                            ? 'border-ink-950 bg-ink-950 text-white'

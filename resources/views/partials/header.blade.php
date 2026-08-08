@@ -61,6 +61,7 @@
                                 href="{{ $alternates[$code] }}"
                                 hreflang="{{ $meta['hreflang'] }}"
                                 lang="{{ $code }}"
+                                data-keep-header
                                 @if ($code === Locales::current()) aria-current="true" @endif
                                 class="transition-colors {{ $code === Locales::current()
                                     ? 'font-semibold text-ink-900'
@@ -73,8 +74,22 @@
         </div>
     </div>
 
-    <div class="container-page flex h-16 items-center justify-between gap-8 lg:h-20">
-        <a href="{{ route('home') }}" class="text-ink-900 shrink-0" aria-label="{{ config('site.company.brand') }}">
+    {{--
+        Mobile is a three-column grid — menu button, logo, spacer — so the logo
+        sits optically centred rather than merely "after" the button. Grid
+        columns follow the writing direction on their own, which puts the button
+        at the start of the line in every language: on the right in Persian and
+        Arabic, on the left in English, with no direction-specific classes.
+
+        Desktop drops back to the usual flex row, where the logo leads.
+    --}}
+    <div class="container-page grid h-16 grid-cols-[2.75rem_1fr_2.75rem] items-center
+                lg:flex lg:h-20 lg:items-center lg:justify-between lg:gap-8">
+        @include('partials.mobile-nav', ['nav' => $nav, 'alternates' => $alternates])
+
+        <a href="{{ route('home') }}"
+           class="justify-self-center text-ink-900 shrink-0 lg:order-first lg:justify-self-start"
+           aria-label="{{ config('site.company.brand') }}">
             <x-brand.logo />
         </a>
 
@@ -154,8 +169,6 @@
                 href="{{ route('quote') }}"
                 class="hidden rounded-md bg-ink-950 px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition-[background-color,box-shadow] duration-200 hover:bg-clay-600 hover:shadow-lift lg:inline-flex"
             >{{ __('nav.quote') }}</a>
-
-            @include('partials.mobile-nav', ['nav' => $nav, 'alternates' => $alternates])
         </div>
     </div>
 </header>

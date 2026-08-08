@@ -59,6 +59,60 @@ class HeaderMarkupTest extends TestCase
         }
     }
 
+    /**
+     * The mobile row is a three-column grid so the logo is optically centred
+     * rather than merely placed after the menu button. Grid columns follow the
+     * writing direction on their own, which is what puts the button on the
+     * right in Persian and Arabic and on the left in English without a single
+     * direction-specific class — so the guard is that no such class appears.
+     */
+    public function test_the_mobile_header_centres_the_logo_without_direction_specific_classes(): void
+    {
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        $this->assertStringContainsString('grid-cols-[2.75rem_1fr_2.75rem]', $html);
+        $this->assertStringContainsString('justify-self-center', $html);
+
+        // The menu button must precede the logo in source order, or the grid
+        // places it in the centre column.
+        $row = substr($html, (int) strpos($html, 'grid-cols-[2.75rem_1fr_2.75rem]'));
+        $this->assertLessThan(
+            (int) strpos($row, 'justify-self-center'),
+            (int) strpos($row, 'data-mobile-menu'),
+            'The menu button must come before the logo for the grid to centre it.',
+        );
+    }
+
+    /**
+     * Switching language navigates to a new URL that starts at the top, where
+     * the header would hide itself — from inside the header the visitor just
+     * clicked. The links carry the marker app.js uses to keep it open.
+     */
+    public function test_language_links_are_marked_to_keep_the_header_open(): void
+    {
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        // Once in the desktop utility strip, once in the mobile menu, for each
+        // of the two languages that are not the current one, plus the current.
+        $this->assertGreaterThanOrEqual(
+            6,
+            substr_count($html, 'data-keep-header'),
+            'Every language link in both the desktop strip and the mobile menu needs the marker.',
+        );
+    }
+
+    /** Company statistics are desktop-only; a phone gets the product instead. */
+    public function test_the_figures_strip_is_hidden_on_phones(): void
+    {
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        $this->assertMatchesRegularExpression(
+            '/<dl class="hidden grid-cols-2[^"]*md:grid\b/',
+            $html,
+            'The figures strip must be display:none below md, not merely visually shrunk.',
+        );
+    }
+
     /** The hero's motion layer is decorative and must not reach the a11y tree. */
     public function test_the_hero_motion_layer_is_hidden_from_assistive_technology(): void
     {

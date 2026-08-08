@@ -12,8 +12,14 @@
 @if ($items !== [])
     {{-- The proof strip: the numbers that answer "is this company big enough for
          my project?" before a visitor reads a single paragraph. --}}
+    {{-- Hidden below `md`. On a phone the five figures become five stacked rows
+         that push everything else off the screen, and a visitor there is
+         scanning for a product or a phone number rather than reading company
+         statistics. The numbers stay in the DOM nowhere — `hidden` on the grid
+         keeps them out of the accessibility tree too, so a screen-reader user
+         on a phone is not read a table they cannot see. --}}
     <dl {{ $attributes->merge([
-        'class' => 'grid grid-cols-2 gap-px overflow-hidden rounded-lg md:grid-cols-3 lg:grid-cols-5 '
+        'class' => 'hidden grid-cols-2 gap-px overflow-hidden rounded-lg md:grid md:grid-cols-3 lg:grid-cols-5 '
             .($dark ? 'bg-hairline-dark' : 'bg-hairline'),
     ]) }}>
         @foreach ($items as $item)

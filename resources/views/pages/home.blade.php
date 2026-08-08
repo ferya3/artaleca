@@ -12,25 +12,35 @@
                 <div class="lg:col-span-6">
                     <p class="eyebrow text-clay-400!">{{ __('home.hero_eyebrow') }}</p>
 
-                    <h1 class="mt-5 text-4xl font-bold leading-[1.15] md:text-5xl lg:text-[3.25rem]">
+                    {{-- 30px on a phone rather than 36px: at the larger size a
+                         three-word Persian line wraps to four rows and pushes
+                         the buttons off the first screen. --}}
+                    <h1 class="mt-4 text-3xl font-bold leading-[1.2] sm:text-4xl md:text-5xl md:leading-[1.15] lg:text-[3.25rem]">
                         {{ __('home.hero_title') }}
                     </h1>
 
-                    <p class="mt-6 max-w-xl text-base leading-relaxed text-ink-300 md:text-lg">
+                    <p class="mt-5 max-w-xl text-[0.9375rem] leading-relaxed text-ink-300 md:mt-6 md:text-lg">
                         {{ __('home.hero_body') }}
                     </p>
 
-                    <div class="mt-9 flex flex-col gap-3 sm:flex-row">
-                        <x-button :href="route('products.index')" variant="accent" size="lg">
+                    {{-- Full-width stacked actions on a phone: a 48px-tall bar
+                         spanning the column is a far easier target than two
+                         side-by-side pills, and the primary one stays first. --}}
+                    <div class="mt-7 flex flex-col gap-3 sm:flex-row md:mt-9">
+                        <x-button :href="route('products.index')" variant="accent" size="lg" class="w-full sm:w-auto">
                             {{ __('home.hero_primary_cta') }}
                         </x-button>
-                        <x-button :href="route('quote')" variant="inverse" size="lg">
+                        <x-button :href="route('quote')" variant="inverse" size="lg" class="w-full sm:w-auto">
                             {{ __('home.hero_secondary_cta') }}
                         </x-button>
                     </div>
                 </div>
 
-                <div class="lg:col-span-6">
+                {{-- Edge to edge on a phone with no frame around it, so a real
+                     photograph reads as part of the hero rather than as a card
+                     dropped into it. The negative inline margin cancels the
+                     container's padding; the section already clips overflow. --}}
+                <div class="-mx-5 md:mx-0 lg:col-span-6">
                     <x-media
                         seed="arta-hero"
                         ratio="4/3"
@@ -38,13 +48,15 @@
                         eager
                         :alt="__('home.hero_title')"
                         sizes="(min-width: 1024px) 50vw, 100vw"
-                        class="rounded-lg border border-hairline-dark"
+                        class="rounded-none border-0 md:rounded-lg md:border md:border-hairline-dark"
                     />
                 </div>
             </div>
         </div>
 
-        <div class="container-page relative pb-16 lg:pb-20">
+        {{-- The wrapper goes with the strip, or a phone keeps 64px of the
+             padding that was holding it. --}}
+        <div class="container-page relative hidden pb-16 md:block lg:pb-20">
             <x-stat-strip tone="dark" class="border border-hairline-dark" />
         </div>
     </section>

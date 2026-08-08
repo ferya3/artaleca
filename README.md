@@ -60,6 +60,24 @@ under `@theme`; templates reference the semantic names, never raw values.
   carry the one surface treatment the site repeats ~40 times. Anything used once
   stays as utilities in the template.
 
+### On a phone
+
+The mobile header is a three-column grid — menu button, logo, spacer — so the
+logo is optically centred rather than merely placed after the button. Grid
+columns follow the writing direction on their own, which puts the button at the
+start of the line in every language: on the right in Persian and Arabic, on the
+left in English, with no direction-specific classes anywhere.
+
+The hero image runs edge to edge with no frame, so a photograph reads as part of
+the band rather than as a card dropped into it, and the headline drops to 30px
+because at 36px a three-word Persian line wraps to four rows and pushes the
+actions off the first screen. The actions themselves become full-width bars.
+
+The figures strip is `display: none` below `md`. Five statistics become five
+stacked rows on a phone, and someone there is looking for a product or a phone
+number rather than reading company numbers — hiding it rather than shrinking it
+also keeps it out of the accessibility tree.
+
 No gradients outside the hero's kiln glow and the faint blueprint grid behind
 the dark bands, and no glassmorphism — the header is deliberately opaque rather
 than blurred, which also avoids `backdrop-filter` making it a containing block
@@ -120,7 +138,7 @@ environment it is randomly generated and printed once unless `ADMIN_PASSWORD` is
 set. Sign in at `/admin`.
 
 ```bash
-vendor/bin/phpunit    # 156 tests
+vendor/bin/phpunit    # 159 tests
 vendor/bin/pint       # code style
 ```
 

@@ -92,6 +92,43 @@ function bindHeaderReveal() {
         { passive: true },
     );
 
+    /*
+     * Switching language navigates to a different URL, so the new page starts
+     * at the top and the header would hide itself — from inside the header the
+     * visitor just clicked. That reads as the bar breaking rather than as a
+     * deliberate reveal, so a language link hands the next page a one-shot flag
+     * and the header comes back already open, with the transition suppressed so
+     * it is simply there rather than sliding in.
+     */
+    const KEEP = 'header:keep';
+
+    document.querySelectorAll('[data-keep-header]').forEach((link) => {
+        link.addEventListener('click', () => {
+            try {
+                sessionStorage.setItem(KEEP, '1');
+            } catch {
+                // Private mode with storage denied: the header hides, which is
+                // the normal behaviour rather than a failure.
+            }
+        });
+    });
+
+    let keep = false;
+    try {
+        keep = sessionStorage.getItem(KEEP) === '1';
+        sessionStorage.removeItem(KEEP);
+    } catch {
+        /* storage unavailable */
+    }
+
+    if (keep) {
+        header.style.transition = 'none';
+        header.setAttribute('data-revealed', '');
+        requestAnimationFrame(() => header.style.removeProperty('transition'));
+
+        return;
+    }
+
     // A reload can restore a scroll position well down the page, where the
     // header should already be showing before the first scroll event fires.
     update();
