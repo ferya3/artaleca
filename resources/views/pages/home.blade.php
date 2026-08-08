@@ -1,19 +1,31 @@
 <x-layouts.app>
 
     {{-- ── Hero ───────────────────────────────────────────────────────────
-         One headline, one paragraph, two actions. The visual sits beside the
-         copy rather than behind it, so the text never needs a scrim and the
-         LCP element is predictable. --}}
+         On a phone the copy sits *over* the image; from `md` up the visual
+         moves beside it, where the text needs no scrim and the LCP element is
+         predictable. --}}
     <section class="relative overflow-hidden bg-ink-950 text-white">
         <x-hero-motion />
 
         <div class="container-page relative">
-            {{-- Stacked on a phone with the image leading and no padding above
-                 it, so the photograph starts at the very top of the viewport.
-                 At `lg` the two become columns again and `order-none` hands the
-                 placement back to source order. --}}
-            <div class="grid items-center gap-8 pb-14 md:gap-12 md:py-16 lg:grid-cols-12 lg:gap-16 lg:py-24">
-                <div class="order-2 lg:order-none lg:col-span-6">
+            {{--
+                Below `md` both children are placed in the same cell
+                (`col-start-1 row-start-1`), which stacks them without taking
+                either out of flow — so the row still sizes itself to the taller
+                one and nothing has to be positioned absolutely or measured.
+
+                From `md` up, `col-start-auto`/`row-start-auto` hands placement
+                back to normal flow and the old two-column layout returns.
+            --}}
+            {{-- `items-center` only from `md`. While the two share a cell the
+                 default stretch is what lets the image fill whatever height the
+                 copy asks for; centring them would leave the image at its
+                 minimum and open a gap under it. --}}
+            {{-- No padding on the grid itself below `md`: the copy carries its
+                 own, and padding here would sit outside the image and show a
+                 band of bare background under it. --}}
+            <div class="grid md:items-center md:gap-12 md:py-16 lg:grid-cols-12 lg:gap-16 lg:py-24">
+                <div class="z-10 col-start-1 row-start-1 py-14 md:col-start-auto md:row-start-auto md:py-0 lg:col-span-6">
                     <p class="eyebrow text-clay-400!">{{ __('home.hero_eyebrow') }}</p>
 
                     {{-- 30px on a phone rather than 36px: at the larger size a
@@ -27,14 +39,30 @@
                         {{ __('home.hero_body') }}
                     </p>
 
-                    {{-- Full-width stacked actions on a phone: a 48px-tall bar
-                         spanning the column is a far easier target than two
-                         side-by-side pills, and the primary one stays first. --}}
+                    {{--
+                        A phone gets one action, not two. Over an image the
+                        second button competes with the first for the same
+                        glance, and the catalogue is one tap away in the menu
+                        anyway — so only the quote CTA survives below `md`, at
+                        the `md` size rather than `lg`, which was oversized on a
+                        small screen. The `md:` overrides restore the large
+                        button from the breakpoint up.
+                    --}}
                     <div class="mt-7 flex flex-col gap-3 sm:flex-row md:mt-9">
-                        <x-button :href="route('products.index')" variant="accent" size="lg" class="w-full sm:w-auto">
-                            {{ __('home.hero_primary_cta') }}
-                        </x-button>
-                        <x-button :href="route('quote')" variant="inverse" size="lg" class="w-full sm:w-auto">
+                        {{-- Hidden by a wrapper rather than by a `hidden` class
+                             on the button: the component already carries
+                             `inline-flex`, and two plain display utilities on
+                             one element are decided by Tailwind's own ordering,
+                             not by the order they are written in. `md:contents`
+                             dissolves the wrapper again so the button is a
+                             direct flex item at every size it is visible. --}}
+                        <div class="hidden md:contents">
+                            <x-button :href="route('products.index')" variant="accent" size="lg" class="sm:w-auto">
+                                {{ __('home.hero_primary_cta') }}
+                            </x-button>
+                        </div>
+                        <x-button :href="route('quote')" variant="inverse" size="md"
+                                  class="w-full sm:w-auto md:rounded-lg md:px-8 md:py-4 md:text-base">
                             {{ __('home.hero_secondary_cta') }}
                         </x-button>
                     </div>
@@ -44,12 +72,12 @@
                      photograph reads as part of the hero rather than as a card
                      dropped into it. The negative inline margin cancels the
                      container's padding; the section already clips overflow. --}}
-                <div class="order-1 -mx-5 md:mx-0 lg:order-none lg:col-span-6">
-                    {{-- A fixed 50vh on a phone rather than the 4/3 ratio: half
-                         the screen is the brief, and an explicit height on a
-                         block whose width is already definite simply wins over
-                         the component's inline `aspect-ratio`. `md:h-auto`
-                         hands the ratio back. --}}
+                <div class="relative col-start-1 row-start-1 -mx-5 h-full md:col-start-auto md:row-start-auto md:mx-0 lg:col-span-6">
+                    {{-- `h-full` so the image fills whatever height the copy
+                         asks for, with a 50vh floor so it still reads as a hero
+                         when the copy is short. `md:h-auto` hands the 4/3 ratio
+                         back — an explicit height on a block whose width is
+                         already definite simply makes the ratio inert. --}}
                     <x-media
                         seed="arta-hero"
                         ratio="4/3"
@@ -57,8 +85,17 @@
                         eager
                         :alt="__('home.hero_title')"
                         sizes="(min-width: 1024px) 50vw, 100vw"
-                        class="h-[50vh] rounded-none border-0 md:h-auto md:rounded-lg md:border md:border-hairline-dark"
+                        class="h-full min-h-[50vh] rounded-none border-0 md:h-auto md:min-h-0 md:rounded-lg md:border md:border-hairline-dark"
                     />
+
+                    {{-- Legibility, not decoration: white copy over a
+                         photograph nobody has approved yet needs a floor under
+                         it. The copy spans the whole block, so this is close to
+                         even rather than a bottom-weighted gradient — just
+                         enough lift at the top for the image to breathe. Gone
+                         entirely once the image moves beside the text. --}}
+                    <div class="absolute inset-0 bg-gradient-to-b from-ink-950/45 via-ink-950/60 to-ink-950/70 md:hidden"
+                         aria-hidden="true"></div>
                 </div>
             </div>
         </div>
