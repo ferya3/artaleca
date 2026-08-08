@@ -113,6 +113,17 @@
     html {
         scroll-behavior: smooth;
         -webkit-text-size-adjust: 100%;
+        /* The header floats over the page rather than reserving space, so an
+           anchor jump would otherwise land its target underneath the bar. Kept
+           slightly above the header's own height so the target is not flush
+           against it. */
+        scroll-padding-top: 5.5rem;
+    }
+
+    @media (min-width: 1024px) {
+        html {
+            scroll-padding-top: 8.5rem;
+        }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -335,6 +346,36 @@
         linear-gradient(to right, rgb(255 255 255 / 0.045) 1px, transparent 1px),
         linear-gradient(to bottom, rgb(255 255 255 / 0.045) 1px, transparent 1px);
     background-size: 72px 72px;
+}
+
+/*
+|------------------------------------------------------------------------------
+| Header reveal
+|------------------------------------------------------------------------------
+| The header is hidden at the top of the page and revealed once the visitor
+| scrolls. Keeping the hidden state in CSS rather than applying it from script
+| means the bar is already out of the way at first paint, instead of appearing
+| and then jumping away a moment later.
+|
+| Two escape hatches, both deliberate:
+|
+|  - `:focus-within` reveals it, so a keyboard user tabbing out of the skip-link
+|    lands on visible navigation rather than in a dead zone. That is why the
+|    hidden state uses `opacity` and not `visibility`: an invisible element is
+|    still focusable, a hidden one is not.
+|  - `pointer-events: none` stops those invisible links from swallowing clicks
+|    meant for the hero underneath.
+|
+| With JavaScript off, `data-revealed` is never added, so a <noscript> override
+| in the head neutralises this whole block and the header simply stays put.
+*/
+
+@layer components {
+    [data-site-header]:not([data-revealed]):not(:focus-within) {
+        transform: translateY(-100%);
+        opacity: 0;
+        pointer-events: none;
+    }
 }
 
 /*

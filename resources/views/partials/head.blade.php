@@ -70,6 +70,19 @@
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+{{-- The header hides itself until scrolled, and it is script that reveals it.
+     Without script that would leave the navigation permanently invisible, so
+     the rule is cancelled outright when JavaScript is off. --}}
+<noscript>
+    <style @nonce>
+        [data-site-header] {
+            transform: none !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+    </style>
+</noscript>
+
 @if ($schema)
     {{--
         JSON_HEX_TAG is load-bearing, not cosmetic. The graph is built from

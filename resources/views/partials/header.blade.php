@@ -14,16 +14,21 @@
     strip — the menu opened, but measured zero pixels high. Solid white also
     costs no per-frame blur and keeps the header off the §24 glassmorphism list.
 
-    `data-hidden` slides the whole bar out of the way on downward scroll; the
-    transition is on transform and opacity only, so it composites on the GPU
-    without laying anything out again.
+    The bar starts hidden and is revealed by scrolling — `data-revealed` is
+    added by app.js and the hidden state lives in app.css, so the header is
+    already out of the way at first paint rather than flashing in and out.
+    The transition is on transform and opacity only, so it composites on the
+    GPU without laying anything out again.
+
+    `fixed`, not `sticky`: a sticky header keeps its space in the flow even
+    while translated away, which left a blank band the height of the header
+    above the hero. Out of flow, the page starts at the top of the viewport and
+    the bar floats over it when it returns.
 --}}
 <header
     data-site-header
-    class="sticky top-0 z-50 bg-white
-           transition-[transform,opacity,box-shadow,border-color] duration-300 ease-out
-           border-b border-transparent data-scrolled:border-hairline data-scrolled:shadow-header
-           data-hidden:-translate-y-full data-hidden:opacity-0"
+    class="fixed inset-x-0 top-0 z-50 border-b border-hairline bg-white shadow-header
+           transition-[transform,opacity] duration-300 ease-out"
 >
     {{-- Utility strip: contact routes for a visitor who arrived ready to buy,
          and the language switcher. Hidden on mobile, where it becomes part of

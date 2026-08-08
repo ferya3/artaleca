@@ -76,11 +76,21 @@ thread for the LCP text:
   and the process, not a decorative gradient. Each layer translates by exactly
   one pattern tile, which is what makes the loop seamless rather than visibly
   snapping back.
-- **The header.** It slides away on downward scroll and returns on the first
-  upward movement. The thresholds are asymmetric on purpose — 64px to hide, 8px
-  to come back — because a reader scrolling up is usually reaching for the
-  navigation. It never hides while the mobile menu is open, since the close
-  button lives inside it.
+- **The header.** It starts hidden so the hero is met without a bar across it,
+  and slides in once the page scrolls. The thresholds are asymmetric on purpose
+  — revealing at 140px but hiding again only below 40px — so a trackpad
+  hovering near the boundary cannot strobe it. It is `fixed` rather than
+  `sticky`, because a sticky header keeps its space in the flow even while
+  translated away and left a blank band above the hero.
+
+  Two escape hatches make a hidden navigation safe rather than merely tidy:
+  `:focus-within` reveals it, so a keyboard user tabbing out of the skip-link
+  lands on visible navigation — which is why the hidden state uses `opacity`
+  and not `visibility`, since an invisible element is still focusable and a
+  hidden one is not. And a `<noscript>` rule cancels the whole thing, because
+  script is what reveals the bar and without it the navigation would never
+  come back. It also stays put whenever the mobile menu is open, since the
+  close button lives inside it.
 
 `prefers-reduced-motion` freezes all of it through one base rule, and the
 header's hide-on-scroll does not bind at all under that setting.
