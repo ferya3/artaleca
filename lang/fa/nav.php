@@ -1,18 +1,19 @@
 <?php
 
 return [
-    'home' => 'خانه',
+    'home' => 'صفحه اصلی',
     'about' => 'درباره ما',
     'quality' => 'کنترل کیفیت',
     'plant' => 'کارخانه',
     'products' => 'محصولات',
     'all_products' => 'همه محصولات',
     'applications' => 'کاربردها',
-    'projects' => 'پروژه‌ها',
+    'projects' => 'پروژه‌های اجراشده',
     'news' => 'اخبار و مقالات',
     'gallery' => 'گالری',
-    'downloads' => 'دانلود',
+    'downloads' => 'دانلود کاتالوگ',
     'faq' => 'پرسش‌های متداول',
+    'representatives' => 'نمایندگان',
     'contact' => 'تماس با ما',
     'quote' => 'استعلام قیمت',
     'search' => 'جستجو',

@@ -169,6 +169,62 @@
                 href="{{ route('quote') }}"
                 class="hidden rounded-md bg-ink-950 px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition-[background-color,box-shadow] duration-200 hover:bg-clay-600 hover:shadow-lift lg:inline-flex"
             >{{ __('nav.quote') }}</a>
+
+            {{--
+                Language switcher for phones. On desktop it lives in the utility
+                strip; on a phone that strip is hidden, so the only way to
+                change language was to open the menu and scroll to the bottom —
+                which nobody discovers.
+
+                A globe is the one icon that reads as "language" without a
+                label in any of the three scripts. It is a <details>, like the
+                menu, so it opens, closes and is keyboard-operable with no
+                script at all.
+            --}}
+            <details data-dismissable data-language-switcher class="relative lg:hidden">
+                <summary
+                    class="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-md text-ink-800 transition-colors hover:bg-ink-50 marker:hidden [&::-webkit-details-marker]:hidden"
+                    aria-label="{{ __('nav.language') }}"
+                >
+                    <svg viewBox="0 0 24 24" class="h-5.5 w-5.5" fill="none" aria-hidden="true">
+                        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>
+                        <path d="M3 12h18" stroke="currentColor" stroke-width="1.6"/>
+                        <path d="M12 3c2.5 2.4 3.9 5.6 3.9 9s-1.4 6.6-3.9 9c-2.5-2.4-3.9-5.6-3.9-9S9.5 5.4 12 3z"
+                              stroke="currentColor" stroke-width="1.6"/>
+                    </svg>
+                    {{-- The active language, so the control says what it is
+                         currently set to rather than only what it does. --}}
+                    <span class="sr-only">{{ Locales::all()[Locales::current()]['native'] }}</span>
+                </summary>
+
+                <div class="absolute end-0 top-full z-50 mt-1 w-44 overflow-hidden rounded-lg border border-hairline bg-white shadow-lift">
+                    <ul class="py-1">
+                        @foreach (Locales::all() as $code => $meta)
+                            <li>
+                                <a
+                                    href="{{ $alternates[$code] }}"
+                                    hreflang="{{ $meta['hreflang'] }}"
+                                    lang="{{ $code }}"
+                                    data-keep-header
+                                    @if ($code === Locales::current()) aria-current="true" @endif
+                                    class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors
+                                           {{ $code === Locales::current()
+                                               ? 'font-semibold text-clay-600'
+                                               : 'text-ink-700 hover:bg-ink-50' }}"
+                                >
+                                    {{ $meta['native'] }}
+                                    @if ($code === Locales::current())
+                                        <svg viewBox="0 0 14 14" class="h-3.5 w-3.5" fill="none" aria-hidden="true">
+                                            <path d="M2 7.5l3.5 3.5L12 4" stroke="currentColor" stroke-width="1.8"
+                                                  stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
+                                    @endif
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </details>
         </div>
     </div>
 </header>

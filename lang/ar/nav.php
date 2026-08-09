@@ -1,18 +1,19 @@
 <?php
 
 return [
-    'home' => 'الرئيسية',
+    'home' => 'الصفحة الرئيسية',
     'about' => 'من نحن',
     'quality' => 'ضبط الجودة',
     'plant' => 'المصنع',
     'products' => 'المنتجات',
     'all_products' => 'كل المنتجات',
     'applications' => 'التطبيقات',
-    'projects' => 'المشاريع',
+    'projects' => 'المشاريع المنفذة',
     'news' => 'الأخبار والمقالات',
     'gallery' => 'معرض الصور',
-    'downloads' => 'التحميلات',
+    'downloads' => 'تحميل الكتالوج',
     'faq' => 'الأسئلة الشائعة',
+    'representatives' => 'الوكلاء',
     'contact' => 'اتصل بنا',
     'quote' => 'طلب عرض سعر',
     'search' => 'بحث',

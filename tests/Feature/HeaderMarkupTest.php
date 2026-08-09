@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Support\Locales;
+use App\Support\Navigation;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -255,6 +257,44 @@ class HeaderMarkupTest extends TestCase
         }
 
         $this->assertSame([], $offenders, 'Grid columns without min-w-0: '.implode(', ', $offenders));
+    }
+
+    /** The primary navigation is a deliberate order, not an accident of code order. */
+    public function test_the_primary_navigation_is_in_the_agreed_order(): void
+    {
+        $labels = array_column(Navigation::primary(), 'label');
+
+        $this->assertSame([
+            __('nav.home'),
+            __('nav.products'),
+            __('nav.downloads'),
+            __('nav.representatives'),
+            __('nav.projects'),
+            __('nav.contact'),
+        ], $labels);
+    }
+
+    /**
+     * The language switcher has to be reachable on a phone without opening the
+     * menu and scrolling to its foot, which is where it used to hide — the
+     * desktop utility strip that carries it is hidden below `lg`.
+     */
+    public function test_a_phone_gets_a_language_switcher_in_the_header_itself(): void
+    {
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        $this->assertStringContainsString('data-language-switcher', $html);
+
+        // It sits outside the mobile menu, or it would be just as buried.
+        $switcher = (int) strpos($html, 'data-language-switcher');
+        $menu = (int) strpos($html, 'data-mobile-menu');
+        $this->assertNotSame(0, $switcher);
+        $this->assertGreaterThan($menu, $switcher);
+
+        // Every language is offered, and switching keeps the header open.
+        foreach (Locales::all() as $meta) {
+            $this->assertStringContainsString($meta['native'], $html);
+        }
     }
 
     /** The hero's motion layer is decorative and must not reach the a11y tree. */

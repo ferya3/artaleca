@@ -80,6 +80,25 @@ class CmsSeeder extends Seeder
                 'name' => $this->t('سازمان بنادر و دریانوردی', 'Ports & Maritime Organization', 'منظمة الموانئ والملاحة البحرية')],
             ['slug' => 'gulf-trading', 'kind' => 'partner',
                 'name' => $this->t('نماینده فروش حاشیه خلیج فارس', 'Persian Gulf distribution partner', 'شريك التوزيع في الخليج')],
+
+            ['slug' => 'rep-tehran', 'kind' => 'representative',
+                'name' => $this->t('نمایندگی تهران', 'Tehran representative', 'وكيل طهران'),
+                'summary' => $this->t(
+                    'سفارش، مشاوره‌ی فنی و تحویل برای تهران و البرز.',
+                    'Ordering, technical advice and delivery across Tehran and Alborz.',
+                    'الطلب والاستشارة الفنية والتسليم في طهران وألبرز.')],
+            ['slug' => 'rep-isfahan', 'kind' => 'representative',
+                'name' => $this->t('نمایندگی اصفهان', 'Isfahan representative', 'وكيل أصفهان'),
+                'summary' => $this->t(
+                    'پوشش اصفهان، یزد و چهارمحال و بختیاری.',
+                    'Covering Isfahan, Yazd and Chaharmahal.',
+                    'تغطية أصفهان ويزد وجهارمحال.')],
+            ['slug' => 'rep-mashhad', 'kind' => 'representative',
+                'name' => $this->t('نمایندگی مشهد', 'Mashhad representative', 'وكيل مشهد'),
+                'summary' => $this->t(
+                    'پوشش خراسان رضوی، شمالی و جنوبی.',
+                    'Covering the three Khorasan provinces.',
+                    'تغطية محافظات خراسان الثلاث.')],
         ];
 
         foreach ($partners as $index => $partner) {

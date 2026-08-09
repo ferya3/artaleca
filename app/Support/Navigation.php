@@ -29,36 +29,30 @@ final class Navigation
     {
         return [
             [
+                'label' => __('nav.home'),
+                'route' => 'home',
+                'match' => 'home',
+            ],
+            [
                 'label' => __('nav.products'),
                 'route' => 'products.index',
                 'match' => 'products.',
                 'children' => self::productCategories(),
             ],
             [
-                'label' => __('nav.applications'),
-                'route' => 'applications.index',
-                'match' => 'applications.',
-                'children' => self::applications(),
+                'label' => __('nav.downloads'),
+                'route' => 'downloads.index',
+                'match' => 'downloads.',
+            ],
+            [
+                'label' => __('nav.representatives'),
+                'route' => 'representatives',
+                'match' => 'representatives',
             ],
             [
                 'label' => __('nav.projects'),
                 'route' => 'projects.index',
                 'match' => 'projects.',
-            ],
-            [
-                'label' => __('nav.about'),
-                'route' => 'about',
-                'match' => 'about',
-            ],
-            [
-                'label' => __('nav.news'),
-                'route' => 'articles.index',
-                'match' => 'articles.',
-            ],
-            [
-                'label' => __('nav.downloads'),
-                'route' => 'downloads.index',
-                'match' => 'downloads.',
             ],
             [
                 'label' => __('nav.contact'),
@@ -142,6 +136,7 @@ final class Navigation
             ],
             __('nav.about') => [
                 ['label' => __('nav.about'), 'route' => 'about'],
+                ['label' => __('nav.representatives'), 'route' => 'representatives'],
                 ['label' => __('nav.quality'), 'route' => 'about.quality'],
                 ['label' => __('nav.plant'), 'route' => 'about.plant'],
                 ['label' => __('nav.projects'), 'route' => 'projects.index'],

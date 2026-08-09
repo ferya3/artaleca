@@ -124,6 +124,7 @@ class SitemapController extends Controller
             'projects.index' => [0.8, 'monthly'],
             'articles.index' => [0.7, 'weekly'],
             'downloads.index' => [0.7, 'monthly'],
+            'representatives' => [0.6, 'monthly'],
             'gallery' => [0.5, 'monthly'],
             'faq' => [0.5, 'monthly'],
             'contact' => [0.7, 'yearly'],

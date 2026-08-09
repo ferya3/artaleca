@@ -4,6 +4,7 @@ return [
     'title' => 'Partners & clients',
     'intro' => 'Companies and bodies Arta Leca works with commercially or technically.',
     'kinds' => [
+        'representative' => 'Sales representative',
         'partner' => 'Trade partner',
         'client' => 'Client',
         'association' => 'Association',

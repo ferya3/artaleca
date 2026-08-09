@@ -15,6 +15,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\QuoteController;
+use App\Http\Controllers\RepresentativeController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SitemapController;
 use App\Support\Locales;
@@ -67,6 +68,8 @@ Route::prefix('{locale}')
 
         Route::get('applications', [ApplicationController::class, 'index'])->name('applications.index');
         Route::get('applications/{application:slug}', [ApplicationController::class, 'show'])->name('applications.show');
+
+        Route::get('representatives', [RepresentativeController::class, 'index'])->name('representatives');
 
         Route::get('projects', [ProjectController::class, 'index'])->name('projects.index');
         Route::get('projects/{project:slug}', [ProjectController::class, 'show'])->name('projects.show');

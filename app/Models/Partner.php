@@ -16,7 +16,7 @@ class Partner extends Model
     use HasTranslations;
     use Publishable;
 
-    public const KINDS = ['partner', 'client', 'association'];
+    public const KINDS = ['representative', 'partner', 'client', 'association'];
 
     protected array $translatable = ['name', 'summary'];
 
