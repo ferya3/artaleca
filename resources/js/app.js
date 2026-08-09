@@ -47,101 +47,6 @@ function lockScrollWithMobileMenu() {
 }
 
 /**
- * The header is hidden at the top of the page and slides in once the visitor
- * scrolls, so the hero is seen without a bar across it.
- *
- * The hidden state itself lives in app.css keyed off the *absence* of
- * `data-revealed`, which is what keeps the bar out of the way at first paint
- * instead of flashing in and then jumping away.
- *
- * The two thresholds are not the same number on purpose. Revealing at 140px
- * and hiding again only below 40px gives the toggle enough hysteresis that a
- * trackpad hovering around the boundary cannot strobe it.
- */
-function bindHeaderReveal() {
-    const header = document.querySelector('[data-site-header]');
-    if (!header) return;
-
-    const menu = document.querySelector('[data-mobile-menu]');
-    const REVEAL_AT = 140;
-    const HIDE_BELOW = 40;
-
-    let ticking = false;
-
-    const update = () => {
-        ticking = false;
-        const y = window.scrollY;
-
-        // The mobile menu's close button lives inside the header, so the bar
-        // has to stay put while the menu is open however far the page has
-        // scrolled — sliding it away would strand whoever opened it.
-        if (menu?.open || y >= REVEAL_AT) {
-            header.setAttribute('data-revealed', '');
-        } else if (y <= HIDE_BELOW) {
-            header.removeAttribute('data-revealed');
-        }
-    };
-
-    addEventListener(
-        'scroll',
-        () => {
-            if (ticking) return;
-            ticking = true;
-            requestAnimationFrame(update);
-        },
-        { passive: true },
-    );
-
-    /*
-     * Switching language keeps your place.
-     *
-     * A language link navigates to a different URL, so the new page would
-     * otherwise start at the top — and the header, which is `fixed` and out of
-     * flow, would then sit over the first 118px of the page while the visitor
-     * looks at content they did not ask to be taken to. Forcing the bar open
-     * there only makes it worse: it covers the eyebrow and half the headline.
-     *
-     * Restoring the offset solves the whole thing at once. The visitor stays
-     * where they were reading, `update()` reveals the header on its own because
-     * the page is scrolled, and nothing is covered by it.
-     *
-     * Persian, English and Arabic set the same content at different lengths, so
-     * the offset is close rather than exact — which is the right trade for the
-     * alternative of being thrown back to the top.
-     */
-    const MARK = 'header:offset';
-
-    document.querySelectorAll('[data-keep-header]').forEach((link) => {
-        link.addEventListener('click', () => {
-            try {
-                sessionStorage.setItem(MARK, String(window.scrollY));
-            } catch {
-                // Storage denied in private mode: the page lands at the top,
-                // which is the ordinary behaviour rather than a failure.
-            }
-        });
-    });
-
-    let restored = null;
-    try {
-        restored = sessionStorage.getItem(MARK);
-        sessionStorage.removeItem(MARK);
-    } catch {
-        /* storage unavailable */
-    }
-
-    if (restored !== null && Number(restored) > 0) {
-        // The browser's own restoration would fight this one on a reload.
-        history.scrollRestoration = 'manual';
-        window.scrollTo({ top: Number(restored), behavior: 'instant' });
-    }
-
-    // Also covers a reload that restores a position well down the page, where
-    // the header should be showing before the first scroll event fires.
-    update();
-}
-
-/**
  * Product/project image gallery: swap the main image when a thumbnail is
  * chosen. The main image is a real <img> in the markup, so the first (and
  * usually only) image a visitor sees needs no JavaScript at all.
@@ -191,8 +96,23 @@ function bindAutoSubmitFilters() {
     });
 }
 
-dismissOnOutsideInteraction();
-lockScrollWithMobileMenu();
-bindHeaderReveal();
-bindGalleries();
-bindAutoSubmitFilters();
+/*
+ * Each one is isolated. These are independent progressive enhancements, and a
+ * throw in any of them used to take out every one that had not run yet — which
+ * is how a small failure in one place turned into a missing feature somewhere
+ * unrelated. The header's own behaviour is not in this list at all: it is the
+ * only navigation on a phone, so it lives inline in the head where it does not
+ * depend on this bundle arriving.
+ */
+[
+    dismissOnOutsideInteraction,
+    lockScrollWithMobileMenu,
+    bindGalleries,
+    bindAutoSubmitFilters,
+].forEach((enhance) => {
+    try {
+        enhance();
+    } catch (error) {
+        console.error(`[artaleca] ${enhance.name} failed`, error);
+    }
+});

@@ -167,6 +167,68 @@ class HeaderMarkupTest extends TestCase
         $this->get('/fa/articles')->assertOk()->assertSee('aspect-[16/9]', false);
     }
 
+    /**
+     * The header must fail *open*.
+     *
+     * It is the only navigation on a phone, and it is hidden until scrolled —
+     * so if the thing that reveals it can fail, the navigation disappears for
+     * good and no amount of scrolling brings it back. That is exactly what
+     * happened: the hiding rule applied unconditionally and only the bundle
+     * could undo it.
+     *
+     * The hinge is that the hidden state is gated on `data-autohide`, which is
+     * set by the inline head script and by nothing else. No script, no
+     * attribute, no hiding.
+     */
+    public function test_the_hidden_header_state_is_gated_on_the_script_having_run(): void
+    {
+        $css = file_get_contents(resource_path('css/app.css'));
+
+        $this->assertStringContainsString(
+            '[data-autohide] [data-site-header]:not([data-revealed])',
+            $css,
+            'The hiding rule must be gated on the marker the script sets, or a '
+            .'script failure removes the navigation permanently.',
+        );
+
+        $this->assertStringNotContainsString(
+            "\n    [data-site-header]:not([data-revealed])",
+            $css,
+            'An ungated hiding rule hides the header whether or not the script ran.',
+        );
+    }
+
+    /** And the reveal must not live in the bundle, which can fail to arrive. */
+    public function test_the_header_behaviour_does_not_depend_on_the_bundle(): void
+    {
+        $bundle = file_get_contents(resource_path('js/app.js'));
+        $head = file_get_contents(resource_path('views/partials/head.blade.php'));
+
+        $this->assertStringNotContainsString(
+            'data-site-header',
+            $bundle,
+            'Header behaviour in the bundle means a blocked or slow bundle costs '
+            .'the visitor their navigation.',
+        );
+
+        $this->assertStringContainsString('data-autohide', $head);
+        $this->assertStringContainsString('data-site-header', $head);
+    }
+
+    /** The marker reaches the browser on a real response, not just in source. */
+    public function test_the_page_ships_the_inline_header_script_with_a_nonce(): void
+    {
+        $response = $this->get('/fa')->assertOk();
+        $html = $response->getContent();
+
+        $this->assertMatchesRegularExpression(
+            '/<script nonce="[^"]+">\s*\(function \(\) \{/',
+            $html,
+            'The inline header script must carry the CSP nonce or it will not execute.',
+        );
+        $this->assertStringContainsString("setAttribute('data-autohide'", $html);
+    }
+
     /** The hero's motion layer is decorative and must not reach the a11y tree. */
     public function test_the_hero_motion_layer_is_hidden_from_assistive_technology(): void
     {

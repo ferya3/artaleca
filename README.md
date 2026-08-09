@@ -18,7 +18,7 @@ server-rendered Blade, Tailwind CSS v4 and effectively no client-side framework.
 | JavaScript | ~2 KB of vanilla progressive enhancement. No React/Vue/Alpine. |
 | Fonts | One self-hosted Vazirmatn variable font (111 KB) covering all three scripts |
 
-**Production bundle:** ~9.6 KB CSS and ~0.8 KB JS, gzipped, plus one font request.
+**Production bundle:** ~10.2 KB CSS and ~0.5 KB JS, gzipped, plus one font request.
 
 ### Why no JavaScript framework
 
@@ -101,14 +101,24 @@ thread for the LCP text:
   `sticky`, because a sticky header keeps its space in the flow even while
   translated away and left a blank band above the hero.
 
-  Two escape hatches make a hidden navigation safe rather than merely tidy:
-  `:focus-within` reveals it, so a keyboard user tabbing out of the skip-link
-  lands on visible navigation — which is why the hidden state uses `opacity`
-  and not `visibility`, since an invisible element is still focusable and a
-  hidden one is not. And a `<noscript>` rule cancels the whole thing, because
-  script is what reveals the bar and without it the navigation would never
-  come back. It also stays put whenever the mobile menu is open, since the
-  close button lives inside it.
+  **It fails open, and that is the whole design.** The header is the only
+  navigation on a phone and it is hidden until scrolled, so anything that stops
+  the reveal running would take the navigation away for good — no amount of
+  scrolling brings back a bar that nothing can unhide. So the hiding rule is
+  gated on `data-autohide`, which the inline head script sets and nothing else
+  does: no script, no attribute, no hiding.
+
+  That script is inline in `<head>` rather than in the bundle, precisely so a
+  blocked, slow or broken bundle cannot cost a visitor their navigation — the
+  header keeps working with the bundle aborted entirely. It is also why the
+  bundle's own enhancements are each wrapped individually: a throw in one used
+  to take out every one that had not run yet.
+
+  `:focus-within` reveals it too, so a keyboard user tabbing out of the
+  skip-link lands on visible navigation — which is why the hidden state uses
+  `opacity` and not `visibility`, since an invisible element is still focusable
+  and a hidden one is not. It also stays put whenever the mobile menu is open,
+  since the close button lives inside it.
 
   Switching language restores the scroll offset rather than forcing the bar
   open. A language link is clicked *from inside the header*, so landing at the
@@ -146,7 +156,7 @@ environment it is randomly generated and printed once unless `ADMIN_PASSWORD` is
 set. Sign in at `/admin`.
 
 ```bash
-vendor/bin/phpunit    # 165 tests
+vendor/bin/phpunit    # 168 tests
 vendor/bin/pint       # code style
 ```
 

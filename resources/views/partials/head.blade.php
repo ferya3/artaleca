@@ -70,18 +70,97 @@
 
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-{{-- The header hides itself until scrolled, and it is script that reveals it.
-     Without script that would leave the navigation permanently invisible, so
-     the rule is cancelled outright when JavaScript is off. --}}
-<noscript>
-    <style @nonce>
-        [data-site-header] {
-            transform: none !important;
-            opacity: 1 !important;
-            pointer-events: auto !important;
+{{--
+    The header's hide-until-scrolled behaviour lives here, inline and on its
+    own, rather than in the bundle — because it is the only navigation on a
+    phone and it must fail *open*.
+
+    The hiding rule in app.css is keyed on `data-autohide`, which only this
+    script sets. So anything that stops it running — a blocked or slow bundle,
+    a throw in unrelated code, JavaScript switched off — leaves the header
+    simply visible, which is the safe outcome. The previous arrangement had CSS
+    hide the bar by default and script reveal it, so a single script failure
+    removed the site's navigation permanently and no amount of scrolling
+    brought it back.
+
+    Inline and synchronous in <head> so the attribute is set before first
+    paint: deferring it to the module would show the bar and then snatch it
+    away. It carries the CSP nonce; nothing here needs the bundle.
+--}}
+<script @nonce>
+    (function () {
+        var root = document.documentElement;
+
+        try {
+            root.setAttribute('data-autohide', '');
+
+            var REVEAL_AT = 140, HIDE_BELOW = 40, bar = null, ticking = false;
+
+            function header() {
+                return bar || (bar = document.querySelector('[data-site-header]'));
+            }
+
+            function update() {
+                ticking = false;
+                var h = header();
+                if (!h) return;
+
+                var menu = document.querySelector('[data-mobile-menu]');
+
+                // The menu's close button is inside the header, so the bar has
+                // to stay put while the menu is open however far the page has
+                // scrolled.
+                if ((menu && menu.open) || window.scrollY >= REVEAL_AT) {
+                    h.setAttribute('data-revealed', '');
+                } else if (window.scrollY <= HIDE_BELOW) {
+                    h.removeAttribute('data-revealed');
+                }
+            }
+
+            addEventListener('scroll', function () {
+                if (ticking) return;
+                ticking = true;
+                requestAnimationFrame(update);
+            }, { passive: true });
+
+            /*
+             * Switching language keeps your place. A language link is clicked
+             * from inside the header, so landing at the top of the new page
+             * would put the fixed bar over content the visitor never asked to
+             * be taken to. Restoring the offset reveals the header on its own,
+             * because the page is scrolled, and covers nothing.
+             */
+            var KEY = 'header:offset', saved = null;
+
+            try {
+                saved = sessionStorage.getItem(KEY);
+                sessionStorage.removeItem(KEY);
+            } catch (e) { /* storage denied: land at the top, as normal */ }
+
+            addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('[data-keep-header]').forEach(function (link) {
+                    link.addEventListener('click', function () {
+                        try {
+                            sessionStorage.setItem(KEY, String(window.scrollY));
+                        } catch (e) { /* ignore */ }
+                    });
+                });
+
+                if (saved !== null && Number(saved) > 0) {
+                    history.scrollRestoration = 'manual';
+                    // Two-argument form: the options object with
+                    // `behavior: 'instant'` is not understood everywhere.
+                    window.scrollTo(0, Number(saved));
+                }
+
+                update();
+            });
+        } catch (e) {
+            // Fail open. Whatever went wrong, the navigation stays reachable.
+            root.removeAttribute('data-autohide');
         }
-    </style>
-</noscript>
+    })();
+</script>
 
 @if ($schema)
     {{--

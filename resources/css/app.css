@@ -371,7 +371,15 @@
 */
 
 @layer components {
-    [data-site-header]:not([data-revealed]):not(:focus-within) {
+    /*
+     * `[data-autohide]` is set on <html> by the inline script in the head, and
+     * by nothing else. That is the fail-open hinge: if the script does not run
+     * — blocked, thrown, switched off — the attribute is absent, this rule
+     * never applies, and the header is simply visible. Keying the hidden state
+     * on the script's own success is what stops a script failure from removing
+     * the site's only navigation on a phone.
+     */
+    [data-autohide] [data-site-header]:not([data-revealed]):not(:focus-within) {
         transform: translateY(-100%);
         opacity: 0;
         pointer-events: none;
