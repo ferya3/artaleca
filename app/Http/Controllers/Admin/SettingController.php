@@ -58,6 +58,8 @@ class SettingController extends Controller
              */
             'media' => [
                 'media.hero' => ['label' => __('admin.settings_fields.media_hero'), 'type' => 'image', 'translatable' => false],
+                'media.hero_mobile' => ['label' => __('admin.settings_fields.media_hero_mobile'), 'type' => 'image', 'translatable' => false,
+                    'hint' => __('admin.settings_fields.media_hero_mobile_hint')],
                 'media.quality_lab' => ['label' => __('admin.settings_fields.media_quality_lab'), 'type' => 'image', 'translatable' => false],
                 'media.plant_exterior' => ['label' => __('admin.settings_fields.media_plant_exterior'), 'type' => 'image', 'translatable' => false],
                 'media.kiln' => ['label' => __('admin.settings_fields.media_kiln'), 'type' => 'image', 'translatable' => false],

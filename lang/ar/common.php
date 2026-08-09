@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'scroll_down' => 'تابع',
     'read_more' => 'اقرأ المزيد',
     'learn_more' => 'تفاصيل أكثر',
     'view_all' => 'عرض الكل',

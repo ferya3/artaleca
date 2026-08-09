@@ -88,6 +88,7 @@
                          already definite simply makes the ratio inert. --}}
                     <x-media
                         :src="setting('media.hero')"
+                        :mobile-src="setting('media.hero_mobile')"
                         seed="arta-hero"
                         ratio="4/3"
                         tone="dark"
@@ -114,10 +115,14 @@
         <div class="container-page relative hidden pb-16 md:block lg:pb-20">
             <x-stat-strip tone="dark" class="border border-hairline-dark" />
         </div>
+
+        {{-- Sits in the padding below the copy on a phone and below the figures
+             strip on a desktop, so it never lands on top of either. --}}
+        <x-scroll-cue href="#intro" />
     </section>
 
     {{-- ── What the material does ─────────────────────────────────────── --}}
-    <section class="border-b border-hairline py-section">
+    <section id="intro" class="border-b border-hairline py-section">
         <div class="container-page">
             <div class="max-w-3xl">
                 <p class="eyebrow mb-3">{{ __('nav.about') }}</p>

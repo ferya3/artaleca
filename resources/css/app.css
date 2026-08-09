@@ -465,6 +465,42 @@
     }
 }
 
+@layer components {
+    /*
+     * The scroll cue. The chevron drifts down and fades rather than bouncing:
+     * a bounce reads as an alert, a drift reads as a direction. Transform and
+     * opacity only, so it composites like everything else here, and the base
+     * reduced-motion rule freezes it with no separate opt-out.
+     */
+    .scroll-cue__chevron {
+        animation: scroll-cue 2.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+
+    .scroll-cue:hover .scroll-cue__chevron,
+    .scroll-cue:focus-visible .scroll-cue__chevron {
+        /* Someone who has found it does not need to be pointed at it. */
+        animation-play-state: paused;
+    }
+}
+
+@keyframes scroll-cue {
+    0% {
+        transform: translateY(-3px);
+        opacity: 0;
+    }
+    35% {
+        opacity: 1;
+    }
+    70% {
+        transform: translateY(6px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(6px);
+        opacity: 0;
+    }
+}
+
 /* Translations are one full tile: 72px grid, 180px far granules, 260px near. */
 @keyframes hero-drift-grid {
     from {

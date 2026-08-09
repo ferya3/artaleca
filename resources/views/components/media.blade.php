@@ -6,6 +6,7 @@
     'tone' => 'light',
     'eager' => false,
     'sizes' => '(min-width: 1024px) 33vw, 100vw',
+    'mobileSrc' => null,
 ])
 
 @php
@@ -96,6 +97,7 @@
              page's LCP candidate and the only one worth preloading. --}}
         <x-picture
             :src="$src"
+            :mobile-src="$mobileSrc"
             :alt="$alt"
             :sizes="$sizes"
             :eager="$eager"

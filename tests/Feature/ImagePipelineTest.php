@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class ImagePipelineTest extends TestCase
@@ -61,6 +62,47 @@ class ImagePipelineTest extends TestCase
             $this->assertTrue(
                 Storage::disk('media')->exists(Str::after($candidate, '/storage/media/')),
                 "The srcset names {$candidate}, which was never written.",
+            );
+        }
+    }
+
+    /**
+     * A `srcset` descriptor is a *width*. Every derivative must therefore be
+     * exactly as wide as it claims, including for portrait images — scaling by
+     * the longest edge made a portrait `-480.webp` 360px across while still
+     * being advertised as `480w`, so the browser picked a candidate a quarter
+     * narrower than it asked for and rendered it soft. Nothing looked broken,
+     * which is precisely why it needs asserting.
+     *
+     * @return list<array{0:int,1:int}>
+     */
+    public static function orientations(): array
+    {
+        return [
+            'landscape' => [2000, 1200],
+            'portrait' => [1200, 1600],
+            'square' => [1400, 1400],
+            'panorama' => [2400, 800],
+        ];
+    }
+
+    #[DataProvider('orientations')]
+    public function test_each_derivative_is_exactly_as_wide_as_its_srcset_claims(int $width, int $height): void
+    {
+        $url = Media::storeImage($this->upload($width, $height), 'products');
+
+        preg_match_all('/(\S+) (\d+)w/', (string) Image::srcset($url), $matches, PREG_SET_ORDER);
+        $this->assertNotEmpty($matches);
+
+        foreach ($matches as [, $path, $claimed]) {
+            $real = getimagesizefromstring(
+                Storage::disk('media')->get(Str::after($path, '/storage/media/'))
+            );
+
+            $this->assertSame(
+                (int) $claimed,
+                $real[0],
+                "{$path} is advertised as {$claimed}w but is actually {$real[0]}px wide.",
             );
         }
     }

@@ -4,6 +4,9 @@
     'sizes' => '(min-width: 1024px) 33vw, 100vw',
     'eager' => false,
     'preload' => false,
+    'mobileSrc' => null,
+    'mobileSizes' => '100vw',
+    'mobileUpTo' => '767.98px',
 ])
 
 @php
@@ -25,9 +28,35 @@
      */
     $dimensions = Image::dimensions($src);
     $srcset = Image::srcset($src);
+
+    /*
+     * Art direction, not just resolution switching. `mobileSrc` is a different
+     * photograph — cropped for a tall narrow screen — rather than a smaller
+     * copy of the same one, which is why it needs `<source media>` and not
+     * another `srcset` candidate.
+     *
+     * The browser evaluates sources in order and fetches exactly one, so the
+     * phone never downloads the desktop image and vice versa. `max-width` in
+     * the media query mirrors how the layout itself breaks, so the image
+     * changes on the same line the design does.
+     */
+    $art = filled($mobileSrc) && $mobileSrc !== $src;
+    $mobileSrcset = $art ? Image::srcset($mobileSrc) : null;
+    $mobileQuery = "(max-width: {$mobileUpTo})";
 @endphp
 
 <picture>
+    @if ($art)
+        @if ($mobileSrcset)
+            <source media="{{ $mobileQuery }}" type="image/webp"
+                    srcset="{{ $mobileSrcset }}" sizes="{{ $mobileSizes }}">
+        @endif
+        {{-- The original format as well, for a browser that cannot take WebP:
+             without it such a browser would fall through to the desktop
+             photograph rather than to this one. --}}
+        <source media="{{ $mobileQuery }}" srcset="{{ $mobileSrc }}" sizes="{{ $mobileSizes }}">
+    @endif
+
     @if ($srcset)
         <source type="image/webp" srcset="{{ $srcset }}" sizes="{{ $sizes }}">
     @endif
@@ -49,11 +78,23 @@
     {{-- Preload is reserved for the one image likely to be the LCP element.
          Preloading more does not make a page faster; it makes every preload
          compete for the same bandwidth. `@once` is what enforces "only the
-         first" even when several components ask. --}}
+         first" even when several components ask.
+
+         With art direction there are two, each carrying the same `media` query
+         as its source — so a phone still fetches exactly one, and it is the
+         one it is about to display. A preload without the query would pull the
+         desktop photograph onto a phone that never shows it. --}}
     @once
         @push('head')
-            <link rel="preload" as="image" fetchpriority="high"
-                  imagesrcset="{{ $srcset }}" imagesizes="{{ $sizes }}">
+            @if ($mobileSrcset)
+                <link rel="preload" as="image" fetchpriority="high" media="{{ $mobileQuery }}"
+                      imagesrcset="{{ $mobileSrcset }}" imagesizes="{{ $mobileSizes }}">
+                <link rel="preload" as="image" fetchpriority="high" media="(min-width: {{ $mobileUpTo }})"
+                      imagesrcset="{{ $srcset }}" imagesizes="{{ $sizes }}">
+            @else
+                <link rel="preload" as="image" fetchpriority="high"
+                      imagesrcset="{{ $srcset }}" imagesizes="{{ $sizes }}">
+            @endif
         @endpush
     @endonce
 @endif

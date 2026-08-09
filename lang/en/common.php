@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'scroll_down' => 'Scroll',
     'read_more' => 'Read more',
     'learn_more' => 'Learn more',
     'view_all' => 'View all',

@@ -73,6 +73,65 @@ class SiteImageryTest extends TestCase
         $this->assertStringContainsString('rel="preload" as="image"', $html);
     }
 
+    /**
+     * Two heroes, art-directed. The phone gets a different photograph — a
+     * taller crop — not a smaller copy of the desktop one, which is why it
+     * needs `<source media>` rather than another `srcset` candidate. The
+     * browser then fetches exactly one of the two.
+     */
+    public function test_a_separate_mobile_hero_is_offered_to_phones(): void
+    {
+        Storage::fake('media');
+
+        $this->actingAs($this->admin())->put('/admin/settings', [
+            'media|hero' => UploadedFile::fake()->image('desktop.jpg', 2400, 1600),
+            'media|hero_mobile' => UploadedFile::fake()->image('mobile.jpg', 1200, 1600),
+        ]);
+
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        // The phone's source is listed first and carries the media query, or
+        // the desktop candidate would win before it is ever considered.
+        $this->assertMatchesRegularExpression(
+            '/<source media="\(max-width: [^"]+\)" type="image\/webp"[^>]*-1200x1600-\d+\.webp/',
+            $html,
+        );
+        $this->assertStringContainsString('-2400x1600-', $html);
+
+        $mobile = (int) strpos($html, '-1200x1600-');
+        $desktop = (int) strpos($html, '-2400x1600-');
+        $this->assertLessThan($desktop, $mobile, 'The mobile source must precede the desktop one.');
+
+        // One preload per viewport, each gated by the same query, so a phone
+        // never pulls the desktop photograph it will not display.
+        $this->assertSame(2, substr_count($html, 'rel="preload" as="image"'));
+    }
+
+    /** With only one hero set, nothing art-directs and there is a single preload. */
+    public function test_one_hero_produces_one_preload_and_no_media_query(): void
+    {
+        Storage::fake('media');
+
+        $this->actingAs($this->admin())->put('/admin/settings', [
+            'media|hero' => UploadedFile::fake()->image('desktop.jpg', 2400, 1600),
+        ]);
+
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        $this->assertSame(1, substr_count($html, 'rel="preload" as="image"'));
+        $this->assertStringNotContainsString('<source media=', $html);
+    }
+
+    /** The cue is a real link, so it works with no script and can be tabbed to. */
+    public function test_the_scroll_cue_links_to_the_section_below_the_hero(): void
+    {
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        $this->assertStringContainsString('class="scroll-cue', $html);
+        $this->assertStringContainsString('href="#intro"', $html);
+        $this->assertStringContainsString('id="intro"', $html);
+    }
+
     /** An unset image must fall back to the placeholder, never to a broken one. */
     public function test_an_unset_image_falls_back_to_the_generated_placeholder(): void
     {

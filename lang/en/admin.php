@@ -90,7 +90,9 @@ return [
     ],
 
     'settings_fields' => [
-        'media_hero' => 'Hero image (home)',
+        'media_hero' => 'Hero image — desktop',
+        'media_hero_mobile' => 'Hero image — mobile',
+        'media_hero_mobile_hint' => 'Optional. A taller crop for a phone screen. Falls back to the desktop image when empty.',
         'media_quality_lab' => 'Quality lab (home)',
         'media_plant_exterior' => 'Plant exterior (about)',
         'media_kiln' => 'Rotary kiln (plant)',

@@ -109,7 +109,7 @@ final class Image
                 return null;
             }
 
-            $master = self::scale($source, min(self::MAX_EDGE, max($width, $height)), $width, $height);
+            $master = self::scaleToLongestEdge($source, min(self::MAX_EDGE, max($width, $height)), $width, $height);
 
             if ($master !== $source) {
                 imagedestroy($source);
@@ -129,8 +129,14 @@ final class Image
 
             // WebP at every width the srcset can ask for, including the master
             // width, so a modern browser is never sent the heavier original.
+            //
+            // Scaled by *width*, not by longest edge: a `srcset` descriptor is
+            // a width, so a portrait image scaled by its longest edge would be
+            // advertised as 480w while actually being 360px across, and the
+            // browser would pick a candidate a quarter narrower than it asked
+            // for and render it soft.
             foreach (self::variantWidths($masterWidth) as $variant) {
-                $resized = self::scale($master, $variant, $masterWidth, $masterHeight);
+                $resized = self::scaleToWidth($master, $variant, $masterWidth, $masterHeight);
                 self::encode($resized, "{$directory}/{$base}-{$variant}.webp", 'webp');
 
                 if ($resized !== $master) {
@@ -235,16 +241,31 @@ final class Image
         ));
     }
 
-    /** Scale so the longest edge is `$target`; returns the source untouched if it already fits. */
-    private static function scale(GdImage $source, int $target, int $width, int $height): GdImage
+    /**
+     * Cap the longest edge at `$target`. Used for the master, where the point
+     * is to bound what is stored regardless of orientation.
+     */
+    private static function scaleToLongestEdge(GdImage $source, int $target, int $width, int $height): GdImage
     {
-        $longest = max($width, $height);
+        return self::resample($source, $target / max($width, $height), $width, $height);
+    }
 
-        if ($longest <= $target) {
+    /**
+     * Scale so the *width* is `$target`. Used for srcset derivatives, whose
+     * `w` descriptors the browser reads as widths.
+     */
+    private static function scaleToWidth(GdImage $source, int $target, int $width, int $height): GdImage
+    {
+        return self::resample($source, $target / $width, $width, $height);
+    }
+
+    /** Returns the source untouched when it is already at or below the target. */
+    private static function resample(GdImage $source, float $ratio, int $width, int $height): GdImage
+    {
+        if ($ratio >= 1.0) {
             return $source;
         }
 
-        $ratio = $target / $longest;
         $newWidth = max(1, (int) round($width * $ratio));
         $newHeight = max(1, (int) round($height * $ratio));
 

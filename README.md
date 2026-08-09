@@ -396,6 +396,13 @@ placeholder while it is empty, so an unset image is never a broken one, and an
 uploaded one goes through the same pipeline as everything else: capped,
 stripped of EXIF, and served as WebP with a real `srcset`.
 
+The hero takes **two** images — a desktop photograph and a taller crop for a
+phone. That is art direction, not resolution switching, so it is a
+`<source media>` rather than another `srcset` candidate: the browser evaluates
+the sources in order and fetches exactly one, and the preload carries the same
+media query so a phone never pulls the desktop photograph it will not display.
+Leaving the mobile one empty falls back to the desktop image.
+
 **Files are uploaded, never typed as paths.** The stored filename is generated
 and the extension comes from the file's sniffed MIME type, so an editor cannot
 overwrite an existing asset or store something executable. Images go to the
