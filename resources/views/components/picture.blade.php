@@ -4,6 +4,7 @@
     'sizes' => '(min-width: 1024px) 33vw, 100vw',
     'eager' => false,
     'preload' => false,
+    'preloadMedia' => null,
     'mobileSrc' => null,
     'mobileSizes' => '100vw',
     'mobileUpTo' => '767.98px',
@@ -45,7 +46,10 @@
     $mobileQuery = "(max-width: {$mobileUpTo})";
 @endphp
 
-<picture>
+{{-- `contents` removes the <picture> box from layout entirely. It is
+     `display: inline` by default, so an <img class="h-full"> inside it has no
+     definite parent height to resolve against and silently fails to fill. --}}
+<picture class="contents">
     @if ($art)
         @if ($mobileSrcset)
             <source media="{{ $mobileQuery }}" type="image/webp"
@@ -75,26 +79,18 @@
 </picture>
 
 @if ($preload && $srcset)
-    {{-- Preload is reserved for the one image likely to be the LCP element.
-         Preloading more does not make a page faster; it makes every preload
-         compete for the same bandwidth. `@once` is what enforces "only the
-         first" even when several components ask.
+    {{-- Preload is reserved for whichever image is the LCP element on this
+         viewport. The two heroes are separate blocks, so each carries its own
+         media query and a phone never eagerly fetches the desktop photograph
+         it is not going to display.
 
-         With art direction there are two, each carrying the same `media` query
-         as its source — so a phone still fetches exactly one, and it is the
-         one it is about to display. A preload without the query would pull the
-         desktop photograph onto a phone that never shows it. --}}
-    @once
-        @push('head')
-            @if ($mobileSrcset)
-                <link rel="preload" as="image" fetchpriority="high" media="{{ $mobileQuery }}"
-                      imagesrcset="{{ $mobileSrcset }}" imagesizes="{{ $mobileSizes }}">
-                <link rel="preload" as="image" fetchpriority="high" media="(min-width: {{ $mobileUpTo }})"
-                      imagesrcset="{{ $srcset }}" imagesizes="{{ $sizes }}">
-            @else
-                <link rel="preload" as="image" fetchpriority="high"
-                      imagesrcset="{{ $srcset }}" imagesizes="{{ $sizes }}">
-            @endif
-        @endpush
-    @endonce
+         Deliberately not wrapped in `@once`: that is keyed per call site, so
+         with one component rendered twice the second push would be silently
+         dropped — and the desktop hero would lose its preload. Only the heroes
+         pass `preload`, so there is nothing to deduplicate. --}}
+    @push('head')
+        <link rel="preload" as="image" fetchpriority="high"
+              @if ($preloadMedia) media="{{ $preloadMedia }}" @endif
+              imagesrcset="{{ $srcset }}" imagesizes="{{ $sizes }}">
+    @endpush
 @endif

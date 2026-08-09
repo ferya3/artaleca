@@ -74,12 +74,15 @@ class SiteImageryTest extends TestCase
     }
 
     /**
-     * Two heroes, art-directed. The phone gets a different photograph — a
-     * taller crop — not a smaller copy of the desktop one, which is why it
-     * needs `<source media>` rather than another `srcset` candidate. The
-     * browser then fetches exactly one of the two.
+     * The two heroes are separate blocks, not one responsive element.
+     *
+     * They want opposite things — a full-bleed backdrop with the copy on top,
+     * against a photograph beside the copy — and every attempt to make one
+     * element do both ended with the image's own aspect ratio deciding the
+     * layout's width. Only one block is ever displayed, so each carries its own
+     * preload scoped to the viewport it serves.
      */
-    public function test_a_separate_mobile_hero_is_offered_to_phones(): void
+    public function test_the_two_heroes_are_separate_blocks_each_preloading_its_own_image(): void
     {
         Storage::fake('media');
 
@@ -90,25 +93,21 @@ class SiteImageryTest extends TestCase
 
         $html = $this->get('/fa')->assertOk()->getContent();
 
-        // The phone's source is listed first and carries the media query, or
-        // the desktop candidate would win before it is ever considered.
-        $this->assertMatchesRegularExpression(
-            '/<source media="\(max-width: [^"]+\)" type="image\/webp"[^>]*-1200x1600-\d+\.webp/',
-            $html,
-        );
+        // One block for phones, one for everything above `md`.
+        $this->assertStringContainsString('md:hidden', $html);
+        $this->assertStringContainsString('hidden overflow-hidden bg-ink-950 text-white md:block', $html);
+
+        $this->assertStringContainsString('-1200x1600-', $html);
         $this->assertStringContainsString('-2400x1600-', $html);
 
-        $mobile = (int) strpos($html, '-1200x1600-');
-        $desktop = (int) strpos($html, '-2400x1600-');
-        $this->assertLessThan($desktop, $mobile, 'The mobile source must precede the desktop one.');
-
-        // One preload per viewport, each gated by the same query, so a phone
-        // never pulls the desktop photograph it will not display.
+        // Two preloads, each gated, so neither viewport fetches the other's.
         $this->assertSame(2, substr_count($html, 'rel="preload" as="image"'));
+        $this->assertStringContainsString('media="(max-width: 767.98px)"', $html);
+        $this->assertStringContainsString('media="(min-width: 768px)"', $html);
     }
 
-    /** With only one hero set, nothing art-directs and there is a single preload. */
-    public function test_one_hero_produces_one_preload_and_no_media_query(): void
+    /** With no mobile image set, the phone block falls back to the desktop one. */
+    public function test_the_phone_hero_falls_back_to_the_desktop_image(): void
     {
         Storage::fake('media');
 
@@ -118,8 +117,14 @@ class SiteImageryTest extends TestCase
 
         $html = $this->get('/fa')->assertOk()->getContent();
 
-        $this->assertSame(1, substr_count($html, 'rel="preload" as="image"'));
-        $this->assertStringNotContainsString('<source media=', $html);
+        // The same photograph is used by both blocks, so its srcset appears in
+        // each of them rather than the phone falling back to the placeholder.
+        $this->assertGreaterThanOrEqual(
+            2,
+            substr_count($html, '-2400x1600-480.webp'),
+            'The phone hero should reuse the desktop image when no mobile one is set.',
+        );
+        $this->assertSame(2, substr_count($html, 'rel="preload" as="image"'));
     }
 
     /** The cue is a real link, so it works with no script and can be tabbed to. */

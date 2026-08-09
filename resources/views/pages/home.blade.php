@@ -1,123 +1,112 @@
 <x-layouts.app>
 
-    {{-- ── Hero ───────────────────────────────────────────────────────────
-         On a phone the copy sits *over* the image; from `md` up the visual
-         moves beside it, where the text needs no scrim and the LCP element is
-         predictable. --}}
-    <section class="relative overflow-hidden bg-ink-950 text-white">
+    {{--
+        ── Hero, phone ────────────────────────────────────────────────────
+        Its own block rather than a responsive variant of the desktop one.
+        The two want opposite things — a full-bleed backdrop with the copy on
+        top, against a photograph beside the copy — and every attempt to make
+        one element do both ended with the image's own aspect ratio deciding
+        the layout's width. Here the image simply covers a box the copy sizes,
+        so it has no say in anything.
+    --}}
+    <section class="relative overflow-hidden bg-ink-950 text-white md:hidden">
+        <x-hero-motion />
+
+        <div class="relative">
+            {{-- Absolute and ratio-free: it fills whatever the copy asks for. --}}
+            <x-media
+                fill
+                :src="setting('media.hero_mobile') ?: setting('media.hero')"
+                seed="arta-hero-mobile"
+                tone="dark"
+                eager
+                preload-media="(max-width: 767.98px)"
+                :alt="__('home.hero_title')"
+                sizes="100vw"
+            />
+
+            {{-- Legibility over a photograph nobody has approved yet. --}}
+            <div class="absolute inset-0 bg-gradient-to-b from-ink-950/45 via-ink-950/60 to-ink-950/72"
+                 aria-hidden="true"></div>
+
+            {{-- `min-h` on the copy, not on the image: the content decides the
+                 height and the picture follows, never the other way round.
+                 `svh` rather than `vh` so a phone's collapsing address bar
+                 cannot leave the block taller than the screen. --}}
+            <div class="container-page relative z-10 flex min-h-[72svh] flex-col justify-center py-14">
+                <p class="eyebrow text-clay-400!">{{ __('home.hero_eyebrow') }}</p>
+
+                <h1 class="mt-4 text-3xl font-bold leading-[1.2] sm:text-4xl">
+                    {{ __('home.hero_title') }}
+                </h1>
+
+                <p class="mt-5 max-w-md text-[0.9375rem] leading-relaxed text-ink-200">
+                    {{ __('home.hero_body') }}
+                </p>
+
+                {{-- One action. Over an image a second competes with the first
+                     for the same glance, and the catalogue is a tap away in the
+                     menu. --}}
+                <x-button :href="route('quote')" variant="inverse" size="md" class="mt-7 w-full">
+                    {{ __('home.hero_secondary_cta') }}
+                </x-button>
+            </div>
+        </div>
+
+        <x-scroll-cue href="#intro" />
+    </section>
+
+    {{--
+        ── Hero, desktop ──────────────────────────────────────────────────
+        The visual sits beside the copy, so the text needs no scrim and the
+        LCP element is predictable.
+    --}}
+    <section class="relative hidden overflow-hidden bg-ink-950 text-white md:block">
         <x-hero-motion />
 
         <div class="container-page relative">
-            {{--
-                Below `md` both children are placed in the same cell
-                (`col-start-1 row-start-1`), which stacks them without taking
-                either out of flow — so the row still sizes itself to the taller
-                one and nothing has to be positioned absolutely or measured.
-
-                From `md` up, `col-start-auto`/`row-start-auto` hands placement
-                back to normal flow and the old two-column layout returns.
-            --}}
-            {{-- `items-center` only from `md`. While the two share a cell the
-                 default stretch is what lets the image fill whatever height the
-                 copy asks for; centring them would leave the image at its
-                 minimum and open a gap under it. --}}
-            {{-- No padding on the grid itself below `md`: the copy carries its
-                 own, and padding here would sit outside the image and show a
-                 band of bare background under it. --}}
-            <div class="grid md:items-center md:gap-12 md:py-16 lg:grid-cols-12 lg:gap-16 lg:py-24">
-                <div class="z-10 col-start-1 row-start-1 min-w-0 py-14 md:col-start-auto md:row-start-auto md:py-0 lg:col-span-6">
+            <div class="grid items-center gap-12 py-16 lg:grid-cols-12 lg:gap-16 lg:py-24">
+                <div class="min-w-0 lg:col-span-6">
                     <p class="eyebrow text-clay-400!">{{ __('home.hero_eyebrow') }}</p>
 
-                    {{-- 30px on a phone rather than 36px: at the larger size a
-                         three-word Persian line wraps to four rows and pushes
-                         the buttons off the first screen. --}}
-                    <h1 class="mt-4 text-3xl font-bold leading-[1.2] sm:text-4xl md:text-5xl md:leading-[1.15] lg:text-[3.25rem]">
+                    <h1 class="mt-4 text-5xl font-bold leading-[1.15] lg:text-[3.25rem]">
                         {{ __('home.hero_title') }}
                     </h1>
 
-                    <p class="mt-5 max-w-xl text-[0.9375rem] leading-relaxed text-ink-300 md:mt-6 md:text-lg">
+                    <p class="mt-6 max-w-xl text-lg leading-relaxed text-ink-300">
                         {{ __('home.hero_body') }}
                     </p>
 
-                    {{--
-                        A phone gets one action, not two. Over an image the
-                        second button competes with the first for the same
-                        glance, and the catalogue is one tap away in the menu
-                        anyway — so only the quote CTA survives below `md`, at
-                        the `md` size rather than `lg`, which was oversized on a
-                        small screen. The `md:` overrides restore the large
-                        button from the breakpoint up.
-                    --}}
-                    <div class="mt-7 flex flex-col gap-3 sm:flex-row md:mt-9">
-                        {{-- Hidden by a wrapper rather than by a `hidden` class
-                             on the button: the component already carries
-                             `inline-flex`, and two plain display utilities on
-                             one element are decided by Tailwind's own ordering,
-                             not by the order they are written in. `md:contents`
-                             dissolves the wrapper again so the button is a
-                             direct flex item at every size it is visible. --}}
-                        <div class="hidden md:contents">
-                            <x-button :href="route('products.index')" variant="accent" size="lg" class="sm:w-auto">
-                                {{ __('home.hero_primary_cta') }}
-                            </x-button>
-                        </div>
-                        <x-button :href="route('quote')" variant="inverse" size="md"
-                                  class="w-full sm:w-auto md:rounded-lg md:px-8 md:py-4 md:text-base">
+                    <div class="mt-9 flex flex-col gap-3 sm:flex-row">
+                        <x-button :href="route('products.index')" variant="accent" size="lg">
+                            {{ __('home.hero_primary_cta') }}
+                        </x-button>
+                        <x-button :href="route('quote')" variant="inverse" size="lg">
                             {{ __('home.hero_secondary_cta') }}
                         </x-button>
                     </div>
                 </div>
 
-                {{-- Edge to edge on a phone with no frame around it, so a real
-                     photograph reads as part of the hero rather than as a card
-                     dropped into it. The negative inline margin cancels the
-                     container's padding; the section already clips overflow. --}}
-                {{-- `min-w-0` is load-bearing. A grid item's automatic minimum
-                     size is derived from its content, and an aspect ratio turns
-                     a minimum *height* into a minimum *width*: 50vh at 4/3 is
-                     444px, which stretched the shared track past a 375px screen
-                     and dragged the copy 89px off the edge with it. Setting the
-                     minimum explicitly lets the track shrink to the container,
-                     which then makes the ratio inert because both axes are
-                     definite. --}}
-                <div class="relative col-start-1 row-start-1 min-w-0 -mx-5 h-full md:col-start-auto md:row-start-auto md:mx-0 lg:col-span-6">
-                    {{-- `h-full` so the image fills whatever height the copy
-                         asks for, with a 50vh floor so it still reads as a hero
-                         when the copy is short. `md:h-auto` hands the 4/3 ratio
-                         back — an explicit height on a block whose width is
-                         already definite simply makes the ratio inert. --}}
+                <div class="min-w-0 lg:col-span-6">
                     <x-media
                         :src="setting('media.hero')"
-                        :mobile-src="setting('media.hero_mobile')"
                         seed="arta-hero"
                         ratio="4/3"
                         tone="dark"
                         eager
+                        preload-media="(min-width: 768px)"
                         :alt="__('home.hero_title')"
-                        sizes="(min-width: 1024px) 50vw, 100vw"
-                        class="h-full min-h-[50vh] rounded-none border-0 md:h-auto md:min-h-0 md:rounded-lg md:border md:border-hairline-dark"
+                        sizes="50vw"
+                        class="rounded-lg border border-hairline-dark"
                     />
-
-                    {{-- Legibility, not decoration: white copy over a
-                         photograph nobody has approved yet needs a floor under
-                         it. The copy spans the whole block, so this is close to
-                         even rather than a bottom-weighted gradient — just
-                         enough lift at the top for the image to breathe. Gone
-                         entirely once the image moves beside the text. --}}
-                    <div class="absolute inset-0 bg-gradient-to-b from-ink-950/45 via-ink-950/60 to-ink-950/70 md:hidden"
-                         aria-hidden="true"></div>
                 </div>
             </div>
         </div>
 
-        {{-- The wrapper goes with the strip, or a phone keeps 64px of the
-             padding that was holding it. --}}
-        <div class="container-page relative hidden pb-16 md:block lg:pb-20">
+        <div class="container-page relative pb-16 lg:pb-20">
             <x-stat-strip tone="dark" class="border border-hairline-dark" />
         </div>
 
-        {{-- Sits in the padding below the copy on a phone and below the figures
-             strip on a desktop, so it never lands on top of either. --}}
         <x-scroll-cue href="#intro" />
     </section>
 

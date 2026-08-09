@@ -7,6 +7,8 @@
     'eager' => false,
     'sizes' => '(min-width: 1024px) 33vw, 100vw',
     'mobileSrc' => null,
+    'fill' => false,
+    'preloadMedia' => null,
 ])
 
 @php
@@ -77,10 +79,31 @@
         '1/1' => 'aspect-square',
         default => 'aspect-[4/3]',
     };
+
+    /*
+     * `fill` drops the ratio and simply covers the parent. An aspect ratio and
+     * a minimum height together derive a *width* from that height — 50vh at 4/3
+     * is 563px, which overflowed a 390px phone — so a box whose size is decided
+     * by its container must not carry a ratio at all.
+     */
+    if ($fill) {
+        $aspect = 'absolute inset-0 h-full w-full';
+    }
+@endphp
+
+@php
+    /*
+     * `position` is chosen here rather than by writing both and hoping: two
+     * position utilities on one element are resolved by Tailwind's own
+     * ordering, not by the order they appear in the attribute — so emitting
+     * `relative absolute` left the filling image in flow, doubling the height
+     * of the block it was supposed to sit behind.
+     */
+    $position = $fill ? '' : 'relative';
 @endphp
 
 <div {{ $attributes->merge([
-    'class' => 'relative overflow-hidden '.$aspect.' '
+    'class' => trim($position.' overflow-hidden '.$aspect).' '
         .($placeholder && ($tone === 'dark') ? 'bg-ink-900' : 'bg-ink-100'),
 ]) }}>
     @if ($placeholder)
@@ -102,6 +125,7 @@
             :sizes="$sizes"
             :eager="$eager"
             :preload="$eager"
+            :preload-media="$preloadMedia"
             class="h-full w-full object-cover"
         />
     @endif
