@@ -84,11 +84,17 @@ return [
     'settings_groups' => [
         'figures' => 'اعداد کلیدی',
         'copy' => 'متن‌های صفحه اصلی',
+        'media' => 'تصاویر سایت',
         'seo' => 'تنظیمات سئو',
         'business' => 'اطلاعات کسب‌وکار (LocalBusiness)',
     ],
 
     'settings_fields' => [
+        'media_hero' => 'تصویر هیرو (صفحه اصلی)',
+        'media_quality_lab' => 'آزمایشگاه کنترل کیفیت (صفحه اصلی)',
+        'media_plant_exterior' => 'نمای کارخانه (درباره ما)',
+        'media_kiln' => 'کوره دوار (کارخانه)',
+        'media_screening' => 'دانه‌بندی و سرند (کارخانه)',
         'hero_headline' => 'تیتر اصلی صفحه نخست',
         'hero_body' => 'توضیح کوتاه صفحه نخست',
         'quality_body' => 'متن بخش کنترل کیفیت',

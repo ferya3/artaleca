@@ -168,7 +168,7 @@ environment it is randomly generated and printed once unless `ADMIN_PASSWORD` is
 set. Sign in at `/admin`.
 
 ```bash
-vendor/bin/phpunit    # 169 tests
+vendor/bin/phpunit    # 182 tests
 vendor/bin/pint       # code style
 ```
 
@@ -382,10 +382,19 @@ upload and traversal defences.
 `/admin` is a single interface outside the locale prefix, with per-user language.
 
 Everything the site renders is editable: pages, products, categories,
-applications, projects, articles, FAQs, certifications, partners, the gallery,
-documents, enquiries, redirects, the headline numbers, and both the site-wide
-copy and SEO defaults. Nothing that an editor might reasonably want to change
-is hard-coded in a template.
+applications, projects, articles, FAQs, certifications, partners and sales
+representatives, the gallery, documents, enquiries, redirects, the headline
+numbers, the site's photography, and both the site-wide copy and SEO defaults.
+Nothing that an editor might reasonably want to change is hard-coded in a
+template.
+
+That last point had a gap worth naming: the photographs on the *designed*
+pages — the hero, the plant exterior, the kiln, the screening line, the quality
+lab — were fixed in their templates, so changing one meant a deploy. They are
+settings now, under **Site imagery**. Each falls back to the generated granule
+placeholder while it is empty, so an unset image is never a broken one, and an
+uploaded one goes through the same pipeline as everything else: capped,
+stripped of EXIF, and served as WebP with a real `srcset`.
 
 **Files are uploaded, never typed as paths.** The stored filename is generated
 and the extension comes from the file's sniffed MIME type, so an editor cannot

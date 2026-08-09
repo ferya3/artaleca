@@ -87,6 +87,7 @@
                          back — an explicit height on a block whose width is
                          already definite simply makes the ratio inert. --}}
                     <x-media
+                        :src="setting('media.hero')"
                         seed="arta-hero"
                         ratio="4/3"
                         tone="dark"
@@ -182,6 +183,7 @@
     <section class="py-section">
         <div class="container-page grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <x-media
+                :src="setting('media.quality_lab')"
                 seed="arta-quality-lab"
                 ratio="4/3"
                 :alt="__('home.quality_title')"

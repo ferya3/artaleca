@@ -84,11 +84,17 @@ return [
     'settings_groups' => [
         'figures' => 'Key numbers',
         'copy' => 'Homepage copy',
+        'media' => 'Site imagery',
         'seo' => 'SEO settings',
         'business' => 'Business details (LocalBusiness)',
     ],
 
     'settings_fields' => [
+        'media_hero' => 'Hero image (home)',
+        'media_quality_lab' => 'Quality lab (home)',
+        'media_plant_exterior' => 'Plant exterior (about)',
+        'media_kiln' => 'Rotary kiln (plant)',
+        'media_screening' => 'Screening and grading (plant)',
         'hero_headline' => 'Homepage headline',
         'hero_body' => 'Homepage lead paragraph',
         'quality_body' => 'Quality section body',

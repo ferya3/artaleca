@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Models\Setting;
 use App\Support\Seo;
 
 if (! function_exists('seo')) {
@@ -12,6 +13,21 @@ if (! function_exists('seo')) {
     function seo(): Seo
     {
         return app(Seo::class);
+    }
+}
+
+if (! function_exists('setting')) {
+    /**
+     * An editor-managed setting, read straight from a template.
+     *
+     * Exists so a Blade view can reach the settings table without an import:
+     * a `use` statement cannot live inside a component slot, which is where
+     * most page templates put their PHP. Reads are memoised per request, so
+     * calling this from several templates costs one query, not several.
+     */
+    function setting(string $key, mixed $default = null): mixed
+    {
+        return Setting::get($key, $default);
     }
 }
 

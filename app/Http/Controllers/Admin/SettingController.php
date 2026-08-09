@@ -49,6 +49,21 @@ class SettingController extends Controller
                 'contact.note' => ['label' => __('admin.settings_fields.contact_note'), 'type' => 'text', 'max' => 240],
             ],
 
+            /*
+             * ── Site imagery ────────────────────────────────────────────
+             * The photographs on the designed pages — hero, plant, kiln —
+             * which were previously fixed in the templates. Each one falls
+             * back to the deterministic "granule field" placeholder while it
+             * is empty, so an unset image is never a broken one.
+             */
+            'media' => [
+                'media.hero' => ['label' => __('admin.settings_fields.media_hero'), 'type' => 'image', 'translatable' => false],
+                'media.quality_lab' => ['label' => __('admin.settings_fields.media_quality_lab'), 'type' => 'image', 'translatable' => false],
+                'media.plant_exterior' => ['label' => __('admin.settings_fields.media_plant_exterior'), 'type' => 'image', 'translatable' => false],
+                'media.kiln' => ['label' => __('admin.settings_fields.media_kiln'), 'type' => 'image', 'translatable' => false],
+                'media.screening' => ['label' => __('admin.settings_fields.media_screening'), 'type' => 'image', 'translatable' => false],
+            ],
+
             // ── SEO ─────────────────────────────────────────────────────
             'seo' => [
                 'seo.default_title' => ['label' => __('admin.settings_fields.seo_title'), 'type' => 'text', 'max' => 70],
