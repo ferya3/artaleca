@@ -128,7 +128,7 @@
     <section class="border-t border-hairline bg-surface-muted py-section">
         <div class="container-page grid gap-12 lg:grid-cols-12 lg:gap-16">
 
-            <div class="lg:col-span-7">
+            <div class="min-w-0 lg:col-span-7">
                 @if (filled($product->description))
                     <h2 class="text-xl font-bold text-ink-950">{{ __('product.description') }}</h2>
                     <div class="prose-industrial mt-5">{!! nl2br(e($product->description)) !!}</div>
@@ -207,7 +207,7 @@
                 @endif
             </div>
 
-            <div class="lg:col-span-5">
+            <div class="min-w-0 lg:col-span-5">
                 <div class="panel p-6">
                     <h2 class="text-xl font-bold text-ink-950">{{ __('product.technical_data') }}</h2>
                     <x-spec-table :product="$product" class="mt-4" />

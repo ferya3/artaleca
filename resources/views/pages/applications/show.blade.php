@@ -9,7 +9,7 @@
     <section class="py-section">
         <div class="container-page grid gap-12 lg:grid-cols-12 lg:gap-16">
 
-            <div class="lg:col-span-7">
+            <div class="min-w-0 lg:col-span-7">
                 <x-media
                     :src="$application->image"
                     :seed="$application->slug"
@@ -28,7 +28,7 @@
             @php $benefits = $application->benefitsForLocale(); @endphp
 
             @if ($benefits !== [])
-                <aside class="lg:col-span-5">
+                <aside class="min-w-0 lg:col-span-5">
                     <div class="panel-muted p-6 lg:sticky lg:top-28">
                         <h2 class="text-lg font-bold text-ink-950">{{ __('applications.benefits') }}</h2>
                         <ul class="mt-5 space-y-4">

@@ -22,7 +22,7 @@
     <section class="py-section">
         <div class="container-page grid gap-12 lg:grid-cols-12 lg:gap-16">
 
-            <div class="lg:col-span-8">
+            <div class="min-w-0 lg:col-span-8">
                 <x-media
                     :src="$project->cover_image"
                     :seed="$project->slug"
@@ -65,7 +65,7 @@
                 @endif
             </div>
 
-            <aside class="lg:col-span-4">
+            <aside class="min-w-0 lg:col-span-4">
                 <div class="lg:sticky lg:top-28">
                     @if ($facts !== [])
                         <dl class="divide-y divide-hairline overflow-hidden rounded-lg border border-hairline bg-surface-muted">

@@ -10,7 +10,7 @@
         <div class="container-page grid gap-12 lg:grid-cols-12 lg:gap-16">
 
             {{-- ── Test schedule ─────────────────────────────────────── --}}
-            <div class="lg:col-span-7">
+            <div class="min-w-0 lg:col-span-7">
                 <h2 class="text-xl font-bold text-ink-950">{{ __('about.quality_tests_title') }}</h2>
 
                 <div class="mt-6 overflow-x-auto">
@@ -42,7 +42,7 @@
             </div>
 
             {{-- ── Sampling to certificate ───────────────────────────── --}}
-            <div class="lg:col-span-5">
+            <div class="min-w-0 lg:col-span-5">
                 <div class="panel-muted p-6">
                     <h2 class="text-lg font-bold text-ink-950">{{ __('about.quality_process_title') }}</h2>
 

@@ -229,6 +229,34 @@ class HeaderMarkupTest extends TestCase
         $this->assertStringContainsString("setAttribute('data-autohide'", $html);
     }
 
+    /**
+     * Every page-grid column must carry `min-w-0`.
+     *
+     * A grid item's automatic minimum size is its content, so it refuses to
+     * shrink below it. One wide table inside a column therefore stretches the
+     * whole track past the viewport instead of scrolling inside its own
+     * `overflow-x-auto` wrapper — and because the track is shared, the *text*
+     * in the neighbouring column gets dragged off the screen with it.
+     *
+     * That is invisible on a desktop and obvious on a phone, which is exactly
+     * the combination that needs a test rather than an eye.
+     */
+    public function test_every_page_grid_column_can_shrink_below_its_content(): void
+    {
+        $offenders = [];
+
+        foreach (glob(resource_path('views/pages').'/{,*/}*.blade.php', GLOB_BRACE) as $file) {
+            foreach (file($file) as $number => $line) {
+                if (preg_match('/class="([^"]*\blg:col-span-\d[^"]*)"/', $line, $m)
+                    && ! str_contains($m[1], 'min-w-0')) {
+                    $offenders[] = basename($file).':'.($number + 1);
+                }
+            }
+        }
+
+        $this->assertSame([], $offenders, 'Grid columns without min-w-0: '.implode(', ', $offenders));
+    }
+
     /** The hero's motion layer is decorative and must not reach the a11y tree. */
     public function test_the_hero_motion_layer_is_hidden_from_assistive_technology(): void
     {

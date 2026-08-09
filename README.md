@@ -62,6 +62,18 @@ under `@theme`; templates reference the semantic names, never raw values.
 
 ### On a phone
 
+**Mobile first, literally.** Base styles are the phone; `md:` and `lg:` add to
+them. Nothing is written desktop-down and then walked back, so the small screen
+is never the leftover case.
+
+One rule earns its own line because breaking it is invisible on a desktop:
+**every page-grid column carries `min-w-0`.** A grid item's automatic minimum
+size is its content, so it will not shrink below it — one wide table inside a
+column stretches the whole track past the viewport instead of scrolling inside
+its own wrapper, and drags the text in the neighbouring column off the screen
+with it. The same trap caught the hero, where an aspect ratio turned a minimum
+*height* into a 444px minimum *width* on a 375px phone. There is a test for it.
+
 The mobile header is a three-column grid — menu button, logo, spacer — so the
 logo is optically centred rather than merely placed after the button. Grid
 columns follow the writing direction on their own, which puts the button at the
@@ -156,7 +168,7 @@ environment it is randomly generated and printed once unless `ADMIN_PASSWORD` is
 set. Sign in at `/admin`.
 
 ```bash
-vendor/bin/phpunit    # 168 tests
+vendor/bin/phpunit    # 169 tests
 vendor/bin/pint       # code style
 ```
 

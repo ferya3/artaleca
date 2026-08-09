@@ -25,7 +25,7 @@
                  own, and padding here would sit outside the image and show a
                  band of bare background under it. --}}
             <div class="grid md:items-center md:gap-12 md:py-16 lg:grid-cols-12 lg:gap-16 lg:py-24">
-                <div class="z-10 col-start-1 row-start-1 py-14 md:col-start-auto md:row-start-auto md:py-0 lg:col-span-6">
+                <div class="z-10 col-start-1 row-start-1 min-w-0 py-14 md:col-start-auto md:row-start-auto md:py-0 lg:col-span-6">
                     <p class="eyebrow text-clay-400!">{{ __('home.hero_eyebrow') }}</p>
 
                     {{-- 30px on a phone rather than 36px: at the larger size a
@@ -72,7 +72,15 @@
                      photograph reads as part of the hero rather than as a card
                      dropped into it. The negative inline margin cancels the
                      container's padding; the section already clips overflow. --}}
-                <div class="relative col-start-1 row-start-1 -mx-5 h-full md:col-start-auto md:row-start-auto md:mx-0 lg:col-span-6">
+                {{-- `min-w-0` is load-bearing. A grid item's automatic minimum
+                     size is derived from its content, and an aspect ratio turns
+                     a minimum *height* into a minimum *width*: 50vh at 4/3 is
+                     444px, which stretched the shared track past a 375px screen
+                     and dragged the copy 89px off the edge with it. Setting the
+                     minimum explicitly lets the track shrink to the container,
+                     which then makes the ratio inert because both axes are
+                     definite. --}}
+                <div class="relative col-start-1 row-start-1 min-w-0 -mx-5 h-full md:col-start-auto md:row-start-auto md:mx-0 lg:col-span-6">
                     {{-- `h-full` so the image fills whatever height the copy
                          asks for, with a 50vh floor so it still reads as a hero
                          when the copy is short. `md:h-auto` hands the 4/3 ratio

@@ -16,7 +16,7 @@
     <section class="py-section">
         <div class="container-page grid gap-12 lg:grid-cols-12 lg:gap-16">
 
-            <div class="lg:col-span-7" id="form">
+            <div class="min-w-0 lg:col-span-7" id="form">
                 <x-form.status />
 
                 <form method="POST" action="{{ route('quote.store') }}" class="relative grid gap-5 sm:grid-cols-2">
@@ -87,7 +87,7 @@
                 </form>
             </div>
 
-            <aside class="lg:col-span-5">
+            <aside class="min-w-0 lg:col-span-5">
                 <div class="panel-muted p-6 lg:sticky lg:top-28">
                     <h2 class="text-lg font-bold text-ink-950">{{ __('home.export_title') }}</h2>
                     <p class="mt-3 text-sm leading-relaxed text-ink-600">{{ __('home.export_body') }}</p>

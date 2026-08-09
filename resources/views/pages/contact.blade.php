@@ -22,7 +22,7 @@
         <div class="container-page grid gap-12 lg:grid-cols-12 lg:gap-16">
 
             {{-- ── Form ──────────────────────────────────────────────── --}}
-            <div class="lg:col-span-7" id="form">
+            <div class="min-w-0 lg:col-span-7" id="form">
                 <x-form.status />
 
                 <h2 class="text-xl font-bold text-ink-950">{{ __('form.contact_title') }}</h2>
@@ -59,7 +59,7 @@
             </div>
 
             {{-- ── Contact details ───────────────────────────────────── --}}
-            <aside class="lg:col-span-5">
+            <aside class="min-w-0 lg:col-span-5">
                 <div class="panel divide-y divide-hairline overflow-hidden">
 
                     <div class="p-6">
