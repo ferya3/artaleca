@@ -164,8 +164,8 @@ expose_php = Off                 ; no PHP version in response headers
 display_errors = Off             ; never leak a stack trace to a visitor
 log_errors = On
 
-upload_max_filesize = 12M
-post_max_size = 14M
+upload_max_filesize = 12M         ; the app clamps its own limit to this
+post_max_size = 14M              ; must exceed upload_max_filesize
 memory_limit = 256M              ; headroom for GD to decode a large upload
 
 opcache.enable = 1
@@ -176,6 +176,21 @@ opcache.validate_timestamps = 0  ; production: reload FPM to pick up new code
 
 ```bash
 sudo systemctl restart php8.3-fpm
+```
+
+Ubuntu ships `upload_max_filesize = 2M`, and PHP rejects anything larger before
+a single validation rule runs — the only error left is "failed to upload", with
+no size in it. The application clamps its advertised limits to whatever PHP
+accepts, so the form always names a number the server can honour; raising these
+two values is what lifts it.
+
+**Running under `php artisan serve` instead?** That uses the CLI configuration,
+so the same two lines belong in `/etc/php/8.3/cli/conf.d/99-artaleca.ini` — and
+there is no service to restart, just start the server again. Check what is
+actually in force with:
+
+```bash
+php -r 'echo ini_get("upload_max_filesize"), " / ", ini_get("post_max_size"), PHP_EOL;'
 ```
 
 With `validate_timestamps = 0`, a deploy must end in

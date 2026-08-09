@@ -2,6 +2,42 @@
 
 declare(strict_types=1);
 
+if (! function_exists('php_upload_limit_kb')) {
+    /**
+     * The largest upload PHP will actually accept, in kilobytes.
+     *
+     * The smaller of `upload_max_filesize` and `post_max_size`, since a request
+     * has to clear both. Defined here rather than in a support class because a
+     * config file is loaded before the autoloader has a service container to
+     * ask, and the value is frozen into `config:cache` anyway — php.ini does
+     * not change between requests.
+     */
+    function php_upload_limit_kb(): int
+    {
+        $toKb = static function (string $value): int {
+            $value = trim($value);
+
+            if ($value === '' || $value === '-1') {
+                return PHP_INT_MAX;   // unlimited
+            }
+
+            $bytes = (int) $value;
+
+            return match (strtolower(substr($value, -1))) {
+                'g' => $bytes * 1024 * 1024,
+                'm' => $bytes * 1024,
+                'k' => $bytes,
+                default => intdiv($bytes, 1024),
+            };
+        };
+
+        return max(1, min(
+            $toKb((string) ini_get('upload_max_filesize')),
+            $toKb((string) ini_get('post_max_size')),
+        ));
+    }
+}
+
 /*
 |--------------------------------------------------------------------------
 | Site configuration
@@ -117,11 +153,20 @@ return [
 
     /*
     | Uploads accepted by the admin media handler and the RFQ form.
+    |
+    | The limits are clamped to what PHP will actually accept. PHP rejects an
+    | oversized upload at the transport layer, before any rule runs, and all
+    | Laravel can then say is `uploaded` — a failure with no size in it, on a
+    | form that had just advertised a larger one. Promising only what the
+    | server can take means the message names the real number instead.
+    |
+    | Raise `upload_max_filesize` and `post_max_size` in php.ini to lift these;
+    | see docs/deploy-ubuntu.md.
     */
     'uploads' => [
         'image_mimes' => ['jpg', 'jpeg', 'png', 'webp', 'avif'],
         'document_mimes' => ['pdf', 'doc', 'docx', 'xls', 'xlsx'],
-        'max_image_kb' => 4096,
-        'max_document_kb' => 10240,
+        'max_image_kb' => min(4096, php_upload_limit_kb()),
+        'max_document_kb' => min(10240, php_upload_limit_kb()),
     ],
 ];
