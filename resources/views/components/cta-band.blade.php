@@ -6,7 +6,7 @@
 {{-- The site's single conversion band, repeated at the foot of every content
      page. One dark surface, one primary action, one secondary — deliberately
      the only place on a page where two CTAs sit together. --}}
-<section class="relative overflow-hidden bg-ink-950 text-white">
+<section {{ $attributes->merge(['class' => 'relative overflow-hidden bg-ink-950 text-white']) }}>
     <div class="hairline-grid absolute inset-0" aria-hidden="true"></div>
 
     <div class="container-page relative py-16 md:py-20">

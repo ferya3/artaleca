@@ -210,47 +210,49 @@
         </div>
     </section>
 
-    {{-- ── Certifications & partners ──────────────────────────────────── --}}
-    @if ($partners->isNotEmpty())
-        <section class="border-t border-hairline py-section">
-            <div class="container-page">
-                <x-section-heading
-                    :eyebrow="__('common.certificates')"
-                    :title="__('partners.home_title')"
-                    :body="__('partners.home_body')"
-                />
+    {{--
+        ── Pinned showcase ────────────────────────────────────────────────
+        The image stays put while the sections below ride up over it.
 
-                {{-- A quiet logo rail, not a carousel: eight marks in a grid
-                     read faster than eight marks that move. --}}
-                <ul class="mt-10 grid grid-cols-2 gap-px bg-hairline sm:grid-cols-3 lg:grid-cols-6">
-                    @foreach ($partners as $partner)
-                        <li class="flex items-center justify-center bg-white p-6">
-                            @if ($partner->website)
-                                <a href="{{ $partner->website }}" target="_blank" rel="noopener noreferrer"
-                                   class="flex w-full items-center justify-center">
-                            @endif
+        Pure CSS: `position: sticky` pins the picture to the top of the
+        viewport, and because a sticky element still occupies its place in the
+        flow, everything after it simply scrolls past — no scroll listener, no
+        measuring, nothing to run on the main thread. The blocks that pass over
+        it need an opaque background and a position of their own; later siblings
+        paint above an earlier one at the same z-index, which is what covers the
+        image rather than blending with it.
 
-                            @if ($partner->logo)
-                                <img src="{{ $partner->logo }}" alt="{{ $partner->name }}"
-                                     loading="lazy" decoding="async"
-                                     class="h-10 w-auto max-w-full object-contain opacity-70 transition-opacity hover:opacity-100">
-                            @else
-                                <span class="text-center text-xs font-medium text-ink-600">{{ $partner->name }}</span>
-                            @endif
+        The wrapper is what decides how long the pin lasts: the image is held
+        for as long as the wrapper is still on screen.
+    --}}
+    <div class="relative">
+        <div class="sticky top-0 h-[60svh] overflow-hidden bg-ink-950 md:h-[78svh]">
+            <x-media
+                fill
+                :src="setting('media.showcase')"
+                :mobile-src="setting('media.showcase_mobile')"
+                seed="arta-showcase"
+                tone="dark"
+                :alt="__('home.showcase_alt')"
+                sizes="100vw"
+            />
 
-                            @if ($partner->website)
-                                </a>
-                            @endif
-                        </li>
-                    @endforeach
-                </ul>
+            {{-- A floor under the caption, and a top edge dark enough that the
+                 header does not sit on bare photograph when it reveals. --}}
+            <div class="absolute inset-0 bg-gradient-to-t from-ink-950/70 via-transparent to-ink-950/35"
+                 aria-hidden="true"></div>
+
+            <div class="container-page absolute inset-x-0 bottom-0 pb-14 md:pb-20">
+                <p class="eyebrow text-clay-400!">{{ __('common.certificates') }}</p>
+                <p class="mt-3 max-w-lg text-xl font-bold text-white md:text-2xl">
+                    {{ __('home.showcase_caption') }}
+                </p>
             </div>
-        </section>
-    @endif
+        </div>
 
     {{-- ── Projects ───────────────────────────────────────────────────── --}}
     @if ($projects->isNotEmpty())
-        <section class="border-y border-hairline bg-surface-muted py-section">
+        <section class="relative border-y border-hairline bg-surface-muted py-section">
             <div class="container-page">
                 <x-section-heading
                     :eyebrow="__('nav.projects')"
@@ -270,7 +272,7 @@
 
     {{-- ── News ───────────────────────────────────────────────────────── --}}
     @if ($posts->isNotEmpty())
-        <section class="py-section">
+        <section class="relative bg-white py-section">
             <div class="container-page">
                 <x-section-heading
                     :eyebrow="__('nav.news')"
@@ -288,6 +290,7 @@
         </section>
     @endif
 
-    <x-cta-band />
+    <x-cta-band class="relative" />
+    </div>
 
 </x-layouts.app>

@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Application;
 use App\Models\Certificate;
-use App\Models\Partner;
 use App\Models\Post;
 use App\Models\Product;
 use App\Models\Project;
@@ -45,10 +44,6 @@ class HomeController extends Controller
             'certificates' => Certificate::query()
                 ->active()->ordered()
                 ->take(6)->get(),
-
-            'partners' => Partner::query()
-                ->active()->ordered()
-                ->take(12)->get(),
         ];
 
         seo()

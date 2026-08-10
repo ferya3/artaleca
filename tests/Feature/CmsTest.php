@@ -94,7 +94,13 @@ class CmsTest extends TestCase
 
     // ── Partners ────────────────────────────────────────────────────────
 
-    public function test_partners_appear_on_the_homepage(): void
+    /**
+     * Partners no longer surface on the home page — that section became the
+     * pinned showcase image. They are still editor-managed, and a partner with
+     * `kind = representative` still has a public page of its own, so the guard
+     * that matters is that the two do not leak into each other.
+     */
+    public function test_only_representatives_reach_the_public_partner_page(): void
     {
         Partner::create([
             'slug' => 'acme-association',
@@ -103,18 +109,8 @@ class CmsTest extends TestCase
             'is_active' => true,
         ]);
 
-        $this->get('/fa')->assertOk()->assertSee('انجمن نمونه');
-    }
-
-    public function test_an_inactive_partner_is_hidden(): void
-    {
-        Partner::create([
-            'slug' => 'hidden',
-            'name' => ['fa' => 'پنهان', 'en' => 'Hidden', 'ar' => 'مخفي'],
-            'is_active' => false,
-        ]);
-
-        $this->get('/fa')->assertDontSee('پنهان');
+        $this->get('/fa')->assertOk()->assertDontSee('انجمن نمونه');
+        $this->get('/fa/representatives')->assertOk()->assertDontSee('انجمن نمونه');
     }
 
     // ── Gallery ─────────────────────────────────────────────────────────
