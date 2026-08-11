@@ -119,7 +119,7 @@ function bindThemeToggle() {
         (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 
     buttons.forEach((button) => {
-        button.addEventListener('click', () => {
+        button.addEventListener('click', (event) => {
             const next = current() === 'dark' ? 'light' : 'dark';
 
             root.setAttribute('data-theme', next);
@@ -129,6 +129,26 @@ function bindThemeToggle() {
             } catch (error) {
                 // Private mode, or storage full. The choice still applies to
                 // this page; it just will not survive the next one.
+            }
+
+            /*
+             * Hand focus back after a pointer click.
+             *
+             * The header reveals itself for anything focused inside it — an
+             * escape hatch so a keyboard user tabbing in never lands on a bar
+             * that is hidden. A mouse click also leaves focus on the button,
+             * so after switching theme the header stayed pinned open at the
+             * top of the page, where it is supposed to hide. Every other
+             * control up there navigates away, which is why nothing had hit
+             * this before: the toggle is the first one that stays.
+             *
+             * `event.detail` is the click count for a pointer and 0 for a
+             * button activated from the keyboard, which is exactly the
+             * distinction needed — the keyboard user keeps focus and keeps the
+             * header, the mouse user gets the bar back out of the way.
+             */
+            if (event.detail > 0) {
+                button.blur();
             }
         });
     });

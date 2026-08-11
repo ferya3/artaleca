@@ -129,6 +129,42 @@ class ThemeTest extends TestCase
     }
 
     /**
+     * The toggle hands focus back after a pointer click.
+     *
+     * The header reveals itself for anything focused inside it, so a mouse
+     * click left the bar pinned open at the top of the page where it should
+     * hide. Every other control up there navigates away; the toggle is the
+     * first one that stays, which is why nothing had hit this before.
+     *
+     * There is no JavaScript runner in this project, so this asserts the guard
+     * is present in the shipped bundle rather than the behaviour itself — it
+     * catches the line being removed, which is the regression that happened,
+     * and the interaction is verified in a browser. `event.detail` is the part
+     * that matters: unconditional blurring would take the header away from a
+     * keyboard user mid-tab.
+     */
+    public function test_the_toggle_releases_pointer_focus_so_the_header_can_hide(): void
+    {
+        $files = glob(public_path('build/assets/app-*.js'));
+
+        $this->assertNotEmpty($files, 'No built bundle — run `npm run build`.');
+
+        $js = (string) file_get_contents($files[0]);
+
+        $this->assertMatchesRegularExpression(
+            '/detail\s*>\s*0/',
+            $js,
+            'The blur must be conditional, or a keyboard user loses the header while using it.',
+        );
+
+        $this->assertMatchesRegularExpression(
+            '/\.blur\(\)/',
+            $js,
+            'Without this the header stays pinned open after the theme is switched with a mouse.',
+        );
+    }
+
+    /**
      * The admin panel is pinned to light. It is full of literal `bg-white`
      * surfaces that would not invert with the ramp, so a dark operating system
      * would otherwise render near-white text on them.
