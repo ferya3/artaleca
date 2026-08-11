@@ -153,25 +153,51 @@
         </section>
     @endif
 
-    {{-- ── Applications ───────────────────────────────────────────────── --}}
-    @if ($applications->isNotEmpty())
-        <section class="border-y border-hairline bg-surface-muted py-section">
-            <div class="container-page">
-                <x-section-heading
-                    :eyebrow="__('nav.applications')"
-                    :title="__('home.applications_title')"
-                    :body="__('home.applications_body')"
-                    :href="route('applications.index')"
-                />
+    {{--
+        ── Applications ───────────────────────────────────────────────────
+        One infographic instead of a card grid: the relationship between grade
+        and use is a single picture, and nine cards were telling it in pieces.
 
-                <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    @foreach ($applications as $application)
-                        <x-application-card :application="$application" />
-                    @endforeach
-                </div>
+        The image is deliberately *not* `object-cover` like every other
+        photograph on the site. An infographic carries text, and cropping it to
+        a fixed ratio would cut that text off — so it keeps its own aspect ratio
+        and the box takes whatever height the artwork asks for. `width`/`height`
+        still come off the filename, so the space is reserved before it loads
+        and nothing below it shifts.
+    --}}
+    @php($infographic = setting('media.applications_infographic'))
+    <section class="border-y border-hairline bg-surface-muted py-section">
+        <div class="container-page">
+            <x-section-heading
+                :eyebrow="__('nav.applications')"
+                :title="__('home.applications_title')"
+                :body="__('home.applications_body')"
+                :href="route('applications.index')"
+            />
+
+            <div class="mt-12 overflow-hidden rounded-lg border border-hairline bg-white shadow-soft">
+                @if ($infographic)
+                    <x-picture
+                        :src="$infographic"
+                        :mobile-src="setting('media.applications_infographic_mobile')"
+                        :alt="__('home.applications_infographic_alt')"
+                        sizes="(min-width: 1280px) 1216px, (min-width: 768px) calc(100vw - 4rem), calc(100vw - 2.5rem)"
+                        mobile-sizes="calc(100vw - 2.5rem)"
+                        class="h-auto w-full"
+                    />
+                @else
+                    {{-- Nothing uploaded yet: the granule field holds the space
+                         rather than an empty box collapsing the section. --}}
+                    <x-media
+                        seed="arta-applications"
+                        ratio="16/9"
+                        :alt="__('home.applications_title')"
+                        sizes="100vw"
+                    />
+                @endif
             </div>
-        </section>
-    @endif
+        </div>
+    </section>
 
     {{-- ── Quality ────────────────────────────────────────────────────── --}}
     <section class="py-section">

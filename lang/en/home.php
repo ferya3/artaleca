@@ -31,6 +31,7 @@ return [
     'products_body' => 'Each grade is optimised for a specific duty by grain fraction and bulk density.',
 
     'applications_title' => 'Industries & applications',
+    'applications_infographic_alt' => 'Infographic of LECA applications across construction, geotechnics and horticulture',
     'applications_body' => 'From structural lightweight concrete to geotechnical fill and growing media — every application specifies a different grade.',
 
     'projects_title' => 'Reference projects',

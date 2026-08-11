@@ -44,6 +44,20 @@
     $art = filled($mobileSrc) && $mobileSrc !== $src;
     $mobileSrcset = $art ? Image::srcset($mobileSrc) : null;
     $mobileQuery = "(max-width: {$mobileUpTo})";
+
+    /*
+     * The art-directed source carries its *own* `width`/`height`.
+     *
+     * Those attributes on the <img> describe the desktop photograph, and the
+     * browser reserves that ratio before it knows which source it will take —
+     * so a taller phone crop pushed everything below it down the moment it
+     * arrived. Measured on the applications infographic: a box reserved at
+     * 348x218 that settled at 348x618.
+     *
+     * Only matters where the image sizes itself. Inside a fixed-ratio box the
+     * intrinsic ratio never reaches the layout, so this is free there.
+     */
+    $mobileDimensions = $art ? Image::dimensions($mobileSrc) : null;
 @endphp
 
 {{-- `contents` removes the <picture> box from layout entirely. It is
@@ -53,12 +67,14 @@
     @if ($art)
         @if ($mobileSrcset)
             <source media="{{ $mobileQuery }}" type="image/webp"
-                    srcset="{{ $mobileSrcset }}" sizes="{{ $mobileSizes }}">
+                    srcset="{{ $mobileSrcset }}" sizes="{{ $mobileSizes }}"
+                    @if ($mobileDimensions) width="{{ $mobileDimensions[0] }}" height="{{ $mobileDimensions[1] }}" @endif>
         @endif
         {{-- The original format as well, for a browser that cannot take WebP:
              without it such a browser would fall through to the desktop
              photograph rather than to this one. --}}
-        <source media="{{ $mobileQuery }}" srcset="{{ $mobileSrc }}" sizes="{{ $mobileSizes }}">
+        <source media="{{ $mobileQuery }}" srcset="{{ $mobileSrc }}" sizes="{{ $mobileSizes }}"
+                @if ($mobileDimensions) width="{{ $mobileDimensions[0] }}" height="{{ $mobileDimensions[1] }}" @endif>
     @endif
 
     @if ($srcset)

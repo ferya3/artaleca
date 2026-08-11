@@ -34,7 +34,7 @@ class SiteImageryTest extends TestCase
     {
         $html = $this->actingAs($this->admin())->get('/admin/settings')->assertOk()->getContent();
 
-        foreach (['media|hero', 'media|quality_lab', 'media|plant_exterior', 'media|kiln', 'media|screening'] as $field) {
+        foreach (['media|hero', 'media|applications_infographic', 'media|quality_lab', 'media|plant_exterior', 'media|kiln', 'media|screening'] as $field) {
             $this->assertStringContainsString($field, $html, "The settings form is missing {$field}.");
         }
     }
@@ -125,6 +125,81 @@ class SiteImageryTest extends TestCase
             'The phone hero should reuse the desktop image when no mobile one is set.',
         );
         $this->assertSame(2, substr_count($html, 'rel="preload" as="image"'));
+    }
+
+    /**
+     * The applications infographic must reach the page *uncropped*.
+     *
+     * Every other photograph on the site is `object-cover` inside a fixed
+     * ratio; an infographic carries text, so cropping it would cut the content
+     * off. It keeps its own ratio and takes the height the artwork asks for —
+     * with `width`/`height` still on the tag so nothing below it shifts.
+     */
+    public function test_the_applications_infographic_reaches_the_home_page_uncropped(): void
+    {
+        Storage::fake('media');
+
+        $this->actingAs($this->admin())->put('/admin/settings', [
+            'media|applications_infographic' => UploadedFile::fake()->image('info.jpg', 1600, 2200),
+        ]);
+
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        $this->assertStringContainsString('-1600x2200.jpg', $html);
+        $this->assertStringContainsString('-1600x2200-1024.webp', $html);
+        $this->assertStringContainsString('width="1600" height="2200"', $html);
+        // `h-auto w-full`, not `object-cover` inside a ratio box: the artwork
+        // decides the height, so none of it is cut off.
+        $this->assertStringContainsString('class="h-auto w-full"', $html);
+    }
+
+    /** A phone can be given its own, taller version of the same infographic. */
+    public function test_the_infographic_takes_a_separate_mobile_version(): void
+    {
+        Storage::fake('media');
+
+        $this->actingAs($this->admin())->put('/admin/settings', [
+            'media|applications_infographic' => UploadedFile::fake()->image('wide.jpg', 1600, 900),
+            'media|applications_infographic_mobile' => UploadedFile::fake()->image('tall.jpg', 800, 1800),
+        ]);
+
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        $this->assertStringContainsString('-800x1800-', $html);
+        $this->assertStringContainsString('-1600x900-', $html);
+
+        // Art direction, not resolution switching: the phone must be able to
+        // fetch the tall version and nothing else.
+        $this->assertMatchesRegularExpression(
+            '/<source media="\(max-width: 767\.98px\)"[^>]*-800x1800-/',
+            $html,
+        );
+
+        /*
+         * And the art-directed source must declare its own intrinsic size.
+         *
+         * `width`/`height` on the <img> describe the desktop photograph, and
+         * the browser reserves that ratio before it knows which source it will
+         * take — so the taller phone crop pushed the whole page down when it
+         * arrived. Measured on a 390px screen: a box reserved at 348x218 that
+         * settled at 348x618.
+         */
+        $this->assertMatchesRegularExpression(
+            '/<source media="\(max-width: 767\.98px\)"[^>]*width="800" height="1800"/',
+            $html,
+            'The phone source must carry its own dimensions, or the page shifts when it loads.',
+        );
+    }
+
+    /** The heading stands whether or not an infographic has been uploaded. */
+    public function test_the_applications_section_holds_its_space_before_an_upload(): void
+    {
+        $this->assertNull(Setting::get('media.applications_infographic'));
+
+        $this->get('/fa')
+            ->assertOk()
+            ->assertSee(__('home.applications_title'))
+            ->assertSee('<svg viewBox="0 0 400 300"', false);
     }
 
     /** The cue is a real link, so it works with no script and can be tabbed to. */
