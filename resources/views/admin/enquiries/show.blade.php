@@ -94,6 +94,17 @@
                     __('form.product') => $enquiry->product?->getTranslation('name', 'en'),
                     __('form.quantity') => $enquiry->quantity,
                     __('form.delivery_terms') => $enquiry->delivery_terms,
+
+                    /*
+                     * The form-specific answers, in the order the applicant was
+                     * asked them. Labelled through `form.*` so the sales desk
+                     * reads the same words the applicant filled in, rather than
+                     * the column names underneath.
+                     */
+                    ...collect($enquiry->details ?? [])
+                        ->mapWithKeys(fn ($value, $field) => [__('form.'.$field) => $value])
+                        ->all(),
+
                     __('nav.language') => strtoupper($enquiry->locale),
                     __('admin.enquiry.received') => $enquiry->created_at->format('Y-m-d H:i'),
                 ], 'filled');

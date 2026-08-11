@@ -134,6 +134,7 @@ return [
         'spam' => 'هرزنامه',
         'type_contact' => 'تماس',
         'type_quote' => 'استعلام',
+        'type_representation' => 'درخواست نمایندگی',
         'received' => 'زمان دریافت',
         'sender' => 'فرستنده',
         'mark_as' => 'تغییر وضعیت به',

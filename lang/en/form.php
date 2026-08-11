@@ -29,4 +29,12 @@ return [
     'expired' => 'This form has expired. Please refresh the page and try again.',
     'has_errors' => 'Please correct the following:',
     'select_placeholder' => '— Select —',
+    'territory' => 'Requested territory',
+    'territory_placeholder' => 'e.g. Isfahan province — Kashan',
+    'activity' => 'Current line of business',
+    'activity_placeholder' => 'e.g. building materials retail',
+    'experience_years' => 'Years trading',
+    'warehouse_m2' => 'Storage area (m²)',
+    'monthly_volume' => 'Estimated monthly volume',
+    'monthly_volume_placeholder' => 'e.g. 300 m³',
 ];

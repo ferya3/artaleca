@@ -134,6 +134,7 @@ return [
         'spam' => 'Spam',
         'type_contact' => 'Contact',
         'type_quote' => 'Quote',
+        'type_representation' => 'Representation',
         'received' => 'Received',
         'sender' => 'Sender',
         'mark_as' => 'Mark as',

@@ -1,5 +1,12 @@
 <x-mail::message>
-# {{ $enquiry->type === 'quote' ? 'New quotation request' : 'New website enquiry' }}
+@php
+    $heading = match ($enquiry->type) {
+        'quote' => 'New quotation request',
+        'representation' => 'New representation application',
+        default => 'New website enquiry',
+    };
+@endphp
+# {{ $heading }}
 
 Received {{ $enquiry->created_at->format('Y-m-d H:i') }} · site language: **{{ strtoupper($enquiry->locale) }}**
 
@@ -16,6 +23,9 @@ Received {{ $enquiry->created_at->format('Y-m-d H:i') }} · site language: **{{ 
 | Quantity | {{ $enquiry->quantity ?: '—' }} |
 | Terms | {{ $enquiry->delivery_terms ?: '—' }} |
 @endif
+@foreach ($enquiry->details ?? [] as $field => $value)
+| {{ ucfirst(str_replace('_', ' ', $field)) }} | {{ $value }} |
+@endforeach
 </x-mail::table>
 
 @if (filled($enquiry->subject))

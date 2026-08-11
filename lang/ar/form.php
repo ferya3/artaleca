@@ -29,4 +29,12 @@ return [
     'expired' => 'انتهت صلاحية النموذج. يرجى تحديث الصفحة والمحاولة مرة أخرى.',
     'has_errors' => 'يرجى تصحيح ما يلي:',
     'select_placeholder' => '— اختر —',
+    'territory' => 'المنطقة المطلوبة',
+    'territory_placeholder' => 'مثلاً محافظة أصفهان — كاشان',
+    'activity' => 'مجال النشاط الحالي',
+    'activity_placeholder' => 'مثلاً بيع مواد البناء',
+    'experience_years' => 'سنوات النشاط',
+    'warehouse_m2' => 'مساحة التخزين (م²)',
+    'monthly_volume' => 'الحجم الشهري التقديري',
+    'monthly_volume_placeholder' => 'مثلاً ٣٠٠ م³',
 ];

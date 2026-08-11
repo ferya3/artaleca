@@ -70,6 +70,9 @@ Route::prefix('{locale}')
         Route::get('applications/{application:slug}', [ApplicationController::class, 'show'])->name('applications.show');
 
         Route::get('representatives', [RepresentativeController::class, 'index'])->name('representatives');
+        Route::post('representatives', [RepresentativeController::class, 'store'])
+            ->middleware('throttle:contact-form')
+            ->name('representatives.store');
 
         Route::get('projects', [ProjectController::class, 'index'])->name('projects.index');
         Route::get('projects/{project:slug}', [ProjectController::class, 'show'])->name('projects.show');

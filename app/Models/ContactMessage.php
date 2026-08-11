@@ -13,13 +13,13 @@ class ContactMessage extends Model
 {
     use HasFactory;
 
-    public const TYPES = ['contact', 'quote'];
+    public const TYPES = ['contact', 'quote', 'representation'];
 
     public const STATUSES = ['new', 'read', 'replied', 'spam'];
 
     protected $fillable = [
         'type', 'name', 'company', 'email', 'phone', 'country_code',
-        'subject', 'message', 'product_id', 'quantity', 'delivery_terms',
+        'subject', 'message', 'product_id', 'quantity', 'delivery_terms', 'details',
         'locale', 'ip_hash', 'user_agent', 'referer',
         'status', 'internal_note', 'handled_at', 'handled_by',
     ];
@@ -28,6 +28,7 @@ class ContactMessage extends Model
     {
         return [
             'handled_at' => 'datetime',
+            'details' => 'array',
         ];
     }
 
