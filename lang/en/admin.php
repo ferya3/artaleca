@@ -100,7 +100,7 @@ return [
         'media_showcase_mobile' => 'Pinned showcase — mobile',
         'media_showcase_hint' => 'Stays put while the sections below scroll over it. A wide plant or product photograph works best.',
         'media_applications_infographic' => 'Applications infographic — desktop',
-        'media_applications_infographic_hint' => 'The landscape version. Shown edge to edge on the homepage, below the products. It is never cropped, so any aspect ratio is displayed in full.',
+        'media_applications_infographic_hint' => 'The landscape version. Shown at full width on the homepage, below the products. It is never cropped, so any aspect ratio is displayed in full.',
         'media_applications_infographic_mobile' => 'Applications infographic — mobile',
         'media_applications_infographic_mobile_hint' => 'The portrait version, for phones. A landscape infographic is unreadably small on a narrow screen, so lay the same content out vertically here. Falls back to the landscape one when empty.',
         'media_quality_lab' => 'Quality lab (home)',

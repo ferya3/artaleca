@@ -24,12 +24,15 @@
 |------------------------------------------------------------------------------
 | Design tokens
 |------------------------------------------------------------------------------
-| Two ramps only, both taken from the logo. `brand` runs from the leaf green of
-| the mark to the deep forest green of the wordmark; `ink` is a neutral carrying
-| a trace of the same green, so the greys sit under the accent rather than
-| arguing with it — a warm concrete grey next to a green mark reads as two
-| brands. Restricting the palette to two families is what keeps the result
-| looking like an industrial brand rather than a template.
+| Two ramps only. `ink` is a warm-cast neutral that reads as concrete rather
+| than as blue-grey UI chrome; `brand` is the fired-clay accent, the colour the
+| product itself comes out of the kiln. Restricting the palette to two families
+| is what keeps the result looking like an industrial brand rather than a
+| template.
+|
+| The ramp is named `brand` rather than `clay` because that is what it is for —
+| the accent, whatever hue it happens to carry. A name tied to one colour is a
+| trap the next time it changes.
 */
 
 @theme {
@@ -40,35 +43,35 @@
 
     /* Warm neutrals, lifted a step off pure black and pure white so nothing
        on the page meets at maximum contrast. */
-    --color-ink-50: #f6f8f5;
-    --color-ink-100: #eaefe9;
-    --color-ink-200: #dbe1d9;
-    --color-ink-300: #c0c8bd;
-    --color-ink-400: #98a396;
-    --color-ink-500: #6a7268;
-    --color-ink-600: #545c53;
-    --color-ink-700: #454c44;
-    --color-ink-800: #2f342e;
-    --color-ink-900: #1f231f;
-    --color-ink-950: #161a16;
+    --color-ink-50: #faf9f7;
+    --color-ink-100: #f2f1ee;
+    --color-ink-200: #e4e2dd;
+    --color-ink-300: #cac7c0;
+    --color-ink-400: #a3a09a;
+    --color-ink-500: #75726c;
+    --color-ink-600: #63615c;
+    --color-ink-700: #4b4945;
+    --color-ink-800: #333230;
+    --color-ink-900: #232220;
+    --color-ink-950: #1a1917;
 
-    --color-brand-50: #f2f8ee;
-    --color-brand-100: #e0f0d7;
-    --color-brand-200: #c2e2b2;
-    --color-brand-300: #9bcf85;
-    --color-brand-400: #6fb955;
-    --color-brand-500: #4ca62e;
-    --color-brand-600: #357a1f;
-    --color-brand-700: #2e6b1c;
-    --color-brand-800: #265318;
-    --color-brand-900: #14361f;
+    --color-brand-50: #fdf5f2;
+    --color-brand-100: #f9e5dc;
+    --color-brand-200: #f2c8b7;
+    --color-brand-300: #e6a087;
+    --color-brand-400: #d67553;
+    --color-brand-500: #c2542f;
+    --color-brand-600: #a84322;
+    --color-brand-700: #8a351c;
+    --color-brand-800: #6d2b18;
+    --color-brand-900: #4f2013;
 
     /* Semantic aliases — templates reference these, not raw ramp steps. */
     --color-surface: #ffffff;
-    --color-surface-muted: #f6f8f5;
-    --color-surface-dark: #10261a;
-    --color-hairline: #e2e8df;
-    --color-hairline-dark: #2c4434;
+    --color-surface-muted: #faf9f7;
+    --color-surface-dark: #1a1917;
+    --color-hairline: #e8e6e1;
+    --color-hairline-dark: #333230;
 
     /*
      * The night ramp: for blocks that are dark in *both* themes — the hero, the
@@ -83,12 +86,12 @@
      * look identical to before in the light theme and simply stop moving in the
      * dark one.
      */
-    --color-night-950: #0e2418;
-    --color-night-900: #143020;
-    --color-night-line: #2b4433;
-    --color-night-400: #94a894;
-    --color-night-300: #c2d0c3;
-    --color-night-200: #dfe8e0;
+    --color-night-950: #1a1917;
+    --color-night-900: #232220;
+    --color-night-line: #333230;
+    --color-night-400: #a3a09a;
+    --color-night-300: #cac7c0;
+    --color-night-200: #e4e2dd;
 
     /*
      * Elevation is how surfaces separate now; the hairline is the quiet
@@ -96,9 +99,9 @@
      * warm ink rather than pure black, and both are wide and shallow — the
      * point is a soft edge, not a floating card.
      */
-    --shadow-soft: 0 1px 2px rgb(22 26 22 / 0.04), 0 2px 8px -2px rgb(22 26 22 / 0.05);
-    --shadow-lift: 0 2px 4px rgb(22 26 22 / 0.04), 0 14px 32px -14px rgb(22 26 22 / 0.16);
-    --shadow-header: 0 1px 0 0 rgb(22 26 22 / 0.04), 0 12px 32px -24px rgb(22 26 22 / 0.22);
+    --shadow-soft: 0 1px 2px rgb(26 25 23 / 0.04), 0 2px 8px -2px rgb(26 25 23 / 0.05);
+    --shadow-lift: 0 2px 4px rgb(26 25 23 / 0.04), 0 14px 32px -14px rgb(26 25 23 / 0.16);
+    --shadow-header: 0 1px 0 0 rgb(26 25 23 / 0.04), 0 12px 32px -24px rgb(26 25 23 / 0.22);
 
     /*
      * A real radius scale. `md` is the workhorse (cards, inputs, buttons);
@@ -158,26 +161,26 @@
         :root:not([data-theme='light']) {
             color-scheme: dark;
 
-            --color-ink-50: #161a16;
-            --color-ink-100: #1f231f;
-            --color-ink-200: #2f342e;
-            --color-ink-300: #454c44;
-            --color-ink-400: #5b635a;
-            --color-ink-500: #828b80;
-            --color-ink-600: #9aa598;
-            --color-ink-700: #c0c8bd;
-            --color-ink-800: #dbe1d9;
-            --color-ink-900: #eaefe9;
-            --color-ink-950: #f6f8f5;
+            --color-ink-50: #1a1917;
+            --color-ink-100: #232220;
+            --color-ink-200: #333230;
+            --color-ink-300: #4b4945;
+            --color-ink-400: #63615c;
+            --color-ink-500: #8a8781;
+            --color-ink-600: #a3a09a;
+            --color-ink-700: #cac7c0;
+            --color-ink-800: #e4e2dd;
+            --color-ink-900: #f2f1ee;
+            --color-ink-950: #faf9f7;
 
             /* The accent lifts a step: the mid-clay that reads as decisive on
                white is muddy on a dark ground. */
-            --color-brand-600: #7cc45f;
-            --color-brand-500: #6fb955;
+            --color-brand-600: #e08a63;
+            --color-brand-500: #d67553;
 
-            --color-surface: #151a15;
-            --color-surface-muted: #0f130f;
-            --color-hairline: #2b322a;
+            --color-surface: #1c1b19;
+            --color-surface-muted: #141312;
+            --color-hairline: #302e2b;
 
             /* A shadow tinted with warm ink disappears on a dark ground, so
                elevation goes back to near-black and deepens. */
@@ -190,24 +193,24 @@
     :root[data-theme='dark'] {
         color-scheme: dark;
 
-        --color-ink-50: #161a16;
-        --color-ink-100: #1f231f;
-        --color-ink-200: #2f342e;
-        --color-ink-300: #454c44;
-        --color-ink-400: #5b635a;
-        --color-ink-500: #828b80;
-        --color-ink-600: #9aa598;
-        --color-ink-700: #c0c8bd;
-        --color-ink-800: #dbe1d9;
-        --color-ink-900: #eaefe9;
-        --color-ink-950: #f6f8f5;
+        --color-ink-50: #1a1917;
+        --color-ink-100: #232220;
+        --color-ink-200: #333230;
+        --color-ink-300: #4b4945;
+        --color-ink-400: #63615c;
+        --color-ink-500: #8a8781;
+        --color-ink-600: #a3a09a;
+        --color-ink-700: #cac7c0;
+        --color-ink-800: #e4e2dd;
+        --color-ink-900: #f2f1ee;
+        --color-ink-950: #faf9f7;
 
-        --color-brand-600: #7cc45f;
-        --color-brand-500: #6fb955;
+        --color-brand-600: #e08a63;
+        --color-brand-500: #d67553;
 
-        --color-surface: #151a15;
-        --color-surface-muted: #0f130f;
-        --color-hairline: #2b322a;
+        --color-surface: #1c1b19;
+        --color-surface-muted: #141312;
+        --color-hairline: #302e2b;
 
         --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.4), 0 2px 8px -2px rgb(0 0 0 / 0.45);
         --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.4), 0 14px 32px -14px rgb(0 0 0 / 0.7);

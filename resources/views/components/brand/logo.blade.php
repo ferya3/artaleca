@@ -48,9 +48,14 @@
                   fill="currentColor"/>
 
             {{-- The leaf inside it, its midrib cut back to the flame so the two
-                 shapes read as one object rather than a sticker on top. --}}
+                 shapes read as one object rather than a sticker on top.
+
+                 Its green is a literal, not a palette token: a logo carries its
+                 own colours and does not follow the site's accent. Wiring it to
+                 `--color-brand-500` made the leaf turn clay the moment the
+                 palette was retuned, which is exactly backwards. --}}
             <path d="M19.2 33.2c-5.8-.2-10.4-4.3-10.4-9.9 0-5.4 4.8-9.6 11-11.2-.8 7.2-1 14.2-.6 21.1z"
-                  fill="var(--color-brand-500)"/>
+                  fill="#4ca62e"/>
             <path d="M19.8 33.1c-.4-6.9-.2-13.9.6-21.1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
 
             {{-- Two wisps of smoke. Strokes, not filled shapes: at 36px a filled
@@ -71,7 +76,7 @@
         @if ($showWordmark)
             <span class="flex flex-col leading-none" dir="ltr">
                 <span class="text-[0.95rem] font-bold tracking-[0.22em]">ARTA</span>
-                <span class="text-[0.95rem] font-bold tracking-[0.22em] text-brand-500">LECA</span>
+                <span class="text-[0.95rem] font-bold tracking-[0.22em] text-[#4ca62e]">LECA</span>
             </span>
         @endif
     </span>

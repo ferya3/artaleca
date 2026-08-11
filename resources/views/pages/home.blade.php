@@ -154,57 +154,58 @@
                 :body="__('home.applications_body')"
                 :href="route('applications.index')"
             />
-        </div>
 
-        {{-- Edge to edge: the artwork leaves the page container, so no rounding
-             or border either — a corner radius on something that touches the
-             viewport edge reads as a mistake rather than as a frame. --}}
-        <div class="mt-12 bg-surface">
-            @if ($infographic['light'])
-                <span class="theme-only-light">
-                    <x-picture
-                        :src="$infographic['light']"
-                        :mobile-src="$infographicMobile['light']"
-                        :alt="__('home.applications_infographic_alt')"
-                        sizes="100vw"
-                        mobile-sizes="100vw"
-                        class="h-auto w-full"
-                    />
-                </span>
-
-                @if ($infographic['dark'] !== $infographic['light'] || $infographicMobile['dark'] !== $infographicMobile['light'])
-                    <span class="theme-only-dark">
+            {{-- Full width of the page container, in a framed box. Edge to edge
+                 was tried and pulled back: at 1440px the artwork ran wider than
+                 every other block on the page and stopped reading as part of
+                 it. --}}
+            <div class="mt-12 overflow-hidden rounded-lg border border-hairline bg-surface shadow-soft">
+                @if ($infographic['light'])
+                    <span class="theme-only-light">
                         <x-picture
-                            :src="$infographic['dark']"
-                            :mobile-src="$infographicMobile['dark']"
+                            :src="$infographic['light']"
+                            :mobile-src="$infographicMobile['light']"
                             :alt="__('home.applications_infographic_alt')"
-                            sizes="100vw"
-                            mobile-sizes="100vw"
+                            sizes="(min-width: 1280px) 1216px, (min-width: 768px) calc(100vw - 4rem), calc(100vw - 2.5rem)"
+                            mobile-sizes="calc(100vw - 2.5rem)"
                             class="h-auto w-full"
                         />
                     </span>
+
+                    @if ($infographic['dark'] !== $infographic['light'] || $infographicMobile['dark'] !== $infographicMobile['light'])
+                        <span class="theme-only-dark">
+                            <x-picture
+                                :src="$infographic['dark']"
+                                :mobile-src="$infographicMobile['dark']"
+                                :alt="__('home.applications_infographic_alt')"
+                                sizes="(min-width: 1280px) 1216px, (min-width: 768px) calc(100vw - 4rem), calc(100vw - 2.5rem)"
+                                mobile-sizes="calc(100vw - 2.5rem)"
+                                class="h-auto w-full"
+                            />
+                        </span>
+                    @endif
+                @else
+                    {{-- Nothing uploaded yet: the granule field holds the space
+                         rather than an empty box collapsing the section. Portrait
+                         on a phone and landscape above it, matching the two
+                         uploads the admin asks for — so the empty state is the
+                         shape of the thing that will replace it. --}}
+                    <x-media
+                        seed="arta-applications"
+                        ratio="3/4"
+                        :alt="__('home.applications_title')"
+                        sizes="calc(100vw - 2.5rem)"
+                        class="md:hidden"
+                    />
+                    <x-media
+                        seed="arta-applications"
+                        ratio="16/9"
+                        :alt="__('home.applications_title')"
+                        sizes="(min-width: 1280px) 1216px, (min-width: 768px) calc(100vw - 4rem), calc(100vw - 2.5rem)"
+                        class="hidden md:block"
+                    />
                 @endif
-            @else
-                {{-- Nothing uploaded yet: the granule field holds the space
-                     rather than an empty box collapsing the section. Portrait on
-                     a phone and landscape above it, matching the two uploads the
-                     admin asks for — so the empty state is the shape of the
-                     thing that will replace it. --}}
-                <x-media
-                    seed="arta-applications"
-                    ratio="3/4"
-                    :alt="__('home.applications_title')"
-                    sizes="100vw"
-                    class="md:hidden"
-                />
-                <x-media
-                    seed="arta-applications"
-                    ratio="16/9"
-                    :alt="__('home.applications_title')"
-                    sizes="100vw"
-                    class="hidden md:block"
-                />
-            @endif
+            </div>
         </div>
     </section>
 

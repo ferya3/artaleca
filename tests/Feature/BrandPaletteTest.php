@@ -10,11 +10,12 @@ use Tests\TestCase;
 /**
  * The palette, checked against the thing a colour change quietly breaks.
  *
- * Retuning the site to the logo's greens dropped the accent to 4.15:1 on the
- * muted surface — invisible in a screenshot, and only caught because it was
- * measured. The eyebrow labels it colours are 11px uppercase, so they need the
- * full 4.5:1; the next person to nudge a hex value should be told the same
- * thing by a failing test rather than by a visitor who cannot read the page.
+ * The site has been retuned twice now, and both times a step landed under the
+ * contrast floor without anything looking wrong in a screenshot — the muted
+ * grey has in fact been at 3.9:1 since the beginning. The labels these colours
+ * carry are 11px uppercase, so 4.5:1 is the floor, and the next person to nudge
+ * a hex value should be told by a failing assertion rather than by a visitor
+ * who cannot read the page.
  */
 class BrandPaletteTest extends TestCase
 {
@@ -123,16 +124,18 @@ class BrandPaletteTest extends TestCase
     }
 
     /**
-     * The two colours the mark is actually made of.
+     * The logo carries its own colour, and does not follow the site's accent.
      *
-     * Not a style opinion: if either drifts, the site stops matching the logo
-     * printed on the bags, and nothing else in the codebase would say so.
+     * The leaf was wired to `--color-brand-500` while the palette happened to
+     * be green; retuning the accent then turned the leaf clay. A logo is a
+     * fixed asset — the palette moves around it, not the other way round — so
+     * its green is a literal, and this is what says so.
      */
-    public function test_the_ramp_still_holds_the_logo_greens(): void
+    public function test_the_logo_keeps_its_own_green(): void
     {
-        $tokens = $this->tokens();
+        $logo = (string) file_get_contents(resource_path('views/components/brand/logo.blade.php'));
 
-        $this->assertSame('#4ca62e', $tokens['brand-500'], 'brand-500 is the leaf green of the mark.');
-        $this->assertSame('#14361f', $tokens['brand-900'], 'brand-900 is the forest green of the wordmark.');
+        $this->assertStringContainsString('#4ca62e', $logo);
+        $this->assertStringNotContainsString('var(--color-brand-', $logo);
     }
 }
