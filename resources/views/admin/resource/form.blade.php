@@ -7,7 +7,7 @@
         : route('admin.'.$routeName.'.update', $record);
 
     $inputClass = 'w-full border border-ink-300 bg-white px-3 py-2.5 text-sm text-ink-900
-                   focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-clay-500/12';
+                   focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12';
 @endphp
 
 <x-layouts.admin :title="$title">
@@ -106,7 +106,7 @@
                         <label class="flex items-center gap-2.5 text-sm text-ink-700">
                             <input id="f-{{ $name }}" type="checkbox" name="{{ $name }}" value="1"
                                    @checked(old($name, $record->{$name} ?? false))
-                                   class="h-4 w-4 border-ink-400 text-clay-600">
+                                   class="h-4 w-4 border-ink-400 text-brand-600">
                             {{ $field['label'] ?? $name }}
                         </label>
 
@@ -153,7 +153,7 @@
                                     {{-- Uploading nothing keeps the existing file; this is the
                                          only way to actually remove one. --}}
                                     <label class="flex items-center gap-2 text-xs text-ink-500">
-                                        <input type="checkbox" name="{{ $name }}_clear" value="1" class="h-3.5 w-3.5 border-ink-400 text-clay-600">
+                                        <input type="checkbox" name="{{ $name }}_clear" value="1" class="h-3.5 w-3.5 border-ink-400 text-brand-600">
                                         {{ __('admin.remove_file') }}
                                     </label>
                                 @endif
@@ -170,7 +170,7 @@
                                         <img src="{{ \App\Support\Image::thumb($image, 480) }}" alt="" loading="lazy" decoding="async" class="aspect-[4/3] w-full object-cover">
                                         <label class="mt-1.5 flex items-center gap-1.5 text-[0.625rem] text-ink-500">
                                             <input type="checkbox" name="{{ $name }}_remove[]" value="{{ $image }}"
-                                                   class="h-3 w-3 border-ink-400 text-clay-600">
+                                                   class="h-3 w-3 border-ink-400 text-brand-600">
                                             {{ __('admin.delete') }}
                                         </label>
                                     </li>
@@ -206,7 +206,7 @@
                                 <label class="flex items-center gap-2.5 text-sm text-ink-700">
                                     <input type="checkbox" name="{{ $name }}[]" value="{{ $value }}"
                                            @checked(in_array($value, old($name, $selected) ?? [], false))
-                                           class="h-4 w-4 border-ink-400 text-clay-600">
+                                           class="h-4 w-4 border-ink-400 text-brand-600">
                                     {{ $label }}
                                 </label>
                             @empty

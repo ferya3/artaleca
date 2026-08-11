@@ -49,7 +49,7 @@
                     <ol class="mt-5 space-y-4">
                         @foreach (__('about.quality_process') as $index => $step)
                             <li class="flex gap-4">
-                                <span class="tabular ltr-run shrink-0 text-xs font-bold text-clay-600">
+                                <span class="tabular ltr-run shrink-0 text-xs font-bold text-brand-600">
                                     {{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}
                                 </span>
                                 <span class="text-sm leading-relaxed text-ink-700">{{ $step }}</span>

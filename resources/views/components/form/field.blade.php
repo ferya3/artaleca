@@ -22,7 +22,7 @@
     ) ?: null;
 
     $control = 'w-full rounded-md border bg-surface px-3.5 py-3 text-sm text-ink-900 transition-colors
-                placeholder:text-ink-400 focus:outline-none focus:ring-4 focus:ring-clay-500/12 '
+                placeholder:text-ink-400 focus:outline-none focus:ring-4 focus:ring-brand-500/12 '
         .($hasError
             ? 'border-red-400 focus:border-red-500'
             : 'border-ink-300 focus:border-ink-500');
@@ -32,7 +32,7 @@
     <label for="{{ $id }}" class="text-sm font-medium text-ink-800">
         {{ $label }}
         @if ($required)
-            <span class="text-clay-600" aria-hidden="true">*</span>
+            <span class="text-brand-600" aria-hidden="true">*</span>
             <span class="sr-only">({{ __('common.required') }})</span>
         @else
             <span class="ms-1 text-xs font-normal text-ink-400">({{ __('common.optional') }})</span>

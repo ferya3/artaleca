@@ -109,7 +109,7 @@
                             href="{{ route($item['route']) }}"
                             @if ($active) aria-current="page" @endif
                             class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors
-                                   {{ $active ? 'text-clay-600' : 'text-ink-700 hover:text-ink-950' }}"
+                                   {{ $active ? 'text-brand-600' : 'text-ink-700 hover:text-ink-950' }}"
                         >
                             {{ $item['label'] }}
                             <svg viewBox="0 0 10 6" class="h-1.5 w-2.5 text-ink-400 transition-transform group-hover:rotate-180" aria-hidden="true">
@@ -130,7 +130,7 @@
                                             href="{{ $item['match'] === 'products.'
                                                 ? route('products.category', ['category' => $child])
                                                 : route('applications.show', ['application' => $child]) }}"
-                                            class="block px-4 py-2 text-sm text-ink-700 transition-colors hover:bg-ink-50 hover:text-clay-600"
+                                            class="block px-4 py-2 text-sm text-ink-700 transition-colors hover:bg-ink-50 hover:text-brand-600"
                                         >
                                             {{ $child->name }}
                                         </a>
@@ -139,7 +139,7 @@
                             </ul>
                             <div class="border-t border-hairline">
                                 <a href="{{ route($item['route']) }}"
-                                   class="block px-4 py-2.5 text-xs font-semibold tracking-wide text-clay-600 hover:bg-clay-50">
+                                   class="block px-4 py-2.5 text-xs font-semibold tracking-wide text-brand-600 hover:bg-brand-50">
                                     {{ __('common.view_all') }}
                                     <span class="inline-block rtl:rotate-180" aria-hidden="true">&rarr;</span>
                                 </a>
@@ -151,7 +151,7 @@
                         href="{{ route($item['route']) }}"
                         @if ($active) aria-current="page" @endif
                         class="px-3 py-2 text-sm font-medium transition-colors
-                               {{ $active ? 'text-clay-600' : 'text-ink-700 hover:text-ink-950' }}"
+                               {{ $active ? 'text-brand-600' : 'text-ink-700 hover:text-ink-950' }}"
                     >{{ $item['label'] }}</a>
                 @endif
             @endforeach
@@ -171,7 +171,7 @@
 
             <a
                 href="{{ route('quote') }}"
-                class="hidden rounded-md bg-ink-950 px-5 py-2.5 text-sm font-semibold text-surface shadow-soft transition-[background-color,box-shadow] duration-200 hover:bg-clay-600 hover:shadow-lift lg:inline-flex"
+                class="hidden rounded-md bg-ink-950 px-5 py-2.5 text-sm font-semibold text-surface shadow-soft transition-[background-color,box-shadow] duration-200 hover:bg-brand-600 hover:shadow-lift lg:inline-flex"
             >{{ __('nav.quote') }}</a>
 
             {{--
@@ -213,7 +213,7 @@
                                     @if ($code === Locales::current()) aria-current="true" @endif
                                     class="flex items-center justify-between px-4 py-2.5 text-sm transition-colors
                                            {{ $code === Locales::current()
-                                               ? 'font-semibold text-clay-600'
+                                               ? 'font-semibold text-brand-600'
                                                : 'text-ink-700 hover:bg-ink-50' }}"
                                 >
                                     {{ $meta['native'] }}

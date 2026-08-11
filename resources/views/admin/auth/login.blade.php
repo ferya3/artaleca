@@ -40,17 +40,17 @@
                 <label for="email" class="text-sm font-medium text-ink-800">{{ __('admin.email') }}</label>
                 <input id="email" name="email" type="email" required autofocus autocomplete="username"
                        value="{{ old('email') }}" dir="ltr"
-                       class="w-full border border-ink-300 px-3.5 py-3 text-sm focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-clay-500/12">
+                       class="w-full border border-ink-300 px-3.5 py-3 text-sm focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12">
             </div>
 
             <div class="flex flex-col gap-1.5">
                 <label for="password" class="text-sm font-medium text-ink-800">{{ __('admin.password') }}</label>
                 <input id="password" name="password" type="password" required autocomplete="current-password" dir="ltr"
-                       class="w-full border border-ink-300 px-3.5 py-3 text-sm focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-clay-500/12">
+                       class="w-full border border-ink-300 px-3.5 py-3 text-sm focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12">
             </div>
 
             <label class="flex items-center gap-2.5 text-sm text-ink-600">
-                <input type="checkbox" name="remember" value="1" class="h-4 w-4 border-ink-400 text-clay-600">
+                <input type="checkbox" name="remember" value="1" class="h-4 w-4 border-ink-400 text-brand-600">
                 {{ __('admin.remember') }}
             </label>
 

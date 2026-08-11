@@ -23,7 +23,7 @@
 
         <h3 class="text-lg font-bold leading-snug text-ink-950">
             <a href="{{ route('articles.show', ['post' => $post]) }}"
-               class="before:absolute before:inset-0 transition-colors group-hover:text-clay-600">
+               class="before:absolute before:inset-0 transition-colors group-hover:text-brand-600">
                 {{ $post->title }}
             </a>
         </h3>

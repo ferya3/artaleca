@@ -5,7 +5,7 @@
     <dl class="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-hairline bg-hairline shadow-soft lg:grid-cols-4">
         @foreach ($stats as $key => $value)
             <div class="bg-white px-5 py-6">
-                <dd class="tabular ltr-run text-3xl font-bold {{ $key === 'new_enquiries' && $value > 0 ? 'text-clay-600' : 'text-ink-950' }}">
+                <dd class="tabular ltr-run text-3xl font-bold {{ $key === 'new_enquiries' && $value > 0 ? 'text-brand-600' : 'text-ink-950' }}">
                     {{ number_format($value) }}
                 </dd>
                 <dt class="mt-1.5 text-xs text-ink-500">{{ __('admin.stats.'.$key) }}</dt>
@@ -16,7 +16,7 @@
     <section class="mt-10">
         <div class="flex items-center justify-between">
             <h2 class="text-base font-bold text-ink-950">{{ __('admin.enquiries') }}</h2>
-            <a href="{{ route('admin.enquiries.index') }}" class="text-sm font-medium text-clay-600 hover:underline">
+            <a href="{{ route('admin.enquiries.index') }}" class="text-sm font-medium text-brand-600 hover:underline">
                 {{ __('common.view_all') }}
             </a>
         </div>
@@ -38,9 +38,9 @@
                     </thead>
                     <tbody class="divide-y divide-hairline">
                         @foreach ($recent as $enquiry)
-                            <tr class="{{ $enquiry->status === 'new' ? 'bg-clay-50/40' : '' }}">
+                            <tr class="{{ $enquiry->status === 'new' ? 'bg-brand-50/40' : '' }}">
                                 <td class="px-4 py-3">
-                                    <a href="{{ route('admin.enquiries.show', $enquiry) }}" class="font-medium text-ink-900 hover:text-clay-600">
+                                    <a href="{{ route('admin.enquiries.show', $enquiry) }}" class="font-medium text-ink-900 hover:text-brand-600">
                                         {{ $enquiry->name }}
                                     </a>
                                     @if ($enquiry->company)
@@ -54,7 +54,7 @@
                                     <span class="ms-2">{{ Str::limit($enquiry->subject ?: $enquiry->message, 48) }}</span>
                                 </td>
                                 <td class="px-4 py-3">
-                                    <span class="text-xs {{ $enquiry->status === 'new' ? 'font-semibold text-clay-600' : 'text-ink-500' }}">
+                                    <span class="text-xs {{ $enquiry->status === 'new' ? 'font-semibold text-brand-600' : 'text-ink-500' }}">
                                         {{ __('admin.enquiry.'.$enquiry->status) }}
                                     </span>
                                 </td>

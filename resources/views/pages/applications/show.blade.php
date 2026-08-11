@@ -34,7 +34,7 @@
                         <ul class="mt-5 space-y-4">
                             @foreach ($benefits as $benefit)
                                 <li class="flex gap-3 text-sm leading-relaxed text-ink-700">
-                                    <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-500" aria-hidden="true"></span>
+                                    <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500" aria-hidden="true"></span>
                                     <span>{{ $benefit }}</span>
                                 </li>
                             @endforeach

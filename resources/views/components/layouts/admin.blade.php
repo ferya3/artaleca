@@ -98,10 +98,10 @@
                                 <a href="{{ route($link['route']) }}"
                                    @if ($active) aria-current="page" @endif
                                    class="flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors
-                                          {{ $active ? 'bg-clay-50 font-medium text-clay-700' : 'text-ink-600 hover:bg-ink-50' }}">
+                                          {{ $active ? 'bg-brand-50 font-medium text-brand-700' : 'text-ink-600 hover:bg-ink-50' }}">
                                     <span>{{ $link['label'] }}</span>
                                     @if (! empty($link['badge']))
-                                        <span class="tabular ltr-run rounded-sm bg-clay-600 px-1.5 py-0.5 text-[0.625rem] font-bold text-white">{{ $link['badge'] }}</span>
+                                        <span class="tabular ltr-run rounded-sm bg-brand-600 px-1.5 py-0.5 text-[0.625rem] font-bold text-white">{{ $link['badge'] }}</span>
                                     @endif
                                 </a>
                             </li>

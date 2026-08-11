@@ -34,7 +34,7 @@
                                      through `window.opener`. --}}
                                 <a href="{{ $representative->website }}"
                                    target="_blank" rel="noopener noreferrer"
-                                   class="ltr-run mt-auto pt-5 text-sm font-semibold text-clay-600 hover:underline">
+                                   class="ltr-run mt-auto pt-5 text-sm font-semibold text-brand-600 hover:underline">
                                     {{ __('representatives.website') }}
                                     <span class="inline-block rtl:rotate-180" aria-hidden="true">&rarr;</span>
                                 </a>
@@ -129,7 +129,7 @@
                     <ul class="mt-5 space-y-4">
                         @foreach (['territory', 'storage', 'technical', 'commitment'] as $criterion)
                             <li class="flex gap-3">
-                                <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-600" aria-hidden="true"></span>
+                                <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-600" aria-hidden="true"></span>
                                 <span class="text-sm leading-relaxed text-ink-600">
                                     {{ __('representatives.apply_criteria.'.$criterion) }}
                                 </span>
@@ -139,9 +139,9 @@
 
                     <div class="mt-6 space-y-2 border-t border-hairline pt-5 text-sm">
                         <p class="text-ink-500">{{ __('representatives.apply_desk') }}</p>
-                        <a class="ltr-run block font-medium text-ink-900 hover:text-clay-600"
+                        <a class="ltr-run block font-medium text-ink-900 hover:text-brand-600"
                            href="mailto:{{ config('site.contact.sales_email') ?? config('site.contact.export_email') }}">{{ config('site.contact.sales_email') ?? config('site.contact.export_email') }}</a>
-                        <a class="ltr-run block text-ink-600 hover:text-clay-600"
+                        <a class="ltr-run block text-ink-600 hover:text-brand-600"
                            href="tel:{{ str_replace(' ', '', config('site.contact.sales_phone')) }}">{{ config('site.contact.sales_phone') }}</a>
                     </div>
                 </div>

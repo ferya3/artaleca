@@ -15,7 +15,7 @@
             <ol class="space-y-px bg-hairline">
                 @foreach (__('about.plant_steps') as $step)
                     <li class="grid gap-6 bg-surface p-6 md:grid-cols-12 md:items-start md:gap-10 md:p-8">
-                        <p class="ltr-run tabular text-2xl font-bold text-clay-500 md:col-span-2 md:text-3xl">
+                        <p class="ltr-run tabular text-2xl font-bold text-brand-500 md:col-span-2 md:text-3xl">
                             {{ $step['step'] }}
                         </p>
 

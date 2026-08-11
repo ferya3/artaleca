@@ -4,7 +4,7 @@
 
     $isNew = ! $user->exists;
     $isSelf = auth()->user()->is($user);
-    $inputClass = 'w-full border border-ink-300 bg-white px-3 py-2.5 text-sm focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-clay-500/12';
+    $inputClass = 'w-full border border-ink-300 bg-white px-3 py-2.5 text-sm focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12';
 @endphp
 
 <x-layouts.admin :title="__('admin.users')">
@@ -86,7 +86,7 @@
                         <input type="checkbox" name="is_active" value="1"
                                @checked(old('is_active', $user->is_active ?? true))
                                @if ($isSelf) disabled @endif
-                               class="h-4 w-4 border-ink-400 text-clay-600">
+                               class="h-4 w-4 border-ink-400 text-brand-600">
                         {{ __('admin.active') }}
                     </label>
                 </div>

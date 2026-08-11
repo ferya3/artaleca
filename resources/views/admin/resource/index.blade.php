@@ -57,7 +57,7 @@
                                         <span class="tabular ltr-run text-xs text-ink-500">{{ $value->format('Y-m-d') }}</span>
                                     @elseif ($loop->first)
                                         <a href="{{ route('admin.'.$routeName.'.edit', $record) }}"
-                                           class="font-medium text-ink-900 hover:text-clay-600">
+                                           class="font-medium text-ink-900 hover:text-brand-600">
                                             {{ Str::limit((string) $value, 64) ?: '—' }}
                                         </a>
                                     @else

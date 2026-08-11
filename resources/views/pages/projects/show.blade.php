@@ -42,7 +42,7 @@
                     <ul class="mt-5 space-y-3">
                         @foreach ($scope as $item)
                             <li class="flex gap-3 text-sm leading-relaxed text-ink-700">
-                                <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-500" aria-hidden="true"></span>
+                                <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500" aria-hidden="true"></span>
                                 <span>{{ $item }}</span>
                             </li>
                         @endforeach
@@ -85,7 +85,7 @@
                                 @foreach ($project->products as $product)
                                     <li>
                                         <a href="{{ route('products.show', ['product' => $product]) }}"
-                                           class="text-sm text-clay-600 hover:underline">{{ $product->name }}</a>
+                                           class="text-sm text-brand-600 hover:underline">{{ $product->name }}</a>
                                     </li>
                                 @endforeach
                             </ul>

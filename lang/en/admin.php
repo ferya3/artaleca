@@ -91,6 +91,8 @@ return [
     ],
 
     'settings_fields' => [
+        'media_logo' => 'Site logo',
+        'media_logo_hint' => 'Shown in the header and the footer. Use a PNG with a transparent background, or an SVG. If your logo is dark, upload a light version for the night theme as well — otherwise it disappears against the dark ground.',
         'media_hero' => 'Hero image — desktop',
         'media_hero_mobile' => 'Hero image — mobile',
         'media_hero_mobile_hint' => 'Optional. A taller crop for a phone screen. Falls back to the desktop image when empty.',
@@ -158,6 +160,7 @@ return [
     'og_image_hint' => 'The picture shown when a link to the site is shared on social media.',
 
     'site_image_groups' => [
+        'brand' => 'Logo & brand',
         'hero' => 'Homepage hero',
         'applications' => 'Applications infographic',
         'showcase' => 'Pinned showcase',

@@ -66,7 +66,7 @@
                 'cy' => $next(330) - 15,
                 'r' => 7 + $next(23),
                 'fill' => $isClay
-                    ? ($dark ? 'var(--color-clay-500)' : 'var(--color-clay-600)')
+                    ? ($dark ? 'var(--color-brand-500)' : 'var(--color-brand-600)')
                     : ($dark ? 'var(--color-night-300)' : 'var(--color-ink-700)'),
                 'o' => ($isClay ? 34 + $next(46) : 10 + $next(22)) / 100,
             ];

@@ -21,7 +21,7 @@
                 @foreach ($users as $user)
                     <tr>
                         <td class="px-4 py-3">
-                            <a href="{{ route('admin.users.edit', $user) }}" class="font-medium text-ink-900 hover:text-clay-600">{{ $user->name }}</a>
+                            <a href="{{ route('admin.users.edit', $user) }}" class="font-medium text-ink-900 hover:text-brand-600">{{ $user->name }}</a>
                             @if ($user->last_login_at)
                                 <span class="tabular ltr-run block text-xs text-ink-400">{{ $user->last_login_at->format('Y-m-d H:i') }}</span>
                             @endif

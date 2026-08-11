@@ -23,7 +23,7 @@
                                 @foreach ($faqs as $faq)
                                     <details class="group">
                                         <summary class="flex cursor-pointer list-none items-start justify-between gap-6 px-5 py-5 text-start transition-colors hover:bg-ink-50 [&::-webkit-details-marker]:hidden">
-                                            <h3 class="text-base font-semibold text-ink-900 group-open:text-clay-600">{{ $faq->question }}</h3>
+                                            <h3 class="text-base font-semibold text-ink-900 group-open:text-brand-600">{{ $faq->question }}</h3>
                                             <span class="mt-1.5 shrink-0 text-ink-400" aria-hidden="true">
                                                 <svg viewBox="0 0 12 12" class="h-3 w-3 transition-transform group-open:rotate-45">
                                                     <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>

@@ -38,6 +38,13 @@ class SiteImageController extends Controller
     private function schema(): array
     {
         return [
+            'brand' => [
+                'media.logo' => [
+                    'label' => __('admin.settings_fields.media_logo'),
+                    'hint' => __('admin.settings_fields.media_logo_hint'),
+                ],
+            ],
+
             'hero' => [
                 'media.hero' => [
                     'label' => __('admin.settings_fields.media_hero'),

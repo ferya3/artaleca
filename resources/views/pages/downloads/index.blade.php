@@ -49,12 +49,12 @@
                                         >
                                             {{-- A file-type badge rather than a generic icon: the
                                                  extension is the useful information. --}}
-                                            <span class="ltr-run flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-hairline bg-surface text-[0.625rem] font-bold uppercase text-ink-500 group-hover:border-clay-400 group-hover:text-clay-600">
+                                            <span class="ltr-run flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-hairline bg-surface text-[0.625rem] font-bold uppercase text-ink-500 group-hover:border-brand-400 group-hover:text-brand-600">
                                                 {{ $file->file_extension ?: 'PDF' }}
                                             </span>
 
                                             <span class="min-w-0 flex-1">
-                                                <span class="block text-sm font-semibold text-ink-950 group-hover:text-clay-600">{{ $file->title }}</span>
+                                                <span class="block text-sm font-semibold text-ink-950 group-hover:text-brand-600">{{ $file->title }}</span>
                                                 @if (filled($file->description))
                                                     <span class="mt-1 block text-xs leading-relaxed text-ink-500">{{ $file->description }}</span>
                                                 @endif
@@ -62,7 +62,7 @@
 
                                             <span class="ltr-run tabular shrink-0 text-xs text-ink-400">{{ $file->humanSize() }}</span>
 
-                                            <span class="shrink-0 text-sm font-semibold text-clay-600">
+                                            <span class="shrink-0 text-sm font-semibold text-brand-600">
                                                 {{ __('common.download') }}
                                                 <span class="inline-block rtl:rotate-180" aria-hidden="true">&darr;</span>
                                             </span>

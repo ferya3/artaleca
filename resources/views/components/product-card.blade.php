@@ -24,7 +24,7 @@
         @endif
 
         <h3 class="text-lg font-bold text-ink-950">
-            <a href="{{ $url }}" class="before:absolute before:inset-0 group-hover:text-clay-600 transition-colors">
+            <a href="{{ $url }}" class="before:absolute before:inset-0 group-hover:text-brand-600 transition-colors">
                 {{ $product->name }}
             </a>
         </h3>

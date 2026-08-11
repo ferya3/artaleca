@@ -1,6 +1,6 @@
 @php
     $inputClass = 'w-full border border-ink-300 bg-white px-3 py-2.5 text-sm text-ink-900
-                   focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-clay-500/12';
+                   focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12';
 
     $defaultLocale = \App\Support\Locales::default();
 @endphp
@@ -44,7 +44,7 @@
                                 <label class="flex items-center gap-2.5 text-sm text-ink-700">
                                     <input type="checkbox" name="{{ $field }}" value="1"
                                            @checked(old($field, (bool) $stored))
-                                           class="h-4 w-4 border-ink-400 text-clay-600">
+                                           class="h-4 w-4 border-ink-400 text-brand-600">
                                     {{ $definition['label'] }}
                                 </label>
 

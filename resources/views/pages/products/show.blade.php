@@ -46,7 +46,7 @@
                                     data-gallery-thumb="{{ $image }}"
                                     data-gallery-srcset="{{ Image::srcset($image) }}"
                                     aria-current="{{ $index === 0 ? 'true' : 'false' }}"
-                                    class="block w-full overflow-hidden rounded-md border border-hairline transition-colors hover:border-ink-400 aria-[current=true]:border-clay-500"
+                                    class="block w-full overflow-hidden rounded-md border border-hairline transition-colors hover:border-ink-400 aria-[current=true]:border-brand-500"
                                 >
                                     <img src="{{ Image::thumb($image, 480) }}"
                                          alt="{{ $product->name }} — {{ $index + 1 }}"
@@ -156,7 +156,7 @@
                     <ul class="mt-5 space-y-3">
                         @foreach ($advantages as $advantage)
                             <li class="flex gap-3 text-sm leading-relaxed text-ink-700">
-                                <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-clay-500" aria-hidden="true"></span>
+                                <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500" aria-hidden="true"></span>
                                 <span>{{ $advantage }}</span>
                             </li>
                         @endforeach
@@ -170,10 +170,10 @@
                             <li>
                                 <a href="{{ route('downloads.file', ['download' => $document]) }}"
                                    class="group flex flex-wrap items-center gap-4 py-4">
-                                    <span class="ltr-run flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-hairline bg-surface text-[0.625rem] font-bold uppercase text-ink-500 group-hover:border-clay-400 group-hover:text-clay-600">
+                                    <span class="ltr-run flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-hairline bg-surface text-[0.625rem] font-bold uppercase text-ink-500 group-hover:border-brand-400 group-hover:text-brand-600">
                                         {{ $document->file_extension ?: 'PDF' }}
                                     </span>
-                                    <span class="min-w-0 flex-1 text-sm font-medium text-ink-900 group-hover:text-clay-600">
+                                    <span class="min-w-0 flex-1 text-sm font-medium text-ink-900 group-hover:text-brand-600">
                                         {{ $document->title }}
                                     </span>
                                     <span class="ltr-run tabular shrink-0 text-xs text-ink-400">{{ $document->humanSize() }}</span>

@@ -29,7 +29,7 @@
                             <span class="ms-1 text-xs font-normal text-ink-400">({{ __('common.optional') }})</span>
                         </label>
                         <select id="f-product_id" name="product_id"
-                                class="w-full border border-ink-300 bg-surface px-3.5 py-3 text-sm text-ink-900 focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-clay-500/12">
+                                class="w-full border border-ink-300 bg-surface px-3.5 py-3 text-sm text-ink-900 focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12">
                             <option value="">{{ __('form.select_placeholder') }}</option>
                             @foreach ($productOptions as $categoryName => $options)
                                 <optgroup label="{{ $categoryName }}">
@@ -96,9 +96,9 @@
 
                     <div class="mt-6 space-y-2 border-t border-hairline pt-5 text-sm">
                         <p class="text-ink-500">{{ __('contact.export_desk') }}</p>
-                        <a class="ltr-run block font-medium text-ink-900 hover:text-clay-600"
+                        <a class="ltr-run block font-medium text-ink-900 hover:text-brand-600"
                            href="mailto:{{ config('site.contact.export_email') }}">{{ config('site.contact.export_email') }}</a>
-                        <a class="ltr-run block text-ink-600 hover:text-clay-600"
+                        <a class="ltr-run block text-ink-600 hover:text-brand-600"
                            href="tel:{{ str_replace(' ', '', config('site.contact.sales_phone')) }}">{{ config('site.contact.sales_phone') }}</a>
                     </div>
                 </div>

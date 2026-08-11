@@ -52,7 +52,7 @@
 
                 <p class="mt-8 border-t border-hairline pt-6 text-sm text-ink-600">
                     <span class="font-medium text-ink-900">{{ __('contact.prefer_quote') }}</span>
-                    <a href="{{ route('quote') }}" class="ms-1 text-clay-600 underline underline-offset-2">
+                    <a href="{{ route('quote') }}" class="ms-1 text-brand-600 underline underline-offset-2">
                         {{ __('contact.prefer_quote_link') }}
                     </a>
                 </p>
@@ -72,7 +72,7 @@
                             </p>
                             <p>
                                 <span class="text-ink-500">{{ __('common.phone') }}</span>
-                                <a class="ltr-run ms-2 font-medium text-ink-900 hover:text-clay-600" href="tel:{{ str_replace(' ', '', $contact['phone']) }}">{{ $contact['phone'] }}</a>
+                                <a class="ltr-run ms-2 font-medium text-ink-900 hover:text-brand-600" href="tel:{{ str_replace(' ', '', $contact['phone']) }}">{{ $contact['phone'] }}</a>
                             </p>
                             <p>
                                 <span class="text-ink-500">{{ __('common.fax') }}</span>
@@ -91,13 +91,13 @@
                     <div class="grid gap-5 p-6 sm:grid-cols-2 lg:grid-cols-1">
                         <div>
                             <h2 class="eyebrow mb-2">{{ __('contact.sales_desk') }}</h2>
-                            <a class="ltr-run block text-sm font-medium text-ink-900 hover:text-clay-600" href="tel:{{ str_replace(' ', '', $contact['sales_phone']) }}">{{ $contact['sales_phone'] }}</a>
-                            <a class="ltr-run block text-sm text-ink-600 hover:text-clay-600" href="mailto:{{ $contact['sales_email'] }}">{{ $contact['sales_email'] }}</a>
+                            <a class="ltr-run block text-sm font-medium text-ink-900 hover:text-brand-600" href="tel:{{ str_replace(' ', '', $contact['sales_phone']) }}">{{ $contact['sales_phone'] }}</a>
+                            <a class="ltr-run block text-sm text-ink-600 hover:text-brand-600" href="mailto:{{ $contact['sales_email'] }}">{{ $contact['sales_email'] }}</a>
                         </div>
 
                         <div>
                             <h2 class="eyebrow mb-2">{{ __('contact.export_desk') }}</h2>
-                            <a class="ltr-run block text-sm text-ink-600 hover:text-clay-600" href="mailto:{{ $contact['export_email'] }}">{{ $contact['export_email'] }}</a>
+                            <a class="ltr-run block text-sm text-ink-600 hover:text-brand-600" href="mailto:{{ $contact['export_email'] }}">{{ $contact['export_email'] }}</a>
                         </div>
                     </div>
 

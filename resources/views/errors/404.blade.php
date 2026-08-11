@@ -14,7 +14,7 @@
 <x-layouts.app>
     <section class="py-24 md:py-32">
         <div class="container-page max-w-xl text-center">
-            <p class="ltr-run tabular text-6xl font-bold text-clay-500">404</p>
+            <p class="ltr-run tabular text-6xl font-bold text-brand-500">404</p>
 
             <h1 class="mt-6 text-2xl font-bold text-ink-950 md:text-3xl">
                 {{ __('common.no_results') }}

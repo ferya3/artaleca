@@ -35,7 +35,7 @@
             <div class="grid gap-px bg-hairline md:grid-cols-3">
                 @foreach (['consistency', 'traceability', 'support'] as $index => $key)
                     <div class="bg-surface-muted p-7">
-                        <p class="tabular text-xs font-semibold tracking-widest text-clay-600">
+                        <p class="tabular text-xs font-semibold tracking-widest text-brand-600">
                             {{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}
                         </p>
                         <h3 class="mt-4 text-lg font-bold text-ink-950">{{ __("about.values.$key.title") }}</h3>
@@ -54,8 +54,8 @@
             <ol class="mt-12 border-s border-hairline">
                 @foreach (__('about.timeline') as $entry)
                     <li class="relative ps-8 pb-10 last:pb-0">
-                        <span class="absolute start-0 top-1.5 h-2 w-2 -translate-x-1/2 rounded-full bg-clay-500 rtl:translate-x-1/2" aria-hidden="true"></span>
-                        <p class="ltr-run tabular text-sm font-bold text-clay-600">{{ $entry['year'] }}</p>
+                        <span class="absolute start-0 top-1.5 h-2 w-2 -translate-x-1/2 rounded-full bg-brand-500 rtl:translate-x-1/2" aria-hidden="true"></span>
+                        <p class="ltr-run tabular text-sm font-bold text-brand-600">{{ $entry['year'] }}</p>
                         <h3 class="mt-1 text-base font-semibold text-ink-950">{{ $entry['title'] }}</h3>
                         <p class="mt-2 max-w-xl text-sm leading-relaxed text-ink-600">{{ $entry['body'] }}</p>
                     </li>

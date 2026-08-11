@@ -31,7 +31,7 @@
                         @if (! empty($item['children']) && $item['children']->isNotEmpty())
                             <details class="group">
                                 <summary class="flex cursor-pointer list-none items-center justify-between py-4 text-base font-medium
-                                                {{ $active ? 'text-clay-600' : 'text-ink-900' }} [&::-webkit-details-marker]:hidden">
+                                                {{ $active ? 'text-brand-600' : 'text-ink-900' }} [&::-webkit-details-marker]:hidden">
                                     {{ $item['label'] }}
                                     <svg viewBox="0 0 12 12" class="h-3 w-3 text-ink-400 transition-transform group-open:rotate-45" aria-hidden="true">
                                         <path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -41,7 +41,7 @@
                                 <ul class="pb-4 ps-4">
                                     <li>
                                         <a href="{{ route($item['route']) }}"
-                                           class="block py-2 text-sm font-semibold text-clay-600">{{ __('common.view_all') }}</a>
+                                           class="block py-2 text-sm font-semibold text-brand-600">{{ __('common.view_all') }}</a>
                                     </li>
                                     @foreach ($item['children'] as $child)
                                         <li>
@@ -59,7 +59,7 @@
                             <a
                                 href="{{ route($item['route']) }}"
                                 @if ($active) aria-current="page" @endif
-                                class="block py-4 text-base font-medium {{ $active ? 'text-clay-600' : 'text-ink-900' }}"
+                                class="block py-4 text-base font-medium {{ $active ? 'text-brand-600' : 'text-ink-900' }}"
                             >{{ $item['label'] }}</a>
                         @endif
                     </li>

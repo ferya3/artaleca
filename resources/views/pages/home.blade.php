@@ -35,7 +35,7 @@
                  `svh` rather than `vh` so a phone's collapsing address bar
                  cannot leave the block taller than the screen. --}}
             <div class="container-page relative z-10 flex min-h-[72svh] flex-col justify-center py-14">
-                <p class="eyebrow text-clay-400!">{{ __('home.hero_eyebrow') }}</p>
+                <p class="eyebrow text-brand-400!">{{ __('home.hero_eyebrow') }}</p>
 
                 <h1 class="mt-4 text-3xl font-bold leading-[1.2] sm:text-4xl">
                     {{ __('home.hero_title') }}
@@ -61,7 +61,7 @@
         <div class="container-page relative">
             <div class="grid items-center gap-12 pb-24 pt-16 lg:grid-cols-12 lg:gap-16 lg:pb-28 lg:pt-24">
                 <div class="min-w-0 lg:col-span-6">
-                    <p class="eyebrow text-clay-400!">{{ __('home.hero_eyebrow') }}</p>
+                    <p class="eyebrow text-brand-400!">{{ __('home.hero_eyebrow') }}</p>
 
                     <h1 class="mt-4 text-5xl font-bold leading-[1.15] lg:text-[3.25rem]">
                         {{ __('home.hero_title') }}
@@ -281,7 +281,7 @@
                  aria-hidden="true"></div>
 
             <div class="container-page absolute inset-x-0 bottom-0 pb-14 md:pb-20">
-                <p class="eyebrow text-clay-400!">{{ __('common.certificates') }}</p>
+                <p class="eyebrow text-brand-400!">{{ __('common.certificates') }}</p>
                 <p class="mt-3 max-w-lg text-xl font-bold text-white md:text-2xl">
                     {{ __('home.showcase_caption') }}
                 </p>

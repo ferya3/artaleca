@@ -31,7 +31,7 @@
                 @endif
 
                 <a href="mailto:{{ $enquiry->email }}?subject={{ rawurlencode('Re: '.($enquiry->subject ?: 'Your enquiry')) }}"
-                   class="mt-6 inline-flex bg-ink-950 px-5 py-2.5 text-sm font-semibold text-white hover:bg-clay-600">
+                   class="mt-6 inline-flex bg-ink-950 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-600">
                     {{ __('admin.enquiry.reply_by_email') }}
                 </a>
             </div>

@@ -46,9 +46,9 @@
 
                 <tbody class="divide-y divide-hairline">
                     @foreach ($enquiries as $enquiry)
-                        <tr class="{{ $enquiry->status === 'new' ? 'bg-clay-50/40' : '' }}">
+                        <tr class="{{ $enquiry->status === 'new' ? 'bg-brand-50/40' : '' }}">
                             <td class="px-4 py-3 align-top">
-                                <a href="{{ route('admin.enquiries.show', $enquiry) }}" class="font-medium text-ink-900 hover:text-clay-600">
+                                <a href="{{ route('admin.enquiries.show', $enquiry) }}" class="font-medium text-ink-900 hover:text-brand-600">
                                     {{ $enquiry->name }}
                                 </a>
                                 @if ($enquiry->company)
@@ -65,7 +65,7 @@
                                 <p class="mt-1 text-xs text-ink-600">{{ Str::limit($enquiry->subject ?: $enquiry->message, 70) }}</p>
                             </td>
 
-                            <td class="px-4 py-3 align-top text-xs {{ $enquiry->status === 'new' ? 'font-semibold text-clay-600' : 'text-ink-500' }}">
+                            <td class="px-4 py-3 align-top text-xs {{ $enquiry->status === 'new' ? 'font-semibold text-brand-600' : 'text-ink-500' }}">
                                 {{ __('admin.enquiry.'.$enquiry->status) }}
                             </td>
 
