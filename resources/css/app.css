@@ -453,6 +453,48 @@
 */
 
 @layer components {
+    /*
+     * Show one of a themed pair — an image whose own background belongs to a
+     * theme, such as an infographic lettered on white.
+     *
+     * `display: contents` rather than `block` on the shown half: the wrapper
+     * must not become a box, or a filling image would resolve its height
+     * against it instead of against the frame it is meant to cover.
+     */
+    .theme-only-light {
+        display: contents;
+    }
+
+    .theme-only-dark {
+        display: none;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) .theme-only-light {
+            display: none;
+        }
+
+        :root:not([data-theme='light']) .theme-only-dark {
+            display: contents;
+        }
+    }
+
+    :root[data-theme='dark'] .theme-only-light {
+        display: none;
+    }
+
+    :root[data-theme='dark'] .theme-only-dark {
+        display: contents;
+    }
+
+    :root[data-theme='light'] .theme-only-light {
+        display: contents;
+    }
+
+    :root[data-theme='light'] .theme-only-dark {
+        display: none;
+    }
+
     .theme-toggle__dark {
         display: none;
     }

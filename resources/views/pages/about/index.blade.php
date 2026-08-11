@@ -19,7 +19,7 @@
             </div>
 
             <x-media
-                :src="setting('media.plant_exterior')"
+                :src="site_image('media.plant_exterior')['light']" :dark-src="site_image('media.plant_exterior')['dark']"
                 seed="arta-plant-exterior"
                 ratio="4/3"
                 :alt="__('about.title')"

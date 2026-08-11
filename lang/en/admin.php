@@ -148,4 +148,19 @@ return [
         'projects' => 'Projects',
         'posts' => 'Published posts',
     ],
+    'site_images' => 'Site images',
+    'site_images_intro' => 'Each image is uploaded per language and per theme. Add a night version when the artwork carries text or a background of its own; an ordinary photograph needs one file.',
+    'image_theme_light' => 'Day (light background)',
+    'image_theme_dark' => 'Night (dark background)',
+    'image_from_day' => 'Empty — the day image is shown.',
+    'image_from_locale' => 'Empty — the :locale image is shown.',
+    'og_image_hint' => 'The picture shown when a link to the site is shared on social media.',
+
+    'site_image_groups' => [
+        'hero' => 'Homepage hero',
+        'applications' => 'Applications infographic',
+        'showcase' => 'Pinned showcase',
+        'plant' => 'Plant & quality',
+        'social' => 'Sharing',
+    ],
 ];

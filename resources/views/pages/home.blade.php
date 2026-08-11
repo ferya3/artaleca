@@ -16,7 +16,8 @@
             {{-- Absolute and ratio-free: it fills whatever the copy asks for. --}}
             <x-media
                 fill
-                :src="setting('media.hero_mobile') ?: setting('media.hero')"
+                :src="site_image('media.hero_mobile')['light'] ?: site_image('media.hero')['light']"
+                :dark-src="site_image('media.hero_mobile')['dark'] ?: site_image('media.hero')['dark']"
                 seed="arta-hero-mobile"
                 tone="dark"
                 eager
@@ -82,7 +83,8 @@
 
                 <div class="min-w-0 lg:col-span-6">
                     <x-media
-                        :src="setting('media.hero')"
+                        :src="site_image('media.hero')['light']"
+                        :dark-src="site_image('media.hero')['dark']"
                         seed="arta-hero"
                         ratio="4/3"
                         tone="dark"
@@ -142,7 +144,8 @@
         still come off the filename, so the space is reserved before it loads
         and nothing below it shifts.
     --}}
-    @php($infographic = setting('media.applications_infographic'))
+    @php($infographic = site_image('media.applications_infographic'))
+    @php($infographicMobile = site_image('media.applications_infographic_mobile'))
     <section class="border-y border-hairline bg-surface-muted py-section">
         <div class="container-page">
             <x-section-heading
@@ -157,15 +160,30 @@
              or border either — a corner radius on something that touches the
              viewport edge reads as a mistake rather than as a frame. --}}
         <div class="mt-12 bg-surface">
-            @if ($infographic)
-                <x-picture
-                    :src="$infographic"
-                    :mobile-src="setting('media.applications_infographic_mobile')"
-                    :alt="__('home.applications_infographic_alt')"
-                    sizes="100vw"
-                    mobile-sizes="100vw"
-                    class="h-auto w-full"
-                />
+            @if ($infographic['light'])
+                <span class="theme-only-light">
+                    <x-picture
+                        :src="$infographic['light']"
+                        :mobile-src="$infographicMobile['light']"
+                        :alt="__('home.applications_infographic_alt')"
+                        sizes="100vw"
+                        mobile-sizes="100vw"
+                        class="h-auto w-full"
+                    />
+                </span>
+
+                @if ($infographic['dark'] !== $infographic['light'] || $infographicMobile['dark'] !== $infographicMobile['light'])
+                    <span class="theme-only-dark">
+                        <x-picture
+                            :src="$infographic['dark']"
+                            :mobile-src="$infographicMobile['dark']"
+                            :alt="__('home.applications_infographic_alt')"
+                            sizes="100vw"
+                            mobile-sizes="100vw"
+                            class="h-auto w-full"
+                        />
+                    </span>
+                @endif
             @else
                 {{-- Nothing uploaded yet: the granule field holds the space
                      rather than an empty box collapsing the section. Portrait on
@@ -194,7 +212,8 @@
     <section class="py-section">
         <div class="container-page grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <x-media
-                :src="setting('media.quality_lab')"
+                :src="site_image('media.quality_lab')['light']"
+                :dark-src="site_image('media.quality_lab')['dark']"
                 seed="arta-quality-lab"
                 ratio="4/3"
                 :alt="__('home.quality_title')"
@@ -246,8 +265,10 @@
         <div class="sticky top-0 h-[60svh] overflow-hidden bg-night-950 md:h-[78svh]">
             <x-media
                 fill
-                :src="setting('media.showcase')"
-                :mobile-src="setting('media.showcase_mobile')"
+                :src="site_image('media.showcase')['light']"
+                :dark-src="site_image('media.showcase')['dark']"
+                :mobile-src="site_image('media.showcase_mobile')['light']"
+                :dark-mobile-src="site_image('media.showcase_mobile')['dark']"
                 seed="arta-showcase"
                 tone="dark"
                 :alt="__('home.showcase_alt')"

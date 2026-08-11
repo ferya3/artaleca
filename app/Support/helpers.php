@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Models\Setting;
 use App\Support\Seo;
+use App\Support\SiteImage;
 
 if (! function_exists('seo')) {
     /**
@@ -28,6 +29,22 @@ if (! function_exists('setting')) {
     function setting(string $key, mixed $default = null): mixed
     {
         return Setting::get($key, $default);
+    }
+}
+
+if (! function_exists('site_image')) {
+    /**
+     * A managed site image, as the two files a page can use.
+     *
+     * Returns `['light' => …, 'dark' => …]` for the active language, with the
+     * night file falling back to the day one. Same reason as `setting()`: a
+     * `use` statement cannot live inside a component slot.
+     *
+     * @return array{light: ?string, dark: ?string}
+     */
+    function site_image(string $key): array
+    {
+        return SiteImage::get($key);
     }
 }
 

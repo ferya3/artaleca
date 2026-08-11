@@ -9,7 +9,23 @@
     'mobileSrc' => null,
     'fill' => false,
     'preloadMedia' => null,
+    // The night versions. Both default to the day ones, which is the whole
+    // point: a photograph needs one upload and behaves exactly as before.
+    'darkSrc' => null,
+    'darkMobileSrc' => null,
 ])
+
+@php
+    $darkSrc = $darkSrc ?: $src;
+    $darkMobileSrc = $darkMobileSrc ?: $mobileSrc;
+
+    /*
+     * Only render two images when the two themes genuinely differ. Otherwise
+     * this component emits exactly what it always did — one tag, one file, one
+     * preload — so the second slot costs nothing until it is used.
+     */
+    $themed = ($darkSrc !== $src) || ($darkMobileSrc !== $mobileSrc);
+@endphp
 
 @php
     /*
@@ -119,15 +135,59 @@
     @else
         {{-- An eager image is by definition above the fold, so it is also the
              page's LCP candidate and the only one worth preloading. --}}
-        <x-picture
-            :src="$src"
-            :mobile-src="$mobileSrc"
-            :alt="$alt"
-            :sizes="$sizes"
-            :eager="$eager"
-            :preload="$eager"
-            :preload-media="$preloadMedia"
-            class="h-full w-full object-cover"
-        />
+        @if (! $themed)
+            <x-picture
+                :src="$src"
+                :mobile-src="$mobileSrc"
+                :alt="$alt"
+                :sizes="$sizes"
+                :eager="$eager"
+                :preload="$eager"
+                :preload-media="$preloadMedia"
+                class="h-full w-full object-cover"
+            />
+        @else
+            {{--
+                Two files, one shown.
+
+                The choice is made in CSS rather than by a `<source media>`,
+                because `prefers-color-scheme` only knows what the operating
+                system says — it cannot see the site's own toggle. These
+                wrappers are driven by the same media-query-plus-attribute pair
+                as the palette, so the picture follows an explicit choice as
+                well as a system one.
+
+                `display: contents` on the shown half keeps it out of layout
+                entirely, so the box still sizes exactly as it does with a
+                single image.
+            --}}
+            <span class="theme-only-light">
+                <x-picture
+                    :src="$src"
+                    :mobile-src="$mobileSrc"
+                    :alt="$alt"
+                    :sizes="$sizes"
+                    :eager="$eager"
+                    :preload="$eager"
+                    :preload-media="$preloadMedia"
+                    theme="light"
+                    class="h-full w-full object-cover"
+                />
+            </span>
+
+            <span class="theme-only-dark">
+                <x-picture
+                    :src="$darkSrc"
+                    :mobile-src="$darkMobileSrc"
+                    :alt="$alt"
+                    :sizes="$sizes"
+                    :eager="$eager"
+                    :preload="$eager"
+                    :preload-media="$preloadMedia"
+                    theme="dark"
+                    class="h-full w-full object-cover"
+                />
+            </span>
+        @endif
     @endif
 </div>

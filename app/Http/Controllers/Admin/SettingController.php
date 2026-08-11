@@ -7,7 +7,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Support\Locales;
-use App\Support\Media;
 use App\Support\Navigation;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -49,35 +48,10 @@ class SettingController extends Controller
                 'contact.note' => ['label' => __('admin.settings_fields.contact_note'), 'type' => 'text', 'max' => 240],
             ],
 
-            /*
-             * ── Site imagery ────────────────────────────────────────────
-             * The photographs on the designed pages — hero, plant, kiln —
-             * which were previously fixed in the templates. Each one falls
-             * back to the deterministic "granule field" placeholder while it
-             * is empty, so an unset image is never a broken one.
-             */
-            'media' => [
-                'media.hero' => ['label' => __('admin.settings_fields.media_hero'), 'type' => 'image', 'translatable' => false],
-                'media.hero_mobile' => ['label' => __('admin.settings_fields.media_hero_mobile'), 'type' => 'image', 'translatable' => false,
-                    'hint' => __('admin.settings_fields.media_hero_mobile_hint')],
-                'media.showcase' => ['label' => __('admin.settings_fields.media_showcase'), 'type' => 'image', 'translatable' => false,
-                    'hint' => __('admin.settings_fields.media_showcase_hint')],
-                'media.showcase_mobile' => ['label' => __('admin.settings_fields.media_showcase_mobile'), 'type' => 'image', 'translatable' => false],
-                'media.applications_infographic' => ['label' => __('admin.settings_fields.media_applications_infographic'), 'type' => 'image', 'translatable' => false,
-                    'hint' => __('admin.settings_fields.media_applications_infographic_hint')],
-                'media.applications_infographic_mobile' => ['label' => __('admin.settings_fields.media_applications_infographic_mobile'), 'type' => 'image', 'translatable' => false,
-                    'hint' => __('admin.settings_fields.media_applications_infographic_mobile_hint')],
-                'media.quality_lab' => ['label' => __('admin.settings_fields.media_quality_lab'), 'type' => 'image', 'translatable' => false],
-                'media.plant_exterior' => ['label' => __('admin.settings_fields.media_plant_exterior'), 'type' => 'image', 'translatable' => false],
-                'media.kiln' => ['label' => __('admin.settings_fields.media_kiln'), 'type' => 'image', 'translatable' => false],
-                'media.screening' => ['label' => __('admin.settings_fields.media_screening'), 'type' => 'image', 'translatable' => false],
-            ],
-
             // ── SEO ─────────────────────────────────────────────────────
             'seo' => [
                 'seo.default_title' => ['label' => __('admin.settings_fields.seo_title'), 'type' => 'text', 'max' => 70],
                 'seo.default_description' => ['label' => __('admin.settings_fields.seo_description'), 'type' => 'textarea', 'max' => 170],
-                'seo.og_image' => ['label' => __('admin.settings_fields.og_image'), 'type' => 'image', 'translatable' => false],
                 'seo.google_verification' => ['label' => 'google-site-verification', 'type' => 'text', 'max' => 120, 'translatable' => false],
                 'seo.twitter_handle' => ['label' => 'Twitter / X handle', 'type' => 'text', 'max' => 40, 'translatable' => false],
             ],
@@ -122,35 +96,15 @@ class SettingController extends Controller
         foreach ($this->flatSchema() as $key => $definition) {
             $field = str_replace('.', '|', $key);
             $type = $definition['type'] ?? 'text';
-            $translatable = $definition['translatable'] ?? ($type !== 'number' && $type !== 'checkbox' && $type !== 'image');
+            $translatable = $definition['translatable'] ?? ($type !== 'number' && $type !== 'checkbox');
 
             $rules[$field] = match ($type) {
                 'number' => ['nullable', 'integer', 'min:0', 'max:'.($definition['max'] ?? 999999999)],
                 'checkbox' => ['nullable', 'boolean'],
-                'image' => ['nullable', 'array'],
                 default => $translatable ? ['nullable', 'array'] : ['nullable', 'string', 'max:'.($definition['max'] ?? 255)],
             };
 
-            /*
-             * An image is uploaded per language, because an image can carry
-             * text. A Persian infographic served on the English site is the
-             * same defect as a Persian paragraph would be, and it was invisible
-             * precisely because nothing in the pipeline treats a picture as
-             * copy. A language with no file of its own falls back to the
-             * default one at read time, so a single upload still covers a
-             * photograph that says nothing.
-             */
-            if ($type === 'image') {
-                foreach (Locales::codes() as $locale) {
-                    $rules[$field.'.'.$locale] = [
-                        'nullable', 'image',
-                        'mimes:'.implode(',', config('site.uploads.image_mimes')),
-                        'max:'.config('site.uploads.max_image_kb'),
-                    ];
-                }
-            }
-
-            if ($translatable && ! in_array($type, ['number', 'checkbox', 'image'], true)) {
+            if ($translatable && ! in_array($type, ['number', 'checkbox'], true)) {
                 unset($rules[$field]);
 
                 foreach (Locales::codes() as $locale) {
@@ -166,7 +120,6 @@ class SettingController extends Controller
             $type = $definition['type'] ?? 'text';
 
             $value = match ($type) {
-                'image' => $this->imagePerLocale($request, $field, $key),
                 'checkbox' => $request->boolean($field),
                 'number' => filled($validated[$field] ?? null) ? (int) $validated[$field] : null,
                 default => is_array($validated[$field] ?? null)
@@ -182,37 +135,5 @@ class SettingController extends Controller
         return redirect()
             ->route('admin.settings.edit')
             ->with('status', __('admin.updated'));
-    }
-
-    /**
-     * Merge whatever was uploaded into the stored per-language map.
-     *
-     * Two rules, both about not destroying work: a language is only written
-     * when a file was actually chosen for it, so saving the form without
-     * touching the uploads never clears anything; and a value stored before
-     * images were per-language is a single file that stood for every language,
-     * so it becomes the default language's entry rather than being discarded.
-     *
-     * @return array<string, string>|null
-     */
-    private function imagePerLocale(Request $request, string $field, string $key): ?array
-    {
-        $existing = Setting::map()[$key] ?? null;
-
-        $map = is_array($existing)
-            ? $existing
-            : (filled($existing) ? [Locales::default() => $existing] : []);
-
-        foreach (Locales::codes() as $locale) {
-            if ($request->hasFile("{$field}.{$locale}")) {
-                $map[$locale] = Media::storeImage($request->file("{$field}.{$locale}"), 'settings');
-            }
-        }
-
-        $map = array_filter($map, 'filled');
-
-        // Null rather than an empty array: `blank([])` is true but `is_array`
-        // checks downstream would still take it for a locale map.
-        return $map === [] ? null : $map;
     }
 }

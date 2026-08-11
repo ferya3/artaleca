@@ -8,6 +8,9 @@
     'mobileSrc' => null,
     'mobileSizes' => '100vw',
     'mobileUpTo' => '767.98px',
+    // Set when this tag is one half of a themed pair, so the preload it pushes
+    // is scoped to the theme it will actually be shown in.
+    'theme' => null,
 ])
 
 @php
@@ -94,6 +97,26 @@
     >
 </picture>
 
+@php
+    /*
+     * A themed pair pushes two preloads, one per colour scheme, so the browser
+     * fetches the half it is about to show and not both. It only narrows the
+     * viewport condition that may already be there — an `and` of the two, since
+     * a preload takes a single media condition.
+     *
+     * This follows the *system* preference, which is what decides the theme on
+     * a first paint. A visitor who has flipped the toggle may get the other
+     * file preloaded; the right one still loads normally, so the cost is a hint
+     * that missed, not a wrong picture.
+     */
+    $preloadQuery = $preloadMedia;
+
+    if ($theme) {
+        $scheme = "(prefers-color-scheme: {$theme})";
+        $preloadQuery = $preloadQuery ? "{$preloadQuery} and {$scheme}" : $scheme;
+    }
+@endphp
+
 @if ($preload && $srcset)
     {{-- Preload is reserved for whichever image is the LCP element on this
          viewport. The two heroes are separate blocks, so each carries its own
@@ -106,7 +129,7 @@
          pass `preload`, so there is nothing to deduplicate. --}}
     @push('head')
         <link rel="preload" as="image" fetchpriority="high"
-              @if ($preloadMedia) media="{{ $preloadMedia }}" @endif
+              @if ($preloadQuery) media="{{ $preloadQuery }}" @endif
               imagesrcset="{{ $srcset }}" imagesizes="{{ $sizes }}">
     @endpush
 @endif

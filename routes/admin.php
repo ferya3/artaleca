@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\RedirectController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\SiteImageController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -80,6 +81,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
         Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
+
+        Route::get('site-images', [SiteImageController::class, 'edit'])->name('site-images.edit');
+        Route::put('site-images', [SiteImageController::class, 'update'])->name('site-images.update');
 
         Route::resource('users', UserController::class)->except('show');
     });

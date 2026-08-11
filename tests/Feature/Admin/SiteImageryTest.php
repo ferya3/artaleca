@@ -6,6 +6,7 @@ namespace Tests\Feature\Admin;
 
 use App\Models\Setting;
 use App\Models\User;
+use App\Support\SiteImage;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -30,12 +31,12 @@ class SiteImageryTest extends TestCase
         ]);
     }
 
-    public function test_the_settings_screen_offers_every_site_image(): void
+    public function test_the_imagery_screen_offers_every_site_image(): void
     {
-        $html = $this->actingAs($this->admin())->get('/admin/settings')->assertOk()->getContent();
+        $html = $this->actingAs($this->admin())->get('/admin/site-images')->assertOk()->getContent();
 
         foreach (['media|hero', 'media|applications_infographic', 'media|quality_lab', 'media|plant_exterior', 'media|kiln', 'media|screening'] as $field) {
-            $this->assertStringContainsString($field, $html, "The settings form is missing {$field}.");
+            $this->assertStringContainsString($field, $html, "The imagery screen is missing {$field}.");
         }
     }
 
@@ -44,14 +45,17 @@ class SiteImageryTest extends TestCase
         Storage::fake('media');
 
         $this->actingAs($this->admin())
-            ->from('/admin/settings')
-            ->put('/admin/settings', ['media|hero' => ['fa' => UploadedFile::fake()->image('hero.jpg', 2000, 1500)]])
-            ->assertRedirect('/admin/settings');
+            ->from('/admin/site-images')
+            ->put('/admin/site-images', ['media|hero' => ['fa' => ['light' => UploadedFile::fake()->image('hero.jpg', 2000, 1500)]]])
+            ->assertRedirect('/admin/site-images');
 
-        $stored = Setting::get('media.hero');
+        $stored = SiteImage::get('media.hero');
 
-        $this->assertNotNull($stored, 'The uploaded hero image was not stored as a setting.');
-        $this->assertStringStartsWith('/storage/media/', $stored);
+        $this->assertNotNull($stored['light'], 'The uploaded hero image was not stored as a setting.');
+        $this->assertStringStartsWith('/storage/media/', $stored['light']);
+
+        // Night falls back to day, so one upload still covers both themes.
+        $this->assertSame($stored['light'], $stored['dark']);
     }
 
     /**
@@ -63,7 +67,7 @@ class SiteImageryTest extends TestCase
         Storage::fake('media');
 
         $this->actingAs($this->admin())
-            ->put('/admin/settings', ['media|hero' => ['fa' => UploadedFile::fake()->image('hero.jpg', 2000, 1500)]]);
+            ->put('/admin/site-images', ['media|hero' => ['fa' => ['light' => UploadedFile::fake()->image('hero.jpg', 2000, 1500)]]]);
 
         $html = $this->get('/fa')->assertOk()->getContent();
 
@@ -86,9 +90,9 @@ class SiteImageryTest extends TestCase
     {
         Storage::fake('media');
 
-        $this->actingAs($this->admin())->put('/admin/settings', [
-            'media|hero' => ['fa' => UploadedFile::fake()->image('desktop.jpg', 2400, 1600)],
-            'media|hero_mobile' => ['fa' => UploadedFile::fake()->image('mobile.jpg', 1200, 1600)],
+        $this->actingAs($this->admin())->put('/admin/site-images', [
+            'media|hero' => ['fa' => ['light' => UploadedFile::fake()->image('desktop.jpg', 2400, 1600)]],
+            'media|hero_mobile' => ['fa' => ['light' => UploadedFile::fake()->image('mobile.jpg', 1200, 1600)]],
         ]);
 
         $html = $this->get('/fa')->assertOk()->getContent();
@@ -111,8 +115,8 @@ class SiteImageryTest extends TestCase
     {
         Storage::fake('media');
 
-        $this->actingAs($this->admin())->put('/admin/settings', [
-            'media|hero' => ['fa' => UploadedFile::fake()->image('desktop.jpg', 2400, 1600)],
+        $this->actingAs($this->admin())->put('/admin/site-images', [
+            'media|hero' => ['fa' => ['light' => UploadedFile::fake()->image('desktop.jpg', 2400, 1600)]],
         ]);
 
         $html = $this->get('/fa')->assertOk()->getContent();
@@ -139,8 +143,8 @@ class SiteImageryTest extends TestCase
     {
         Storage::fake('media');
 
-        $this->actingAs($this->admin())->put('/admin/settings', [
-            'media|applications_infographic' => ['fa' => UploadedFile::fake()->image('info.jpg', 1600, 2200)],
+        $this->actingAs($this->admin())->put('/admin/site-images', [
+            'media|applications_infographic' => ['fa' => ['light' => UploadedFile::fake()->image('info.jpg', 1600, 2200)]],
         ]);
 
         $html = $this->get('/fa')->assertOk()->getContent();
@@ -158,9 +162,9 @@ class SiteImageryTest extends TestCase
     {
         Storage::fake('media');
 
-        $this->actingAs($this->admin())->put('/admin/settings', [
-            'media|applications_infographic' => ['fa' => UploadedFile::fake()->image('wide.jpg', 1600, 900)],
-            'media|applications_infographic_mobile' => ['fa' => UploadedFile::fake()->image('tall.jpg', 800, 1800)],
+        $this->actingAs($this->admin())->put('/admin/site-images', [
+            'media|applications_infographic' => ['fa' => ['light' => UploadedFile::fake()->image('wide.jpg', 1600, 900)]],
+            'media|applications_infographic_mobile' => ['fa' => ['light' => UploadedFile::fake()->image('tall.jpg', 800, 1800)]],
         ]);
 
         $html = $this->get('/fa')->assertOk()->getContent();
@@ -214,11 +218,11 @@ class SiteImageryTest extends TestCase
     {
         Storage::fake('media');
 
-        $this->actingAs($this->admin())->put('/admin/settings', [
+        $this->actingAs($this->admin())->put('/admin/site-images', [
             'media|applications_infographic' => [
-                'fa' => UploadedFile::fake()->image('fa.jpg', 1600, 1000),
-                'en' => UploadedFile::fake()->image('en.jpg', 1500, 1000),
-                'ar' => UploadedFile::fake()->image('ar.jpg', 1400, 1000),
+                'fa' => ['light' => UploadedFile::fake()->image('fa.jpg', 1600, 1000)],
+                'en' => ['light' => UploadedFile::fake()->image('en.jpg', 1500, 1000)],
+                'ar' => ['light' => UploadedFile::fake()->image('ar.jpg', 1400, 1000)],
             ],
         ]);
 
@@ -237,8 +241,8 @@ class SiteImageryTest extends TestCase
     {
         Storage::fake('media');
 
-        $this->actingAs($this->admin())->put('/admin/settings', [
-            'media|applications_infographic' => ['fa' => UploadedFile::fake()->image('fa.jpg', 1600, 1000)],
+        $this->actingAs($this->admin())->put('/admin/site-images', [
+            'media|applications_infographic' => ['fa' => ['light' => UploadedFile::fake()->image('fa.jpg', 1600, 1000)]],
         ]);
 
         $this->get('/en')->assertOk()->assertSee('-1600x1000-', false);
@@ -250,17 +254,17 @@ class SiteImageryTest extends TestCase
         Storage::fake('media');
         $admin = $this->admin();
 
-        $this->actingAs($admin)->put('/admin/settings', [
-            'media|applications_infographic' => ['fa' => UploadedFile::fake()->image('fa.jpg', 1600, 1000)],
+        $this->actingAs($admin)->put('/admin/site-images', [
+            'media|applications_infographic' => ['fa' => ['light' => UploadedFile::fake()->image('fa.jpg', 1600, 1000)]],
         ]);
 
-        $this->actingAs($admin)->put('/admin/settings', [
-            'media|applications_infographic' => ['en' => UploadedFile::fake()->image('en.jpg', 1500, 1000)],
+        $this->actingAs($admin)->put('/admin/site-images', [
+            'media|applications_infographic' => ['en' => ['light' => UploadedFile::fake()->image('en.jpg', 1500, 1000)]],
         ]);
 
-        $stored = Setting::get('media.applications_infographic', locale: 'fa');
+        $stored = SiteImage::get('media.applications_infographic', 'fa');
 
-        $this->assertStringContainsString('-1600x1000.jpg', (string) $stored);
+        $this->assertStringContainsString('-1600x1000.jpg', (string) $stored['light']);
         $this->get('/en')->assertOk()->assertSee('-1500x1000-', false);
     }
 
@@ -275,6 +279,103 @@ class SiteImageryTest extends TestCase
         foreach (['fa', 'en', 'ar'] as $locale) {
             $this->get('/'.$locale)->assertOk()->assertSee('legacy-1600x1000.jpg', false);
         }
+    }
+
+    /**
+     * Artwork with a background of its own needs one file per theme.
+     *
+     * An infographic lettered on white is unreadable on a dark page for the
+     * same reason a Persian one is unreadable in English: the picture carries
+     * something the theme has an opinion about. Both files go into the page and
+     * CSS shows one — not `<source media="(prefers-color-scheme: dark)">`,
+     * which can only see the operating system and would ignore the site's own
+     * toggle.
+     */
+    public function test_a_night_version_reaches_the_page_alongside_the_day_one(): void
+    {
+        Storage::fake('media');
+
+        $this->actingAs($this->admin())->put('/admin/site-images', [
+            'media|applications_infographic' => ['fa' => [
+                'light' => UploadedFile::fake()->image('day.jpg', 1600, 1000),
+                'dark' => UploadedFile::fake()->image('night.jpg', 1500, 1000),
+            ]],
+        ]);
+
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        $this->assertStringContainsString('-1600x1000-', $html);
+        $this->assertStringContainsString('-1500x1000-', $html);
+        $this->assertStringContainsString('theme-only-light', $html);
+        $this->assertStringContainsString('theme-only-dark', $html);
+    }
+
+    /**
+     * One upload still means one image on the page.
+     *
+     * Most of these are photographs, which have no opinion about the theme.
+     * Rendering both halves for them would double the markup and the bytes for
+     * nothing, so the pair only appears when the two files actually differ.
+     */
+    public function test_a_single_upload_renders_one_image_and_no_theme_pair(): void
+    {
+        Storage::fake('media');
+
+        $this->actingAs($this->admin())->put('/admin/site-images', [
+            'media|hero' => ['fa' => ['light' => UploadedFile::fake()->image('hero.jpg', 2400, 1600)]],
+        ]);
+
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        $this->assertStringNotContainsString('theme-only-', $html);
+        $this->assertSame(2, substr_count($html, 'rel="preload" as="image"'));
+    }
+
+    /** Each half of a themed hero preloads only for the scheme that shows it. */
+    public function test_a_themed_hero_scopes_its_preloads_by_colour_scheme(): void
+    {
+        Storage::fake('media');
+
+        $this->actingAs($this->admin())->put('/admin/site-images', [
+            'media|hero' => ['fa' => [
+                'light' => UploadedFile::fake()->image('day.jpg', 2400, 1600),
+                'dark' => UploadedFile::fake()->image('night.jpg', 2200, 1600),
+            ]],
+        ]);
+
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        $this->assertStringContainsString('(min-width: 768px) and (prefers-color-scheme: light)', $html);
+        $this->assertStringContainsString('(min-width: 768px) and (prefers-color-scheme: dark)', $html);
+    }
+
+    /** Uploading a night version must not disturb the day one. */
+    public function test_uploading_one_theme_leaves_the_other_alone(): void
+    {
+        Storage::fake('media');
+        $admin = $this->admin();
+
+        $this->actingAs($admin)->put('/admin/site-images', [
+            'media|applications_infographic' => ['fa' => ['light' => UploadedFile::fake()->image('day.jpg', 1600, 1000)]],
+        ]);
+
+        $this->actingAs($admin)->put('/admin/site-images', [
+            'media|applications_infographic' => ['fa' => ['dark' => UploadedFile::fake()->image('night.jpg', 1500, 1000)]],
+        ]);
+
+        $stored = SiteImage::get('media.applications_infographic', 'fa');
+
+        $this->assertStringContainsString('-1600x1000.jpg', (string) $stored['light']);
+        $this->assertStringContainsString('-1500x1000.jpg', (string) $stored['dark']);
+    }
+
+    /** Site imagery is off the settings screen entirely, not duplicated on it. */
+    public function test_the_settings_screen_no_longer_carries_the_imagery(): void
+    {
+        $html = $this->actingAs($this->admin())->get('/admin/settings')->assertOk()->getContent();
+
+        $this->assertStringNotContainsString('media|hero', $html);
+        $this->assertStringNotContainsString('type="file"', $html);
     }
 
     /** The cue is a real link, so it works with no script and can be tabbed to. */
@@ -308,6 +409,6 @@ class SiteImageryTest extends TestCase
             'is_active' => true,
         ]);
 
-        $this->actingAs($viewer)->get('/admin/settings')->assertForbidden();
+        $this->actingAs($viewer)->get('/admin/site-images')->assertForbidden();
     }
 }
