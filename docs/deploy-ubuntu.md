@@ -44,7 +44,7 @@ php artisan key:generate
 # APP_DEBUG=false, APP_URL=https://your-domain
 php artisan migrate --force --seed
 php artisan storage:link
-php artisan config:cache route:cache view:cache
+php artisan optimize
 ```
 
 Ownership: the web server needs to write to exactly two trees, and nothing else.
@@ -200,15 +200,32 @@ With `validate_timestamps = 0`, a deploy must end in
 
 ## 5. Deploying an update
 
+One line, safe to re-run, and it stops at the first failure rather than
+half-deploying:
+
 ```bash
-cd /var/www/artaleca
-git pull
-composer install --no-dev --optimize-autoloader
-npm ci && npm run build
-php artisan migrate --force
-php artisan config:cache route:cache view:cache
-sudo systemctl reload php8.3-fpm
+cd /var/www/artaleca && git config --global --add safe.directory /var/www/artaleca; git fetch origin claude/industrial-company-website-6vty0h && git reset --hard FETCH_HEAD && composer install --no-dev --optimize-autoloader && npm ci && npm run build && php artisan migrate --force && php artisan storage:link && php artisan optimize && sudo chown -R www-data:www-data storage bootstrap/cache public/build database && sudo systemctl reload "$(systemctl list-units --type=service --plain --no-legend 'php*-fpm.service' | awk '{print $1}')" nginx
 ```
+
+Four things in there are not obvious:
+
+- **`git reset --hard`, not `git pull`.** A deploy target has no local work
+  worth keeping, and a merge conflict on a server is a worse outcome than
+  discarding whatever caused it. Everything that must survive — `.env`, the
+  database, `storage/app/public` — is outside the working tree or ignored.
+- **`php artisan optimize`, not three `*:cache` commands.** Artisan takes one
+  command per invocation; `config:cache route:cache view:cache` passes the last
+  two as *arguments* to the first and fails.
+- **The FPM service name is looked up.** Hard-coding `php8.3-fpm` breaks the
+  moment the box is on 8.4, which is what a current Ubuntu installs.
+- **`safe.directory` is set first, with `;` rather than `&&`.** Git refuses to
+  operate on a tree owned by another user, which is exactly the case when the
+  files belong to `www-data` and the deploy runs as root. It is already set on
+  the second run, so it must not be allowed to fail the chain.
+
+Reloading FPM is what clears OPcache. Skipping it leaves the old bytecode
+serving while the new files sit on disk — the most confusing failure mode
+there is, because everything looks deployed.
 
 ---
 
