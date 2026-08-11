@@ -80,6 +80,7 @@ return [
 
     'translations' => 'Translations',
     'translation_hint' => 'Enter each language separately. Empty languages fall back to Persian.',
+    'image_inherited' => 'No image uploaded for this language — the :locale one is shown. If the artwork carries text, upload a version for this language.',
 
     'settings_groups' => [
         'figures' => 'Key numbers',

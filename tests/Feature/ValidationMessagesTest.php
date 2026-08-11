@@ -77,7 +77,7 @@ class ValidationMessagesTest extends TestCase
             ->from('/admin/settings')
             ->followingRedirects()
             ->put('/admin/settings', [
-                'media|hero' => UploadedFile::fake()->create('huge.jpg', $limit + 512, 'image/jpeg'),
+                'media|hero' => ['fa' => UploadedFile::fake()->create('huge.jpg', $limit + 512, 'image/jpeg')],
             ])
             ->assertOk()
             ->getContent();

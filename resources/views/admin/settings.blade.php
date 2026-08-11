@@ -1,6 +1,8 @@
 @php
     $inputClass = 'w-full border border-ink-300 bg-white px-3 py-2.5 text-sm text-ink-900
                    focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-clay-500/12';
+
+    $defaultLocale = \App\Support\Locales::default();
 @endphp
 
 <x-layouts.admin :title="__('admin.settings')">
@@ -53,13 +55,48 @@
                                        class="{{ $inputClass }} @error($field) border-red-500 @enderror">
 
                             @elseif ($type === 'image')
-                                <div class="flex flex-wrap items-start gap-4">
-                                    @if (is_string($stored) && filled($stored))
-                                        <img src="{{ \App\Support\Image::thumb($stored, 480) }}" alt="" loading="lazy" decoding="async" class="h-20 w-36 shrink-0 rounded-lg border border-hairline object-cover">
-                                    @endif
-                                    <input type="file" name="{{ $field }}"
-                                           accept="{{ collect(config('site.uploads.image_mimes'))->map(fn ($m) => '.'.$m)->implode(',') }}"
-                                           class="min-w-0 flex-1 text-sm text-ink-600 file:me-3 file:border-0 file:bg-ink-950 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white">
+                                {{-- One upload per language, because an image can
+                                     carry text. A language with no file of its own
+                                     shows the default language's picture, greyed,
+                                     and says so — so it is obvious at a glance
+                                     which languages still need their own artwork
+                                     and which are deliberately sharing one. --}}
+                                <div class="space-y-3">
+                                    @foreach ($locales as $code => $meta)
+                                        @php
+                                            $own = is_array($stored)
+                                                ? ($stored[$code] ?? null)
+                                                : ($code === $defaultLocale ? $stored : null);
+
+                                            $fallback = is_array($stored)
+                                                ? ($stored[$defaultLocale] ?? null)
+                                                : $stored;
+
+                                            $shown = filled($own) ? $own : $fallback;
+                                            $inherited = blank($own) && filled($fallback);
+                                        @endphp
+
+                                        <div class="flex flex-wrap items-center gap-3">
+                                            <span class="w-7 shrink-0 text-[0.6875rem] font-semibold uppercase text-ink-400" dir="ltr">{{ $code }}</span>
+
+                                            @if (is_string($shown) && filled($shown))
+                                                <img src="{{ \App\Support\Image::thumb($shown, 480) }}" alt="" loading="lazy" decoding="async"
+                                                     class="h-16 w-28 shrink-0 rounded-lg border border-hairline object-cover {{ $inherited ? 'opacity-40' : '' }}">
+                                            @endif
+
+                                            <input type="file" name="{{ $field }}[{{ $code }}]"
+                                                   accept="{{ collect(config('site.uploads.image_mimes'))->map(fn ($m) => '.'.$m)->implode(',') }}"
+                                                   class="min-w-0 flex-1 text-sm text-ink-600 file:me-3 file:border-0 file:bg-ink-950 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-white">
+                                        </div>
+
+                                        @error($field.'.'.$code)
+                                            <p class="ms-10 text-xs text-red-600">{{ $message }}</p>
+                                        @enderror
+
+                                        @if ($inherited)
+                                            <p class="ms-10 text-xs text-ink-500">{{ __('admin.image_inherited', ['locale' => $locales[$defaultLocale]['native'] ?? $defaultLocale]) }}</p>
+                                        @endif
+                                    @endforeach
                                 </div>
 
                             @elseif (! $translatable)

@@ -127,10 +127,28 @@ class SettingController extends Controller
             $rules[$field] = match ($type) {
                 'number' => ['nullable', 'integer', 'min:0', 'max:'.($definition['max'] ?? 999999999)],
                 'checkbox' => ['nullable', 'boolean'],
-                'image' => ['nullable', 'image', 'mimes:'.implode(',', config('site.uploads.image_mimes')),
-                    'max:'.config('site.uploads.max_image_kb')],
+                'image' => ['nullable', 'array'],
                 default => $translatable ? ['nullable', 'array'] : ['nullable', 'string', 'max:'.($definition['max'] ?? 255)],
             };
+
+            /*
+             * An image is uploaded per language, because an image can carry
+             * text. A Persian infographic served on the English site is the
+             * same defect as a Persian paragraph would be, and it was invisible
+             * precisely because nothing in the pipeline treats a picture as
+             * copy. A language with no file of its own falls back to the
+             * default one at read time, so a single upload still covers a
+             * photograph that says nothing.
+             */
+            if ($type === 'image') {
+                foreach (Locales::codes() as $locale) {
+                    $rules[$field.'.'.$locale] = [
+                        'nullable', 'image',
+                        'mimes:'.implode(',', config('site.uploads.image_mimes')),
+                        'max:'.config('site.uploads.max_image_kb'),
+                    ];
+                }
+            }
 
             if ($translatable && ! in_array($type, ['number', 'checkbox', 'image'], true)) {
                 unset($rules[$field]);
@@ -148,11 +166,7 @@ class SettingController extends Controller
             $type = $definition['type'] ?? 'text';
 
             $value = match ($type) {
-                // A replaced image only overwrites when one was actually chosen,
-                // so saving the form without touching it never clears the old file.
-                'image' => $request->hasFile($field)
-                    ? Media::storeImage($request->file($field), 'settings')
-                    : Setting::get($key),
+                'image' => $this->imagePerLocale($request, $field, $key),
                 'checkbox' => $request->boolean($field),
                 'number' => filled($validated[$field] ?? null) ? (int) $validated[$field] : null,
                 default => is_array($validated[$field] ?? null)
@@ -168,5 +182,37 @@ class SettingController extends Controller
         return redirect()
             ->route('admin.settings.edit')
             ->with('status', __('admin.updated'));
+    }
+
+    /**
+     * Merge whatever was uploaded into the stored per-language map.
+     *
+     * Two rules, both about not destroying work: a language is only written
+     * when a file was actually chosen for it, so saving the form without
+     * touching the uploads never clears anything; and a value stored before
+     * images were per-language is a single file that stood for every language,
+     * so it becomes the default language's entry rather than being discarded.
+     *
+     * @return array<string, string>|null
+     */
+    private function imagePerLocale(Request $request, string $field, string $key): ?array
+    {
+        $existing = Setting::map()[$key] ?? null;
+
+        $map = is_array($existing)
+            ? $existing
+            : (filled($existing) ? [Locales::default() => $existing] : []);
+
+        foreach (Locales::codes() as $locale) {
+            if ($request->hasFile("{$field}.{$locale}")) {
+                $map[$locale] = Media::storeImage($request->file("{$field}.{$locale}"), 'settings');
+            }
+        }
+
+        $map = array_filter($map, 'filled');
+
+        // Null rather than an empty array: `blank([])` is true but `is_array`
+        // checks downstream would still take it for a locale map.
+        return $map === [] ? null : $map;
     }
 }

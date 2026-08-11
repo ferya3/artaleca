@@ -45,7 +45,7 @@ class SiteImageryTest extends TestCase
 
         $this->actingAs($this->admin())
             ->from('/admin/settings')
-            ->put('/admin/settings', ['media|hero' => UploadedFile::fake()->image('hero.jpg', 2000, 1500)])
+            ->put('/admin/settings', ['media|hero' => ['fa' => UploadedFile::fake()->image('hero.jpg', 2000, 1500)]])
             ->assertRedirect('/admin/settings');
 
         $stored = Setting::get('media.hero');
@@ -63,7 +63,7 @@ class SiteImageryTest extends TestCase
         Storage::fake('media');
 
         $this->actingAs($this->admin())
-            ->put('/admin/settings', ['media|hero' => UploadedFile::fake()->image('hero.jpg', 2000, 1500)]);
+            ->put('/admin/settings', ['media|hero' => ['fa' => UploadedFile::fake()->image('hero.jpg', 2000, 1500)]]);
 
         $html = $this->get('/fa')->assertOk()->getContent();
 
@@ -87,8 +87,8 @@ class SiteImageryTest extends TestCase
         Storage::fake('media');
 
         $this->actingAs($this->admin())->put('/admin/settings', [
-            'media|hero' => UploadedFile::fake()->image('desktop.jpg', 2400, 1600),
-            'media|hero_mobile' => UploadedFile::fake()->image('mobile.jpg', 1200, 1600),
+            'media|hero' => ['fa' => UploadedFile::fake()->image('desktop.jpg', 2400, 1600)],
+            'media|hero_mobile' => ['fa' => UploadedFile::fake()->image('mobile.jpg', 1200, 1600)],
         ]);
 
         $html = $this->get('/fa')->assertOk()->getContent();
@@ -112,7 +112,7 @@ class SiteImageryTest extends TestCase
         Storage::fake('media');
 
         $this->actingAs($this->admin())->put('/admin/settings', [
-            'media|hero' => UploadedFile::fake()->image('desktop.jpg', 2400, 1600),
+            'media|hero' => ['fa' => UploadedFile::fake()->image('desktop.jpg', 2400, 1600)],
         ]);
 
         $html = $this->get('/fa')->assertOk()->getContent();
@@ -140,7 +140,7 @@ class SiteImageryTest extends TestCase
         Storage::fake('media');
 
         $this->actingAs($this->admin())->put('/admin/settings', [
-            'media|applications_infographic' => UploadedFile::fake()->image('info.jpg', 1600, 2200),
+            'media|applications_infographic' => ['fa' => UploadedFile::fake()->image('info.jpg', 1600, 2200)],
         ]);
 
         $html = $this->get('/fa')->assertOk()->getContent();
@@ -159,8 +159,8 @@ class SiteImageryTest extends TestCase
         Storage::fake('media');
 
         $this->actingAs($this->admin())->put('/admin/settings', [
-            'media|applications_infographic' => UploadedFile::fake()->image('wide.jpg', 1600, 900),
-            'media|applications_infographic_mobile' => UploadedFile::fake()->image('tall.jpg', 800, 1800),
+            'media|applications_infographic' => ['fa' => UploadedFile::fake()->image('wide.jpg', 1600, 900)],
+            'media|applications_infographic_mobile' => ['fa' => UploadedFile::fake()->image('tall.jpg', 800, 1800)],
         ]);
 
         $html = $this->get('/fa')->assertOk()->getContent();
@@ -200,6 +200,81 @@ class SiteImageryTest extends TestCase
             ->assertOk()
             ->assertSee(__('home.applications_title'))
             ->assertSee('<svg viewBox="0 0 400 300"', false);
+    }
+
+    /**
+     * An image can carry text, so it is uploaded per language.
+     *
+     * This was invisible because nothing in the pipeline treats a picture as
+     * copy: an infographic lettered in Persian was served to the English site
+     * exactly as a Persian paragraph would have been, and no test or type
+     * could tell the difference.
+     */
+    public function test_each_language_serves_its_own_artwork(): void
+    {
+        Storage::fake('media');
+
+        $this->actingAs($this->admin())->put('/admin/settings', [
+            'media|applications_infographic' => [
+                'fa' => UploadedFile::fake()->image('fa.jpg', 1600, 1000),
+                'en' => UploadedFile::fake()->image('en.jpg', 1500, 1000),
+                'ar' => UploadedFile::fake()->image('ar.jpg', 1400, 1000),
+            ],
+        ]);
+
+        $this->get('/fa')->assertOk()->assertSee('-1600x1000-', false)->assertDontSee('-1500x1000-', false);
+        $this->get('/en')->assertOk()->assertSee('-1500x1000-', false)->assertDontSee('-1600x1000-', false);
+        $this->get('/ar')->assertOk()->assertSee('-1400x1000-', false)->assertDontSee('-1600x1000-', false);
+    }
+
+    /**
+     * A language with no artwork of its own shows the default one.
+     *
+     * A photograph that says nothing needs one upload, not three, and a missing
+     * image is a worse outcome than a shared one.
+     */
+    public function test_a_language_without_its_own_image_falls_back_to_the_default_one(): void
+    {
+        Storage::fake('media');
+
+        $this->actingAs($this->admin())->put('/admin/settings', [
+            'media|applications_infographic' => ['fa' => UploadedFile::fake()->image('fa.jpg', 1600, 1000)],
+        ]);
+
+        $this->get('/en')->assertOk()->assertSee('-1600x1000-', false);
+    }
+
+    /** Uploading for one language must not disturb the others. */
+    public function test_uploading_one_language_leaves_the_rest_alone(): void
+    {
+        Storage::fake('media');
+        $admin = $this->admin();
+
+        $this->actingAs($admin)->put('/admin/settings', [
+            'media|applications_infographic' => ['fa' => UploadedFile::fake()->image('fa.jpg', 1600, 1000)],
+        ]);
+
+        $this->actingAs($admin)->put('/admin/settings', [
+            'media|applications_infographic' => ['en' => UploadedFile::fake()->image('en.jpg', 1500, 1000)],
+        ]);
+
+        $stored = Setting::get('media.applications_infographic', locale: 'fa');
+
+        $this->assertStringContainsString('-1600x1000.jpg', (string) $stored);
+        $this->get('/en')->assertOk()->assertSee('-1500x1000-', false);
+    }
+
+    /**
+     * A value stored before images were per-language stood for every language,
+     * so it must keep doing so rather than vanishing from the site.
+     */
+    public function test_an_image_stored_as_a_plain_string_still_serves_every_language(): void
+    {
+        Setting::put('media.applications_infographic', '/storage/media/settings/legacy-1600x1000.jpg', 'media', false);
+
+        foreach (['fa', 'en', 'ar'] as $locale) {
+            $this->get('/'.$locale)->assertOk()->assertSee('legacy-1600x1000.jpg', false);
+        }
     }
 
     /** The cue is a real link, so it works with no script and can be tabbed to. */
