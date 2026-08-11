@@ -108,13 +108,47 @@ class HeaderMarkupTest extends TestCase
     /** Company statistics are desktop-only; a phone gets the product instead. */
     public function test_the_figures_strip_is_hidden_on_phones(): void
     {
-        $html = $this->get('/fa')->assertOk()->getContent();
+        $html = $this->get('/fa/about')->assertOk()->getContent();
 
         $this->assertMatchesRegularExpression(
             '/<dl class="hidden grid-cols-2[^"]*md:grid\b/',
             $html,
             'The figures strip must be display:none below md, not merely visually shrunk.',
         );
+    }
+
+    /**
+     * The hero carries the headline and nothing that competes with it.
+     *
+     * The figures strip is off the home page entirely — it sat under the
+     * desktop hero and was the second thing a visitor read — and the phone hero
+     * has no button, because over a photograph a call to action fights the
+     * headline for the same glance. Quoting is still one tap away in the menu,
+     * which the next assertion holds to.
+     */
+    public function test_the_home_hero_carries_no_figures_strip_and_no_button_on_phones(): void
+    {
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        $this->assertDoesNotMatchRegularExpression(
+            '/<dl class="hidden grid-cols-2[^"]*md:grid\b/',
+            $html,
+            'The figures strip is no longer part of the home page.',
+        );
+
+        // Between where the phone block opens and where the desktop one does.
+        // Sliced rather than searched whole, because the header above it holds
+        // a quote link of its own.
+        $phoneHero = strstr($html, 'relative overflow-hidden bg-ink-950 text-white md:hidden');
+        $phoneHero = is_string($phoneHero)
+            ? strstr($phoneHero, 'hidden overflow-hidden bg-ink-950 text-white md:block', true)
+            : false;
+
+        $this->assertIsString($phoneHero, 'The two hero blocks should both be present.');
+        $this->assertStringNotContainsString(route('quote'), $phoneHero);
+
+        // …but the action itself is still reachable on a phone.
+        $this->assertStringContainsString(route('quote'), $html);
     }
 
     /**

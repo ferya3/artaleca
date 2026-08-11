@@ -75,7 +75,12 @@ class CmsTest extends TestCase
         Setting::put('figures.annual_capacity_m3', 987654, 'figures', translatable: false);
 
         $this->assertSame(987654, Figures::value('annual_capacity_m3'));
-        $this->get('/fa')->assertSee('987,654');
+
+        // The about page rather than the home page: the figures strip was taken
+        // off the hero, where it competed with the headline for the first
+        // glance, and lives on the pages a visitor reaches while sizing up the
+        // company.
+        $this->get('/fa/about')->assertSee('987,654');
     }
 
     public function test_a_figure_set_to_zero_is_dropped_from_the_strip(): void

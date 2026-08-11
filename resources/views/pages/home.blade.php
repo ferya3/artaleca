@@ -43,13 +43,6 @@
                 <p class="mt-5 max-w-md text-[0.9375rem] leading-relaxed text-ink-200">
                     {{ __('home.hero_body') }}
                 </p>
-
-                {{-- One action. Over an image a second competes with the first
-                     for the same glance, and the catalogue is a tap away in the
-                     menu. --}}
-                <x-button :href="route('quote')" variant="inverse" size="md" class="mt-7 w-full">
-                    {{ __('home.hero_secondary_cta') }}
-                </x-button>
             </div>
         </div>
 
@@ -65,7 +58,7 @@
         <x-hero-motion />
 
         <div class="container-page relative">
-            <div class="grid items-center gap-12 py-16 lg:grid-cols-12 lg:gap-16 lg:py-24">
+            <div class="grid items-center gap-12 pb-24 pt-16 lg:grid-cols-12 lg:gap-16 lg:pb-28 lg:pt-24">
                 <div class="min-w-0 lg:col-span-6">
                     <p class="eyebrow text-clay-400!">{{ __('home.hero_eyebrow') }}</p>
 
@@ -103,10 +96,6 @@
             </div>
         </div>
 
-        <div class="container-page relative pb-16 lg:pb-20">
-            <x-stat-strip tone="dark" class="border border-hairline-dark" />
-        </div>
-
         <x-scroll-cue href="#intro" />
     </section>
 
@@ -117,18 +106,6 @@
                 <p class="eyebrow mb-3">{{ __('nav.about') }}</p>
                 <h2 class="text-2xl font-bold text-ink-950 md:text-3xl">{{ __('home.intro_title') }}</h2>
                 <p class="mt-5 text-base leading-relaxed text-ink-600 md:text-lg">{{ __('home.intro_body') }}</p>
-            </div>
-
-            <div class="mt-14 grid gap-px bg-hairline md:grid-cols-3">
-                @foreach (['weight', 'thermal', 'durability'] as $index => $key)
-                    <div class="bg-white pt-8 md:px-7">
-                        <p class="tabular text-xs font-semibold tracking-widest text-clay-600">
-                            {{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}
-                        </p>
-                        <h3 class="mt-4 text-lg font-bold text-ink-950">{{ __("home.pillars.$key.title") }}</h3>
-                        <p class="mt-3 pb-8 text-sm leading-relaxed text-ink-600">{{ __("home.pillars.$key.body") }}</p>
-                    </div>
-                @endforeach
             </div>
         </div>
     </section>

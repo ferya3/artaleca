@@ -12,21 +12,6 @@ return [
     'intro_title' => 'One material, three engineering advantages',
     'intro_body' => 'LECA is a light, porous, entirely mineral granule produced by firing clay in a rotary kiln at around 1,200 °C. It reduces structural dead load, insulates, and stays chemically stable — at the same time.',
 
-    'pillars' => [
-        'weight' => [
-            'title' => 'Dead-load reduction',
-            'body' => 'Loose bulk density from 280 to 650 kg/m³ — as little as a third of the weight of conventional mineral aggregate, with a direct effect on foundation loads and structural section sizes.',
-        ],
-        'thermal' => [
-            'title' => 'Mineral thermal insulation',
-            'body' => 'A closed cellular structure with a thermal conductivity around 0.10 W/m·K. No organic additives, non-combustible, dimensionally stable under heat.',
-        ],
-        'durability' => [
-            'title' => 'Service life without decay',
-            'body' => 'Chemically inert, frost-resistant, immune to rot and rodents. The service life of the aggregate matches that of the structure, with no measurable loss of performance.',
-        ],
-    ],
-
     'products_title' => 'Production grades',
     'products_body' => 'Each grade is optimised for a specific duty by grain fraction and bulk density.',
 
