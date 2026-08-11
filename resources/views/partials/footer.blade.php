@@ -6,7 +6,7 @@
     $locale = Locales::current();
 @endphp
 
-<footer class="bg-ink-950 text-ink-300">
+<footer class="bg-night-950 text-night-300">
     <div class="container-page grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-12 lg:gap-8 lg:py-20">
 
         <div class="lg:col-span-4">
@@ -14,7 +14,7 @@
                 <x-brand.logo />
             </a>
 
-            <p class="mt-5 max-w-xs text-sm leading-relaxed text-ink-400">
+            <p class="mt-5 max-w-xs text-sm leading-relaxed text-night-400">
                 {{ __('seo.brand_tagline') }} — {{ __('common.figures.since') }} {{ config('site.figures.since') }}.
             </p>
 
@@ -24,7 +24,7 @@
                         href="{{ $href }}"
                         rel="noopener noreferrer me"
                         target="_blank"
-                        class="flex h-9 w-9 items-center justify-center rounded-md border border-hairline-dark text-ink-400 transition-colors hover:border-clay-500 hover:text-white"
+                        class="flex h-9 w-9 items-center justify-center rounded-md border border-night-line text-night-400 transition-colors hover:border-clay-500 hover:text-white"
                         aria-label="{{ ucfirst($network) }}"
                     >
                         <span class="text-[0.6875rem] font-semibold uppercase" aria-hidden="true">{{ substr($network, 0, 2) }}</span>
@@ -35,12 +35,12 @@
 
         @foreach (Navigation::footer() as $heading => $links)
             <nav class="lg:col-span-2" aria-label="{{ $heading }}">
-                <h2 class="eyebrow text-ink-500!">{{ $heading }}</h2>
+                <h2 class="eyebrow text-night-400!">{{ $heading }}</h2>
                 <ul class="mt-4 space-y-2.5">
                     @foreach ($links as $link)
                         <li>
                             <a href="{{ route($link['route']) }}"
-                               class="text-sm text-ink-300 transition-colors hover:text-white">{{ $link['label'] }}</a>
+                               class="text-sm text-night-300 transition-colors hover:text-white">{{ $link['label'] }}</a>
                         </li>
                     @endforeach
                 </ul>
@@ -48,33 +48,33 @@
         @endforeach
 
         <div class="lg:col-span-2">
-            <h2 class="eyebrow text-ink-500!">{{ __('common.headquarters') }}</h2>
-            <address class="mt-4 space-y-3 text-sm not-italic leading-relaxed text-ink-400">
+            <h2 class="eyebrow text-night-400!">{{ __('common.headquarters') }}</h2>
+            <address class="mt-4 space-y-3 text-sm not-italic leading-relaxed text-night-400">
                 <p>{{ $contact['hq']['lines'][$locale] ?? $contact['hq']['lines']['en'] }}</p>
                 <p>
-                    <span class="block text-ink-500">{{ __('common.phone') }}</span>
-                    <a class="ltr-run text-ink-200 hover:text-white" href="tel:{{ str_replace(' ', '', $contact['phone']) }}">{{ $contact['phone'] }}</a>
+                    <span class="block text-night-400">{{ __('common.phone') }}</span>
+                    <a class="ltr-run text-night-200 hover:text-white" href="tel:{{ str_replace(' ', '', $contact['phone']) }}">{{ $contact['phone'] }}</a>
                 </p>
                 <p>
-                    <span class="block text-ink-500">{{ __('common.email') }}</span>
-                    <a class="ltr-run text-ink-200 hover:text-white" href="mailto:{{ $contact['email'] }}">{{ $contact['email'] }}</a>
+                    <span class="block text-night-400">{{ __('common.email') }}</span>
+                    <a class="ltr-run text-night-200 hover:text-white" href="mailto:{{ $contact['email'] }}">{{ $contact['email'] }}</a>
                 </p>
                 <p>
-                    <span class="block text-ink-500">{{ __('common.plant') }}</span>
+                    <span class="block text-night-400">{{ __('common.plant') }}</span>
                     {{ $contact['plant']['lines'][$locale] ?? $contact['plant']['lines']['en'] }}
                 </p>
             </address>
         </div>
     </div>
 
-    <div class="border-t border-hairline-dark">
-        <div class="container-page flex flex-col gap-4 py-6 text-xs text-ink-500 sm:flex-row sm:items-center sm:justify-between">
+    <div class="border-t border-night-line">
+        <div class="container-page flex flex-col gap-4 py-6 text-xs text-night-400 sm:flex-row sm:items-center sm:justify-between">
             <p>{{ __('common.copyright', ['year' => now()->year, 'brand' => config('site.company.legal_name')]) }}</p>
 
             <ul class="flex flex-wrap items-center gap-x-5 gap-y-2">
-                <li><a class="transition-colors hover:text-ink-200" href="{{ route('legal.privacy') }}">{{ __('common.privacy') }}</a></li>
-                <li><a class="transition-colors hover:text-ink-200" href="{{ route('legal.terms') }}">{{ __('common.terms') }}</a></li>
-                <li><a class="transition-colors hover:text-ink-200" href="{{ route('sitemap') }}">{{ __('common.sitemap') }}</a></li>
+                <li><a class="transition-colors hover:text-night-200" href="{{ route('legal.privacy') }}">{{ __('common.privacy') }}</a></li>
+                <li><a class="transition-colors hover:text-night-200" href="{{ route('legal.terms') }}">{{ __('common.terms') }}</a></li>
+                <li><a class="transition-colors hover:text-night-200" href="{{ route('sitemap') }}">{{ __('common.sitemap') }}</a></li>
             </ul>
         </div>
     </div>

@@ -95,7 +95,7 @@ class SiteImageryTest extends TestCase
 
         // One block for phones, one for everything above `md`.
         $this->assertStringContainsString('md:hidden', $html);
-        $this->assertStringContainsString('hidden overflow-hidden bg-ink-950 text-white md:block', $html);
+        $this->assertStringContainsString('hidden overflow-hidden bg-night-950 text-white md:block', $html);
 
         $this->assertStringContainsString('-1200x1600-', $html);
         $this->assertStringContainsString('-2400x1600-', $html);

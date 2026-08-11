@@ -15,7 +15,7 @@
                         <a href="{{ route('downloads.index') }}"
                            @if (! $activeCategory) aria-current="page" @endif
                            class="inline-block whitespace-nowrap border px-4 py-2 text-sm transition-colors
-                                  {{ ! $activeCategory ? 'border-ink-950 bg-ink-950 text-white' : 'border-hairline text-ink-700 hover:border-ink-400' }}">
+                                  {{ ! $activeCategory ? 'border-ink-950 bg-ink-950 text-surface' : 'border-hairline text-ink-700 hover:border-ink-400' }}">
                             {{ __('downloads.all') }}
                         </a>
                     </li>
@@ -24,7 +24,7 @@
                             <a href="{{ route('downloads.index', ['category' => $category]) }}"
                                @if ($activeCategory === $category) aria-current="page" @endif
                                class="inline-block whitespace-nowrap border px-4 py-2 text-sm transition-colors
-                                      {{ $activeCategory === $category ? 'border-ink-950 bg-ink-950 text-white' : 'border-hairline text-ink-700 hover:border-ink-400' }}">
+                                      {{ $activeCategory === $category ? 'border-ink-950 bg-ink-950 text-surface' : 'border-hairline text-ink-700 hover:border-ink-400' }}">
                                 {{ __('downloads.categories.'.$category) }}
                             </a>
                         </li>
@@ -49,7 +49,7 @@
                                         >
                                             {{-- A file-type badge rather than a generic icon: the
                                                  extension is the useful information. --}}
-                                            <span class="ltr-run flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-hairline bg-white text-[0.625rem] font-bold uppercase text-ink-500 group-hover:border-clay-400 group-hover:text-clay-600">
+                                            <span class="ltr-run flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-hairline bg-surface text-[0.625rem] font-bold uppercase text-ink-500 group-hover:border-clay-400 group-hover:text-clay-600">
                                                 {{ $file->file_extension ?: 'PDF' }}
                                             </span>
 

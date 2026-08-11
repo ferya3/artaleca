@@ -69,4 +69,5 @@ return [
         'next' => 'بعدی',
         'showing' => 'نمایش :first تا :last از :total نتیجه',
     ],
+    'theme_toggle' => 'حالت شب و روز',
 ];

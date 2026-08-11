@@ -44,7 +44,11 @@
 @endphp
 
 <!DOCTYPE html>
-<html lang="{{ $adminLocale }}" dir="{{ $dir }}" class="h-full">
+{{-- `data-theme="light"` pins the panel, whatever the operator's system says.
+     The public site's dark theme works by inverting the ink ramp; the admin is
+     full of literal white surfaces that would not invert with it, and it is a
+     tool rather than a page. --}}
+<html lang="{{ $adminLocale }}" dir="{{ $dir }}" class="h-full" data-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -60,7 +64,7 @@
 <div class="flex min-h-screen flex-col lg:flex-row">
 
     {{-- ── Sidebar ─────────────────────────────────────────────────────── --}}
-    <aside class="border-b border-hairline bg-white lg:w-64 lg:shrink-0 lg:border-b-0 lg:border-e">
+    <aside class="border-b border-hairline bg-surface lg:w-64 lg:shrink-0 lg:border-b-0 lg:border-e">
         <div class="flex items-center justify-between px-5 py-4 lg:border-b lg:border-hairline">
             <a href="{{ route('admin.dashboard') }}" class="text-ink-900">
                 <x-brand.logo />

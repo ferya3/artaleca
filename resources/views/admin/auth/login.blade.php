@@ -3,7 +3,9 @@
     $dir = Locales::direction(Locales::default());
 @endphp
 <!DOCTYPE html>
-<html lang="{{ Locales::default() }}" dir="{{ $dir }}" class="h-full">
+{{-- Pinned to light, like the rest of the panel: it is a tool, and its
+     surfaces are literal white rather than ramp steps that invert. --}}
+<html lang="{{ Locales::default() }}" dir="{{ $dir }}" class="h-full" data-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">

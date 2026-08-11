@@ -15,7 +15,7 @@
                         <a href="{{ route('gallery') }}"
                            @if (! $activeAlbum) aria-current="page" @endif
                            class="inline-block whitespace-nowrap border px-4 py-2 text-sm transition-colors
-                                  {{ ! $activeAlbum ? 'border-ink-950 bg-ink-950 text-white' : 'border-hairline text-ink-700 hover:border-ink-400' }}">
+                                  {{ ! $activeAlbum ? 'border-ink-950 bg-ink-950 text-surface' : 'border-hairline text-ink-700 hover:border-ink-400' }}">
                             {{ __('gallery.all') }}
                         </a>
                     </li>
@@ -24,7 +24,7 @@
                             <a href="{{ route('gallery', ['album' => $album]) }}"
                                @if ($activeAlbum === $album) aria-current="page" @endif
                                class="inline-block whitespace-nowrap border px-4 py-2 text-sm transition-colors
-                                      {{ $activeAlbum === $album ? 'border-ink-950 bg-ink-950 text-white' : 'border-hairline text-ink-700 hover:border-ink-400' }}">
+                                      {{ $activeAlbum === $album ? 'border-ink-950 bg-ink-950 text-surface' : 'border-hairline text-ink-700 hover:border-ink-400' }}">
                                 {{ __('gallery.albums.'.$album) }}
                             </a>
                         </li>

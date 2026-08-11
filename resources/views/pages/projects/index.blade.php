@@ -16,7 +16,7 @@
                             <a href="{{ route('projects.index') }}"
                                @if (! $activeApplication) aria-current="page" @endif
                                class="inline-block whitespace-nowrap border px-4 py-2 text-sm transition-colors
-                                      {{ ! $activeApplication ? 'border-ink-950 bg-ink-950 text-white' : 'border-hairline text-ink-700 hover:border-ink-400' }}">
+                                      {{ ! $activeApplication ? 'border-ink-950 bg-ink-950 text-surface' : 'border-hairline text-ink-700 hover:border-ink-400' }}">
                                 {{ __('projects.filter_all') }}
                             </a>
                         </li>
@@ -26,7 +26,7 @@
                                 <a href="{{ route('projects.index', ['application' => $application->slug]) }}"
                                    @if ($isActive) aria-current="page" @endif
                                    class="inline-block whitespace-nowrap border px-4 py-2 text-sm transition-colors
-                                          {{ $isActive ? 'border-ink-950 bg-ink-950 text-white' : 'border-hairline text-ink-700 hover:border-ink-400' }}">
+                                          {{ $isActive ? 'border-ink-950 bg-ink-950 text-surface' : 'border-hairline text-ink-700 hover:border-ink-400' }}">
                                     {{ $application->name }}
                                 </a>
                             </li>

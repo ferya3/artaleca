@@ -69,6 +69,26 @@
     --color-hairline-dark: #333230;
 
     /*
+     * The night ramp: for blocks that are dark in *both* themes — the hero, the
+     * CTA band, the footer, the pinned showcase.
+     *
+     * It exists because the ink ramp inverts under the dark theme, and these
+     * blocks must not. They are dark by design rather than by theme: white copy
+     * over a photograph, a footer that closes the page. Inverting them would
+     * turn the hero white and leave white text on it.
+     *
+     * The steps mirror the light-theme ink values they replace, so the blocks
+     * look identical to before in the light theme and simply stop moving in the
+     * dark one.
+     */
+    --color-night-950: #1a1917;
+    --color-night-900: #232220;
+    --color-night-line: #333230;
+    --color-night-400: #a3a09a;
+    --color-night-300: #cac7c0;
+    --color-night-200: #e4e2dd;
+
+    /*
      * Elevation is how surfaces separate now; the hairline is the quiet
      * fallback rather than the only tool. Both shadows are tinted with the
      * warm ink rather than pure black, and both are wide and shallow — the
@@ -108,6 +128,88 @@
         /* Persian and Arabic text sits lower in the em box than Latin; a
            slightly looser default leading keeps all three scripts readable. */
         --leading-body: 1.85;
+    }
+
+    /*
+     |--------------------------------------------------------------------------
+     | Dark theme
+     |--------------------------------------------------------------------------
+     | The ink ramp inverts rather than being duplicated as `dark:` variants on
+     | three hundred elements. The ramp already means "distance from the page",
+     | not "amount of black" — `text-ink-950` is the strongest text and
+     | `bg-ink-100` the faintest fill — so reversing the steps re-themes every
+     | one of those usages at once and keeps them honest as the site grows.
+     |
+     | Written twice on purpose, and this is the part that is easy to get wrong:
+     |
+     |  - the media query handles the visitor who has never touched the toggle,
+     |    so the system preference works with no JavaScript at all. It is guarded
+     |    by `:not([data-theme='light'])` so an explicit choice of light still
+     |    wins over a dark operating system.
+     |  - the attribute handles an explicit choice in either direction.
+     |
+     | The admin panel renders `data-theme="light"` server-side and therefore
+     | matches neither rule: it is a tool, not a page, and it is full of literal
+     | `bg-white` that has no business inverting.
+     */
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+            color-scheme: dark;
+
+            --color-ink-50: #1a1917;
+            --color-ink-100: #232220;
+            --color-ink-200: #333230;
+            --color-ink-300: #4b4945;
+            --color-ink-400: #63615c;
+            --color-ink-500: #8a8781;
+            --color-ink-600: #a3a09a;
+            --color-ink-700: #cac7c0;
+            --color-ink-800: #e4e2dd;
+            --color-ink-900: #f2f1ee;
+            --color-ink-950: #faf9f7;
+
+            /* The accent lifts a step: the mid-clay that reads as decisive on
+               white is muddy on a dark ground. */
+            --color-clay-600: #e08a63;
+            --color-clay-500: #d67553;
+
+            --color-surface: #1c1b19;
+            --color-surface-muted: #141312;
+            --color-hairline: #302e2b;
+
+            /* A shadow tinted with warm ink disappears on a dark ground, so
+               elevation goes back to near-black and deepens. */
+            --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.4), 0 2px 8px -2px rgb(0 0 0 / 0.45);
+            --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.4), 0 14px 32px -14px rgb(0 0 0 / 0.7);
+            --shadow-header: 0 1px 0 0 rgb(255 255 255 / 0.04), 0 12px 32px -24px rgb(0 0 0 / 0.8);
+        }
+    }
+
+    :root[data-theme='dark'] {
+        color-scheme: dark;
+
+        --color-ink-50: #1a1917;
+        --color-ink-100: #232220;
+        --color-ink-200: #333230;
+        --color-ink-300: #4b4945;
+        --color-ink-400: #63615c;
+        --color-ink-500: #8a8781;
+        --color-ink-600: #a3a09a;
+        --color-ink-700: #cac7c0;
+        --color-ink-800: #e4e2dd;
+        --color-ink-900: #f2f1ee;
+        --color-ink-950: #faf9f7;
+
+        --color-clay-600: #e08a63;
+        --color-clay-500: #d67553;
+
+        --color-surface: #1c1b19;
+        --color-surface-muted: #141312;
+        --color-hairline: #302e2b;
+
+        --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.4), 0 2px 8px -2px rgb(0 0 0 / 0.45);
+        --shadow-lift: 0 2px 4px rgb(0 0 0 / 0.4), 0 14px 32px -14px rgb(0 0 0 / 0.7);
+        --shadow-header: 0 1px 0 0 rgb(255 255 255 / 0.04), 0 12px 32px -24px rgb(0 0 0 / 0.8);
     }
 
     html {
@@ -338,6 +440,49 @@
 | Utilities
 |------------------------------------------------------------------------------
 */
+
+/*
+|------------------------------------------------------------------------------
+| Theme toggle icon state
+|------------------------------------------------------------------------------
+| The visible icon follows the theme through exactly the same pair of rules as
+| the palette — system preference in a media query, explicit choice on the
+| attribute. Deciding it here rather than in the bundle is what stops the
+| control from showing the wrong face for the moment before the script arrives,
+| and keeps it correct even if the script never does.
+*/
+
+@layer components {
+    .theme-toggle__dark {
+        display: none;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) .theme-toggle__light {
+            display: none;
+        }
+
+        :root:not([data-theme='light']) .theme-toggle__dark {
+            display: block;
+        }
+    }
+
+    :root[data-theme='dark'] .theme-toggle__light {
+        display: none;
+    }
+
+    :root[data-theme='dark'] .theme-toggle__dark {
+        display: block;
+    }
+
+    :root[data-theme='light'] .theme-toggle__light {
+        display: block;
+    }
+
+    :root[data-theme='light'] .theme-toggle__dark {
+        display: none;
+    }
+}
 
 @utility hairline-grid {
     /* The faint blueprint grid used behind dark hero/CTA bands. Two gradients,

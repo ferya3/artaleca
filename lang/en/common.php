@@ -69,4 +69,5 @@ return [
         'next' => 'Next',
         'showing' => 'Showing :first–:last of :total results',
     ],
+    'theme_toggle' => 'Toggle dark mode',
 ];

@@ -51,7 +51,7 @@
                 'r' => 7 + $next(23),
                 'fill' => $isClay
                     ? ($dark ? 'var(--color-clay-500)' : 'var(--color-clay-600)')
-                    : ($dark ? 'var(--color-ink-300)' : 'var(--color-ink-700)'),
+                    : ($dark ? 'var(--color-night-300)' : 'var(--color-ink-700)'),
                 'o' => ($isClay ? 34 + $next(46) : 10 + $next(22)) / 100,
             ];
         }
@@ -77,6 +77,7 @@
         '16/9' => 'aspect-[16/9]',
         '3/2' => 'aspect-[3/2]',
         '1/1' => 'aspect-square',
+        '3/4' => 'aspect-[3/4]',
         default => 'aspect-[4/3]',
     };
 
@@ -104,12 +105,12 @@
 
 <div {{ $attributes->merge([
     'class' => trim($position.' overflow-hidden '.$aspect).' '
-        .($placeholder && ($tone === 'dark') ? 'bg-ink-900' : 'bg-ink-100'),
+        .($placeholder && ($tone === 'dark') ? 'bg-night-900' : 'bg-ink-100'),
 ]) }}>
     @if ($placeholder)
         <svg viewBox="0 0 400 300" class="h-full w-full" preserveAspectRatio="xMidYMid slice" role="img"
              @if (filled($alt)) aria-label="{{ $alt }}" @else aria-hidden="true" @endif>
-            <rect width="400" height="300" fill="{{ $dark ? 'var(--color-ink-900)' : 'var(--color-ink-100)' }}"/>
+            <rect width="400" height="300" fill="{{ $dark ? 'var(--color-night-900)' : 'var(--color-ink-100)' }}"/>
             @foreach ($granules as $g)
                 <circle cx="{{ $g['cx'] }}" cy="{{ $g['cy'] }}" r="{{ $g['r'] }}"
                         fill="{{ $g['fill'] }}" fill-opacity="{{ $g['o'] }}"/>

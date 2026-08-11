@@ -139,9 +139,9 @@ class HeaderMarkupTest extends TestCase
         // Between where the phone block opens and where the desktop one does.
         // Sliced rather than searched whole, because the header above it holds
         // a quote link of its own.
-        $phoneHero = strstr($html, 'relative overflow-hidden bg-ink-950 text-white md:hidden');
+        $phoneHero = strstr($html, 'relative overflow-hidden bg-night-950 text-white md:hidden');
         $phoneHero = is_string($phoneHero)
-            ? strstr($phoneHero, 'hidden overflow-hidden bg-ink-950 text-white md:block', true)
+            ? strstr($phoneHero, 'hidden overflow-hidden bg-night-950 text-white md:block', true)
             : false;
 
         $this->assertIsString($phoneHero, 'The two hero blocks should both be present.');

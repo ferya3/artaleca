@@ -20,15 +20,15 @@
          on a phone is not read a table they cannot see. --}}
     <dl {{ $attributes->merge([
         'class' => 'hidden grid-cols-2 gap-px overflow-hidden rounded-lg md:grid md:grid-cols-3 lg:grid-cols-5 '
-            .($dark ? 'bg-hairline-dark' : 'bg-hairline'),
+            .($dark ? 'bg-night-line' : 'bg-hairline'),
     ]) }}>
         @foreach ($items as $item)
-            <div class="{{ $dark ? 'bg-ink-950' : 'bg-white' }} px-5 py-7">
+            <div class="{{ $dark ? 'bg-night-950' : 'bg-surface' }} px-5 py-7">
                 <dd class="tabular flex items-baseline gap-1.5">
                     <span class="ltr-run text-2xl font-bold {{ $dark ? 'text-white' : 'text-ink-950' }} lg:text-3xl">{{ $item['value'] }}</span>
-                    <span class="text-xs {{ $dark ? 'text-ink-400' : 'text-ink-500' }}">{{ $item['unit'] }}</span>
+                    <span class="text-xs {{ $dark ? 'text-night-400' : 'text-ink-500' }}">{{ $item['unit'] }}</span>
                 </dd>
-                <dt class="mt-2 text-xs leading-snug {{ $dark ? 'text-ink-400' : 'text-ink-500' }}">{{ $item['label'] }}</dt>
+                <dt class="mt-2 text-xs leading-snug {{ $dark ? 'text-night-400' : 'text-ink-500' }}">{{ $item['label'] }}</dt>
             </div>
         @endforeach
     </dl>

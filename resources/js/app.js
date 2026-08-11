@@ -96,6 +96,44 @@ function bindAutoSubmitFilters() {
     });
 }
 
+/**
+ * Day/night toggle.
+ *
+ * The theme itself is CSS: `prefers-color-scheme` handles a visitor who has
+ * never chosen, and `data-theme` on <html> overrides it in either direction.
+ * This adds only the choosing — so with the bundle blocked the site still
+ * follows the operating system, it simply cannot be argued with.
+ *
+ * The current theme is read back from the document rather than tracked in a
+ * variable, because the first click has to flip whatever the system decided,
+ * not whatever this file assumed.
+ */
+function bindThemeToggle() {
+    const buttons = document.querySelectorAll('[data-theme-toggle]');
+    if (buttons.length === 0) return;
+
+    const root = document.documentElement;
+
+    const current = () =>
+        root.getAttribute('data-theme') ??
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+    buttons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const next = current() === 'dark' ? 'light' : 'dark';
+
+            root.setAttribute('data-theme', next);
+
+            try {
+                localStorage.setItem('theme', next);
+            } catch (error) {
+                // Private mode, or storage full. The choice still applies to
+                // this page; it just will not survive the next one.
+            }
+        });
+    });
+}
+
 /*
  * Each one is isolated. These are independent progressive enhancements, and a
  * throw in any of them used to take out every one that had not run yet — which
@@ -109,6 +147,7 @@ function bindAutoSubmitFilters() {
     lockScrollWithMobileMenu,
     bindGalleries,
     bindAutoSubmitFilters,
+    bindThemeToggle,
 ].forEach((enhance) => {
     try {
         enhance();

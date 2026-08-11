@@ -9,7 +9,7 @@
         the layout's width. Here the image simply covers a box the copy sizes,
         so it has no say in anything.
     --}}
-    <section class="relative overflow-hidden bg-ink-950 text-white md:hidden">
+    <section class="relative overflow-hidden bg-night-950 text-white md:hidden">
         <x-hero-motion />
 
         <div class="relative">
@@ -26,7 +26,7 @@
             />
 
             {{-- Legibility over a photograph nobody has approved yet. --}}
-            <div class="absolute inset-0 bg-gradient-to-b from-ink-950/45 via-ink-950/60 to-ink-950/72"
+            <div class="absolute inset-0 bg-gradient-to-b from-night-950/45 via-night-950/60 to-night-950/72"
                  aria-hidden="true"></div>
 
             {{-- `min-h` on the copy, not on the image: the content decides the
@@ -40,7 +40,7 @@
                     {{ __('home.hero_title') }}
                 </h1>
 
-                <p class="mt-5 max-w-md text-[0.9375rem] leading-relaxed text-ink-200">
+                <p class="mt-5 max-w-md text-[0.9375rem] leading-relaxed text-night-200">
                     {{ __('home.hero_body') }}
                 </p>
             </div>
@@ -54,7 +54,7 @@
         The visual sits beside the copy, so the text needs no scrim and the
         LCP element is predictable.
     --}}
-    <section class="relative hidden overflow-hidden bg-ink-950 text-white md:block">
+    <section class="relative hidden overflow-hidden bg-night-950 text-white md:block">
         <x-hero-motion />
 
         <div class="container-page relative">
@@ -66,7 +66,7 @@
                         {{ __('home.hero_title') }}
                     </h1>
 
-                    <p class="mt-6 max-w-xl text-lg leading-relaxed text-ink-300">
+                    <p class="mt-6 max-w-xl text-lg leading-relaxed text-night-300">
                         {{ __('home.hero_body') }}
                     </p>
 
@@ -90,7 +90,7 @@
                         preload-media="(min-width: 768px)"
                         :alt="__('home.hero_title')"
                         sizes="50vw"
-                        class="rounded-lg border border-hairline-dark"
+                        class="rounded-lg border border-night-line"
                     />
                 </div>
             </div>
@@ -156,7 +156,7 @@
         {{-- Edge to edge: the artwork leaves the page container, so no rounding
              or border either — a corner radius on something that touches the
              viewport edge reads as a mistake rather than as a frame. --}}
-        <div class="mt-12 bg-white">
+        <div class="mt-12 bg-surface">
             @if ($infographic)
                 <x-picture
                     :src="$infographic"
@@ -168,12 +168,23 @@
                 />
             @else
                 {{-- Nothing uploaded yet: the granule field holds the space
-                     rather than an empty box collapsing the section. --}}
+                     rather than an empty box collapsing the section. Portrait on
+                     a phone and landscape above it, matching the two uploads the
+                     admin asks for — so the empty state is the shape of the
+                     thing that will replace it. --}}
+                <x-media
+                    seed="arta-applications"
+                    ratio="3/4"
+                    :alt="__('home.applications_title')"
+                    sizes="100vw"
+                    class="md:hidden"
+                />
                 <x-media
                     seed="arta-applications"
                     ratio="16/9"
                     :alt="__('home.applications_title')"
                     sizes="100vw"
+                    class="hidden md:block"
                 />
             @endif
         </div>
@@ -232,7 +243,7 @@
         for as long as the wrapper is still on screen.
     --}}
     <div class="relative">
-        <div class="sticky top-0 h-[60svh] overflow-hidden bg-ink-950 md:h-[78svh]">
+        <div class="sticky top-0 h-[60svh] overflow-hidden bg-night-950 md:h-[78svh]">
             <x-media
                 fill
                 :src="setting('media.showcase')"
@@ -245,7 +256,7 @@
 
             {{-- A floor under the caption, and a top edge dark enough that the
                  header does not sit on bare photograph when it reveals. --}}
-            <div class="absolute inset-0 bg-gradient-to-t from-ink-950/70 via-transparent to-ink-950/35"
+            <div class="absolute inset-0 bg-gradient-to-t from-night-950/70 via-transparent to-night-950/35"
                  aria-hidden="true"></div>
 
             <div class="container-page absolute inset-x-0 bottom-0 pb-14 md:pb-20">
@@ -278,7 +289,7 @@
 
     {{-- ── News ───────────────────────────────────────────────────────── --}}
     @if ($posts->isNotEmpty())
-        <section class="relative bg-white py-section">
+        <section class="relative bg-surface py-section">
             <div class="container-page">
                 <x-section-heading
                     :eyebrow="__('nav.news')"

@@ -69,4 +69,5 @@ return [
         'next' => 'التالي',
         'showing' => 'عرض :first–:last من أصل :total نتيجة',
     ],
+    'theme_toggle' => 'الوضع الليلي والنهاري',
 ];

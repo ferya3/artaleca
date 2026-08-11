@@ -76,7 +76,7 @@
 
                 <ul class="mt-10 grid gap-px bg-hairline sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($certificates as $certificate)
-                        <li class="bg-white p-6">
+                        <li class="bg-surface p-6">
                             <p class="text-sm font-semibold text-ink-950">{{ $certificate->title }}</p>
                             @if (filled($certificate->issuer))
                                 <p class="mt-1.5 text-xs text-ink-500">{{ $certificate->issuer }}</p>

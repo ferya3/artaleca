@@ -33,7 +33,7 @@
                             <li>
                                 @if ($page == $paginator->currentPage())
                                     <span aria-current="page"
-                                          class="tabular inline-flex h-9 w-9 items-center justify-center rounded-md bg-ink-950 text-sm font-semibold text-white">{{ $page }}</span>
+                                          class="tabular inline-flex h-9 w-9 items-center justify-center rounded-md bg-ink-950 text-sm font-semibold text-surface">{{ $page }}</span>
                                 @else
                                     <a href="{{ $url }}"
                                        class="tabular inline-flex h-9 w-9 items-center justify-center rounded-md border border-hairline text-sm text-ink-700 transition-colors hover:border-ink-400 hover:text-ink-950">{{ $page }}</a>

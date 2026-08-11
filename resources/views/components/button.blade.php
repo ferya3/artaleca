@@ -10,11 +10,11 @@
     // ghost ones stay flat, because a shadow under a transparent surface reads
     // as a mistake rather than as elevation.
     $variants = [
-        'primary' => 'bg-ink-950 text-white hover:bg-clay-600 border border-transparent shadow-soft hover:shadow-lift',
+        'primary' => 'bg-ink-950 text-surface hover:bg-clay-600 border border-transparent shadow-soft hover:shadow-lift',
         'accent' => 'bg-clay-600 text-white hover:bg-clay-700 border border-transparent shadow-soft hover:shadow-lift',
         'outline' => 'border border-ink-300 text-ink-900 hover:border-ink-400 hover:bg-ink-50',
         'ghost' => 'border border-transparent text-ink-700 hover:text-ink-950 hover:bg-ink-50',
-        'inverse' => 'border border-white/25 text-white hover:bg-white hover:text-ink-950',
+        'inverse' => 'border border-white/25 text-white hover:bg-white hover:text-night-950',
     ];
 
     $sizes = [

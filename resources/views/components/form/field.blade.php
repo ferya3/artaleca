@@ -21,7 +21,7 @@
         ($hint ? $hintId.' ' : '').($hasError ? $errorId : '')
     ) ?: null;
 
-    $control = 'w-full rounded-md border bg-white px-3.5 py-3 text-sm text-ink-900 transition-colors
+    $control = 'w-full rounded-md border bg-surface px-3.5 py-3 text-sm text-ink-900 transition-colors
                 placeholder:text-ink-400 focus:outline-none focus:ring-4 focus:ring-clay-500/12 '
         .($hasError
             ? 'border-red-400 focus:border-red-500'

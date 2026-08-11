@@ -87,6 +87,33 @@
     paint: deferring it to the module would show the bar and then snatch it
     away. It carries the CSP nonce; nothing here needs the bundle.
 --}}
+{{--
+    Theme, applied before first paint.
+
+    Only an *explicit* choice is written here. The system preference is handled
+    in CSS by `prefers-color-scheme`, so a visitor who has never touched the
+    toggle gets the right theme with no JavaScript at all — and a script that
+    fails to run costs them nothing. Writing the attribute unconditionally
+    would have made the stylesheet depend on the script, which is the mistake
+    the header already taught once.
+
+    Separate from the block below, and first, because it must not be skipped if
+    anything in the header logic throws.
+--}}
+<script @nonce>
+    (function () {
+        try {
+            var choice = localStorage.getItem('theme');
+
+            if (choice === 'dark' || choice === 'light') {
+                document.documentElement.setAttribute('data-theme', choice);
+            }
+        } catch (e) {
+            // A blocked localStorage just means the system preference wins.
+        }
+    })();
+</script>
+
 <script @nonce>
     (function () {
         var root = document.documentElement;

@@ -27,7 +27,7 @@
 --}}
 <header
     data-site-header
-    class="fixed inset-x-0 top-0 z-50 border-b border-hairline bg-white shadow-header
+    class="fixed inset-x-0 top-0 z-50 border-b border-hairline bg-surface shadow-header
            transition-[transform,opacity] duration-300 ease-out"
 >
     {{-- Utility strip: contact routes for a visitor who arrived ready to buy,
@@ -51,6 +51,10 @@
 
             <nav class="flex items-center gap-5" aria-label="{{ __('nav.language') }}">
                 <a href="{{ route('faq') }}" class="hover:text-ink-900 transition-colors">{{ __('nav.faq') }}</a>
+
+                <span class="h-3 w-px bg-hairline" aria-hidden="true"></span>
+
+                <x-theme-toggle class="-my-1 h-7 w-7" />
 
                 <span class="h-3 w-px bg-hairline" aria-hidden="true"></span>
 
@@ -115,7 +119,7 @@
 
                         <div
                             class="invisible absolute top-full start-0 z-10 w-72 translate-y-1 overflow-hidden
-                                   rounded-lg border border-hairline bg-white opacity-0 shadow-lift transition-all duration-150
+                                   rounded-lg border border-hairline bg-surface opacity-0 shadow-lift transition-all duration-150
                                    group-hover:visible group-hover:translate-y-0 group-hover:opacity-100
                                    group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100"
                         >
@@ -167,7 +171,7 @@
 
             <a
                 href="{{ route('quote') }}"
-                class="hidden rounded-md bg-ink-950 px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition-[background-color,box-shadow] duration-200 hover:bg-clay-600 hover:shadow-lift lg:inline-flex"
+                class="hidden rounded-md bg-ink-950 px-5 py-2.5 text-sm font-semibold text-surface shadow-soft transition-[background-color,box-shadow] duration-200 hover:bg-clay-600 hover:shadow-lift lg:inline-flex"
             >{{ __('nav.quote') }}</a>
 
             {{--
@@ -197,7 +201,7 @@
                     <span class="sr-only">{{ Locales::all()[Locales::current()]['native'] }}</span>
                 </summary>
 
-                <div class="absolute end-0 top-full z-50 mt-1 w-44 overflow-hidden rounded-lg border border-hairline bg-white shadow-lift">
+                <div class="absolute end-0 top-full z-50 mt-1 w-44 overflow-hidden rounded-lg border border-hairline bg-surface shadow-lift">
                     <ul class="py-1">
                         @foreach (Locales::all() as $code => $meta)
                             <li>

@@ -94,7 +94,7 @@
                 @if ($headline !== [])
                     <dl class="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-hairline bg-hairline">
                         @foreach ($headline as $label => [$value, $unit])
-                            <div class="bg-white p-5">
+                            <div class="bg-surface p-5">
                                 <dt class="text-xs uppercase tracking-wider text-ink-500">{{ $label }}</dt>
                                 <dd class="tabular mt-2 flex items-baseline gap-1.5">
                                     <span class="ltr-run text-2xl font-bold text-ink-950">{{ $value }}</span>
@@ -170,7 +170,7 @@
                             <li>
                                 <a href="{{ route('downloads.file', ['download' => $document]) }}"
                                    class="group flex flex-wrap items-center gap-4 py-4">
-                                    <span class="ltr-run flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-hairline bg-white text-[0.625rem] font-bold uppercase text-ink-500 group-hover:border-clay-400 group-hover:text-clay-600">
+                                    <span class="ltr-run flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-hairline bg-surface text-[0.625rem] font-bold uppercase text-ink-500 group-hover:border-clay-400 group-hover:text-clay-600">
                                         {{ $document->file_extension ?: 'PDF' }}
                                     </span>
                                     <span class="min-w-0 flex-1 text-sm font-medium text-ink-900 group-hover:text-clay-600">
@@ -201,7 +201,7 @@
                     <h2 class="mt-12 text-xl font-bold text-ink-950">{{ __('product.standards') }}</h2>
                     <ul class="mt-5 flex flex-wrap gap-2">
                         @foreach ($product->standards as $standard)
-                            <li class="ltr-run rounded-md border border-hairline bg-white px-3.5 py-2 text-xs text-ink-700">{{ $standard }}</li>
+                            <li class="ltr-run rounded-md border border-hairline bg-surface px-3.5 py-2 text-xs text-ink-700">{{ $standard }}</li>
                         @endforeach
                     </ul>
                 @endif
