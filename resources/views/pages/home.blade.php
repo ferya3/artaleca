@@ -151,28 +151,31 @@
                 :body="__('home.applications_body')"
                 :href="route('applications.index')"
             />
+        </div>
 
-            <div class="mt-12 overflow-hidden rounded-lg border border-hairline bg-white shadow-soft">
-                @if ($infographic)
-                    <x-picture
-                        :src="$infographic"
-                        :mobile-src="setting('media.applications_infographic_mobile')"
-                        :alt="__('home.applications_infographic_alt')"
-                        sizes="(min-width: 1280px) 1216px, (min-width: 768px) calc(100vw - 4rem), calc(100vw - 2.5rem)"
-                        mobile-sizes="calc(100vw - 2.5rem)"
-                        class="h-auto w-full"
-                    />
-                @else
-                    {{-- Nothing uploaded yet: the granule field holds the space
-                         rather than an empty box collapsing the section. --}}
-                    <x-media
-                        seed="arta-applications"
-                        ratio="16/9"
-                        :alt="__('home.applications_title')"
-                        sizes="100vw"
-                    />
-                @endif
-            </div>
+        {{-- Edge to edge: the artwork leaves the page container, so no rounding
+             or border either — a corner radius on something that touches the
+             viewport edge reads as a mistake rather than as a frame. --}}
+        <div class="mt-12 bg-white">
+            @if ($infographic)
+                <x-picture
+                    :src="$infographic"
+                    :mobile-src="setting('media.applications_infographic_mobile')"
+                    :alt="__('home.applications_infographic_alt')"
+                    sizes="100vw"
+                    mobile-sizes="100vw"
+                    class="h-auto w-full"
+                />
+            @else
+                {{-- Nothing uploaded yet: the granule field holds the space
+                     rather than an empty box collapsing the section. --}}
+                <x-media
+                    seed="arta-applications"
+                    ratio="16/9"
+                    :alt="__('home.applications_title')"
+                    sizes="100vw"
+                />
+            @endif
         </div>
     </section>
 
