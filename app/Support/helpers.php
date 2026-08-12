@@ -6,6 +6,7 @@ use App\Models\Setting;
 use App\Support\Seo;
 use App\Support\SiteContent;
 use App\Support\SiteImage;
+use Illuminate\Support\HtmlString;
 
 if (! function_exists('seo')) {
     /**
@@ -58,9 +59,13 @@ if (! function_exists('content')) {
      * swapping one for the other changes nothing until someone actually edits
      * the string.
      *
+     * Returns an `HtmlString` when the edited text has line breaks, so `{{ }}`
+     * renders them instead of escaping them into one run-on line; everything
+     * else stays a plain string and keeps being escaped as usual.
+     *
      * @param  array<string, string|int>  $replace
      */
-    function content(string $key, array $replace = []): string
+    function content(string $key, array $replace = []): string|HtmlString
     {
         return SiteContent::get($key, $replace);
     }

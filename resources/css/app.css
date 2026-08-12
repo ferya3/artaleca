@@ -272,8 +272,28 @@
         letter-spacing: -0.011em;
     }
 
-    p {
-        text-wrap: pretty;
+    /*
+     * Justified body copy.
+     *
+     * Persian and Arabic set justified by convention — it is what a printed
+     * Persian page looks like — and `inter-word` keeps the stretching in the
+     * spaces rather than letting the browser pull the letterforms apart, which
+     * is what wrecks a connected script.
+     *
+     * Safe to apply to every paragraph rather than to a chosen few: the last
+     * line of a justified block stays start-aligned, so a one-line label reads
+     * exactly as it did before. Anything that genuinely wants otherwise sets
+     * `text-center` or `text-end`, and a utility beats this layer.
+     *
+     * `text-wrap: pretty` is dropped here: it and justification are two
+     * different answers to the same question, and together the browser
+     * rebalances lines that justification has already fitted.
+     */
+    p,
+    .prose-industrial,
+    .prose-industrial li {
+        text-align: justify;
+        text-justify: inter-word;
     }
 
     /*
@@ -413,6 +433,27 @@
      * appears on ~40 blocks across the public site and the admin, and having a
      * single definition is what stops them drifting apart.
      */
+    /*
+     * A line the editor started with a dash. Rendered as a bullet rather than
+     * as a list item — see `SiteContent::asLines` for why it cannot be a real
+     * `<ul>` — so the marker is drawn here and the line hangs from it.
+     */
+    .copy-bullet {
+        display: block;
+        padding-inline-start: 1.15em;
+        text-indent: -1.15em;
+        /* A bullet is a short line by nature. Justifying it stretches four
+           words across the full measure, which reads as broken rather than as
+           tidy — the one place on the site that opts out. */
+        text-align: start;
+    }
+
+    .copy-bullet::before {
+        content: '•';
+        color: var(--color-brand-600);
+        padding-inline-end: 0.5em;
+    }
+
     .panel {
         background-color: var(--color-surface);
         border: 1px solid var(--color-hairline);

@@ -6,6 +6,7 @@ namespace App\Support;
 
 use App\Models\Setting;
 use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\HtmlString;
 
 /**
  * Every piece of page copy, editable without a deploy.
@@ -68,9 +69,16 @@ final class SiteContent
      * The text a page should render: the override if there is one, the
      * translation file otherwise.
      *
+     * Returns an `HtmlString` — and only then — when the override contains line
+     * breaks. Blade's `{{ }}` hands anything `Htmlable` straight through, so a
+     * paragraph typed with Enter in the admin arrives on the page with its
+     * breaks intact, while every other string stays an ordinary string and
+     * keeps being escaped. The escaping is done here first, so the only markup
+     * that survives is the markup this method wrote.
+     *
      * @param  array<string, string|int>  $replace
      */
-    public static function get(string $key, array $replace = []): string
+    public static function get(string $key, array $replace = []): string|HtmlString
     {
         /*
          * Read the map directly rather than through `Setting::get`, which falls
@@ -92,7 +100,62 @@ final class SiteContent
             $override = str_replace([':'.$name, ':'.ucfirst((string) $name)], (string) $value, $override);
         }
 
-        return $override;
+        return str_contains($override, "\n") ? self::asLines($override) : $override;
+    }
+
+    /**
+     * Turn a typed block of text into the paragraph it looks like.
+     *
+     * A line opening with `-` or `*` becomes a bullet, because that is what an
+     * editor types when they mean one. It stays a `•` and a line break rather
+     * than becoming a `<ul>`: these strings are rendered inside `<p>` elements
+     * all over the site, and a list inside a paragraph is invalid HTML the
+     * browser fixes by closing the paragraph early — which would break the
+     * layout around it far more visibly than the missing list semantics.
+     */
+    private static function asLines(string $text): HtmlString
+    {
+        /*
+         * The `u` flag is load-bearing. Without it `\R` matches raw bytes, and
+         * one of the bytes it matches is 0x85 — which is the second half of
+         * "م" in UTF-8. The split then landed inside the character and ate it:
+         * "خط دوم" came back as "خط دو" with a stray break after it.
+         */
+        $lines = preg_split('/\R/u', trim($text)) ?: [];
+
+        $parts = [];
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+            $bullet = preg_match('/^[-*•]\s*(.+)$/u', $line, $matches) === 1;
+
+            $parts[] = [
+                'bullet' => $bullet,
+                'html' => $bullet
+                    ? '<span class="copy-bullet">'.e($matches[1]).'</span>'
+                    : e($line),
+            ];
+        }
+
+        /*
+         * A bullet is its own block, so it needs no `<br>` on either side —
+         * emitting one anyway left a blank line above and below every list.
+         * Two ordinary lines still get a break between them, which is the only
+         * thing that separates them.
+         */
+        $html = '';
+
+        foreach ($parts as $index => $part) {
+            $previous = $parts[$index - 1] ?? null;
+
+            if ($previous !== null && ! $part['bullet'] && ! $previous['bullet']) {
+                $html .= '<br>';
+            }
+
+            $html .= $part['html'];
+        }
+
+        return new HtmlString($html);
     }
 
     /** How many keys in this group an editor has actually overridden. */

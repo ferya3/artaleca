@@ -111,6 +111,59 @@ class SiteContentTest extends TestCase
         $this->assertSame('7 دقیقه خواندن', content('articles.reading_time', ['minutes' => 7]));
     }
 
+    /**
+     * A paragraph typed with Enter has to arrive on the page with its breaks.
+     *
+     * `{{ }}` escapes, so a newline came through as one run-on line — the
+     * editor could see their paragraphs in the textarea and nowhere else. The
+     * override is escaped here first and only the breaks this code writes
+     * survive, so an editor still cannot inject markup.
+     */
+    public function test_line_breaks_typed_by_an_editor_reach_the_page(): void
+    {
+        $this->actingAs($this->admin())->put('/admin/content/home', [
+            'intro_body' => ['fa' => "خط نخست\nخط دوم"],
+        ]);
+
+        $this->get('/fa')->assertOk()->assertSee('خط نخست<br>خط دوم', false);
+    }
+
+    /** A line an editor opened with a dash is what they meant as a bullet. */
+    public function test_a_dashed_line_becomes_a_bullet(): void
+    {
+        $this->actingAs($this->admin())->put('/admin/content/home', [
+            'intro_body' => ['fa' => "سه مزیت:\n- سبکی\n- عایق حرارتی"],
+        ]);
+
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        $this->assertStringContainsString('<span class="copy-bullet">سبکی</span>', $html);
+        $this->assertStringContainsString('<span class="copy-bullet">عایق حرارتی</span>', $html);
+    }
+
+    /** Escaping still happens; only the breaks this code writes get through. */
+    public function test_an_override_cannot_smuggle_markup_onto_the_page(): void
+    {
+        $this->actingAs($this->admin())->put('/admin/content/home', [
+            'intro_body' => ['fa' => "سلام\n<script>alert(1)</script>"],
+        ]);
+
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        $this->assertStringNotContainsString('<script>alert(1)</script>', $html);
+        $this->assertStringContainsString('&lt;script&gt;', $html);
+    }
+
+    /** A single-line override stays a plain string, so attributes stay safe. */
+    public function test_a_single_line_override_is_still_escaped_as_a_string(): void
+    {
+        $this->actingAs($this->admin())->put('/admin/content/home', [
+            'intro_title' => ['fa' => '<b>bold</b>'],
+        ]);
+
+        $this->get('/fa')->assertOk()->assertDontSee('<b>bold</b>', false)->assertSee('&lt;b&gt;', false);
+    }
+
     /** An area that does not exist must 404 rather than render an empty form. */
     public function test_an_unknown_area_is_not_found(): void
     {
