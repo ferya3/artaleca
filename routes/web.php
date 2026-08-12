@@ -18,7 +18,6 @@ use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\RepresentativeController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SitemapController;
-use App\Support\Geo;
 use App\Support\Locales;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -35,34 +34,25 @@ use Illuminate\Support\Facades\Route;
 */
 
 /*
- * The only place the site guesses a language.
+ * The site opens in Persian.
  *
- * Deliberately confined to the bare root. Every `/fa/...`, `/en/...` and
- * `/ar/...` URL is served exactly as asked for, whoever asks — which is what
- * keeps shared links, the language switcher and search engines working. A site
- * that redirects by address on *every* URL shows Googlebot, which crawls from
- * the United States, only ever the English pages, and the Persian ones fall
- * out of the index. For a plant selling into Iran that is the expensive
- * mistake, and it is invisible until the traffic is already gone.
+ * Not negotiated from `Accept-Language`, and not from the visitor's country
+ * either — that was built and taken back out, because choosing a language by
+ * address means Googlebot, which crawls from the United States, only ever sees
+ * the English pages and the Persian ones leave the index. For a plant selling
+ * into Iran those are the pages that matter, and the loss has no visible
+ * symptom until the traffic is gone.
  *
- * Three signals, in order of how much each one knows:
- *
- *  1. The visitor's own last choice, remembered in a cookie. Nothing outranks
- *     someone who has already told us.
- *  2. The country the request came from — this is the part a VPN changes, and
- *     changing it is the point.
- *  3. `Accept-Language`, which a VPN does not touch, so it is the honest answer
- *     to "what does this person read" when geography is unknown.
+ * The one thing that still moves this is the visitor's own choice, remembered
+ * from the last language they read. That is not a guess about them, it is
+ * something they told us — and it is what makes the language switcher stick.
  */
 Route::get('/', function (Request $request) {
     $chosen = $request->cookie(Locales::COOKIE);
 
-    $locale = Locales::supports($chosen)
-        ? $chosen
-        : Locales::forCountry(Geo::country($request))
-            ?? Locales::negotiate($request->header('Accept-Language'));
-
-    return redirect()->route('home', ['locale' => $locale], 302);
+    return redirect()->route('home', [
+        'locale' => Locales::supports($chosen) ? $chosen : Locales::default(),
+    ], 302);
 })->name('root');
 
 // Search engines look for these at the domain root, never under a locale.

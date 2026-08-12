@@ -12,30 +12,19 @@ class LocaleRoutingTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * Note the explicit empty header: the test client's underlying
-     * Request::create() supplies `en-us,en;q=0.5` of its own accord, so a test
-     * that sent nothing would actually be testing English negotiation.
+     * The root opens in Persian, whatever the browser asks for.
+     *
+     * It used to negotiate `Accept-Language`, and briefly picked a language
+     * from the request's country. Both were removed: choosing a language from
+     * anything about the visitor means Googlebot, crawling from the United
+     * States, only ever sees the English pages. `RootLocaleTest` covers the
+     * rest of that behaviour.
      */
-    public function test_root_redirects_to_the_default_locale_when_no_language_is_requested(): void
+    public function test_root_always_opens_in_the_default_locale(): void
     {
-        $this->get('/', ['Accept-Language' => ''])->assertRedirect('/fa');
-    }
-
-    public function test_root_honours_the_accept_language_header(): void
-    {
-        $this->get('/', ['Accept-Language' => 'ar-SA,ar;q=0.9,en;q=0.5'])->assertRedirect('/ar');
-        $this->get('/', ['Accept-Language' => 'en-GB,en;q=0.9'])->assertRedirect('/en');
-    }
-
-    public function test_an_unknown_language_falls_back_to_the_default(): void
-    {
-        $this->get('/', ['Accept-Language' => 'de-DE,de;q=0.9'])->assertRedirect('/fa');
-    }
-
-    /** A mixed header must pick the highest-quality *supported* language. */
-    public function test_negotiation_ignores_unsupported_languages_ranked_higher(): void
-    {
-        $this->get('/', ['Accept-Language' => 'de;q=1.0,ar;q=0.9,en;q=0.8'])->assertRedirect('/ar');
+        foreach (['', 'ar-SA,ar;q=0.9,en;q=0.5', 'en-GB,en;q=0.9', 'de-DE,de;q=0.9'] as $header) {
+            $this->get('/', ['Accept-Language' => $header])->assertRedirect('/fa');
+        }
     }
 
     public function test_an_unsupported_locale_prefix_is_not_routable(): void

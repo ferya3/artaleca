@@ -229,49 +229,6 @@ there is, because everything looks deployed.
 
 ---
 
-## 6. Language by country
-
-The site root — and only the site root — picks a language from where the
-visitor is: Iran gets Persian, the Arab export markets get Arabic, everywhere
-else gets English. Every `/fa/...`, `/en/...` and `/ar/...` URL is served
-exactly as requested, whoever asks, which is what keeps shared links and search
-engines working.
-
-It needs a source of country, and there are two. Either is enough.
-
-**Behind Cloudflare or nginx GeoIP2** — name the header the edge sets:
-
-```bash
-SITE_GEO_HEADER=CF-IPCountry      # or X-Geo-Country from nginx's GeoIP2 module
-```
-
-Leave it unset unless such an edge is really in front of the app. Proxies are
-trusted at `*` so the app can see a real client address, which means an unnamed
-header is simply something a visitor can type.
-
-**Otherwise**, sync Iran's allocated ranges from RIPE:
-
-```bash
-cd /var/www/artaleca && php artisan geo:sync
-```
-
-That writes `storage/app/geo/ir-prefixes.txt` and takes a few seconds. Ranges
-change slowly but they do change, so run it monthly:
-
-```
-0 4 1 * * cd /var/www/artaleca && php artisan geo:sync >/dev/null 2>&1
-```
-
-With neither configured the feature is simply off and the root falls back to
-the browser's `Accept-Language`, which is what it did before.
-
-**One caveat worth knowing.** `Accept-Language` is what a browser is set to and
-a VPN does not change it, so an Iranian visitor on a VPN still asks for
-Persian. That is exactly why the country lookup exists — but it also means the
-fallback cannot do the VPN case on its own.
-
----
-
 ## 6. Putting assets on a CDN
 
 Set `ASSET_URL=https://cdn.example.com` and point the CDN at the origin. The

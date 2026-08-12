@@ -94,14 +94,6 @@ class TranslationTest extends TestCase
         $this->assertSame(4.0, $product->grain_min_mm);
     }
 
-    public function test_locale_negotiation_picks_the_highest_supported_quality(): void
-    {
-        $this->assertSame('ar', Locales::negotiate('de;q=1.0,ar;q=0.9,en;q=0.8'));
-        $this->assertSame('en', Locales::negotiate('en-US,en;q=0.9'));
-        $this->assertSame('fa', Locales::negotiate(null));
-        $this->assertSame('fa', Locales::negotiate('ja,ko;q=0.8'));
-    }
-
     public function test_direction_is_reported_per_locale(): void
     {
         $this->assertTrue(Locales::isRtl('fa'));
