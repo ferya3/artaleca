@@ -18,6 +18,7 @@ use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\RepresentativeController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SitemapController;
+use App\Support\Geo;
 use App\Support\Locales;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -33,10 +34,35 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/*
+ * The only place the site guesses a language.
+ *
+ * Deliberately confined to the bare root. Every `/fa/...`, `/en/...` and
+ * `/ar/...` URL is served exactly as asked for, whoever asks — which is what
+ * keeps shared links, the language switcher and search engines working. A site
+ * that redirects by address on *every* URL shows Googlebot, which crawls from
+ * the United States, only ever the English pages, and the Persian ones fall
+ * out of the index. For a plant selling into Iran that is the expensive
+ * mistake, and it is invisible until the traffic is already gone.
+ *
+ * Three signals, in order of how much each one knows:
+ *
+ *  1. The visitor's own last choice, remembered in a cookie. Nothing outranks
+ *     someone who has already told us.
+ *  2. The country the request came from — this is the part a VPN changes, and
+ *     changing it is the point.
+ *  3. `Accept-Language`, which a VPN does not touch, so it is the honest answer
+ *     to "what does this person read" when geography is unknown.
+ */
 Route::get('/', function (Request $request) {
-    return redirect()->route('home', [
-        'locale' => Locales::negotiate($request->header('Accept-Language')),
-    ], 302);
+    $chosen = $request->cookie(Locales::COOKIE);
+
+    $locale = Locales::supports($chosen)
+        ? $chosen
+        : Locales::forCountry(Geo::country($request))
+            ?? Locales::negotiate($request->header('Accept-Language'));
+
+    return redirect()->route('home', ['locale' => $locale], 302);
 })->name('root');
 
 // Search engines look for these at the domain root, never under a locale.

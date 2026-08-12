@@ -14,6 +14,16 @@ use Illuminate\Support\Facades\App;
  */
 final class Locales
 {
+    /**
+     * Where a visitor's own language choice is remembered.
+     *
+     * A year, because the answer does not change: someone who reads Persian in
+     * March still reads Persian in December.
+     */
+    public const COOKIE = 'site_locale';
+
+    public const COOKIE_DAYS = 365;
+
     /** @return array<string, array{name:string,native:string,dir:string,hreflang:string,flag:string}> */
     public static function all(): array
     {
@@ -76,6 +86,56 @@ final class Locales
         $locale = $locale ?? self::current();
 
         return array_diff_key(self::all(), [$locale => null]);
+    }
+
+    /**
+     * Countries whose visitors are served Arabic.
+     *
+     * Not "every country where Arabic is spoken" — the list is the export
+     * markets this plant actually ships to, which is what the Arabic pages were
+     * written for.
+     *
+     * @var list<string>
+     */
+    private const ARABIC_COUNTRIES = [
+        'AE', 'SA', 'IQ', 'KW', 'QA', 'OM', 'BH', 'JO', 'SY', 'LB',
+        'EG', 'LY', 'YE', 'SD', 'DZ', 'MA', 'TN', 'MR',
+    ];
+
+    /**
+     * The language a country should be shown, or null when the country says
+     * nothing useful.
+     *
+     * Null rather than the default is the point: it lets the caller fall back
+     * to `Accept-Language`, which is a better signal than a guess. Everywhere
+     * outside Iran and the Arab export markets is deliberately *not* mapped —
+     * a German visitor is not "not Iranian, therefore English" by geography,
+     * they are English because that is the language the site has for them, and
+     * their browser can say so more precisely than their address can.
+     */
+    public static function forCountry(?string $country): ?string
+    {
+        if (blank($country)) {
+            return null;
+        }
+
+        $country = strtoupper($country);
+
+        if ($country === 'IR') {
+            return 'fa';
+        }
+
+        if (in_array($country, self::ARABIC_COUNTRIES, true)) {
+            return self::supports('ar') ? 'ar' : null;
+        }
+
+        /*
+         * Everything else, including `Geo::ELSEWHERE`, gets English. That is
+         * the answer the site has for a visitor it cannot place, and it is what
+         * makes a VPN do the thing it is expected to do here — move the visitor
+         * out of Iran, and the site into English.
+         */
+        return 'en';
     }
 
     /**

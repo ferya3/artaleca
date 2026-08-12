@@ -59,6 +59,25 @@ class SetLocale
         // Lets shared caches key on language without a Vary:Cookie penalty.
         $response->headers->set('Content-Language', $locale);
 
+        /*
+         * Remember which language this visitor is actually reading, so the site
+         * root stops guessing on their next visit.
+         *
+         * Written only when it changes. A `Set-Cookie` on every page would put
+         * a header on responses that are otherwise identical for everyone, and
+         * the whole point of keying caches on `Content-Language` above is to
+         * avoid exactly that.
+         *
+         * A plain cookie rather than an encrypted one: it holds two letters
+         * that are already in the URL, and it has to be readable by a cache or
+         * an edge worker deciding what to serve at `/`.
+         */
+        if ($request->cookie(Locales::COOKIE) !== $locale) {
+            $response->headers->setCookie(
+                cookie()->forever(Locales::COOKIE, $locale, sameSite: 'Lax')
+            );
+        }
+
         return $response;
     }
 }

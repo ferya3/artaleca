@@ -169,4 +169,27 @@ return [
         'max_image_kb' => min(4096, php_upload_limit_kb()),
         'max_document_kb' => min(10240, php_upload_limit_kb()),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Geolocation
+    |--------------------------------------------------------------------------
+    |
+    | The site root picks a language from the visitor's country. Two sources,
+    | both off until configured.
+    |
+    | `header` names a country header set by whatever sits in front of the app
+    | — `CF-IPCountry` behind Cloudflare, or `X-Geo-Country` from nginx's GeoIP2
+    | module. It stays unset by default on purpose: proxies are trusted at `*`
+    | so the app can see a real client address, which also means an unnamed
+    | header is just something the visitor typed. Naming it here is the
+    | operator saying "I put that edge there".
+    |
+    | With no header configured, `php artisan geo:sync` writes Iran's allocated
+    | ranges to storage and the lookup uses those instead.
+    |
+    */
+    'geo' => [
+        'header' => env('SITE_GEO_HEADER'),
+    ],
 ];

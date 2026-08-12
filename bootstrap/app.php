@@ -5,6 +5,7 @@ use App\Http\Middleware\HandleRedirects;
 use App\Http\Middleware\ResetScopedState;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
+use App\Support\Locales;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -43,6 +44,13 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->trustProxies(at: '*');
+
+        /*
+         * The language cookie stays readable. It holds a two-letter code that
+         * is already in every URL, and a CDN or edge worker choosing what to
+         * serve at `/` cannot decrypt a Laravel cookie.
+         */
+        $middleware->encryptCookies(except: [Locales::COOKIE]);
 
         // The only guarded area is the back office, and its sign-in page is
         // not at the framework's default `login` route.
