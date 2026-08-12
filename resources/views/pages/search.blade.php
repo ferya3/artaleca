@@ -1,31 +1,31 @@
 <x-layouts.app>
 
     <x-page-header
-        :eyebrow="__('nav.search')"
-        :title="$term === '' ? __('search.title') : __('search.results_for', ['term' => $term])"
-        :lead="$term !== '' && $total > 0 ? __('search.summary', ['count' => $total]) : null"
+        :eyebrow="content('nav.search')"
+        :title="$term === '' ? content('search.title') : content('search.results_for', ['term' => $term])"
+        :lead="$term !== '' && $total > 0 ? content('search.summary', ['count' => $total]) : null"
     >
         <form method="GET" action="{{ route('search') }}" class="mt-8 flex max-w-xl gap-2">
-            <label for="search-q" class="sr-only">{{ __('nav.search') }}</label>
+            <label for="search-q" class="sr-only">{{ content('nav.search') }}</label>
             <input
                 id="search-q"
                 type="search"
                 name="q"
                 value="{{ $term }}"
-                placeholder="{{ __('search.placeholder') }}"
+                placeholder="{{ content('search.placeholder') }}"
                 autofocus
                 class="w-full border border-ink-300 bg-surface px-4 py-3 text-sm text-ink-900 placeholder:text-ink-400 focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12"
             >
-            <x-button type="submit" class="shrink-0">{{ __('nav.search') }}</x-button>
+            <x-button type="submit" class="shrink-0">{{ content('nav.search') }}</x-button>
         </form>
     </x-page-header>
 
     <section class="py-section">
         <div class="container-page">
             @if ($term === '')
-                <x-empty-state :message="__('search.prompt')" />
+                <x-empty-state :message="content('search.prompt')" />
             @elseif ($total === 0)
-                <x-empty-state :message="__('search.empty', ['term' => $term])" />
+                <x-empty-state :message="content('search.empty', ['term' => $term])" />
             @else
                 <div class="space-y-14">
                     @foreach ($results as $group => $items)

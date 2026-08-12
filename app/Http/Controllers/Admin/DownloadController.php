@@ -35,9 +35,9 @@ class DownloadController extends ResourceController
     {
         return [
             'title' => __('admin.downloads'),
-            'category' => __('product.filter_by_category'),
-            'locale' => __('nav.language'),
-            'download_count' => __('common.download'),
+            'category' => content('product.filter_by_category'),
+            'locale' => content('nav.language'),
+            'download_count' => content('common.download'),
             'is_active' => __('admin.status'),
         ];
     }
@@ -52,7 +52,7 @@ class DownloadController extends ResourceController
                 'rules' => fn (?Model $r) => ['nullable', 'string', 'max:180', 'alpha_dash',
                     Rule::unique('downloads', 'slug')->ignore($r)]],
 
-            ['name' => 'category', 'label' => __('product.filter_by_category'), 'type' => 'select', 'width' => 'half',
+            ['name' => 'category', 'label' => content('product.filter_by_category'), 'type' => 'select', 'width' => 'half',
                 'options' => fn () => collect(Download::CATEGORIES)
                     ->mapWithKeys(fn ($c) => [$c => __('downloads.categories.'.$c)])->all(),
                 'rules' => ['required', Rule::in(Download::CATEGORIES)]],
@@ -76,7 +76,7 @@ class DownloadController extends ResourceController
                         'max:'.config('site.uploads.max_document_kb')],
                 )],
 
-            ['name' => 'locale', 'label' => __('nav.language'), 'type' => 'select', 'width' => 'half',
+            ['name' => 'locale', 'label' => content('nav.language'), 'type' => 'select', 'width' => 'half',
                 'options' => fn () => collect(Locales::all())->map(fn ($m) => $m['native'])->all(),
                 'hint' => 'Leave empty for a language-neutral document.',
                 'rules' => ['nullable', Rule::in(Locales::codes())]],

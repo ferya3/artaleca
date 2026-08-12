@@ -2,11 +2,11 @@
 
     @php
         $facts = array_filter([
-            __('projects.client') => $project->client,
-            __('projects.location') => $project->location,
-            __('projects.year') => $project->year,
-            __('projects.volume') => $project->volume_m3
-                ? number_format($project->volume_m3).' '.__('projects.volume_unit')
+            content('projects.client') => $project->client,
+            content('projects.location') => $project->location,
+            content('projects.year') => $project->year,
+            content('projects.volume') => $project->volume_m3
+                ? number_format($project->volume_m3).' '.content('projects.volume_unit')
                 : null,
         ], 'filled');
 
@@ -14,7 +14,7 @@
     @endphp
 
     <x-page-header
-        :eyebrow="__('nav.projects')"
+        :eyebrow="content('nav.projects')"
         :title="$project->title"
         :lead="$project->summary"
     />
@@ -38,7 +38,7 @@
                 @endif
 
                 @if ($scope !== [])
-                    <h2 class="mt-12 text-xl font-bold text-ink-950">{{ __('projects.scope') }}</h2>
+                    <h2 class="mt-12 text-xl font-bold text-ink-950">{{ content('projects.scope') }}</h2>
                     <ul class="mt-5 space-y-3">
                         @foreach ($scope as $item)
                             <li class="flex gap-3 text-sm leading-relaxed text-ink-700">
@@ -80,7 +80,7 @@
 
                     @if ($project->products->isNotEmpty())
                         <div class="mt-6 panel-muted p-5">
-                            <h2 class="text-sm font-bold text-ink-950">{{ __('projects.products_used') }}</h2>
+                            <h2 class="text-sm font-bold text-ink-950">{{ content('projects.products_used') }}</h2>
                             <ul class="mt-3 space-y-2">
                                 @foreach ($project->products as $product)
                                     <li>
@@ -93,7 +93,7 @@
                     @endif
 
                     <x-button :href="route('projects.index')" variant="ghost" size="sm" class="mt-6">
-                        {{ __('projects.back_to_list') }}
+                        {{ content('projects.back_to_list') }}
                     </x-button>
                 </div>
             </aside>
@@ -103,7 +103,7 @@
     @if ($related->isNotEmpty())
         <section class="border-t border-hairline py-section">
             <div class="container-page">
-                <x-section-heading :title="__('common.related_projects')" :href="route('projects.index')" />
+                <x-section-heading :title="content('common.related_projects')" :href="route('projects.index')" />
                 <div class="mt-10 grid gap-6 md:grid-cols-3">
                     @foreach ($related as $item)
                         <x-project-card :project="$item" />

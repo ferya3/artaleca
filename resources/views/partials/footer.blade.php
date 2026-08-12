@@ -15,7 +15,7 @@
             </a>
 
             <p class="mt-5 max-w-xs text-sm leading-relaxed text-night-400">
-                {{ __('seo.brand_tagline') }} — {{ __('common.figures.since') }} {{ config('site.figures.since') }}.
+                {{ content('seo.brand_tagline') }} — {{ content('common.figures.since') }} {{ config('site.figures.since') }}.
             </p>
 
             <div class="mt-6 flex gap-3">
@@ -48,19 +48,19 @@
         @endforeach
 
         <div class="lg:col-span-2">
-            <h2 class="eyebrow text-night-400!">{{ __('common.headquarters') }}</h2>
+            <h2 class="eyebrow text-night-400!">{{ content('common.headquarters') }}</h2>
             <address class="mt-4 space-y-3 text-sm not-italic leading-relaxed text-night-400">
                 <p>{{ $contact['hq']['lines'][$locale] ?? $contact['hq']['lines']['en'] }}</p>
                 <p>
-                    <span class="block text-night-400">{{ __('common.phone') }}</span>
+                    <span class="block text-night-400">{{ content('common.phone') }}</span>
                     <a class="ltr-run text-night-200 hover:text-white" href="tel:{{ str_replace(' ', '', $contact['phone']) }}">{{ $contact['phone'] }}</a>
                 </p>
                 <p>
-                    <span class="block text-night-400">{{ __('common.email') }}</span>
+                    <span class="block text-night-400">{{ content('common.email') }}</span>
                     <a class="ltr-run text-night-200 hover:text-white" href="mailto:{{ $contact['email'] }}">{{ $contact['email'] }}</a>
                 </p>
                 <p>
-                    <span class="block text-night-400">{{ __('common.plant') }}</span>
+                    <span class="block text-night-400">{{ content('common.plant') }}</span>
                     {{ $contact['plant']['lines'][$locale] ?? $contact['plant']['lines']['en'] }}
                 </p>
             </address>
@@ -69,12 +69,12 @@
 
     <div class="border-t border-night-line">
         <div class="container-page flex flex-col gap-4 py-6 text-xs text-night-400 sm:flex-row sm:items-center sm:justify-between">
-            <p>{{ __('common.copyright', ['year' => now()->year, 'brand' => config('site.company.legal_name')]) }}</p>
+            <p>{{ content('common.copyright', ['year' => now()->year, 'brand' => config('site.company.legal_name')]) }}</p>
 
             <ul class="flex flex-wrap items-center gap-x-5 gap-y-2">
-                <li><a class="transition-colors hover:text-night-200" href="{{ route('legal.privacy') }}">{{ __('common.privacy') }}</a></li>
-                <li><a class="transition-colors hover:text-night-200" href="{{ route('legal.terms') }}">{{ __('common.terms') }}</a></li>
-                <li><a class="transition-colors hover:text-night-200" href="{{ route('sitemap') }}">{{ __('common.sitemap') }}</a></li>
+                <li><a class="transition-colors hover:text-night-200" href="{{ route('legal.privacy') }}">{{ content('common.privacy') }}</a></li>
+                <li><a class="transition-colors hover:text-night-200" href="{{ route('legal.terms') }}">{{ content('common.terms') }}</a></li>
+                <li><a class="transition-colors hover:text-night-200" href="{{ route('sitemap') }}">{{ content('common.sitemap') }}</a></li>
             </ul>
         </div>
     </div>

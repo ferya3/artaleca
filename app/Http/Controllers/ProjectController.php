@@ -29,10 +29,10 @@ class ProjectController extends Controller
             ->withQueryString();
 
         seo()
-            ->title(__('seo.projects_title'))
-            ->description(__('seo.projects_description'))
+            ->title(content('seo.projects_title'))
+            ->description(content('seo.projects_description'))
             ->breadcrumbs($this->trail([
-                ['label' => __('nav.projects'), 'url' => null],
+                ['label' => content('nav.projects'), 'url' => null],
             ]))
             ->noindex($projects->currentPage() > 1);
 
@@ -65,7 +65,7 @@ class ProjectController extends Controller
             ->image($project->cover_image)
             ->type('article')
             ->breadcrumbs($this->trail([
-                ['label' => __('nav.projects'), 'url' => route('projects.index')],
+                ['label' => content('nav.projects'), 'url' => route('projects.index')],
                 ['label' => (string) $project->title, 'url' => null],
             ]))
             ->schema(Schema::project($project));

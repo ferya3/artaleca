@@ -34,7 +34,7 @@
 
         @if ($post->reading_minutes)
             <p class="mt-auto pt-4 text-xs text-ink-500">
-                {{ __('articles.reading_time', ['minutes' => $post->reading_minutes]) }}
+                {{ content('articles.reading_time', ['minutes' => $post->reading_minutes]) }}
             </p>
         @endif
     </div>

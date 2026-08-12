@@ -1,22 +1,22 @@
 <x-layouts.app>
 
     <x-page-header
-        :eyebrow="__('nav.news')"
-        :title="__('articles.title')"
-        :lead="__('articles.intro')"
+        :eyebrow="content('nav.news')"
+        :title="content('articles.title')"
+        :lead="content('articles.intro')"
     />
 
     <section class="py-section">
         <div class="container-page">
 
-            <nav class="no-scrollbar mb-10 -mx-5 overflow-x-auto px-5 md:mx-0 md:px-0" aria-label="{{ __('articles.title') }}">
+            <nav class="no-scrollbar mb-10 -mx-5 overflow-x-auto px-5 md:mx-0 md:px-0" aria-label="{{ content('articles.title') }}">
                 <ul class="flex w-max gap-2 md:w-auto md:flex-wrap">
                     <li>
                         <a href="{{ route('articles.index') }}"
                            @if (! $activeType) aria-current="page" @endif
                            class="inline-block whitespace-nowrap border px-4 py-2 text-sm transition-colors
                                   {{ ! $activeType ? 'border-ink-950 bg-ink-950 text-surface' : 'border-hairline text-ink-700 hover:border-ink-400' }}">
-                            {{ __('articles.types.all') }}
+                            {{ content('articles.types.all') }}
                         </a>
                     </li>
                     @foreach (\App\Models\Post::TYPES as $type)
@@ -33,7 +33,7 @@
             </nav>
 
             @if ($posts->isEmpty())
-                <x-empty-state :message="__('articles.empty')" :action="route('articles.index')" />
+                <x-empty-state :message="content('articles.empty')" :action="route('articles.index')" />
             @else
                 <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($posts as $post)

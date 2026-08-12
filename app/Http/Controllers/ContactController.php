@@ -18,10 +18,10 @@ class ContactController extends Controller
     public function index(): View
     {
         seo()
-            ->title(__('seo.contact_title'))
-            ->description(__('seo.contact_description'))
+            ->title(content('seo.contact_title'))
+            ->description(content('seo.contact_description'))
             ->breadcrumbs($this->trail([
-                ['label' => __('nav.contact'), 'url' => null],
+                ['label' => content('nav.contact'), 'url' => null],
             ]));
 
         return view('pages.contact');

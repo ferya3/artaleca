@@ -1,23 +1,23 @@
 <x-layouts.app>
 
     <x-page-header
-        :eyebrow="__('nav.projects')"
-        :title="__('projects.title')"
-        :lead="__('projects.intro')"
+        :eyebrow="content('nav.projects')"
+        :title="content('projects.title')"
+        :lead="content('projects.intro')"
     />
 
     <section class="py-section">
         <div class="container-page">
 
             @if ($applications->isNotEmpty())
-                <nav class="no-scrollbar mb-10 -mx-5 overflow-x-auto px-5 md:mx-0 md:px-0" aria-label="{{ __('product.filter_by_application') }}">
+                <nav class="no-scrollbar mb-10 -mx-5 overflow-x-auto px-5 md:mx-0 md:px-0" aria-label="{{ content('product.filter_by_application') }}">
                     <ul class="flex w-max gap-2 md:w-auto md:flex-wrap">
                         <li>
                             <a href="{{ route('projects.index') }}"
                                @if (! $activeApplication) aria-current="page" @endif
                                class="inline-block whitespace-nowrap border px-4 py-2 text-sm transition-colors
                                       {{ ! $activeApplication ? 'border-ink-950 bg-ink-950 text-surface' : 'border-hairline text-ink-700 hover:border-ink-400' }}">
-                                {{ __('projects.filter_all') }}
+                                {{ content('projects.filter_all') }}
                             </a>
                         </li>
                         @foreach ($applications as $application)
@@ -36,7 +36,7 @@
             @endif
 
             @if ($projects->isEmpty())
-                <x-empty-state :message="__('projects.empty')" :action="route('projects.index')" />
+                <x-empty-state :message="content('projects.empty')" :action="route('projects.index')" />
             @else
                 <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($projects as $project)

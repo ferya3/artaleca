@@ -36,7 +36,7 @@ final class Schema
                 'url' => url('/images/brand/logo-mark.svg'),
             ],
             'foundingDate' => (string) config('site.company.founded'),
-            'description' => __('seo.default_description'),
+            'description' => content('seo.default_description'),
             'address' => [
                 '@type' => 'PostalAddress',
                 'streetAddress' => $contact['hq']['lines'][$locale] ?? $contact['hq']['lines']['en'],
@@ -127,11 +127,11 @@ final class Schema
     public static function product(Product $product): array
     {
         $properties = collect([
-            ['name' => __('product.grain_size'), 'value' => $product->grainRange(), 'unit' => 'MMT'],
-            ['name' => __('product.bulk_density'), 'value' => $product->bulkDensityRange(), 'unit' => 'KGM'],
-            ['name' => __('product.crushing_strength'), 'value' => $product->crushing_strength, 'unit' => 'MPA'],
-            ['name' => __('product.thermal_conductivity'), 'value' => $product->thermal_conductivity, 'unit' => null],
-            ['name' => __('product.water_absorption'), 'value' => $product->water_absorption_24h, 'unit' => 'P1'],
+            ['name' => content('product.grain_size'), 'value' => $product->grainRange(), 'unit' => 'MMT'],
+            ['name' => content('product.bulk_density'), 'value' => $product->bulkDensityRange(), 'unit' => 'KGM'],
+            ['name' => content('product.crushing_strength'), 'value' => $product->crushing_strength, 'unit' => 'MPA'],
+            ['name' => content('product.thermal_conductivity'), 'value' => $product->thermal_conductivity, 'unit' => null],
+            ['name' => content('product.water_absorption'), 'value' => $product->water_absorption_24h, 'unit' => 'P1'],
         ])
             ->filter(fn (array $row) => filled($row['value']))
             ->map(fn (array $row) => array_filter([

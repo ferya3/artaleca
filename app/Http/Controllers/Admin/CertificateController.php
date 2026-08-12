@@ -32,8 +32,8 @@ class CertificateController extends ResourceController
     {
         return [
             'title' => __('admin.certificates'),
-            'issuer' => __('common.certificates'),
-            'year' => __('projects.year'),
+            'issuer' => content('common.certificates'),
+            'year' => content('projects.year'),
             'is_active' => __('admin.status'),
         ];
     }
@@ -44,13 +44,13 @@ class CertificateController extends ResourceController
             ['name' => 'title', 'label' => __('admin.certificates'), 'translatable' => true,
                 'rules' => ['required', 'string', 'max:180']],
 
-            ['name' => 'issuer', 'label' => __('common.certificates'), 'translatable' => true,
+            ['name' => 'issuer', 'label' => content('common.certificates'), 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:180']],
 
             ['name' => 'reference', 'label' => 'Reference no.', 'width' => 'half',
                 'rules' => ['nullable', 'string', 'max:60']],
 
-            ['name' => 'year', 'label' => __('projects.year'), 'type' => 'number', 'width' => 'half',
+            ['name' => 'year', 'label' => content('projects.year'), 'type' => 'number', 'width' => 'half',
                 'rules' => ['nullable', 'integer', 'min:1900', 'max:2200']],
 
             ['name' => 'image', 'label' => __('admin.fields.image_path'), 'type' => 'image'],

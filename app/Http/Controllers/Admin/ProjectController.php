@@ -43,9 +43,9 @@ class ProjectController extends ResourceController
     protected function listColumns(): array
     {
         return [
-            'title' => __('nav.projects'),
-            'client' => __('projects.client'),
-            'year' => __('projects.year'),
+            'title' => content('nav.projects'),
+            'client' => content('projects.client'),
+            'year' => content('projects.year'),
             'is_active' => __('admin.status'),
         ];
     }
@@ -53,26 +53,26 @@ class ProjectController extends ResourceController
     protected function fields(): array
     {
         return [
-            ['name' => 'title', 'label' => __('nav.projects'), 'translatable' => true,
+            ['name' => 'title', 'label' => content('nav.projects'), 'translatable' => true,
                 'rules' => ['required', 'string', 'max:180']],
 
             ['name' => 'slug', 'label' => 'Slug', 'width' => 'half',
                 'rules' => fn (?Model $r) => ['nullable', 'string', 'max:180', 'alpha_dash',
                     Rule::unique('projects', 'slug')->ignore($r)]],
 
-            ['name' => 'year', 'label' => __('projects.year'), 'type' => 'number', 'width' => 'half',
+            ['name' => 'year', 'label' => content('projects.year'), 'type' => 'number', 'width' => 'half',
                 'rules' => ['nullable', 'integer', 'min:1900', 'max:2200']],
 
-            ['name' => 'client', 'label' => __('projects.client'), 'translatable' => true,
+            ['name' => 'client', 'label' => content('projects.client'), 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:180']],
 
-            ['name' => 'location', 'label' => __('projects.location'), 'translatable' => true,
+            ['name' => 'location', 'label' => content('projects.location'), 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:180']],
 
             ['name' => 'country_code', 'label' => 'ISO country code', 'width' => 'half',
                 'rules' => ['nullable', 'string', 'size:2', 'alpha']],
 
-            ['name' => 'volume_m3', 'label' => __('projects.volume'), 'type' => 'number', 'width' => 'half',
+            ['name' => 'volume_m3', 'label' => content('projects.volume'), 'type' => 'number', 'width' => 'half',
                 'rules' => ['nullable', 'integer', 'min:0']],
 
             ['name' => 'summary', 'label' => __('admin.fields.summary'), 'type' => 'textarea', 'translatable' => true,
@@ -81,7 +81,7 @@ class ProjectController extends ResourceController
             ['name' => 'body', 'label' => __('admin.fields.description'), 'type' => 'textarea', 'translatable' => true,
                 'rows' => 10, 'rules' => ['nullable', 'string', 'max:10000']],
 
-            ['name' => 'scope', 'label' => __('projects.scope'), 'type' => 'list',
+            ['name' => 'scope', 'label' => content('projects.scope'), 'type' => 'list',
                 'hint' => 'One line per scope item.'],
 
             ['name' => 'cover_image', 'label' => __('admin.fields.cover_path'), 'type' => 'image'],

@@ -1,9 +1,9 @@
 <x-layouts.app>
 
     <x-page-header
-        :eyebrow="__('nav.quality')"
-        :title="__('about.quality_title')"
-        :lead="__('about.quality_lead')"
+        :eyebrow="content('nav.quality')"
+        :title="content('about.quality_title')"
+        :lead="content('about.quality_lead')"
     />
 
     <section class="py-section">
@@ -11,20 +11,20 @@
 
             {{-- ── Test schedule ─────────────────────────────────────── --}}
             <div class="min-w-0 lg:col-span-7">
-                <h2 class="text-xl font-bold text-ink-950">{{ __('about.quality_tests_title') }}</h2>
+                <h2 class="text-xl font-bold text-ink-950">{{ content('about.quality_tests_title') }}</h2>
 
                 <div class="mt-6 overflow-x-auto">
                     <table class="w-full min-w-[34rem] border-collapse text-sm">
                         <thead>
                             <tr class="border-b-2 border-ink-950">
                                 <th scope="col" class="py-3 pe-4 text-start text-xs uppercase tracking-wider text-ink-500">
-                                    {{ __('about.quality_tests_title') }}
+                                    {{ content('about.quality_tests_title') }}
                                 </th>
                                 <th scope="col" class="py-3 pe-4 text-start text-xs uppercase tracking-wider text-ink-500">
-                                    {{ __('common.working_hours') }}
+                                    {{ content('common.working_hours') }}
                                 </th>
                                 <th scope="col" class="py-3 text-start text-xs uppercase tracking-wider text-ink-500">
-                                    {{ __('product.standards') }}
+                                    {{ content('product.standards') }}
                                 </th>
                             </tr>
                         </thead>
@@ -44,7 +44,7 @@
             {{-- ── Sampling to certificate ───────────────────────────── --}}
             <div class="min-w-0 lg:col-span-5">
                 <div class="panel-muted p-6">
-                    <h2 class="text-lg font-bold text-ink-950">{{ __('about.quality_process_title') }}</h2>
+                    <h2 class="text-lg font-bold text-ink-950">{{ content('about.quality_process_title') }}</h2>
 
                     <ol class="mt-5 space-y-4">
                         @foreach (__('about.quality_process') as $index => $step)
@@ -64,7 +64,7 @@
     @if ($certificates->isNotEmpty())
         <section class="border-t border-hairline py-section">
             <div class="container-page">
-                <h2 class="text-2xl font-bold text-ink-950">{{ __('common.certificates') }}</h2>
+                <h2 class="text-2xl font-bold text-ink-950">{{ content('common.certificates') }}</h2>
 
                 <ul class="mt-10 grid gap-px bg-hairline sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($certificates as $certificate)

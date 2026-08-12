@@ -1,6 +1,6 @@
 <x-layouts.app>
 
-    <x-page-header :title="__('legal.terms_title')" :lead="__('legal.terms_intro')" />
+    <x-page-header :title="content('legal.terms_title')" :lead="content('legal.terms_intro')" />
 
     <section class="py-section">
         <div class="container-page max-w-3xl">
@@ -14,7 +14,7 @@
             </div>
 
             <p class="mt-12 border-t border-hairline pt-6 text-xs text-ink-500">
-                {{ __('legal.last_updated', ['date' => now()->isoFormat('D MMMM Y')]) }}
+                {{ content('legal.last_updated', ['date' => now()->isoFormat('D MMMM Y')]) }}
             </p>
         </div>
     </section>

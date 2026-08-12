@@ -42,8 +42,8 @@ class HomeController extends Controller
         ];
 
         seo()
-            ->title(__('seo.home_title'))
-            ->description(__('seo.home_description'))
+            ->title(content('seo.home_title'))
+            ->description(content('seo.home_description'))
             ->schema(Schema::organization())
             ->schema(Schema::website())
             ->schema(Schema::localBusiness());

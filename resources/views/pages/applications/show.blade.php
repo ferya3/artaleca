@@ -1,7 +1,7 @@
 <x-layouts.app>
 
     <x-page-header
-        :eyebrow="__('nav.applications')"
+        :eyebrow="content('nav.applications')"
         :title="$application->name"
         :lead="$application->summary"
     />
@@ -30,7 +30,7 @@
             @if ($benefits !== [])
                 <aside class="min-w-0 lg:col-span-5">
                     <div class="panel-muted p-6 lg:sticky lg:top-28">
-                        <h2 class="text-lg font-bold text-ink-950">{{ __('applications.benefits') }}</h2>
+                        <h2 class="text-lg font-bold text-ink-950">{{ content('applications.benefits') }}</h2>
                         <ul class="mt-5 space-y-4">
                             @foreach ($benefits as $benefit)
                                 <li class="flex gap-3 text-sm leading-relaxed text-ink-700">
@@ -48,7 +48,7 @@
     @if ($application->products->isNotEmpty())
         <section class="border-y border-hairline bg-surface-muted py-section">
             <div class="container-page">
-                <x-section-heading :title="__('applications.recommended_products')" :href="route('products.index')" />
+                <x-section-heading :title="content('applications.recommended_products')" :href="route('products.index')" />
 
                 <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     @foreach ($application->products as $product)
@@ -62,7 +62,7 @@
     @if ($application->projects->isNotEmpty())
         <section class="py-section">
             <div class="container-page">
-                <x-section-heading :title="__('applications.reference_projects')" :href="route('projects.index')" />
+                <x-section-heading :title="content('applications.reference_projects')" :href="route('projects.index')" />
 
                 <div class="mt-10 grid gap-6 md:grid-cols-3">
                     @foreach ($application->projects as $project)

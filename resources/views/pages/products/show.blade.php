@@ -70,7 +70,7 @@
 
                 @if (filled($product->sku))
                     <p class="tabular mt-2 text-sm text-ink-500">
-                        {{ __('product.sku') }} <span class="ltr-run font-medium text-ink-700">{{ $product->sku }}</span>
+                        {{ content('product.sku') }} <span class="ltr-run font-medium text-ink-700">{{ $product->sku }}</span>
                     </p>
                 @endif
 
@@ -86,8 +86,8 @@
                      full table so they are legible without scrolling. --}}
                 @php
                     $headline = array_filter([
-                        __('product.grain_size') => [$product->grainRange(), __('product.grain_size_unit')],
-                        __('product.bulk_density') => [$product->bulkDensityRange(), __('product.bulk_density_unit')],
+                        content('product.grain_size') => [$product->grainRange(), content('product.grain_size_unit')],
+                        content('product.bulk_density') => [$product->bulkDensityRange(), content('product.bulk_density_unit')],
                     ], fn ($row) => filled($row[0]));
                 @endphp
 
@@ -107,16 +107,16 @@
 
                 <div class="mt-8 flex flex-col gap-3 sm:flex-row">
                     <x-button :href="route('quote', ['product' => $product->slug])" variant="primary">
-                        {{ __('product.request_quote') }}
+                        {{ content('product.request_quote') }}
                     </x-button>
 
                     @if (filled($product->datasheet_path))
                         <x-button :href="route('products.datasheet', ['product' => $product])" variant="outline">
-                            {{ __('common.download_pdf') }}
+                            {{ content('common.download_pdf') }}
                         </x-button>
                     @else
                         <x-button :href="route('contact')" variant="outline">
-                            {{ __('product.ask_engineer') }}
+                            {{ content('product.ask_engineer') }}
                         </x-button>
                     @endif
                 </div>
@@ -130,7 +130,7 @@
 
             <div class="min-w-0 lg:col-span-7">
                 @if (filled($product->description))
-                    <h2 class="text-xl font-bold text-ink-950">{{ __('product.description') }}</h2>
+                    <h2 class="text-xl font-bold text-ink-950">{{ content('product.description') }}</h2>
                     <div class="prose-industrial mt-5">{!! nl2br(e($product->description)) !!}</div>
                 @endif
 
@@ -140,7 +140,7 @@
                 @endphp
 
                 @if ($features !== [])
-                    <h2 class="mt-12 text-xl font-bold text-ink-950">{{ __('product.features') }}</h2>
+                    <h2 class="mt-12 text-xl font-bold text-ink-950">{{ content('product.features') }}</h2>
                     <ul class="mt-5 grid gap-3 sm:grid-cols-2">
                         @foreach ($features as $feature)
                             <li class="flex gap-3 text-sm leading-relaxed text-ink-700">
@@ -152,7 +152,7 @@
                 @endif
 
                 @if ($advantages !== [])
-                    <h2 class="mt-12 text-xl font-bold text-ink-950">{{ __('product.advantages') }}</h2>
+                    <h2 class="mt-12 text-xl font-bold text-ink-950">{{ content('product.advantages') }}</h2>
                     <ul class="mt-5 space-y-3">
                         @foreach ($advantages as $advantage)
                             <li class="flex gap-3 text-sm leading-relaxed text-ink-700">
@@ -164,7 +164,7 @@
                 @endif
 
                 @if ($product->downloads->isNotEmpty())
-                    <h2 class="mt-12 text-xl font-bold text-ink-950">{{ __('product.documents') }}</h2>
+                    <h2 class="mt-12 text-xl font-bold text-ink-950">{{ content('product.documents') }}</h2>
                     <ul class="mt-5 divide-y divide-hairline border-y border-hairline">
                         @foreach ($product->downloads as $document)
                             <li>
@@ -184,7 +184,7 @@
                 @endif
 
                 @if (filled($product->packaging))
-                    <h2 class="mt-12 text-xl font-bold text-ink-950">{{ __('product.packaging') }}</h2>
+                    <h2 class="mt-12 text-xl font-bold text-ink-950">{{ content('product.packaging') }}</h2>
                     <ul class="mt-5 divide-y divide-hairline border-y border-hairline">
                         @foreach ($product->packaging as $option)
                             <li class="flex flex-wrap items-baseline justify-between gap-3 py-3.5 text-sm">
@@ -198,7 +198,7 @@
                 @endif
 
                 @if (filled($product->standards))
-                    <h2 class="mt-12 text-xl font-bold text-ink-950">{{ __('product.standards') }}</h2>
+                    <h2 class="mt-12 text-xl font-bold text-ink-950">{{ content('product.standards') }}</h2>
                     <ul class="mt-5 flex flex-wrap gap-2">
                         @foreach ($product->standards as $standard)
                             <li class="ltr-run rounded-md border border-hairline bg-surface px-3.5 py-2 text-xs text-ink-700">{{ $standard }}</li>
@@ -209,10 +209,10 @@
 
             <div class="min-w-0 lg:col-span-5">
                 <div class="panel p-6">
-                    <h2 class="text-xl font-bold text-ink-950">{{ __('product.technical_data') }}</h2>
+                    <h2 class="text-xl font-bold text-ink-950">{{ content('product.technical_data') }}</h2>
                     <x-spec-table :product="$product" class="mt-4" />
                     <p class="mt-5 border-t border-hairline pt-4 text-xs leading-relaxed text-ink-500">
-                        {{ __('legal.terms_sections.0.body') }}
+                        {{ content('legal.terms_sections.0.body') }}
                     </p>
                 </div>
             </div>
@@ -223,7 +223,7 @@
     @if ($product->applications->isNotEmpty())
         <section class="py-section">
             <div class="container-page">
-                <x-section-heading :title="__('product.applications')" :href="route('applications.index')" />
+                <x-section-heading :title="content('product.applications')" :href="route('applications.index')" />
 
                 <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($product->applications as $application)
@@ -238,7 +238,7 @@
     @if ($related->isNotEmpty())
         <section class="border-t border-hairline py-section">
             <div class="container-page">
-                <x-section-heading :title="__('common.related_products')" :href="route('products.index')" />
+                <x-section-heading :title="content('common.related_products')" :href="route('products.index')" />
 
                 <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($related as $item)

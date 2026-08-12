@@ -15,8 +15,8 @@
     type="button"
     data-theme-toggle
     {{ $attributes->merge(['class' => 'theme-toggle inline-flex items-center justify-center rounded-md text-ink-600 transition-colors hover:bg-ink-50 hover:text-ink-950']) }}
-    aria-label="{{ __('common.theme_toggle') }}"
-    title="{{ __('common.theme_toggle') }}"
+    aria-label="{{ content('common.theme_toggle') }}"
+    title="{{ content('common.theme_toggle') }}"
 >
     <svg class="theme-toggle__light h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" aria-hidden="true">
         <circle cx="12" cy="12" r="4.25" stroke="currentColor" stroke-width="1.6"/>

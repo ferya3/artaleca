@@ -1,22 +1,22 @@
 <x-layouts.app>
 
     <x-page-header
-        :eyebrow="__('nav.gallery')"
-        :title="__('gallery.title')"
-        :lead="__('gallery.intro')"
+        :eyebrow="content('nav.gallery')"
+        :title="content('gallery.title')"
+        :lead="content('gallery.intro')"
     />
 
     <section class="py-section">
         <div class="container-page">
 
-            <nav class="no-scrollbar mb-10 -mx-5 overflow-x-auto px-5 md:mx-0 md:px-0" aria-label="{{ __('gallery.title') }}">
+            <nav class="no-scrollbar mb-10 -mx-5 overflow-x-auto px-5 md:mx-0 md:px-0" aria-label="{{ content('gallery.title') }}">
                 <ul class="flex w-max gap-2 md:w-auto md:flex-wrap">
                     <li>
                         <a href="{{ route('gallery') }}"
                            @if (! $activeAlbum) aria-current="page" @endif
                            class="inline-block whitespace-nowrap border px-4 py-2 text-sm transition-colors
                                   {{ ! $activeAlbum ? 'border-ink-950 bg-ink-950 text-surface' : 'border-hairline text-ink-700 hover:border-ink-400' }}">
-                            {{ __('gallery.all') }}
+                            {{ content('gallery.all') }}
                         </a>
                     </li>
                     @foreach (\App\Models\GalleryImage::ALBUMS as $album)
@@ -33,7 +33,7 @@
             </nav>
 
             @if ($images->isEmpty())
-                <x-empty-state :message="__('gallery.empty')" :action="route('gallery')" />
+                <x-empty-state :message="content('gallery.empty')" :action="route('gallery')" />
             @else
                 {{-- Plain grid, no lightbox: a lightbox is a JavaScript dependency
                      and a keyboard trap for a page whose whole job is showing

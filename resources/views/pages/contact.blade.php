@@ -13,9 +13,9 @@
     @endphp
 
     <x-page-header
-        :eyebrow="__('nav.contact')"
-        :title="__('contact.title')"
-        :lead="__('contact.intro')"
+        :eyebrow="content('nav.contact')"
+        :title="content('contact.title')"
+        :lead="content('contact.intro')"
     />
 
     <section class="py-section">
@@ -45,15 +45,15 @@
                     </div>
 
                     <div class="sm:col-span-2">
-                        <x-button type="submit" size="lg">{{ __('common.send') }}</x-button>
-                        <p class="mt-3 text-xs text-ink-500">{{ __('contact.response_note') }}</p>
+                        <x-button type="submit" size="lg">{{ content('common.send') }}</x-button>
+                        <p class="mt-3 text-xs text-ink-500">{{ content('contact.response_note') }}</p>
                     </div>
                 </form>
 
                 <p class="mt-8 border-t border-hairline pt-6 text-sm text-ink-600">
-                    <span class="font-medium text-ink-900">{{ __('contact.prefer_quote') }}</span>
+                    <span class="font-medium text-ink-900">{{ content('contact.prefer_quote') }}</span>
                     <a href="{{ route('quote') }}" class="ms-1 text-brand-600 underline underline-offset-2">
-                        {{ __('contact.prefer_quote_link') }}
+                        {{ content('contact.prefer_quote_link') }}
                     </a>
                 </p>
             </div>
@@ -63,26 +63,26 @@
                 <div class="panel divide-y divide-hairline overflow-hidden">
 
                     <div class="p-6">
-                        <h2 class="eyebrow mb-4">{{ __('common.headquarters') }}</h2>
+                        <h2 class="eyebrow mb-4">{{ content('common.headquarters') }}</h2>
                         <address class="space-y-3 text-sm not-italic leading-relaxed text-ink-600">
                             <p class="text-ink-800">{{ $contact['hq']['lines'][$locale] ?? $contact['hq']['lines']['en'] }}</p>
                             <p>
-                                <span class="text-ink-500">{{ __('common.postal_code') }}</span>
+                                <span class="text-ink-500">{{ content('common.postal_code') }}</span>
                                 <span class="ltr-run tabular ms-2 text-ink-800">{{ $contact['hq']['postal_code'] }}</span>
                             </p>
                             <p>
-                                <span class="text-ink-500">{{ __('common.phone') }}</span>
+                                <span class="text-ink-500">{{ content('common.phone') }}</span>
                                 <a class="ltr-run ms-2 font-medium text-ink-900 hover:text-brand-600" href="tel:{{ str_replace(' ', '', $contact['phone']) }}">{{ $contact['phone'] }}</a>
                             </p>
                             <p>
-                                <span class="text-ink-500">{{ __('common.fax') }}</span>
+                                <span class="text-ink-500">{{ content('common.fax') }}</span>
                                 <span class="ltr-run ms-2 text-ink-800">{{ $contact['fax'] }}</span>
                             </p>
                         </address>
                     </div>
 
                     <div class="p-6">
-                        <h2 class="eyebrow mb-4">{{ __('common.plant') }}</h2>
+                        <h2 class="eyebrow mb-4">{{ content('common.plant') }}</h2>
                         <address class="text-sm not-italic leading-relaxed text-ink-800">
                             {{ $contact['plant']['lines'][$locale] ?? $contact['plant']['lines']['en'] }}
                         </address>
@@ -90,19 +90,19 @@
 
                     <div class="grid gap-5 p-6 sm:grid-cols-2 lg:grid-cols-1">
                         <div>
-                            <h2 class="eyebrow mb-2">{{ __('contact.sales_desk') }}</h2>
+                            <h2 class="eyebrow mb-2">{{ content('contact.sales_desk') }}</h2>
                             <a class="ltr-run block text-sm font-medium text-ink-900 hover:text-brand-600" href="tel:{{ str_replace(' ', '', $contact['sales_phone']) }}">{{ $contact['sales_phone'] }}</a>
                             <a class="ltr-run block text-sm text-ink-600 hover:text-brand-600" href="mailto:{{ $contact['sales_email'] }}">{{ $contact['sales_email'] }}</a>
                         </div>
 
                         <div>
-                            <h2 class="eyebrow mb-2">{{ __('contact.export_desk') }}</h2>
+                            <h2 class="eyebrow mb-2">{{ content('contact.export_desk') }}</h2>
                             <a class="ltr-run block text-sm text-ink-600 hover:text-brand-600" href="mailto:{{ $contact['export_email'] }}">{{ $contact['export_email'] }}</a>
                         </div>
                     </div>
 
                     <div class="p-6">
-                        <h2 class="eyebrow mb-2">{{ __('common.working_hours') }}</h2>
+                        <h2 class="eyebrow mb-2">{{ content('common.working_hours') }}</h2>
                         <p class="text-sm text-ink-800">{{ $contact['hours'][$locale] ?? $contact['hours']['en'] }}</p>
                     </div>
                 </div>
@@ -116,7 +116,7 @@
                     rel="noopener noreferrer"
                     class="mt-6 flex items-center justify-between rounded-lg border border-hairline bg-surface-muted px-5 py-4 text-sm transition-colors hover:border-ink-400"
                 >
-                    <span class="font-medium text-ink-900">{{ __('contact.find_us') }}</span>
+                    <span class="font-medium text-ink-900">{{ content('contact.find_us') }}</span>
                     <span class="ltr-run tabular text-xs text-ink-500">
                         {{ $contact['plant']['geo']['lat'] }}, {{ $contact['plant']['geo']['lng'] }}
                     </span>

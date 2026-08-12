@@ -15,10 +15,10 @@ class FaqController extends Controller
         $faqs = Faq::query()->active()->ordered()->get();
 
         seo()
-            ->title(__('seo.faq_title'))
-            ->description(__('seo.faq_description'))
+            ->title(content('seo.faq_title'))
+            ->description(content('seo.faq_description'))
             ->breadcrumbs($this->trail([
-                ['label' => __('nav.faq'), 'url' => null],
+                ['label' => content('nav.faq'), 'url' => null],
             ]))
             ->schema(Schema::faqPage($faqs));
 

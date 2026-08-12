@@ -8,7 +8,7 @@
     @endphp
 
     <x-page-header
-        :eyebrow="__('nav.quote')"
+        :eyebrow="content('nav.quote')"
         :title="__('form.quote_title')"
         :lead="__('form.quote_intro')"
     />
@@ -26,7 +26,7 @@
                     <div class="flex flex-col gap-1.5 sm:col-span-2">
                         <label for="f-product_id" class="text-sm font-medium text-ink-800">
                             {{ __('form.product') }}
-                            <span class="ms-1 text-xs font-normal text-ink-400">({{ __('common.optional') }})</span>
+                            <span class="ms-1 text-xs font-normal text-ink-400">({{ content('common.optional') }})</span>
                         </label>
                         <select id="f-product_id" name="product_id"
                                 class="w-full border border-ink-300 bg-surface px-3.5 py-3 text-sm text-ink-900 focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12">
@@ -82,20 +82,20 @@
                     </div>
 
                     <div class="sm:col-span-2">
-                        <x-button type="submit" size="lg">{{ __('common.submit') }}</x-button>
+                        <x-button type="submit" size="lg">{{ content('common.submit') }}</x-button>
                     </div>
                 </form>
             </div>
 
             <aside class="min-w-0 lg:col-span-5">
                 <div class="panel-muted p-6 lg:sticky lg:top-28">
-                    <h2 class="text-lg font-bold text-ink-950">{{ __('home.export_title') }}</h2>
-                    <p class="mt-3 text-sm leading-relaxed text-ink-600">{{ __('home.export_body') }}</p>
+                    <h2 class="text-lg font-bold text-ink-950">{{ content('home.export_title') }}</h2>
+                    <p class="mt-3 text-sm leading-relaxed text-ink-600">{{ content('home.export_body') }}</p>
 
                     <x-stat-strip tone="light" class="mt-6 border border-hairline" />
 
                     <div class="mt-6 space-y-2 border-t border-hairline pt-5 text-sm">
-                        <p class="text-ink-500">{{ __('contact.export_desk') }}</p>
+                        <p class="text-ink-500">{{ content('contact.export_desk') }}</p>
                         <a class="ltr-run block font-medium text-ink-900 hover:text-brand-600"
                            href="mailto:{{ config('site.contact.export_email') }}">{{ config('site.contact.export_email') }}</a>
                         <a class="ltr-run block text-ink-600 hover:text-brand-600"

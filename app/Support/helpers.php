@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Models\Setting;
 use App\Support\Seo;
+use App\Support\SiteContent;
 use App\Support\SiteImage;
 
 if (! function_exists('seo')) {
@@ -45,6 +46,23 @@ if (! function_exists('site_image')) {
     function site_image(string $key): array
     {
         return SiteImage::get($key);
+    }
+}
+
+if (! function_exists('content')) {
+    /**
+     * Editable page copy: the admin's override if there is one, the translation
+     * file otherwise.
+     *
+     * Reads exactly like `__()` and takes the same replacements, so a template
+     * swapping one for the other changes nothing until someone actually edits
+     * the string.
+     *
+     * @param  array<string, string|int>  $replace
+     */
+    function content(string $key, array $replace = []): string
+    {
+        return SiteContent::get($key, $replace);
     }
 }
 

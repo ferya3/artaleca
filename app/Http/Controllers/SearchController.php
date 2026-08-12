@@ -44,8 +44,8 @@ class SearchController extends Controller
         }
 
         seo()
-            ->title($term === '' ? __('search.title') : __('search.results_for', ['term' => $term]))
-            ->description(__('search.description'))
+            ->title($term === '' ? content('search.title') : content('search.results_for', ['term' => $term]))
+            ->description(content('search.description'))
             // Search result pages are classic thin/duplicate content.
             ->noindex();
 

@@ -1,9 +1,9 @@
 <x-layouts.app>
 
     <x-page-header
-        :eyebrow="__('nav.about')"
-        :title="__('about.title')"
-        :lead="__('about.lead')"
+        :eyebrow="content('nav.about')"
+        :title="content('about.title')"
+        :lead="content('about.lead')"
     />
 
     <x-stat-strip tone="light" class="border-b border-hairline" />
@@ -11,18 +11,18 @@
     <section class="py-section">
         <div class="container-page grid gap-12 lg:grid-cols-2 lg:gap-16">
             <div>
-                <h2 class="text-2xl font-bold text-ink-950">{{ __('about.story_title') }}</h2>
-                <p class="mt-5 text-base leading-relaxed text-ink-600">{{ __('about.story_body') }}</p>
+                <h2 class="text-2xl font-bold text-ink-950">{{ content('about.story_title') }}</h2>
+                <p class="mt-5 text-base leading-relaxed text-ink-600">{{ content('about.story_body') }}</p>
 
-                <h2 class="mt-12 text-2xl font-bold text-ink-950">{{ __('about.approach_title') }}</h2>
-                <p class="mt-5 text-base leading-relaxed text-ink-600">{{ __('about.approach_body') }}</p>
+                <h2 class="mt-12 text-2xl font-bold text-ink-950">{{ content('about.approach_title') }}</h2>
+                <p class="mt-5 text-base leading-relaxed text-ink-600">{{ content('about.approach_body') }}</p>
             </div>
 
             <x-media
                 :src="site_image('media.plant_exterior')['light']" :dark-src="site_image('media.plant_exterior')['dark']"
                 seed="arta-plant-exterior"
                 ratio="4/3"
-                :alt="__('about.title')"
+                :alt="content('about.title')"
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 class="rounded-lg border border-hairline shadow-soft lg:self-start"
             />
@@ -49,7 +49,7 @@
     {{-- ── Timeline ───────────────────────────────────────────────────── --}}
     <section class="py-section">
         <div class="container-page">
-            <h2 class="text-2xl font-bold text-ink-950 md:text-3xl">{{ __('about.timeline_title') }}</h2>
+            <h2 class="text-2xl font-bold text-ink-950 md:text-3xl">{{ content('about.timeline_title') }}</h2>
 
             <ol class="mt-12 border-s border-hairline">
                 @foreach (__('about.timeline') as $entry)
@@ -69,9 +69,9 @@
         <section class="border-t border-hairline bg-surface-muted py-section">
             <div class="container-page">
                 <x-section-heading
-                    :title="__('common.certificates')"
+                    :title="content('common.certificates')"
                     :href="route('about.quality')"
-                    :link-label="__('nav.quality')"
+                    :link-label="content('nav.quality')"
                 />
 
                 <ul class="mt-10 grid gap-px bg-hairline sm:grid-cols-2 lg:grid-cols-3">

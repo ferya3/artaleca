@@ -29,33 +29,33 @@ final class Navigation
     {
         return [
             [
-                'label' => __('nav.home'),
+                'label' => content('nav.home'),
                 'route' => 'home',
                 'match' => 'home',
             ],
             [
-                'label' => __('nav.products'),
+                'label' => content('nav.products'),
                 'route' => 'products.index',
                 'match' => 'products.',
                 'children' => self::productCategories(),
             ],
             [
-                'label' => __('nav.downloads'),
+                'label' => content('nav.downloads'),
                 'route' => 'downloads.index',
                 'match' => 'downloads.',
             ],
             [
-                'label' => __('nav.representatives'),
+                'label' => content('nav.representatives'),
                 'route' => 'representatives',
                 'match' => 'representatives',
             ],
             [
-                'label' => __('nav.projects'),
+                'label' => content('nav.projects'),
                 'route' => 'projects.index',
                 'match' => 'projects.',
             ],
             [
-                'label' => __('nav.contact'),
+                'label' => content('nav.contact'),
                 'route' => 'contact',
                 'match' => 'contact',
             ],
@@ -128,24 +128,24 @@ final class Navigation
     public static function footer(): array
     {
         return [
-            __('nav.products') => [
-                ['label' => __('nav.all_products'), 'route' => 'products.index'],
-                ['label' => __('nav.applications'), 'route' => 'applications.index'],
-                ['label' => __('nav.downloads'), 'route' => 'downloads.index'],
-                ['label' => __('nav.gallery'), 'route' => 'gallery'],
+            content('nav.products') => [
+                ['label' => content('nav.all_products'), 'route' => 'products.index'],
+                ['label' => content('nav.applications'), 'route' => 'applications.index'],
+                ['label' => content('nav.downloads'), 'route' => 'downloads.index'],
+                ['label' => content('nav.gallery'), 'route' => 'gallery'],
             ],
-            __('nav.about') => [
-                ['label' => __('nav.about'), 'route' => 'about'],
-                ['label' => __('nav.representatives'), 'route' => 'representatives'],
-                ['label' => __('nav.quality'), 'route' => 'about.quality'],
-                ['label' => __('nav.plant'), 'route' => 'about.plant'],
-                ['label' => __('nav.projects'), 'route' => 'projects.index'],
+            content('nav.about') => [
+                ['label' => content('nav.about'), 'route' => 'about'],
+                ['label' => content('nav.representatives'), 'route' => 'representatives'],
+                ['label' => content('nav.quality'), 'route' => 'about.quality'],
+                ['label' => content('nav.plant'), 'route' => 'about.plant'],
+                ['label' => content('nav.projects'), 'route' => 'projects.index'],
             ],
-            __('nav.contact') => [
-                ['label' => __('nav.contact'), 'route' => 'contact'],
-                ['label' => __('nav.quote'), 'route' => 'quote'],
-                ['label' => __('nav.faq'), 'route' => 'faq'],
-                ['label' => __('nav.news'), 'route' => 'articles.index'],
+            content('nav.contact') => [
+                ['label' => content('nav.contact'), 'route' => 'contact'],
+                ['label' => content('nav.quote'), 'route' => 'quote'],
+                ['label' => content('nav.faq'), 'route' => 'faq'],
+                ['label' => content('nav.news'), 'route' => 'articles.index'],
             ],
         ];
     }

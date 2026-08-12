@@ -11,9 +11,9 @@ class LegalController extends Controller
     public function privacy(): View
     {
         seo()
-            ->title(__('legal.privacy_title'))
-            ->description(__('legal.privacy_intro'))
-            ->breadcrumbs($this->trail([['label' => __('legal.privacy_title'), 'url' => null]]));
+            ->title(content('legal.privacy_title'))
+            ->description(content('legal.privacy_intro'))
+            ->breadcrumbs($this->trail([['label' => content('legal.privacy_title'), 'url' => null]]));
 
         return view('pages.legal.privacy');
     }
@@ -21,9 +21,9 @@ class LegalController extends Controller
     public function terms(): View
     {
         seo()
-            ->title(__('legal.terms_title'))
-            ->description(__('legal.terms_intro'))
-            ->breadcrumbs($this->trail([['label' => __('legal.terms_title'), 'url' => null]]));
+            ->title(content('legal.terms_title'))
+            ->description(content('legal.terms_intro'))
+            ->breadcrumbs($this->trail([['label' => content('legal.terms_title'), 'url' => null]]));
 
         return view('pages.legal.terms');
     }

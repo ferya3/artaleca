@@ -33,7 +33,7 @@ class ProductCategoryController extends ResourceController
     protected function listColumns(): array
     {
         return [
-            'name' => __('product.filter_by_category'),
+            'name' => content('product.filter_by_category'),
             'slug' => 'Slug',
             'position' => __('admin.position'),
             'is_active' => __('admin.status'),
@@ -43,7 +43,7 @@ class ProductCategoryController extends ResourceController
     protected function fields(): array
     {
         return [
-            ['name' => 'name', 'label' => __('product.filter_by_category'), 'translatable' => true,
+            ['name' => 'name', 'label' => content('product.filter_by_category'), 'translatable' => true,
                 'rules' => ['required', 'string', 'max:180']],
 
             ['name' => 'slug', 'label' => 'Slug', 'width' => 'half',

@@ -8,7 +8,7 @@
 @endphp
 
 @if (count($crumbs) > 1)
-    <nav aria-label="{{ __('nav.breadcrumb') }}" {{ $attributes->merge(['class' => 'text-xs']) }}>
+    <nav aria-label="{{ content('nav.breadcrumb') }}" {{ $attributes->merge(['class' => 'text-xs']) }}>
         <ol class="flex flex-wrap items-center gap-x-2 gap-y-1 text-ink-500">
             @foreach ($crumbs as $index => $crumb)
                 <li class="flex items-center gap-2">

@@ -72,7 +72,7 @@ class PageController extends ResourceController
             ['name' => 'meta_description', 'label' => __('admin.fields.meta_description'), 'type' => 'textarea', 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:170']],
 
-            ['name' => 'show_in_footer', 'label' => __('common.sitemap'), 'type' => 'checkbox', 'width' => 'half'],
+            ['name' => 'show_in_footer', 'label' => content('common.sitemap'), 'type' => 'checkbox', 'width' => 'half'],
             ['name' => 'is_active', 'label' => __('admin.active'), 'type' => 'checkbox', 'width' => 'half'],
         ];
     }

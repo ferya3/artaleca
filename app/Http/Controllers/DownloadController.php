@@ -28,10 +28,10 @@ class DownloadController extends Controller
             ->groupBy('category');
 
         seo()
-            ->title(__('seo.downloads_title'))
-            ->description(__('seo.downloads_description'))
+            ->title(content('seo.downloads_title'))
+            ->description(content('seo.downloads_description'))
             ->breadcrumbs($this->trail([
-                ['label' => __('nav.downloads'), 'url' => null],
+                ['label' => content('nav.downloads'), 'url' => null],
             ]));
 
         return view('pages.downloads.index', [

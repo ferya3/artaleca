@@ -1,22 +1,22 @@
 <x-layouts.app>
 
     <x-page-header
-        :eyebrow="__('nav.downloads')"
-        :title="__('downloads.title')"
-        :lead="__('downloads.intro')"
+        :eyebrow="content('nav.downloads')"
+        :title="content('downloads.title')"
+        :lead="content('downloads.intro')"
     />
 
     <section class="py-section">
         <div class="container-page">
 
-            <nav class="no-scrollbar mb-10 -mx-5 overflow-x-auto px-5 md:mx-0 md:px-0" aria-label="{{ __('downloads.title') }}">
+            <nav class="no-scrollbar mb-10 -mx-5 overflow-x-auto px-5 md:mx-0 md:px-0" aria-label="{{ content('downloads.title') }}">
                 <ul class="flex w-max gap-2 md:w-auto md:flex-wrap">
                     <li>
                         <a href="{{ route('downloads.index') }}"
                            @if (! $activeCategory) aria-current="page" @endif
                            class="inline-block whitespace-nowrap border px-4 py-2 text-sm transition-colors
                                   {{ ! $activeCategory ? 'border-ink-950 bg-ink-950 text-surface' : 'border-hairline text-ink-700 hover:border-ink-400' }}">
-                            {{ __('downloads.all') }}
+                            {{ content('downloads.all') }}
                         </a>
                     </li>
                     @foreach (\App\Models\Download::CATEGORIES as $category)
@@ -33,7 +33,7 @@
             </nav>
 
             @if ($groups->isEmpty())
-                <x-empty-state :message="__('downloads.empty')" :action="route('downloads.index')" />
+                <x-empty-state :message="content('downloads.empty')" :action="route('downloads.index')" />
             @else
                 <div class="space-y-14">
                     @foreach ($groups as $category => $files)
@@ -63,7 +63,7 @@
                                             <span class="ltr-run tabular shrink-0 text-xs text-ink-400">{{ $file->humanSize() }}</span>
 
                                             <span class="shrink-0 text-sm font-semibold text-brand-600">
-                                                {{ __('common.download') }}
+                                                {{ content('common.download') }}
                                                 <span class="inline-block rtl:rotate-180" aria-hidden="true">&darr;</span>
                                             </span>
                                         </a>

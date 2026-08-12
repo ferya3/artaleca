@@ -24,10 +24,10 @@ class GalleryController extends Controller
             ->get();
 
         seo()
-            ->title(__('gallery.title'))
-            ->description(__('gallery.intro'))
+            ->title(content('gallery.title'))
+            ->description(content('gallery.intro'))
             ->breadcrumbs($this->trail([
-                ['label' => __('gallery.title'), 'url' => null],
+                ['label' => content('gallery.title'), 'url' => null],
             ]));
 
         return view('pages.gallery', [

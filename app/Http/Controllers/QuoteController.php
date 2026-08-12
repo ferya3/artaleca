@@ -24,10 +24,10 @@ class QuoteController extends Controller
         ]);
 
         seo()
-            ->title(__('seo.quote_title'))
-            ->description(__('seo.quote_description'))
+            ->title(content('seo.quote_title'))
+            ->description(content('seo.quote_description'))
             ->breadcrumbs($this->trail([
-                ['label' => __('nav.quote'), 'url' => null],
+                ['label' => content('nav.quote'), 'url' => null],
             ]))
             // A form page has no content worth ranking and would compete with
             // the product pages that should send traffic here.

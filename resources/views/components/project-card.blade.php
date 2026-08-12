@@ -34,9 +34,9 @@
 
         @if ($project->volume_m3)
             <p class="tabular mt-auto border-t border-hairline pt-4 text-sm text-ink-700">
-                <span class="text-ink-500">{{ __('projects.volume') }}</span>
+                <span class="text-ink-500">{{ content('projects.volume') }}</span>
                 <span class="ltr-run ms-2 font-semibold text-ink-950">{{ number_format($project->volume_m3) }}</span>
-                <span class="text-xs text-ink-500">{{ __('projects.volume_unit') }}</span>
+                <span class="text-xs text-ink-500">{{ content('projects.volume_unit') }}</span>
             </p>
         @endif
     </div>

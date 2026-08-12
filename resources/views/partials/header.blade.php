@@ -38,19 +38,19 @@
             <div class="flex items-center gap-5">
                 <a href="tel:{{ str_replace(' ', '', config('site.contact.sales_phone')) }}"
                    class="hover:text-ink-900 transition-colors">
-                    <span class="text-ink-400">{{ __('common.sales') }}</span>
+                    <span class="text-ink-400">{{ content('common.sales') }}</span>
                     <span class="ltr-run ms-1.5 font-medium tabular">{{ config('site.contact.sales_phone') }}</span>
                 </a>
                 <span class="h-3 w-px bg-hairline" aria-hidden="true"></span>
                 <a href="mailto:{{ config('site.contact.export_email') }}"
                    class="hover:text-ink-900 transition-colors">
-                    <span class="text-ink-400">{{ __('common.export') }}</span>
+                    <span class="text-ink-400">{{ content('common.export') }}</span>
                     <span class="ltr-run ms-1.5 font-medium">{{ config('site.contact.export_email') }}</span>
                 </a>
             </div>
 
-            <nav class="flex items-center gap-5" aria-label="{{ __('nav.language') }}">
-                <a href="{{ route('faq') }}" class="hover:text-ink-900 transition-colors">{{ __('nav.faq') }}</a>
+            <nav class="flex items-center gap-5" aria-label="{{ content('nav.language') }}">
+                <a href="{{ route('faq') }}" class="hover:text-ink-900 transition-colors">{{ content('nav.faq') }}</a>
 
                 <span class="h-3 w-px bg-hairline" aria-hidden="true"></span>
 
@@ -99,7 +99,7 @@
 
         {{-- Desktop navigation. Sections with children open on hover *and* on
              focus, so the menu is reachable by keyboard without any script. --}}
-        <nav class="hidden lg:flex lg:items-center lg:gap-1" aria-label="{{ __('nav.main_navigation') }}">
+        <nav class="hidden lg:flex lg:items-center lg:gap-1" aria-label="{{ content('nav.main_navigation') }}">
             @foreach ($nav as $item)
                 @php $active = Navigation::isActive($item['match']); @endphp
 
@@ -140,7 +140,7 @@
                             <div class="border-t border-hairline">
                                 <a href="{{ route($item['route']) }}"
                                    class="block px-4 py-2.5 text-xs font-semibold tracking-wide text-brand-600 hover:bg-brand-50">
-                                    {{ __('common.view_all') }}
+                                    {{ content('common.view_all') }}
                                     <span class="inline-block rtl:rotate-180" aria-hidden="true">&rarr;</span>
                                 </a>
                             </div>
@@ -161,7 +161,7 @@
             <a
                 href="{{ route('search') }}"
                 class="hidden h-10 w-10 items-center justify-center rounded-md text-ink-600 transition-colors hover:bg-ink-50 hover:text-ink-950 lg:flex"
-                aria-label="{{ __('nav.search') }}"
+                aria-label="{{ content('nav.search') }}"
             >
                 <svg viewBox="0 0 20 20" class="h-4.5 w-4.5" fill="none" aria-hidden="true">
                     <circle cx="9" cy="9" r="6.25" stroke="currentColor" stroke-width="1.6"/>
@@ -172,7 +172,7 @@
             <a
                 href="{{ route('quote') }}"
                 class="hidden rounded-md bg-ink-950 px-5 py-2.5 text-sm font-semibold text-surface shadow-soft transition-[background-color,box-shadow] duration-200 hover:bg-brand-600 hover:shadow-lift lg:inline-flex"
-            >{{ __('nav.quote') }}</a>
+            >{{ content('nav.quote') }}</a>
 
             {{--
                 Language switcher for phones. On desktop it lives in the utility
@@ -188,7 +188,7 @@
             <details data-dismissable data-language-switcher class="relative lg:hidden">
                 <summary
                     class="flex h-11 w-11 cursor-pointer list-none items-center justify-center rounded-md text-ink-800 transition-colors hover:bg-ink-50 marker:hidden [&::-webkit-details-marker]:hidden"
-                    aria-label="{{ __('nav.language') }}"
+                    aria-label="{{ content('nav.language') }}"
                 >
                     <svg viewBox="0 0 24 24" class="h-5.5 w-5.5" fill="none" aria-hidden="true">
                         <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/>

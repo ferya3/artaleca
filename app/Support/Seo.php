@@ -127,7 +127,7 @@ final class Seo
         $brand = config('site.company.brand');
 
         if (blank($this->title)) {
-            return $brand.' — '.__('seo.brand_tagline');
+            return $brand.' — '.content('seo.brand_tagline');
         }
 
         // Avoid "ARTA LECA | ARTA LECA" on the homepage.
@@ -138,7 +138,7 @@ final class Seo
 
     public function getDescription(): string
     {
-        return $this->description ?? __('seo.default_description');
+        return $this->description ?? content('seo.default_description');
     }
 
     public function getImage(): string

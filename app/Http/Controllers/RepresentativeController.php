@@ -33,10 +33,10 @@ class RepresentativeController extends Controller
             ->get();
 
         seo()
-            ->title(__('representatives.title'))
-            ->description(__('representatives.intro'))
+            ->title(content('representatives.title'))
+            ->description(content('representatives.intro'))
             ->breadcrumbs($this->trail([
-                ['label' => __('nav.representatives'), 'url' => null],
+                ['label' => content('nav.representatives'), 'url' => null],
             ]))
             ->schema(Schema::itemList(
                 $representatives->map(fn (Partner $partner) => [
@@ -76,7 +76,7 @@ class RepresentativeController extends Controller
 
         return redirect()
             ->route('representatives')
-            ->with('status', __('representatives.apply_success'))
+            ->with('status', content('representatives.apply_success'))
             ->withFragment('apply');
     }
 }

@@ -30,12 +30,12 @@ class SettingController extends Controller
         return [
             // ── The headline numbers, editable without a deploy ──────────
             'figures' => [
-                'figures.annual_capacity_m3' => ['label' => __('common.figures.capacity'), 'type' => 'number', 'max' => 100000000],
-                'figures.plant_area_m2' => ['label' => __('common.figures.area'), 'type' => 'number', 'max' => 100000000],
-                'figures.kiln_lines' => ['label' => __('common.figures.kilns'), 'type' => 'number', 'max' => 999],
-                'figures.export_countries' => ['label' => __('common.figures.countries'), 'type' => 'number', 'max' => 999],
-                'figures.employees' => ['label' => __('common.figures.employees'), 'type' => 'number', 'max' => 999999],
-                'figures.since' => ['label' => __('common.figures.since'), 'type' => 'number', 'max' => 2200],
+                'figures.annual_capacity_m3' => ['label' => content('common.figures.capacity'), 'type' => 'number', 'max' => 100000000],
+                'figures.plant_area_m2' => ['label' => content('common.figures.area'), 'type' => 'number', 'max' => 100000000],
+                'figures.kiln_lines' => ['label' => content('common.figures.kilns'), 'type' => 'number', 'max' => 999],
+                'figures.export_countries' => ['label' => content('common.figures.countries'), 'type' => 'number', 'max' => 999],
+                'figures.employees' => ['label' => content('common.figures.employees'), 'type' => 'number', 'max' => 999999],
+                'figures.since' => ['label' => content('common.figures.since'), 'type' => 'number', 'max' => 2200],
             ],
 
             // ── Editor-owned copy blocks ────────────────────────────────
@@ -59,12 +59,12 @@ class SettingController extends Controller
             // ── LocalBusiness structured data ───────────────────────────
             'business' => [
                 'business.enabled' => ['label' => __('admin.settings_fields.localbusiness_enabled'), 'type' => 'checkbox', 'translatable' => false],
-                'business.street' => ['label' => __('common.address'), 'type' => 'text', 'max' => 240],
+                'business.street' => ['label' => content('common.address'), 'type' => 'text', 'max' => 240],
                 'business.locality' => ['label' => __('admin.settings_fields.locality'), 'type' => 'text', 'max' => 120],
-                'business.postal_code' => ['label' => __('common.postal_code'), 'type' => 'text', 'max' => 20, 'translatable' => false],
+                'business.postal_code' => ['label' => content('common.postal_code'), 'type' => 'text', 'max' => 20, 'translatable' => false],
                 'business.latitude' => ['label' => 'Latitude', 'type' => 'text', 'max' => 20, 'translatable' => false],
                 'business.longitude' => ['label' => 'Longitude', 'type' => 'text', 'max' => 20, 'translatable' => false],
-                'business.opening_hours' => ['label' => __('common.working_hours'), 'type' => 'text', 'max' => 120, 'translatable' => false,
+                'business.opening_hours' => ['label' => content('common.working_hours'), 'type' => 'text', 'max' => 120, 'translatable' => false,
                     'hint' => 'schema.org format, e.g. Sa-We 08:00-17:00'],
             ],
         ];

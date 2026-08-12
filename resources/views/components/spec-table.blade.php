@@ -7,14 +7,14 @@
      * rendered as an em dash — a datasheet with blanks reads as unfinished.
      */
     $rows = collect([
-        [__('product.grain_size'), $product->grainRange(), __('product.grain_size_unit')],
-        [__('product.bulk_density'), $product->bulkDensityRange(), __('product.bulk_density_unit')],
-        [__('product.particle_density'), $product->particle_density, __('product.bulk_density_unit')],
-        [__('product.crushing_strength'), $product->crushing_strength, __('product.crushing_strength_unit')],
-        [__('product.thermal_conductivity'), $product->thermal_conductivity, __('product.thermal_conductivity_unit')],
-        [__('product.water_absorption'), $product->water_absorption_24h, __('product.water_absorption_unit')],
-        [__('product.ph_value'), $product->ph_value, null],
-        [__('product.fire_resistance'), $product->fire_resistance_c, __('product.fire_resistance_unit')],
+        [content('product.grain_size'), $product->grainRange(), content('product.grain_size_unit')],
+        [content('product.bulk_density'), $product->bulkDensityRange(), content('product.bulk_density_unit')],
+        [content('product.particle_density'), $product->particle_density, content('product.bulk_density_unit')],
+        [content('product.crushing_strength'), $product->crushing_strength, content('product.crushing_strength_unit')],
+        [content('product.thermal_conductivity'), $product->thermal_conductivity, content('product.thermal_conductivity_unit')],
+        [content('product.water_absorption'), $product->water_absorption_24h, content('product.water_absorption_unit')],
+        [content('product.ph_value'), $product->ph_value, null],
+        [content('product.fire_resistance'), $product->fire_resistance_c, content('product.fire_resistance_unit')],
     ])->filter(fn ($row) => filled($row[1]));
 
     $extra = collect($product->specs ?? [])
@@ -29,7 +29,7 @@
 @if ($rows->isNotEmpty() || $extra->isNotEmpty())
     <div {{ $attributes->merge(['class' => 'overflow-x-auto']) }}>
         <table class="w-full min-w-[24rem] border-collapse text-sm">
-            <caption class="sr-only">{{ __('product.technical_data') }} — {{ $product->name }}</caption>
+            <caption class="sr-only">{{ content('product.technical_data') }} — {{ $product->name }}</caption>
             <tbody>
                 @foreach ($rows->concat($extra) as [$label, $value, $unit])
                     <tr class="border-b border-hairline last:border-b-0">

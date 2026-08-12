@@ -34,7 +34,7 @@ class GalleryController extends ResourceController
     {
         return [
             'title' => __('admin.fields.name'),
-            'album' => __('product.filter_by_category'),
+            'album' => content('product.filter_by_category'),
             'position' => __('admin.position'),
             'is_active' => __('admin.status'),
         ];
@@ -64,7 +64,7 @@ class GalleryController extends ResourceController
             ['name' => 'alt', 'label' => 'ALT', 'translatable' => true,
                 'rules' => ['required', 'string', 'max:180']],
 
-            ['name' => 'album', 'label' => __('product.filter_by_category'), 'type' => 'select', 'width' => 'half',
+            ['name' => 'album', 'label' => content('product.filter_by_category'), 'type' => 'select', 'width' => 'half',
                 'options' => fn () => collect(GalleryImage::ALBUMS)
                     ->mapWithKeys(fn ($a) => [$a => __('gallery.albums.'.$a)])->all(),
                 'rules' => ['required', Rule::in(GalleryImage::ALBUMS)]],

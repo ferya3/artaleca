@@ -1,9 +1,9 @@
 <x-layouts.app>
 
     <x-page-header
-        :eyebrow="__('nav.plant')"
-        :title="__('about.plant_title')"
-        :lead="__('about.plant_lead')"
+        :eyebrow="content('nav.plant')"
+        :title="content('about.plant_title')"
+        :lead="content('about.plant_lead')"
     />
 
     <x-stat-strip tone="light" class="border-b border-hairline" />
@@ -30,8 +30,8 @@
 
     <section class="border-t border-hairline bg-surface-muted py-section">
         <div class="container-page grid gap-8 md:grid-cols-2">
-            <x-media :src="site_image('media.kiln')['light']" :dark-src="site_image('media.kiln')['dark']" seed="arta-kiln" ratio="4/3" :alt="__('about.plant_title')" class="rounded-lg border border-hairline shadow-soft" sizes="(min-width: 768px) 50vw, 100vw" />
-            <x-media :src="site_image('media.screening')['light']" :dark-src="site_image('media.screening')['dark']" seed="arta-screening" ratio="4/3" :alt="__('about.plant_title')" class="rounded-lg border border-hairline shadow-soft" sizes="(min-width: 768px) 50vw, 100vw" />
+            <x-media :src="site_image('media.kiln')['light']" :dark-src="site_image('media.kiln')['dark']" seed="arta-kiln" ratio="4/3" :alt="content('about.plant_title')" class="rounded-lg border border-hairline shadow-soft" sizes="(min-width: 768px) 50vw, 100vw" />
+            <x-media :src="site_image('media.screening')['light']" :dark-src="site_image('media.screening')['dark']" seed="arta-screening" ratio="4/3" :alt="content('about.plant_title')" class="rounded-lg border border-hairline shadow-soft" sizes="(min-width: 768px) 50vw, 100vw" />
         </div>
     </section>
 

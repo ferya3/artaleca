@@ -5,7 +5,7 @@
 
     @if ($action)
         <x-button :href="$action" variant="outline" size="sm" class="mt-6">
-            {{ $actionLabel ?? __('common.clear_filters') }}
+            {{ $actionLabel ?? content('common.clear_filters') }}
         </x-button>
     @endif
 </div>

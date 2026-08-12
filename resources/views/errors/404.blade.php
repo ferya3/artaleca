@@ -8,7 +8,7 @@
     $locale = Locales::supports(request()->segment(1)) ? request()->segment(1) : Locales::default();
     app()->setLocale($locale);
     URL::defaults(['locale' => $locale]);
-    seo()->title(__('common.no_results'))->noindex();
+    seo()->title(content('common.no_results'))->noindex();
 @endphp
 
 <x-layouts.app>
@@ -17,17 +17,17 @@
             <p class="ltr-run tabular text-6xl font-bold text-brand-500">404</p>
 
             <h1 class="mt-6 text-2xl font-bold text-ink-950 md:text-3xl">
-                {{ __('common.no_results') }}
+                {{ content('common.no_results') }}
             </h1>
 
             <p class="mt-4 text-sm leading-relaxed text-ink-600">
-                {{ __('search.empty', ['term' => request()->path()]) }}
+                {{ content('search.empty', ['term' => request()->path()]) }}
             </p>
 
             <div class="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-                <x-button :href="route('home')">{{ __('nav.home') }}</x-button>
-                <x-button :href="route('products.index')" variant="outline">{{ __('nav.products') }}</x-button>
-                <x-button :href="route('contact')" variant="ghost">{{ __('nav.contact') }}</x-button>
+                <x-button :href="route('home')">{{ content('nav.home') }}</x-button>
+                <x-button :href="route('products.index')" variant="outline">{{ content('nav.products') }}</x-button>
+                <x-button :href="route('contact')" variant="ghost">{{ content('nav.contact') }}</x-button>
             </div>
         </div>
     </section>

@@ -15,7 +15,7 @@
                     @endif
                     @if ($post->reading_minutes)
                         <span class="text-ink-300" aria-hidden="true">·</span>
-                        <span class="eyebrow-muted">{{ __('articles.reading_time', ['minutes' => $post->reading_minutes]) }}</span>
+                        <span class="eyebrow-muted">{{ content('articles.reading_time', ['minutes' => $post->reading_minutes]) }}</span>
                     @endif
                 </p>
 
@@ -44,7 +44,7 @@
 
             <div class="mx-auto mt-12 max-w-[68ch] border-t border-hairline pt-6">
                 <x-button :href="route('articles.index')" variant="ghost" size="sm">
-                    {{ __('articles.back_to_list') }}
+                    {{ content('articles.back_to_list') }}
                 </x-button>
             </div>
         </div>
@@ -53,7 +53,7 @@
     @if ($related->isNotEmpty())
         <section class="border-t border-hairline bg-surface-muted py-section">
             <div class="container-page">
-                <x-section-heading :title="__('common.related_articles')" :href="route('articles.index')" />
+                <x-section-heading :title="content('common.related_articles')" :href="route('articles.index')" />
                 <div class="mt-10 grid gap-6 md:grid-cols-3">
                     @foreach ($related as $item)
                         <x-post-card :post="$item" />

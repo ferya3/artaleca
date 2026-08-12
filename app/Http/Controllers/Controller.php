@@ -23,7 +23,7 @@ abstract class Controller
     protected function trail(array $crumbs): array
     {
         return array_merge(
-            [['label' => __('nav.home'), 'url' => route('home', ['locale' => Locales::current()])]],
+            [['label' => content('nav.home'), 'url' => route('home', ['locale' => Locales::current()])]],
             $crumbs,
         );
     }

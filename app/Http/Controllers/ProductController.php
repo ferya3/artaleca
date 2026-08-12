@@ -22,10 +22,10 @@ class ProductController extends Controller
         $products = $this->query($request)->paginate(12)->withQueryString();
 
         seo()
-            ->title(__('seo.products_title'))
-            ->description(__('seo.products_description'))
+            ->title(content('seo.products_title'))
+            ->description(content('seo.products_description'))
             ->breadcrumbs($this->trail([
-                ['label' => __('nav.products'), 'url' => null],
+                ['label' => content('nav.products'), 'url' => null],
             ]))
             ->schema(Schema::itemList($this->listItems($products->getCollection())))
             // Filtered/paginated views are canonicalised to themselves but kept
@@ -53,7 +53,7 @@ class ProductController extends Controller
             ->description($category->meta_description ?? $category->summary)
             ->image($category->image)
             ->breadcrumbs($this->trail([
-                ['label' => __('nav.products'), 'url' => route('products.index')],
+                ['label' => content('nav.products'), 'url' => route('products.index')],
                 ['label' => (string) $category->name, 'url' => null],
             ]))
             ->schema(Schema::itemList($this->listItems($products->getCollection())))
@@ -86,7 +86,7 @@ class ProductController extends Controller
 
         // The URL is flat, but the breadcrumb still carries the hierarchy — it
         // is what tells a visitor (and BreadcrumbList) where the grade sits.
-        $trail = [['label' => __('nav.products'), 'url' => route('products.index')]];
+        $trail = [['label' => content('nav.products'), 'url' => route('products.index')]];
 
         if ($product->category) {
             $trail[] = [

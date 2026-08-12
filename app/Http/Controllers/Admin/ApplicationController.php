@@ -33,7 +33,7 @@ class ApplicationController extends ResourceController
     protected function listColumns(): array
     {
         return [
-            'name' => __('nav.applications'),
+            'name' => content('nav.applications'),
             'slug' => 'Slug',
             'position' => __('admin.position'),
             'is_active' => __('admin.status'),
@@ -43,7 +43,7 @@ class ApplicationController extends ResourceController
     protected function fields(): array
     {
         return [
-            ['name' => 'name', 'label' => __('nav.applications'), 'translatable' => true,
+            ['name' => 'name', 'label' => content('nav.applications'), 'translatable' => true,
                 'rules' => ['required', 'string', 'max:180']],
 
             ['name' => 'slug', 'label' => 'Slug', 'width' => 'half',
@@ -59,7 +59,7 @@ class ApplicationController extends ResourceController
             ['name' => 'description', 'label' => __('admin.fields.description'), 'type' => 'textarea', 'translatable' => true,
                 'rows' => 10, 'rules' => ['nullable', 'string', 'max:8000']],
 
-            ['name' => 'benefits', 'label' => __('applications.benefits'), 'type' => 'list',
+            ['name' => 'benefits', 'label' => content('applications.benefits'), 'type' => 'list',
                 'hint' => 'One benefit per line (single language).'],
 
             ['name' => 'image', 'label' => __('admin.fields.image_path'), 'type' => 'image'],

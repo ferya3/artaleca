@@ -25,10 +25,10 @@ class PostController extends Controller
             ->withQueryString();
 
         seo()
-            ->title(__('seo.news_title'))
-            ->description(__('seo.news_description'))
+            ->title(content('seo.news_title'))
+            ->description(content('seo.news_description'))
             ->breadcrumbs($this->trail([
-                ['label' => __('nav.news'), 'url' => null],
+                ['label' => content('nav.news'), 'url' => null],
             ]))
             ->noindex($posts->currentPage() > 1);
 
@@ -56,7 +56,7 @@ class PostController extends Controller
             ->image($post->cover_image)
             ->type('article')
             ->breadcrumbs($this->trail([
-                ['label' => __('nav.news'), 'url' => route('articles.index')],
+                ['label' => content('nav.news'), 'url' => route('articles.index')],
                 ['label' => (string) $post->title, 'url' => null],
             ]))
             ->schema(Schema::article($post));

@@ -1,15 +1,15 @@
 <x-layouts.app>
 
     <x-page-header
-        :eyebrow="__('nav.faq')"
-        :title="__('faq.title')"
-        :lead="__('faq.intro')"
+        :eyebrow="content('nav.faq')"
+        :title="content('faq.title')"
+        :lead="content('faq.intro')"
     />
 
     <section class="py-section">
         <div class="container-page max-w-3xl">
             @if ($groups->isEmpty())
-                <x-empty-state :message="__('common.no_results')" />
+                <x-empty-state :message="content('common.no_results')" />
             @else
                 <div class="space-y-14">
                     @foreach ($groups as $group => $faqs)
@@ -40,10 +40,10 @@
             @endif
 
             <div class="mt-14 panel-muted p-6 text-center">
-                <p class="text-sm font-semibold text-ink-900">{{ __('faq.still_have_questions') }}</p>
-                <p class="mt-2 text-sm text-ink-600">{{ __('faq.contact_expert') }}</p>
+                <p class="text-sm font-semibold text-ink-900">{{ content('faq.still_have_questions') }}</p>
+                <p class="mt-2 text-sm text-ink-600">{{ content('faq.contact_expert') }}</p>
                 <x-button :href="route('contact')" variant="outline" size="sm" class="mt-5">
-                    {{ __('nav.contact') }}
+                    {{ content('nav.contact') }}
                 </x-button>
             </div>
         </div>

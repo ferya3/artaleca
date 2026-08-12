@@ -34,7 +34,7 @@ class PartnerController extends ResourceController
     {
         return [
             'name' => __('admin.fields.name'),
-            'kind' => __('product.filter_by_category'),
+            'kind' => content('product.filter_by_category'),
             'position' => __('admin.position'),
             'is_active' => __('admin.status'),
         ];
@@ -51,7 +51,7 @@ class PartnerController extends ResourceController
                 'rules' => fn (?Model $r) => ['nullable', 'string', 'max:180', 'alpha_dash',
                     Rule::unique('partners', 'slug')->ignore($r)]],
 
-            ['name' => 'kind', 'label' => __('product.filter_by_category'), 'type' => 'select', 'width' => 'half',
+            ['name' => 'kind', 'label' => content('product.filter_by_category'), 'type' => 'select', 'width' => 'half',
                 'options' => fn () => collect(Partner::KINDS)
                     ->mapWithKeys(fn ($k) => [$k => __('partners.kinds.'.$k)])->all(),
                 'rules' => ['required', Rule::in(Partner::KINDS)]],

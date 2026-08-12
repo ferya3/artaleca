@@ -1,16 +1,16 @@
 <x-layouts.app>
 
     <x-page-header
-        :eyebrow="__('nav.representatives')"
-        :title="__('representatives.title')"
-        :lead="__('representatives.intro')"
+        :eyebrow="content('nav.representatives')"
+        :title="content('representatives.title')"
+        :lead="content('representatives.intro')"
     />
 
     <section class="py-section">
         <div class="container-page">
             @if ($representatives->isEmpty())
-                <x-empty-state :message="__('representatives.empty')" :action="route('contact')"
-                               :action-label="__('nav.contact')" />
+                <x-empty-state :message="content('representatives.empty')" :action="route('contact')"
+                               :action-label="content('nav.contact')" />
             @else
                 <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($representatives as $representative)
@@ -35,7 +35,7 @@
                                 <a href="{{ $representative->website }}"
                                    target="_blank" rel="noopener noreferrer"
                                    class="ltr-run mt-auto pt-5 text-sm font-semibold text-brand-600 hover:underline">
-                                    {{ __('representatives.website') }}
+                                    {{ content('representatives.website') }}
                                     <span class="inline-block rtl:rotate-180" aria-hidden="true">&rarr;</span>
                                 </a>
                             @endif
@@ -62,9 +62,9 @@
         <div class="container-page grid gap-12 lg:grid-cols-12 lg:gap-16">
 
             <div class="min-w-0 lg:col-span-7">
-                <p class="eyebrow mb-3">{{ __('representatives.apply_eyebrow') }}</p>
-                <h2 class="text-2xl font-bold text-ink-950 md:text-3xl">{{ __('representatives.apply_title') }}</h2>
-                <p class="mt-4 text-base leading-relaxed text-ink-600">{{ __('representatives.apply_intro') }}</p>
+                <p class="eyebrow mb-3">{{ content('representatives.apply_eyebrow') }}</p>
+                <h2 class="text-2xl font-bold text-ink-950 md:text-3xl">{{ content('representatives.apply_title') }}</h2>
+                <p class="mt-4 text-base leading-relaxed text-ink-600">{{ content('representatives.apply_intro') }}</p>
 
                 <div class="mt-8">
                     <x-form.status />
@@ -107,7 +107,7 @@
                         name="message"
                         type="textarea"
                         :label="__('form.message')"
-                        :hint="__('representatives.apply_message_hint')"
+                        :hint="content('representatives.apply_message_hint')"
                         :rows="5"
                         class="sm:col-span-2"
                     />
@@ -117,14 +117,14 @@
                     </div>
 
                     <div class="sm:col-span-2">
-                        <x-button type="submit" size="lg">{{ __('representatives.apply_submit') }}</x-button>
+                        <x-button type="submit" size="lg">{{ content('representatives.apply_submit') }}</x-button>
                     </div>
                 </form>
             </div>
 
             <aside class="min-w-0 lg:col-span-5">
                 <div class="panel p-6 lg:sticky lg:top-28">
-                    <h2 class="text-lg font-bold text-ink-950">{{ __('representatives.apply_criteria_title') }}</h2>
+                    <h2 class="text-lg font-bold text-ink-950">{{ content('representatives.apply_criteria_title') }}</h2>
 
                     <ul class="mt-5 space-y-4">
                         @foreach (['territory', 'storage', 'technical', 'commitment'] as $criterion)
@@ -138,7 +138,7 @@
                     </ul>
 
                     <div class="mt-6 space-y-2 border-t border-hairline pt-5 text-sm">
-                        <p class="text-ink-500">{{ __('representatives.apply_desk') }}</p>
+                        <p class="text-ink-500">{{ content('representatives.apply_desk') }}</p>
                         <a class="ltr-run block font-medium text-ink-900 hover:text-brand-600"
                            href="mailto:{{ config('site.contact.sales_email') ?? config('site.contact.export_email') }}">{{ config('site.contact.sales_email') ?? config('site.contact.export_email') }}</a>
                         <a class="ltr-run block text-ink-600 hover:text-brand-600"

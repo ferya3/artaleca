@@ -30,6 +30,7 @@
             // Beside the gallery rather than under Settings: uploading the
             // site's photography is a different job from editing configuration,
             // and it is what an editor comes here to do most often.
+            ['route' => 'admin.content.index', 'label' => __('admin.site_content')],
             ['route' => 'admin.site-images.edit', 'label' => __('admin.site_images')],
             ['route' => 'admin.downloads.index', 'label' => __('admin.downloads')],
             ['route' => 'admin.gallery.index', 'label' => __('admin.gallery')],

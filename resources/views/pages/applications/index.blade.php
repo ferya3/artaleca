@@ -1,15 +1,15 @@
 <x-layouts.app>
 
     <x-page-header
-        :eyebrow="__('nav.applications')"
-        :title="__('applications.title')"
-        :lead="__('applications.intro')"
+        :eyebrow="content('nav.applications')"
+        :title="content('applications.title')"
+        :lead="content('applications.intro')"
     />
 
     <section class="py-section">
         <div class="container-page">
             @if ($applications->isEmpty())
-                <x-empty-state :message="__('applications.empty')" />
+                <x-empty-state :message="content('applications.empty')" />
             @else
                 <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     @foreach ($applications as $application)

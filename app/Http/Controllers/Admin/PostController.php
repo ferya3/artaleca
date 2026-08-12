@@ -45,8 +45,8 @@ class PostController extends ResourceController
     {
         return [
             'title' => __('admin.posts'),
-            'type' => __('articles.types.all'),
-            'published_at' => __('articles.published_on', ['date' => '']),
+            'type' => content('articles.types.all'),
+            'published_at' => content('articles.published_on', ['date' => '']),
             'is_active' => __('admin.status'),
         ];
     }
@@ -61,14 +61,14 @@ class PostController extends ResourceController
                 'rules' => fn (?Model $r) => ['nullable', 'string', 'max:200', 'alpha_dash',
                     Rule::unique('posts', 'slug')->ignore($r)]],
 
-            ['name' => 'type', 'label' => __('articles.types.all'), 'type' => 'select', 'width' => 'half',
+            ['name' => 'type', 'label' => content('articles.types.all'), 'type' => 'select', 'width' => 'half',
                 'options' => fn () => collect(Post::TYPES)->mapWithKeys(fn ($t) => [$t => __('articles.types.'.$t)])->all(),
                 'rules' => ['required', Rule::in(Post::TYPES)]],
 
-            ['name' => 'published_at', 'label' => __('articles.published_on', ['date' => '']), 'type' => 'datetime-local',
+            ['name' => 'published_at', 'label' => content('articles.published_on', ['date' => '']), 'type' => 'datetime-local',
                 'width' => 'half', 'rules' => ['nullable', 'date']],
 
-            ['name' => 'reading_minutes', 'label' => __('articles.reading_time', ['minutes' => '']), 'type' => 'number',
+            ['name' => 'reading_minutes', 'label' => content('articles.reading_time', ['minutes' => '']), 'type' => 'number',
                 'width' => 'half', 'rules' => ['nullable', 'integer', 'min:1', 'max:120']],
 
             ['name' => 'excerpt', 'label' => __('admin.fields.summary'), 'type' => 'textarea', 'translatable' => true,

@@ -1,10 +1,10 @@
 @if ($paginator->hasPages())
     {{-- rel=prev/next tells crawlers how the sequence fits together; the
          numbered links keep deep pages reachable without JavaScript. --}}
-    <nav role="navigation" aria-label="{{ __('common.pagination.next') }}" class="mt-12 border-t border-hairline pt-6">
+    <nav role="navigation" aria-label="{{ content('common.pagination.next') }}" class="mt-12 border-t border-hairline pt-6">
         <div class="flex flex-col items-center justify-between gap-4 sm:flex-row">
             <p class="tabular text-xs text-ink-500">
-                {{ __('common.pagination.showing', [
+                {{ content('common.pagination.showing', [
                     'first' => $paginator->firstItem(),
                     'last' => $paginator->lastItem(),
                     'total' => $paginator->total(),
@@ -14,11 +14,11 @@
             <ul class="flex flex-wrap items-center gap-1">
                 <li>
                     @if ($paginator->onFirstPage())
-                        <span class="inline-flex h-9 items-center px-3 text-sm text-ink-300">{{ __('common.pagination.previous') }}</span>
+                        <span class="inline-flex h-9 items-center px-3 text-sm text-ink-300">{{ content('common.pagination.previous') }}</span>
                     @else
                         <a href="{{ $paginator->previousPageUrl() }}" rel="prev"
                            class="inline-flex h-9 items-center rounded-md border border-hairline px-3 text-sm text-ink-700 transition-colors hover:border-ink-400 hover:text-ink-950">
-                            {{ __('common.pagination.previous') }}
+                            {{ content('common.pagination.previous') }}
                         </a>
                     @endif
                 </li>
@@ -47,10 +47,10 @@
                     @if ($paginator->hasMorePages())
                         <a href="{{ $paginator->nextPageUrl() }}" rel="next"
                            class="inline-flex h-9 items-center rounded-md border border-hairline px-3 text-sm text-ink-700 transition-colors hover:border-ink-400 hover:text-ink-950">
-                            {{ __('common.pagination.next') }}
+                            {{ content('common.pagination.next') }}
                         </a>
                     @else
-                        <span class="inline-flex h-9 items-center px-3 text-sm text-ink-300">{{ __('common.pagination.next') }}</span>
+                        <span class="inline-flex h-9 items-center px-3 text-sm text-ink-300">{{ content('common.pagination.next') }}</span>
                     @endif
                 </li>
             </ul>

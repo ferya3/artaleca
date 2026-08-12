@@ -13,7 +13,7 @@
     @endif
 
     <span class="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-brand-600" aria-hidden="true">
-        {{ __('common.learn_more') }}
+        {{ content('common.learn_more') }}
         <span class="inline-block transition-transform group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5">&rarr;</span>
     </span>
 </article>

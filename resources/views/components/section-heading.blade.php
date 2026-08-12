@@ -23,7 +23,7 @@
     @if ($href)
         <a href="{{ $href }}"
            class="group inline-flex shrink-0 items-center gap-2 border-b-2 border-ink-950 pb-1 text-sm font-semibold text-ink-950 transition-colors hover:border-brand-600 hover:text-brand-600">
-            {{ $linkLabel ?? __('common.view_all') }}
+            {{ $linkLabel ?? content('common.view_all') }}
             <span class="inline-block transition-transform group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" aria-hidden="true">&rarr;</span>
         </a>
     @endif

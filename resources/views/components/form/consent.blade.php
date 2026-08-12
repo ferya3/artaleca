@@ -16,7 +16,7 @@
         <span>
             {{ __('form.consent_label') }}
             <a href="{{ route('legal.privacy') }}" class="text-brand-600 underline underline-offset-2">
-                {{ __('common.privacy') }}
+                {{ content('common.privacy') }}
             </a>
         </span>
     </label>

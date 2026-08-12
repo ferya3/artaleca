@@ -33,9 +33,9 @@
         {{ $label }}
         @if ($required)
             <span class="text-brand-600" aria-hidden="true">*</span>
-            <span class="sr-only">({{ __('common.required') }})</span>
+            <span class="sr-only">({{ content('common.required') }})</span>
         @else
-            <span class="ms-1 text-xs font-normal text-ink-400">({{ __('common.optional') }})</span>
+            <span class="ms-1 text-xs font-normal text-ink-400">({{ content('common.optional') }})</span>
         @endif
     </label>
 

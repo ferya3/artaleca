@@ -33,7 +33,7 @@ class FaqController extends ResourceController
     {
         return [
             'question' => __('admin.faqs'),
-            'group' => __('product.filter_by_category'),
+            'group' => content('product.filter_by_category'),
             'position' => __('admin.position'),
             'is_active' => __('admin.status'),
         ];
@@ -48,7 +48,7 @@ class FaqController extends ResourceController
             ['name' => 'answer', 'label' => __('admin.fields.description'), 'type' => 'textarea', 'translatable' => true,
                 'rows' => 6, 'rules' => ['required', 'string', 'max:4000']],
 
-            ['name' => 'group', 'label' => __('product.filter_by_category'), 'type' => 'select', 'width' => 'half',
+            ['name' => 'group', 'label' => content('product.filter_by_category'), 'type' => 'select', 'width' => 'half',
                 'options' => fn () => collect(Faq::GROUPS)->mapWithKeys(fn ($g) => [$g => __('faq.groups.'.$g)])->all(),
                 'rules' => ['required', Rule::in(Faq::GROUPS)]],
 
