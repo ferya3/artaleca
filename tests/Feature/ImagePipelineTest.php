@@ -30,6 +30,75 @@ class ImagePipelineTest extends TestCase
         return UploadedFile::fake()->image($name, $width, $height);
     }
 
+    /**
+     * A transparent PNG has to survive the pipeline, on every file it writes.
+     *
+     * GD loads a PNG with `saveAlpha` off, so the master was written opaque —
+     * and a fully transparent pixel's RGB is 0,0,0, which put a black square
+     * behind every logo uploaded on nothing. The derivatives were fine, because
+     * a resample builds its own canvas and sets the flag there; the two files
+     * disagreed and only the master was ever displayed. So this asserts every
+     * file, not just one.
+     */
+    public function test_a_transparent_png_stays_transparent_in_every_file_written(): void
+    {
+        $url = Media::storeImage($this->transparentPng(), 'settings');
+
+        $master = Storage::disk('media')->path('settings/'.basename($url));
+        $files = array_merge([$master], glob(dirname($master).'/'.pathinfo($master, PATHINFO_FILENAME).'-*.webp') ?: []);
+
+        $this->assertGreaterThan(1, count($files), 'The pipeline wrote no WebP derivatives to check.');
+
+        foreach ($files as $file) {
+            $image = imagecreatefromstring((string) file_get_contents($file));
+
+            $this->assertNotFalse($image, basename($file).' is not decodable.');
+
+            $corner = imagecolorat($image, 3, 3);
+            $alpha = ($corner >> 24) & 0x7F;
+
+            $this->assertSame(
+                127,
+                $alpha,
+                basename($file).' lost its transparency — a transparent pixel is black once alpha is dropped.',
+            );
+        }
+    }
+
+    /** The centre of that same PNG must still be the colour it was drawn in. */
+    public function test_a_transparent_png_keeps_its_opaque_pixels(): void
+    {
+        $url = Media::storeImage($this->transparentPng(), 'settings');
+
+        $image = imagecreatefromstring(
+            (string) file_get_contents(Storage::disk('media')->path('settings/'.basename($url)))
+        );
+
+        $centre = imagecolorat($image, 300, 300);
+
+        $this->assertSame(76, ($centre >> 16) & 0xFF);
+        $this->assertSame(166, ($centre >> 8) & 0xFF);
+    }
+
+    /** A 600x600 PNG: an opaque disc on a fully transparent ground. */
+    private function transparentPng(): UploadedFile
+    {
+        $canvas = imagecreatetruecolor(600, 600);
+        imagealphablending($canvas, false);
+        imagesavealpha($canvas, true);
+        imagefill($canvas, 0, 0, (int) imagecolorallocatealpha($canvas, 0, 0, 0, 127));
+        imagealphablending($canvas, true);
+        imagefilledellipse($canvas, 300, 300, 420, 420, (int) imagecolorallocate($canvas, 76, 166, 46));
+        imagealphablending($canvas, false);
+        imagesavealpha($canvas, true);
+
+        $path = tempnam(sys_get_temp_dir(), 'logo').'.png';
+        imagepng($canvas, $path);
+        imagedestroy($canvas);
+
+        return new UploadedFile($path, 'logo.png', 'image/png', null, true);
+    }
+
     public function test_an_oversized_upload_is_capped_to_the_maximum_edge(): void
     {
         $url = Media::storeImage($this->upload(4000, 3000), 'products');

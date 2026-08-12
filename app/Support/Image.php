@@ -109,6 +109,22 @@ final class Image
                 return null;
             }
 
+            /*
+             * Keep the alpha channel on the source itself, not only on the
+             * canvases derived from it.
+             *
+             * GD loads a PNG with `saveAlpha` off, so encoding the source
+             * unchanged writes it opaque — and a fully transparent pixel's RGB
+             * is 0,0,0, which is why a logo uploaded on nothing came back on
+             * black. It only ever bit the master: every derivative goes through
+             * a resample, which builds its own canvas and sets the flag there.
+             * So the WebP copies were transparent all along and the PNG beside
+             * them was not — the two files disagreed, and only the master was
+             * ever displayed.
+             */
+            imagealphablending($source, false);
+            imagesavealpha($source, true);
+
             $master = self::scaleToLongestEdge($source, min(self::MAX_EDGE, max($width, $height)), $width, $height);
 
             if ($master !== $source) {
