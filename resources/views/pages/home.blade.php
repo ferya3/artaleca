@@ -213,41 +213,39 @@
         </div>
     </section>
 
-    {{-- ── Quality ────────────────────────────────────────────────────── --}}
-    <section class="py-section">
-        <div class="container-page grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-            <x-media
-                :src="site_image('media.quality_lab')['light']"
-                :dark-src="site_image('media.quality_lab')['dark']"
-                seed="arta-quality-lab"
-                {{-- 3:2, matching the hero — same reason, and the two are the
-                     only photographs on the home page that sit beside a column
-                     of copy. --}}
-                ratio="3/2"
-                :alt="content('home.quality_title')"
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                class="rounded-lg border border-hairline shadow-soft"
-            />
+    {{--
+        ── Quality ────────────────────────────────────────────────────────
+        The copy leads and the photograph follows it, which is the order the
+        section is read in on a phone. Source order carries that; the desktop
+        arrangement — picture beside the text — is one `lg:order-first`, so the
+        two layouts share one block rather than being written twice.
 
-            <div>
+        The button sits with the image rather than at the end of the copy, so
+        it lands under the picture in both layouts.
+    --}}
+    <section class="py-section">
+        <div class="container-page grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+            <div class="min-w-0">
                 <p class="eyebrow mb-3">{{ content('nav.quality') }}</p>
                 <h2 class="text-2xl font-bold text-ink-950 md:text-3xl">{{ content('home.quality_title') }}</h2>
                 <p class="mt-5 text-base leading-relaxed text-ink-600">{{ content('home.quality_body') }}</p>
+            </div>
 
-                @if ($certificates->isNotEmpty())
-                    <ul class="mt-8 flex flex-wrap gap-2">
-                        @foreach ($certificates as $certificate)
-                            <li class="rounded-md border border-hairline px-3.5 py-2 text-xs text-ink-600">
-                                {{ $certificate->title }}
-                                @if ($certificate->year)
-                                    <span class="ltr-run tabular ms-1 text-ink-400">{{ $certificate->year }}</span>
-                                @endif
-                            </li>
-                        @endforeach
-                    </ul>
-                @endif
+            <div class="min-w-0 lg:order-first">
+                <x-media
+                    :src="site_image('media.quality_lab')['light']"
+                    :dark-src="site_image('media.quality_lab')['dark']"
+                    seed="arta-quality-lab"
+                    {{-- 3:2, matching the hero — same reason, and the two are the
+                         only photographs on the home page that sit beside a column
+                         of copy. --}}
+                    ratio="3/2"
+                    :alt="content('home.quality_title')"
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    class="rounded-lg border border-hairline shadow-soft"
+                />
 
-                <x-button :href="route('about.quality')" variant="outline" class="mt-8">
+                <x-button :href="route('about.quality')" variant="outline" class="mt-6">
                     {{ content('home.quality_cta') }}
                 </x-button>
             </div>
