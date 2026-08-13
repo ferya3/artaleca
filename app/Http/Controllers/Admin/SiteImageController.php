@@ -48,6 +48,7 @@ class SiteImageController extends Controller
             'hero' => [
                 'media.hero' => [
                     'label' => __('admin.settings_fields.media_hero'),
+                    'hint' => __('admin.settings_fields.media_hero_hint'),
                 ],
                 'media.hero_mobile' => [
                     'label' => __('admin.settings_fields.media_hero_mobile'),

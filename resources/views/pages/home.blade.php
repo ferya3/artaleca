@@ -86,7 +86,11 @@
                         :src="site_image('media.hero')['light']"
                         :dark-src="site_image('media.hero')['dark']"
                         seed="arta-hero"
-                        ratio="4/3"
+                        {{-- 3:2, the shape the artwork is supplied in (1536x1024).
+                             The box holds that ratio whatever is uploaded, so an
+                             image cut to any other shape is cropped to fit rather
+                             than moving the column beside it. --}}
+                        ratio="3/2"
                         tone="dark"
                         eager
                         preload-media="(min-width: 768px)"

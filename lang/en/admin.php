@@ -94,6 +94,7 @@ return [
         'media_logo' => 'Site logo',
         'media_logo_hint' => 'Shown in the header and the footer. Use a PNG with a transparent background, or an SVG. If your logo is dark, upload a light version for the night theme as well — otherwise it disappears against the dark ground.',
         'media_hero' => 'Hero image — desktop',
+        'media_hero_hint' => '3:2 — 1536x1024 recommended. Anything cut to another shape is cropped to fit the frame.',
         'media_hero_mobile' => 'Hero image — mobile',
         'media_hero_mobile_hint' => 'Optional. A taller crop for a phone screen. Falls back to the desktop image when empty.',
         'media_showcase' => 'Pinned showcase — desktop',
