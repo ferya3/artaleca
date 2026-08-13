@@ -79,8 +79,10 @@ class CmsTest extends TestCase
         // The about page rather than the home page: the figures strip was taken
         // off the hero, where it competed with the headline for the first
         // glance, and lives on the pages a visitor reaches while sizing up the
-        // company.
-        $this->get('/fa/about')->assertSee('987,654');
+        // company. Persian digits, because the Persian pages are rewritten on
+        // the way out — see LocaliseDigits.
+        $this->get('/fa/about')->assertSee('۹۸۷٬۶۵۴');
+        $this->get('/en/about')->assertSee('987,654');
     }
 
     public function test_a_figure_set_to_zero_is_dropped_from_the_strip(): void

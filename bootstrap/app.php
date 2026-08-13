@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EnsureUserIsStaff;
 use App\Http\Middleware\HandleRedirects;
+use App\Http\Middleware\LocaliseDigits;
 use App\Http\Middleware\ResetScopedState;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
@@ -23,7 +24,13 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        /*
+         * Prepended, so that on the way back out it runs last and sees the
+         * finished page — including anything a middleware further in has
+         * added to the body.
+         */
         $middleware->web(prepend: [
+            LocaliseDigits::class,
             ResetScopedState::class,
         ]);
 
