@@ -109,6 +109,50 @@
         </div>
     </section>
 
+    {{--
+        ── Clay, sold in bulk ─────────────────────────────────────────────
+        The plant sells the raw material as well as the fired product, and this
+        is the page a buyer looking for either one lands on. Two blocks rather
+        than one wall of text: what is sold, and what it is bought for.
+
+        The uses are a real list rather than lines in a paragraph — the markup
+        says "these are separate items" to anything not looking at the screen,
+        and each one is its own key, so a language can drop or reword an entry
+        without the others moving.
+    --}}
+    <section class="border-t border-hairline bg-surface-muted py-section">
+        <div class="container-page grid gap-12 lg:grid-cols-2 lg:gap-16">
+            <div class="min-w-0">
+                <h2 class="text-2xl font-bold text-ink-950 md:text-3xl">{{ content('product.clay_title') }}</h2>
+                <p class="mt-5 text-base leading-relaxed text-ink-600">{{ content('product.clay_body') }}</p>
+                <p class="mt-4 text-base leading-relaxed text-ink-600">{{ content('product.clay_contact') }}</p>
+
+                <x-button :href="route('contact')" variant="outline" class="mt-8">
+                    {{ content('nav.contact') }}
+                </x-button>
+            </div>
+
+            <div class="min-w-0">
+                <h2 class="text-2xl font-bold text-ink-950 md:text-3xl">{{ content('product.clay_industries_title') }}</h2>
+                <p class="mt-5 text-base leading-relaxed text-ink-600">{{ content('product.clay_industries_body') }}</p>
+                <p class="mt-4 text-base leading-relaxed text-ink-600">{{ content('product.clay_industries_lead') }}</p>
+
+                <ul class="mt-5 space-y-3">
+                    @foreach (['brick', 'tile', 'materials', 'mineral', 'technical'] as $use)
+                        <li class="flex gap-3">
+                            <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-600" aria-hidden="true"></span>
+                            <span class="text-base leading-relaxed text-ink-600">
+                                {{ content('product.clay_uses.'.$use) }}
+                            </span>
+                        </li>
+                    @endforeach
+                </ul>
+
+                <p class="mt-6 text-base leading-relaxed text-ink-600">{{ content('product.clay_industries_note') }}</p>
+            </div>
+        </div>
+    </section>
+
     <x-cta-band />
 
 </x-layouts.app>
