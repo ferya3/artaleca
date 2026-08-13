@@ -220,7 +220,10 @@
                 :src="site_image('media.quality_lab')['light']"
                 :dark-src="site_image('media.quality_lab')['dark']"
                 seed="arta-quality-lab"
-                ratio="4/3"
+                {{-- 3:2, matching the hero — same reason, and the two are the
+                     only photographs on the home page that sit beside a column
+                     of copy. --}}
+                ratio="3/2"
                 :alt="content('home.quality_title')"
                 sizes="(min-width: 1024px) 50vw, 100vw"
                 class="rounded-lg border border-hairline shadow-soft"

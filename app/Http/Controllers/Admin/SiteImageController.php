@@ -78,7 +78,10 @@ class SiteImageController extends Controller
             ],
 
             'plant' => [
-                'media.quality_lab' => ['label' => __('admin.settings_fields.media_quality_lab')],
+                'media.quality_lab' => [
+                    'label' => __('admin.settings_fields.media_quality_lab'),
+                    'hint' => __('admin.settings_fields.media_quality_lab_hint'),
+                ],
                 'media.plant_exterior' => ['label' => __('admin.settings_fields.media_plant_exterior')],
                 'media.kiln' => ['label' => __('admin.settings_fields.media_kiln')],
                 'media.screening' => ['label' => __('admin.settings_fields.media_screening')],

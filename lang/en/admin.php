@@ -105,6 +105,7 @@ return [
         'media_applications_infographic_mobile' => 'Applications infographic — mobile',
         'media_applications_infographic_mobile_hint' => 'The portrait version, for phones. A landscape infographic is unreadably small on a narrow screen, so lay the same content out vertically here. Falls back to the landscape one when empty.',
         'media_quality_lab' => 'Quality lab (home)',
+        'media_quality_lab_hint' => '3:2 — 1536x1024 recommended. Anything cut to another shape is cropped to fit the frame.',
         'media_plant_exterior' => 'Plant exterior (about)',
         'media_kiln' => 'Rotary kiln (plant)',
         'media_screening' => 'Screening and grading (plant)',
