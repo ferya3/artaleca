@@ -215,40 +215,49 @@
 
     {{--
         ── Quality ────────────────────────────────────────────────────────
-        The copy leads and the photograph follows it, which is the order the
-        section is read in on a phone. Source order carries that; the desktop
-        arrangement — picture beside the text — is one `lg:order-first`, so the
-        two layouts share one block rather than being written twice.
+        The two layouts want the button in different places: under the picture
+        on a phone, at the end of the copy on desktop.
 
-        The button sits with the image rather than at the end of the copy, so
-        it lands under the picture in both layouts.
+        Rather than rendering it twice and hiding one — two identical links in
+        the document, one of them always a lie — the copy column is `contents`
+        below `lg`. The wrapper dissolves, its children become grid items in
+        their own right, and `order` can then put the button after the image.
+        Above `lg` the wrapper is a block again and the button is simply the
+        last thing in the column, where it was.
     --}}
     <section class="py-section">
         <div class="container-page grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-            <div class="min-w-0">
-                <p class="eyebrow mb-3">{{ content('nav.quality') }}</p>
-                <h2 class="text-2xl font-bold text-ink-950 md:text-3xl">{{ content('home.quality_title') }}</h2>
-                <p class="mt-5 text-base leading-relaxed text-ink-600">{{ content('home.quality_body') }}</p>
-            </div>
+            <div class="contents lg:block lg:min-w-0">
+                <div class="order-1 min-w-0 lg:order-none">
+                    <p class="eyebrow mb-3">{{ content('nav.quality') }}</p>
+                    <h2 class="text-2xl font-bold text-ink-950 md:text-3xl">{{ content('home.quality_title') }}</h2>
+                    <p class="mt-5 text-base leading-relaxed text-ink-600">{{ content('home.quality_body') }}</p>
+                </div>
 
-            <div class="min-w-0 lg:order-first">
-                <x-media
-                    :src="site_image('media.quality_lab')['light']"
-                    :dark-src="site_image('media.quality_lab')['dark']"
-                    seed="arta-quality-lab"
-                    {{-- 3:2, matching the hero — same reason, and the two are the
-                         only photographs on the home page that sit beside a column
-                         of copy. --}}
-                    ratio="3/2"
-                    :alt="content('home.quality_title')"
-                    sizes="(min-width: 1024px) 50vw, 100vw"
-                    class="rounded-lg border border-hairline shadow-soft"
-                />
-
-                <x-button :href="route('about.quality')" variant="outline" class="mt-6">
+                {{-- `justify-self-start`: as a grid item on the phone it would
+                     otherwise be stretched to the full column width, which no
+                     other outline button on the site is. --}}
+                <x-button
+                    :href="route('about.quality')"
+                    variant="outline"
+                    class="order-3 mt-2 justify-self-start lg:order-none lg:mt-8"
+                >
                     {{ content('home.quality_cta') }}
                 </x-button>
             </div>
+
+            <x-media
+                :src="site_image('media.quality_lab')['light']"
+                :dark-src="site_image('media.quality_lab')['dark']"
+                seed="arta-quality-lab"
+                {{-- 3:2, matching the hero — same reason, and the two are the
+                     only photographs on the home page that sit beside a column
+                     of copy. --}}
+                ratio="3/2"
+                :alt="content('home.quality_title')"
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                class="order-2 min-w-0 rounded-lg border border-hairline shadow-soft lg:order-first"
+            />
         </div>
     </section>
 
