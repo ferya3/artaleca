@@ -41,13 +41,23 @@
                     @foreach ($locales as $code => $meta)
                         @php
                             $errorKey = $field.'.'.$code;
-                            $value = old($errorKey, is_array($stored) ? ($stored[$code] ?? '') : '');
-
-                            // The shipped text, shown as the placeholder: it is
-                            // what the page renders while the box is empty, so
-                            // showing it there says so without a second label.
                             $shipped = \Illuminate\Support\Facades\Lang::get($group.'.'.$key, [], $code);
                             $shipped = is_string($shipped) ? $shipped : '';
+
+                            /*
+                             * Prefilled with what the page actually renders
+                             * today, not left blank with the default behind it
+                             * as a placeholder. That is what makes the rule
+                             * simple enough to trust: the box holds the text,
+                             * so emptying the box empties the text. With the
+                             * default merely hinted, clearing a field put it
+                             * straight back and looked like the save had failed.
+                             */
+                            $current = is_array($stored) && array_key_exists($code, $stored)
+                                ? (string) $stored[$code]
+                                : $shipped;
+
+                            $value = old($errorKey, $current);
                         @endphp
 
                         <div class="flex items-start gap-2.5">
@@ -56,12 +66,12 @@
                             @if ($long)
                                 <textarea name="{{ $field }}[{{ $code }}]" rows="3"
                                           lang="{{ $code }}" dir="{{ $meta['dir'] }}"
-                                          placeholder="{{ $shipped }}"
+                                          placeholder="{{ __('admin.content_empty_placeholder') }}"
                                           class="w-full rounded-md border border-ink-300 bg-white px-3 py-2.5 text-sm leading-relaxed text-ink-900 placeholder:text-ink-400 focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12 @error($errorKey) border-red-500 @enderror">{{ $value }}</textarea>
                             @else
                                 <input type="text" name="{{ $field }}[{{ $code }}]" value="{{ $value }}"
                                        lang="{{ $code }}" dir="{{ $meta['dir'] }}"
-                                       placeholder="{{ $shipped }}"
+                                       placeholder="{{ __('admin.content_empty_placeholder') }}"
                                        class="w-full rounded-md border border-ink-300 bg-white px-3 py-2.5 text-sm text-ink-900 placeholder:text-ink-400 focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12 @error($errorKey) border-red-500 @enderror">
                             @endif
                         </div>
@@ -71,6 +81,13 @@
                         @enderror
                     @endforeach
                 </div>
+
+                {{-- The only way back to the shipped wording once a field has
+                     been saved, since the box no longer carries it as a hint. --}}
+                <label class="mt-3 flex items-center gap-2 text-xs text-ink-500">
+                    <input type="checkbox" name="reset[{{ $field }}]" value="1" class="h-3.5 w-3.5 border-ink-400 text-brand-600">
+                    {{ __('admin.content_reset') }}
+                </label>
             </div>
         @endforeach
 

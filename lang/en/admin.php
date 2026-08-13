@@ -171,11 +171,11 @@ return [
     ],
     'site_content' => 'Site content',
     'site_content_intro' => 'Every piece of text on the site, in one place. Open an area and write your own wording for each language.',
-    'site_content_hint' => 'An empty field means the shipped text — shown greyed inside the box — is what the page renders. Clear a field and save to go back to it.',
+    'site_content_hint' => 'Each box is prefilled with the text the site renders today. Whatever you write is what appears, and clearing a box removes that text from the site. To go back to the original wording, tick restore and save.',
     'content_strings' => 'strings',
     'content_edited' => ':count edited',
     'content_overridden' => 'Edited',
-    'content_clear_hint' => 'Empty field = shipped text.',
+    'content_clear_hint' => 'What is in the box is what is on the site — an empty box means that text is not shown.',
 
     'content_groups' => [
         'home' => 'Homepage',
@@ -196,4 +196,6 @@ return [
         'nav' => 'Navigation',
         'common' => 'Shared site text',
     ],
+    'content_empty_placeholder' => 'Empty — this text is not shown on the site',
+    'content_reset' => 'Restore the shipped wording',
 ];

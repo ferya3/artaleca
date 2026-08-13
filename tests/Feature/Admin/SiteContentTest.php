@@ -70,27 +70,38 @@ class SiteContentTest extends TestCase
         $this->assertSame([], SiteContent::keys('validation'), 'validation is deliberately not editable here.');
     }
 
+    /**
+     * Each language renders what was written for it.
+     *
+     * All three are posted because that is what the form does — it arrives
+     * prefilled with the current text, so every language comes back on save
+     * whether or not it was touched.
+     */
     public function test_an_override_reaches_the_page_in_the_language_it_was_written_for(): void
     {
         $this->actingAs($this->admin())->put('/admin/content/home', [
-            'intro_title' => ['fa' => 'عنوان تازه', 'en' => 'A fresh heading'],
+            'intro_title' => [
+                'fa' => 'عنوان تازه',
+                'en' => 'A fresh heading',
+                'ar' => __('home.intro_title', [], 'ar'),
+            ],
         ])->assertRedirect();
 
         $this->get('/fa')->assertOk()->assertSee('عنوان تازه');
         $this->get('/en')->assertOk()->assertSee('A fresh heading');
-
-        // Arabic was left empty, so it still renders the shipped text.
         $this->get('/ar')->assertOk()->assertSee(__('home.intro_title', [], 'ar'));
     }
 
     /**
-     * Clearing a field restores the shipped text.
+     * Clearing a field removes the text from the page.
      *
-     * An empty box is "no override", not "an empty string" — storing `''` would
-     * blank the heading on the page, which is the opposite of what clearing a
-     * field looks like it should do.
+     * It used to put the shipped wording back, which read as the save having
+     * failed — the editor deleted a sentence, saved, and watched it return. The
+     * form is prefilled with what the page renders, so an empty box is a
+     * deliberate "remove this", and the resolver tells "no entry" apart from
+     * "an entry that is empty".
      */
-    public function test_clearing_a_field_restores_the_shipped_text(): void
+    public function test_clearing_a_field_removes_the_text_from_the_page(): void
     {
         $admin = $this->admin();
 
@@ -99,8 +110,50 @@ class SiteContentTest extends TestCase
 
         $this->actingAs($admin)->put('/admin/content/home', ['intro_title' => ['fa' => '']]);
 
-        $this->assertNull(Setting::get('content.home.intro_title'));
-        $this->get('/fa')->assertOk()->assertSee(__('home.intro_title', [], 'fa'))->assertDontSee('عنوان تازه');
+        $this->get('/fa')
+            ->assertOk()
+            ->assertDontSee('عنوان تازه')
+            ->assertDontSee(__('home.intro_title', [], 'fa'));
+    }
+
+    /** Reset is the way back, and the only one once a field has been saved. */
+    public function test_reset_restores_the_shipped_wording(): void
+    {
+        $admin = $this->admin();
+        $field = 'intro_title';
+
+        $this->actingAs($admin)->put('/admin/content/home', [$field => ['fa' => '']]);
+        $this->get('/fa')->assertDontSee(__('home.intro_title', [], 'fa'));
+
+        $this->actingAs($admin)->put('/admin/content/home', [
+            $field => ['fa' => ''],
+            'reset' => [$field => '1'],
+        ]);
+
+        $this->assertNull(Setting::get('content.home.'.$field));
+        $this->get('/fa')->assertOk()->assertSee(__('home.intro_title', [], 'fa'));
+    }
+
+    /**
+     * A language left alone keeps rendering its own shipped text rather than
+     * being blanked along with the one that was edited.
+     */
+    public function test_editing_one_language_does_not_blank_the_others(): void
+    {
+        $this->actingAs($this->admin())->put('/admin/content/home', [
+            'intro_title' => ['fa' => 'عنوان تازه', 'en' => 'A fresh heading', 'ar' => __('home.intro_title', [], 'ar')],
+        ]);
+
+        $this->get('/ar')->assertOk()->assertSee(__('home.intro_title', [], 'ar'));
+    }
+
+    /** The form arrives holding the text the site is rendering right now. */
+    public function test_the_form_is_prefilled_with_what_the_page_shows(): void
+    {
+        $html = $this->actingAs($this->admin())->get('/admin/content/home')->assertOk()->getContent();
+
+        $this->assertStringContainsString(e(__('home.intro_title', [], 'fa')), $html);
+        $this->assertStringContainsString('reset[intro_title]', $html);
     }
 
     /** Placeholders have to survive an override, or `:count` reaches the page. */

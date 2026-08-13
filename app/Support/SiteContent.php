@@ -88,10 +88,35 @@ final class SiteContent
          * text, where the fallback has to be the shipped Arabic translation.
          */
         $stored = Setting::map()['content.'.$key] ?? null;
-        $override = is_array($stored) ? ($stored[Locales::current()] ?? null) : $stored;
+        $locale = Locales::current();
 
-        if (! is_string($override) || $override === '') {
+        /*
+         * Three states, and the difference between the last two is the whole
+         * point of reading the key's *presence* rather than its truthiness:
+         *
+         *  - no entry for this language  → the shipped translation
+         *  - an entry with text          → that text
+         *  - an entry that is empty      → nothing, deliberately
+         *
+         * The third used to fall back to the shipped text, which meant a field
+         * an editor cleared came back on the page a moment later. Clearing a
+         * box has to remove the text; putting the default back is what the
+         * reset control is for.
+         */
+        if (! is_array($stored)) {
+            $override = $stored;
+        } elseif (array_key_exists($locale, $stored)) {
+            $override = $stored[$locale];
+        } else {
             return (string) __($key, $replace);
+        }
+
+        if (! is_string($override)) {
+            return (string) __($key, $replace);
+        }
+
+        if ($override === '') {
+            return '';
         }
 
         // `__()` does the placeholder substitution for the file; an override has

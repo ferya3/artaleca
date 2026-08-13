@@ -74,25 +74,45 @@ class SiteContentController extends Controller
         foreach (array_keys($keys) as $key) {
             $field = str_replace('.', '|', $key);
 
+            $rules['reset.'.$field] = ['nullable', 'boolean'];
+
             foreach (Locales::codes() as $locale) {
                 $rules[$field.'.'.$locale] = ['nullable', 'string', 'max:5000'];
             }
         }
 
         $validated = $request->validate($rules);
+        $reset = $request->input('reset', []);
 
         foreach (array_keys($keys) as $key) {
             $field = str_replace('.', '|', $key);
 
             /*
-             * An empty box is not an empty string, it is "no override" — the
-             * translation file takes over again. Storing it as `''` would blank
-             * the text on the page instead of restoring it, which is the
-             * opposite of what clearing a field looks like it should do.
+             * What is in the box is what is on the page — including nothing.
+             *
+             * The form arrives prefilled with the text each field currently
+             * renders, so an empty box is a deliberate "remove this", not an
+             * untouched field. Every language is written, empty ones included,
+             * because the resolver distinguishes "no entry" from "an entry that
+             * is empty" and only the second hides the text.
+             *
+             * Ticking reset deletes the override instead, which is the only way
+             * back to the shipped translation once a field has been saved.
              */
-            $value = array_filter($validated[$field] ?? [], 'filled');
+            if (filled($reset[$field] ?? null)) {
+                Setting::put('content.'.$group.'.'.$key, null, 'content');
 
-            Setting::put('content.'.$group.'.'.$key, $value === [] ? null : $value, 'content');
+                continue;
+            }
+
+            $submitted = $validated[$field] ?? [];
+            $value = [];
+
+            foreach (Locales::codes() as $locale) {
+                $value[$locale] = (string) ($submitted[$locale] ?? '');
+            }
+
+            Setting::put('content.'.$group.'.'.$key, $value, 'content');
         }
 
         // Navigation labels are among the strings here, and they are cached.
