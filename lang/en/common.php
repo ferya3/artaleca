@@ -15,7 +15,6 @@ return [
     'filter' => 'Filter',
     'clear_filters' => 'Clear filters',
     'sort' => 'Sort',
-    'results' => 'results',
     'no_results' => 'Nothing found.',
     'loading' => 'Loading…',
     'optional' => 'optional',

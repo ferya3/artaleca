@@ -15,7 +15,6 @@ return [
     'filter' => 'تصفية',
     'clear_filters' => 'إزالة عوامل التصفية',
     'sort' => 'ترتيب',
-    'results' => 'نتيجة',
     'no_results' => 'لا توجد نتائج.',
     'loading' => 'جارٍ التحميل…',
     'optional' => 'اختياري',

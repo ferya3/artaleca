@@ -41,6 +41,8 @@ return [
     'ask_engineer' => 'Ask a technical question',
     'catalogue_intro' => 'Arta Leca expanded clay aggregate is produced in standard graded fractions. Match the grain size and bulk density your specification calls for against the table below.',
     'empty' => 'No grade matches these criteria. Adjust the filters or talk to our technical desk.',
+    'grades_title' => 'Grades produced by Arta Leca',
+    'clay_section_title' => 'Products and services of Arta Leca Ardabil',
     'clay_title' => 'Bulk clay supply',
     'clay_body' => 'Arta Leca Ardabil extracts and sells clay in bulk, supplying the raw material to manufacturers, workshops and industrial operations. Supply terms, order volume and delivery are arranged around what the customer needs.',
     'clay_contact' => 'For the clay type, product specification, available stock and terms of sale, contact the commercial desk.',

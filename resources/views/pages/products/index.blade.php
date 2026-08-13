@@ -23,34 +23,36 @@
         without the others moving.
     --}}
     <section class="py-section">
-        <div class="container-page space-y-12 md:space-y-16">
-            <div class="max-w-3xl">
-                <h2 class="text-2xl font-bold text-ink-950 md:text-3xl">{{ content('product.clay_title') }}</h2>
-                <p class="mt-5 text-base leading-relaxed text-ink-600">{{ content('product.clay_body') }}</p>
-                <p class="mt-4 text-base leading-relaxed text-ink-600">{{ content('product.clay_contact') }}</p>
+        <div class="container-page">
+            <h2 class="max-w-3xl text-2xl font-bold text-ink-950 md:text-3xl">
+                {{ content('product.clay_section_title') }}
+            </h2>
 
-                <x-button :href="route('contact')" variant="outline" class="mt-8">
-                    {{ content('nav.contact') }}
-                </x-button>
-            </div>
+            <div class="mt-10 space-y-12 md:mt-12 md:space-y-16">
+                <div class="max-w-3xl">
+                    <h3 class="text-xl font-bold text-ink-950 md:text-2xl">{{ content('product.clay_title') }}</h3>
+                    <p class="mt-5 text-base leading-relaxed text-ink-600">{{ content('product.clay_body') }}</p>
+                    <p class="mt-4 text-base leading-relaxed text-ink-600">{{ content('product.clay_contact') }}</p>
+                </div>
 
-            <div class="max-w-3xl">
-                <h2 class="text-2xl font-bold text-ink-950 md:text-3xl">{{ content('product.clay_industries_title') }}</h2>
-                <p class="mt-5 text-base leading-relaxed text-ink-600">{{ content('product.clay_industries_body') }}</p>
-                <p class="mt-4 text-base leading-relaxed text-ink-600">{{ content('product.clay_industries_lead') }}</p>
+                <div class="max-w-3xl">
+                    <h3 class="text-xl font-bold text-ink-950 md:text-2xl">{{ content('product.clay_industries_title') }}</h3>
+                    <p class="mt-5 text-base leading-relaxed text-ink-600">{{ content('product.clay_industries_body') }}</p>
+                    <p class="mt-4 text-base leading-relaxed text-ink-600">{{ content('product.clay_industries_lead') }}</p>
 
-                <ul class="mt-5 space-y-3">
-                    @foreach (['brick', 'tile', 'materials', 'mineral', 'technical'] as $use)
-                        <li class="flex gap-3">
-                            <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-600" aria-hidden="true"></span>
-                            <span class="text-base leading-relaxed text-ink-600">
-                                {{ content('product.clay_uses.'.$use) }}
-                            </span>
-                        </li>
-                    @endforeach
-                </ul>
+                    <ul class="mt-5 space-y-3">
+                        @foreach (['brick', 'tile', 'materials', 'mineral', 'technical'] as $use)
+                            <li class="flex gap-3">
+                                <span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-brand-600" aria-hidden="true"></span>
+                                <span class="text-base leading-relaxed text-ink-600">
+                                    {{ content('product.clay_uses.'.$use) }}
+                                </span>
+                            </li>
+                        @endforeach
+                    </ul>
 
-                <p class="mt-6 text-base leading-relaxed text-ink-600">{{ content('product.clay_industries_note') }}</p>
+                    <p class="mt-6 text-base leading-relaxed text-ink-600">{{ content('product.clay_industries_note') }}</p>
+                </div>
             </div>
         </div>
     </section>
@@ -71,9 +73,9 @@
                     :action-label="content('nav.all_products')"
                 />
             @else
-                <p class="tabular mb-6 text-xs text-ink-500">
-                    <span class="ltr-run">{{ number_format($products->total()) }}</span> {{ content('common.results') }}
-                </p>
+                <h2 class="mb-8 max-w-3xl text-2xl font-bold text-ink-950 md:mb-10 md:text-3xl">
+                    {{ content('product.grades_title') }}
+                </h2>
 
                 <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     @foreach ($products as $product)

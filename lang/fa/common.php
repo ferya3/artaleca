@@ -15,7 +15,6 @@ return [
     'filter' => 'فیلتر',
     'clear_filters' => 'حذف فیلترها',
     'sort' => 'مرتب‌سازی',
-    'results' => 'نتیجه',
     'no_results' => 'موردی یافت نشد.',
     'loading' => 'در حال بارگذاری…',
     'optional' => 'اختیاری',
