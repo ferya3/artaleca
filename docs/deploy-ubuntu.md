@@ -33,19 +33,31 @@ sudo apt install -y nodejs
 
 ```bash
 sudo mkdir -p /var/www/artaleca && sudo chown -R "$USER":www-data /var/www/artaleca
-git clone <repo> /var/www/artaleca && cd /var/www/artaleca
+git clone -b claude/industrial-company-website-6vty0h \
+    https://github.com/ferya3/artaleca.git /var/www/artaleca && cd /var/www/artaleca
 
 composer install --no-dev --optimize-autoloader
 npm ci && npm run build
 
 cp .env.example .env
 php artisan key:generate
-# set DB_CONNECTION=mysql and the DB_* credentials, APP_ENV=production,
-# APP_DEBUG=false, APP_URL=https://your-domain
+# APP_URL=https://your-domain, and the DB_* credentials if not using SQLite.
 php artisan migrate --force --seed
 php artisan storage:link
 php artisan optimize
 ```
+
+**`APP_ENV` is not a cosmetic choice.** In `production` the app forces every
+generated URL to `https`, which is right behind TLS and breaks the site
+outright on a server still being set up over plain HTTP — every link and asset
+points at a scheme that is not answering yet. Serve over HTTPS and set
+`APP_ENV=production`; until the certificate is in place leave it `local` and
+set `APP_DEBUG=false` by hand, which is the part that actually matters for not
+leaking stack traces.
+
+`php artisan --version` will tell you which PHP is in use. A current Ubuntu
+installs 8.4 rather than the 8.3 named above; the package names change with it
+and nothing else does.
 
 Ownership: the web server needs to write to exactly two trees, and nothing else.
 
@@ -229,7 +241,51 @@ there is, because everything looks deployed.
 
 ---
 
-## 6. Putting assets on a CDN
+## 6. Moving to another server
+
+The repository is the whole application and none of the content. Three things
+live outside it, and a server move loses all three unless they are carried
+across deliberately:
+
+| What | Where | Why it is not in git |
+|:-----|:------|:---------------------|
+| Uploaded images | `storage/app/public/` | Ignored on purpose — binaries do not belong in a repository, and they change without a deploy |
+| The database | `database/database.sqlite`, or MySQL | Products, projects, settings, edited copy, and every enquiry received |
+| `.env` | project root | Holds `APP_KEY` and the credentials, and must never be committed |
+
+On the **old** server:
+
+```bash
+cd /var/www/artaleca
+php artisan down
+tar czf ~/artaleca-content.tar.gz storage/app/public database/database.sqlite .env
+php artisan up
+```
+
+(Using MySQL instead? Swap the sqlite file for
+`mysqldump -u USER -p artaleca > db.sql` and add that to the archive.)
+
+Copy the archive across, install as in sections 1–4, then on the **new** server:
+
+```bash
+cd /var/www/artaleca
+tar xzf ~/artaleca-content.tar.gz
+php artisan migrate --force        # applies anything newer than the dump
+php artisan storage:link
+php artisan optimize
+sudo chown -R www-data:www-data storage bootstrap/cache database
+```
+
+Do **not** run `--seed` on a restored database: the seeders create the
+demonstration catalogue and would put it back alongside the real one.
+
+Keep the `.env` from the old server rather than generating a new key. A fresh
+`APP_KEY` signs out every admin session and invalidates the timing token that
+the public forms carry, so anyone mid-form gets an error they cannot explain.
+
+---
+
+## 7. Putting assets on a CDN
 
 Set `ASSET_URL=https://cdn.example.com` and point the CDN at the origin. The
 CSP picks the origin up automatically — see `SecurityHeaders::origin()` — so no
@@ -238,7 +294,7 @@ or a gzip-capable client can be served a response cached for one that was not.
 
 ---
 
-## 7. Verifying it actually worked
+## 8. Verifying it actually worked
 
 Do not take the config on trust; the whole point of pinning these is that they
 are checkable:
