@@ -129,39 +129,33 @@ class ThemeTest extends TestCase
     }
 
     /**
-     * The toggle hands focus back after a pointer click.
+     * A pointer click inside the header releases focus, so the bar can hide.
      *
-     * The header reveals itself for anything focused inside it, so a mouse
-     * click left the bar pinned open at the top of the page where it should
-     * hide. Every other control up there navigates away; the toggle is the
-     * first one that stays, which is why nothing had hit this before.
+     * The header reveals itself for anything focused inside it — an escape
+     * hatch for a keyboard user tabbing in. A tap leaves focus behind as well,
+     * and the bar then stayed pinned open at the top of the page for the rest
+     * of the visit: `data-revealed` came off correctly and the CSS still would
+     * not hide it, because the rule is `:not(:focus-within)`. It happened once
+     * with the theme toggle and again with the menu button, so it is handled
+     * once for the whole header.
      *
-     * There is no JavaScript runner in this project, so this asserts the guard
-     * is present in the shipped bundle rather than the behaviour itself — it
-     * catches the line being removed, which is the regression that happened,
-     * and the interaction is verified in a browser. `event.detail` is the part
-     * that matters: unconditional blurring would take the header away from a
-     * keyboard user mid-tab.
+     * Asserted in the inline head script rather than the bundle, which is
+     * where it lives: the reveal logic deliberately does not wait for
+     * JavaScript to arrive. There is no JavaScript runner here, so this catches
+     * the guard being removed — the regression that actually happened — while
+     * the interaction itself is verified in a browser.
+     *
+     * `event.detail` is the part that matters: blurring unconditionally would
+     * take the header away from a keyboard user in the middle of using it.
      */
-    public function test_the_toggle_releases_pointer_focus_so_the_header_can_hide(): void
+    public function test_a_pointer_click_in_the_header_releases_focus(): void
     {
-        $files = glob(public_path('build/assets/app-*.js'));
+        $head = strstr($this->get('/fa')->assertOk()->getContent(), '</head>', true);
 
-        $this->assertNotEmpty($files, 'No built bundle — run `npm run build`.');
-
-        $js = (string) file_get_contents($files[0]);
-
-        $this->assertMatchesRegularExpression(
-            '/detail\s*>\s*0/',
-            $js,
-            'The blur must be conditional, or a keyboard user loses the header while using it.',
-        );
-
-        $this->assertMatchesRegularExpression(
-            '/\.blur\(\)/',
-            $js,
-            'Without this the header stays pinned open after the theme is switched with a mouse.',
-        );
+        $this->assertIsString($head);
+        $this->assertStringContainsString('event.detail === 0', $head);
+        $this->assertStringContainsString('active.blur()', $head);
+        $this->assertStringContainsString('h.contains(event.target)', $head);
     }
 
     /**

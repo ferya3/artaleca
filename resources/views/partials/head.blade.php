@@ -151,6 +151,45 @@
             }, { passive: true });
 
             /*
+             * Release focus after a pointer click inside the bar.
+             *
+             * The header reveals itself for anything focused inside it, so a
+             * keyboard user tabbing in never lands on a hidden control. A tap
+             * also leaves focus behind — on the menu button, on the theme
+             * toggle — and the bar then stayed pinned open at the top of the
+             * page for the rest of the visit. Opening and closing the menu was
+             * the loudest version: `data-revealed` came off correctly and the
+             * CSS still would not hide it, because the rule is
+             * `:not(:focus-within)`.
+             *
+             * Handled here, once, for the whole header rather than per control:
+             * this is the second time the same shape of bug appeared, and the
+             * next control added to that bar would have been the third.
+             *
+             * `event.detail` is the click count for a pointer and 0 for a
+             * keyboard activation, which is exactly the distinction needed —
+             * the keyboard user keeps both focus and header, the tap does not.
+             * Deferred a frame so the click's own default action, opening the
+             * <details>, happens first.
+             */
+            addEventListener('click', function (event) {
+                if (event.detail === 0) return;
+
+                var h = header();
+                if (!h || !h.contains(event.target)) return;
+
+                requestAnimationFrame(function () {
+                    var active = document.activeElement;
+
+                    if (active && active !== document.body && h.contains(active) && active.blur) {
+                        active.blur();
+                    }
+
+                    update();
+                });
+            });
+
+            /*
              * Switching language keeps your place. A language link is clicked
              * from inside the header, so landing at the top of the new page
              * would put the fixed bar over content the visitor never asked to
