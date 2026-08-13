@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Faq;
-use Illuminate\Validation\Rule;
 
 class FaqController extends ResourceController
 {
@@ -33,7 +32,6 @@ class FaqController extends ResourceController
     {
         return [
             'question' => __('admin.faqs'),
-            'group' => content('product.filter_by_category'),
             'position' => __('admin.position'),
             'is_active' => __('admin.status'),
         ];
@@ -47,10 +45,6 @@ class FaqController extends ResourceController
 
             ['name' => 'answer', 'label' => __('admin.fields.description'), 'type' => 'textarea', 'translatable' => true,
                 'rows' => 6, 'rules' => ['required', 'string', 'max:4000']],
-
-            ['name' => 'group', 'label' => content('product.filter_by_category'), 'type' => 'select', 'width' => 'half',
-                'options' => fn () => collect(Faq::GROUPS)->mapWithKeys(fn ($g) => [$g => __('faq.groups.'.$g)])->all(),
-                'rules' => ['required', Rule::in(Faq::GROUPS)]],
 
             ['name' => 'position', 'label' => __('admin.position'), 'type' => 'number', 'width' => 'half',
                 'rules' => ['nullable', 'integer', 'min:0', 'max:9999']],

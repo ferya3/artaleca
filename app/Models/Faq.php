@@ -6,21 +6,26 @@ namespace App\Models;
 
 use App\Concerns\HasTranslations;
 use App\Concerns\Publishable;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * One flat list, in the order the editor puts it in.
+ *
+ * It used to be filed under four fixed groups. Nobody outside the plant knows
+ * which bucket a question belongs in, and a reader looking for an answer reads
+ * down the page rather than picking a category first — so the groups went and
+ * `position` is now the only thing that arranges the page.
+ */
 class Faq extends Model
 {
     use HasFactory;
     use HasTranslations;
     use Publishable;
 
-    public const GROUPS = ['general', 'technical', 'ordering', 'export'];
-
     protected array $translatable = ['question', 'answer'];
 
-    protected $fillable = ['question', 'answer', 'group', 'position', 'is_active'];
+    protected $fillable = ['question', 'answer', 'position', 'is_active'];
 
     protected function casts(): array
     {
@@ -30,11 +35,6 @@ class Faq extends Model
             'position' => 'integer',
             'is_active' => 'boolean',
         ];
-    }
-
-    public function scopeOfGroup(Builder $query, ?string $group): Builder
-    {
-        return blank($group) ? $query : $query->where('group', $group);
     }
 
     public function getRouteKeyName(): string

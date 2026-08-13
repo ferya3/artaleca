@@ -22,8 +22,6 @@ class FaqController extends Controller
             ]))
             ->schema(Schema::faqPage($faqs));
 
-        return view('pages.faq', [
-            'groups' => $faqs->groupBy('group'),
-        ]);
+        return view('pages.faq', ['faqs' => $faqs]);
     }
 }

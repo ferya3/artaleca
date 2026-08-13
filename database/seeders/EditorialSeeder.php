@@ -6,7 +6,6 @@ namespace Database\Seeders;
 
 use App\Models\Certificate;
 use App\Models\Download;
-use App\Models\Faq;
 use App\Models\Post;
 use Database\Seeders\Concerns\Translates;
 use Illuminate\Database\Seeder;
@@ -20,7 +19,6 @@ class EditorialSeeder extends Seeder
         $this->posts();
         $this->downloads();
         $this->certificates();
-        $this->faqs();
     }
 
     private function posts(): void
@@ -256,111 +254,6 @@ class EditorialSeeder extends Seeder
             Certificate::updateOrCreate(
                 ['reference' => $certificate['reference']],
                 [...$certificate, 'position' => $index + 1, 'is_active' => true],
-            );
-        }
-    }
-
-    private function faqs(): void
-    {
-        $faqs = [
-            [
-                'group' => 'general',
-                'question' => $this->t('لیکا دقیقاً چیست؟', 'What exactly is LECA?', 'ما هي ليكا بالضبط؟'),
-                'answer' => $this->t(
-                    'سبکدانه رسی منبسط‌شده: گرانول رس که در کوره دوار تا حدود ۱٬۲۰۰ درجه سانتی‌گراد پخته می‌شود. گازهای آزادشده در این دما ساختار سلولی بسته‌ای می‌سازند و دانه تا چند برابر حجم اولیه منبسط می‌شود. محصول نهایی صد در صد معدنی، سبک و متخلخل است.',
-                    'Lightweight expanded clay aggregate: clay granules fired in a rotary kiln to about 1,200 °C. Gases released at that temperature create a closed cellular structure and the granule expands to several times its original volume. The result is a fully mineral, light, porous aggregate.',
-                    'ركام الطين الممدد خفيف الوزن: حبيبات طين تُحرق في فرن دوّار حتى نحو ١٬٢٠٠ درجة مئوية. وتكوّن الغازات المنطلقة عند هذه الحرارة بنية خلوية مغلقة فتتمدد الحبيبة إلى أضعاف حجمها الأصلي. والناتج ركام معدني بالكامل، خفيف ومسامي.',
-                ),
-            ],
-            [
-                'group' => 'technical',
-                'question' => $this->t('چه گریدی برای بتن سبک سازه‌ای مناسب است؟', 'Which grade suits structural lightweight concrete?', 'أي درجة تناسب الخرسانة الإنشائية خفيفة الوزن؟'),
-                'answer' => $this->t(
-                    'گرید ۴ تا ۱۰ میلی‌متر معمولاً بهترین تعادل میان کاهش وزن و مقاومت فشاری دانه را می‌دهد. برای رده‌های مقاومتی بالای ۳۰ مگاپاسکال، ترکیب آن با ریزدانه ۰–۳ توصیه می‌شود.',
-                    'The 4–10 mm fraction usually gives the best balance between weight reduction and crushing resistance. Above the 30 MPa strength class we recommend blending it with the 0–3 mm fine fraction.',
-                    'يعطي المقاس ٤–١٠ مم عادةً أفضل توازن بين خفض الوزن ومقاومة التكسير. وفوق فئة المقاومة ٣٠ ميجاباسكال نوصي بمزجه مع المقاس الناعم ٠–٣ مم.',
-                ),
-            ],
-            [
-                'group' => 'technical',
-                'question' => $this->t('آیا سبکدانه باید پیش از اختلاط اشباع شود؟', 'Does the aggregate need pre-soaking before batching?', 'هل يحتاج الركام إلى نقع مسبق قبل الخلط؟'),
-                'answer' => $this->t(
-                    'بله. دانه خشک بخشی از آب اختلاط را جذب می‌کند و اسلامپ در حین حمل افت می‌کند. پیش‌اشباع حدود ۳۰ دقیقه، این نوسان را حذف می‌کند و کارایی مخلوط را در طول مسیر پمپاژ ثابت نگه می‌دارد.',
-                    'Yes. Dry aggregate takes up part of the mixing water and slump falls in transit. A pre-soak of about 30 minutes removes that drift and keeps workability constant along the pump line.',
-                    'نعم. يمتص الركام الجاف جزءاً من ماء الخلط فينخفض الهبوط أثناء النقل. ويزيل نقع مسبق نحو ٣٠ دقيقة هذا الانحراف ويحافظ على قابلية التشغيل على طول خط الضخ.',
-                ),
-            ],
-            [
-                'group' => 'technical',
-                'question' => $this->t('رفتار لیکا در برابر آتش چگونه است؟', 'How does LECA behave in a fire?', 'كيف يتصرف الطين الممدد في الحريق؟'),
-                'answer' => $this->t(
-                    'کاملاً معدنی و غیرقابل اشتعال است (رده واکنش در برابر آتش A1). چون خود دانه در دمای حدود ۱٬۲۰۰ درجه پخته شده، تا حدود ۱٬۱۵۰ درجه سانتی‌گراد پایدار می‌ماند و هیچ دود یا گاز سمی آزاد نمی‌کند.',
-                    'It is entirely mineral and non-combustible (Euroclass A1 reaction to fire). Because the granule was itself fired at around 1,200 °C, it stays stable to about 1,150 °C and releases no smoke or toxic gas.',
-                    'معدني بالكامل وغير قابل للاشتعال (تصنيف A1 لرد الفعل تجاه الحريق). ولأن الحبيبة نفسها حُرقت عند نحو ١٬٢٠٠ درجة، تبقى ثابتة حتى نحو ١٬١٥٠ درجة مئوية ولا تطلق دخاناً ولا غازات سامة.',
-                ),
-            ],
-            [
-                'group' => 'technical',
-                'question' => $this->t('آیا سبکدانه با گذر زمان افت می‌کند؟', 'Does the aggregate degrade over time?', 'هل يتدهور الركام مع الوقت؟'),
-                'answer' => $this->t(
-                    'خیر. ماده‌ای خنثی از نظر شیمیایی، مقاوم در برابر یخبندان، پوسیدگی، حشرات و جوندگان است. عمر مفید آن برابر با عمر سازه در نظر گرفته می‌شود.',
-                    'No. It is chemically inert and resistant to frost, rot, insects and rodents. Its service life is taken as equal to that of the structure.',
-                    'لا. فهو خامل كيميائياً ومقاوم للصقيع والتعفن والحشرات والقوارض. ويُعد عمره الافتراضي مساوياً لعمر المنشأ.',
-                ),
-            ],
-            [
-                'group' => 'ordering',
-                'question' => $this->t('حداقل مقدار سفارش چقدر است؟', 'What is the minimum order quantity?', 'ما هي الكمية الدنيا للطلب؟'),
-                'answer' => $this->t(
-                    'برای تحویل فله، حداقل یک کامیون (حدود ۶۰ متر مکعب). سفارش‌های کوچک‌تر به‌صورت بیگ‌بگ یک متر مکعبی یا کیسه ۵۰ لیتری قابل تأمین است.',
-                    'For bulk delivery, one truckload (about 60 m³). Smaller quantities are supplied in 1 m³ big bags or 50-litre sacks.',
-                    'للتوريد السائب، حمولة شاحنة واحدة (نحو ٦٠ م³). وتُورَّد الكميات الأصغر بأكياس كبيرة سعة م³ أو أكياس ٥٠ لتراً.',
-                ),
-            ],
-            [
-                'group' => 'ordering',
-                'question' => $this->t('گواهی آنالیز محموله چه زمانی صادر می‌شود؟', 'When is the certificate of analysis issued?', 'متى تصدر شهادة تحليل الحمولة؟'),
-                'answer' => $this->t(
-                    'هم‌زمان با بارگیری، بر اساس آزمون‌های همان بچ تولید. نمونه شاهد هر بچ به مدت شش ماه در آزمایشگاه کارخانه نگهداری می‌شود.',
-                    'At loading, based on the tests for that production batch. A retained sample of every batch is kept in the plant laboratory for six months.',
-                    'عند التحميل، استناداً إلى اختبارات دفعة الإنتاج نفسها. وتُحفظ عينة شاهدة من كل دفعة في مختبر المصنع لمدة ستة أشهر.',
-                ),
-            ],
-            [
-                'group' => 'ordering',
-                'question' => $this->t('چگونه حجم مورد نیاز پروژه را محاسبه کنم؟', 'How do I work out the volume my project needs?', 'كيف أحسب الكمية التي يحتاجها مشروعي؟'),
-                'answer' => $this->t(
-                    'برای شیب‌بندی و پرکردن، حجم هندسی به‌علاوه حدود ۵ درصد افت اجرایی. برای بتن، حجم سنگدانه از طرح اختلاط استخراج می‌شود. واحد فنی ما محاسبه را همراه با طرح اختلاط پیشنهادی ارائه می‌دهد.',
-                    'For screeds and fills, the geometric volume plus about 5% for placement losses. For concrete, the aggregate volume comes out of the mix design. Our technical desk will do the calculation and propose a mix design with it.',
-                    'لأعمال الميول والردم، الحجم الهندسي زائد نحو ٥٪ لفواقد التنفيذ. وللخرسانة، يُستخرج حجم الركام من تصميم الخلطة. ويقوم قسمنا الفني بالحساب ويقترح تصميم الخلطة معه.',
-                ),
-            ],
-            [
-                'group' => 'export',
-                'question' => $this->t('چه شرایط تحویلی برای صادرات ارائه می‌شود؟', 'What delivery terms do you offer for export?', 'ما شروط التسليم المتاحة للتصدير؟'),
-                'answer' => $this->t(
-                    'EXW از درب کارخانه، FOB بندرعباس، و CIF برای مقاصد خلیج فارس. برای عراق و آسیای میانه، حمل زمینی با شرایط DAP نیز قابل بررسی است.',
-                    'EXW at the plant, FOB Bandar Abbas, and CIF to Persian Gulf destinations. For Iraq and Central Asia we can also quote overland delivery on DAP terms.',
-                    'EXW من المصنع، وFOB بندر عباس، وCIF إلى موانئ الخليج. وللعراق وآسيا الوسطى يمكننا أيضاً تسعير النقل البري بشروط DAP.',
-                ),
-            ],
-            [
-                'group' => 'export',
-                'question' => $this->t('بسته‌بندی صادراتی چگونه است؟', 'How is export cargo packed?', 'كيف تُعبَّأ بضاعة التصدير؟'),
-                'answer' => $this->t(
-                    'بیگ‌بگ یک متر مکعبی با آستر ضدرطوبت برای حمل کانتینری، و بارگیری فله برای حمل کشتی. کیسه ۵۰ لیتری نیز برای بازار خرده‌فروشی موجود است.',
-                    '1 m³ big bags with a moisture barrier liner for container shipment, and bulk loading for vessel cargo. 50-litre sacks are available for the retail trade.',
-                    'أكياس كبيرة سعة م³ ببطانة مانعة للرطوبة للشحن بالحاويات، وتحميل سائب للشحن بالسفن. وتتوفر أكياس ٥٠ لتراً لتجارة التجزئة.',
-                ),
-            ],
-        ];
-
-        // FAQs have no slug, so group + position is the stable identity that
-        // keeps re-seeding idempotent instead of duplicating every entry.
-        foreach ($faqs as $index => $faq) {
-            Faq::updateOrCreate(
-                ['group' => $faq['group'], 'position' => $index + 1],
-                [...$faq, 'is_active' => true],
             );
         }
     }
