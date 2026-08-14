@@ -39,7 +39,7 @@ final class SiteContent
      */
     public const GROUPS = [
         'home', 'about', 'product', 'applications', 'projects', 'representatives',
-        'articles', 'downloads', 'gallery', 'partners', 'faq', 'contact', 'search',
+        'articles', 'downloads', 'gallery', 'partners', 'faq', 'contact', 'form', 'search',
         'legal', 'seo', 'nav', 'common',
     ];
 

@@ -280,11 +280,6 @@
      * spaces rather than letting the browser pull the letterforms apart, which
      * is what wrecks a connected script.
      *
-     * Safe to apply to every paragraph rather than to a chosen few: the last
-     * line of a justified block stays start-aligned, so a one-line label reads
-     * exactly as it did before. Anything that genuinely wants otherwise sets
-     * `text-center` or `text-end`, and a utility beats this layer.
-     *
      * `text-wrap: pretty` is dropped here: it and justification are two
      * different answers to the same question, and together the browser
      * rebalances lines that justification has already fitted.
@@ -294,6 +289,31 @@
     .prose-industrial li {
         text-align: justify;
         text-justify: inter-word;
+    }
+
+    /*
+     * ...but not where the lines are short by nature.
+     *
+     * Justification only reads as tidy when a paragraph runs several lines at a
+     * comfortable measure. Give it an address in a narrow column and it stretches
+     * "شهرک صنعتی محمودآباد" across the full width; give it a label and a value on
+     * one line and it pushes them to opposite edges, which is how a phone number
+     * ends up a hand's width from the word "تلفن" and impossible to scan.
+     *
+     * So: postal addresses, the footer columns, and anything explicitly marked
+     * set start-aligned instead. `.no-justify` is the opt-out for a block of
+     * short lines that is not an address — a list of contact rows, say.
+     */
+    address,
+    address p,
+    footer p,
+    footer address,
+    footer li,
+    .no-justify,
+    .no-justify p,
+    .no-justify li {
+        text-align: start;
+        text-justify: auto;
     }
 
     /*

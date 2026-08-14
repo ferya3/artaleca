@@ -189,6 +189,7 @@ return [
         'gallery' => 'Gallery',
         'partners' => 'Partners',
         'faq' => 'FAQ',
+        'form' => 'Forms',
         'contact' => 'Contact',
         'search' => 'Search',
         'legal' => 'Legal pages',
