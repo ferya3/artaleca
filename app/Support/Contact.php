@@ -4,58 +4,82 @@ declare(strict_types=1);
 
 namespace App\Support;
 
+use App\Models\Office;
 use App\Models\Setting;
+use Illuminate\Support\Collection;
 
 /**
- * Where the company is and how to reach it.
+ * How to reach the company, and where it is.
  *
- * These details started life in `config/site.php`, which meant the only way to
- * correct a phone number or move an office was to edit a file on the server and
- * deploy. They are settings now, and the config array is the fallback: nothing
- * had to be filled in for the site to keep working, and a field left blank in
- * the panel still shows the shipped value rather than an empty line.
+ * Two different kinds of fact, kept apart on purpose.
  *
- * Every reader goes through here rather than through `config('site.contact')`,
- * so the page, the footer and the structured data can never disagree about
- * which address is current.
+ * A *place* is a row in `offices`: an address, its own phone, its own opening
+ * hours. There can be any number of them — a sales office in Tehran, another in
+ * Ardabil, the plant — and adding one is a form in the panel rather than a
+ * deploy.
+ *
+ * A *desk* belongs to no building: the sales line, the export mailbox, the
+ * general address. Those stay settings, because duplicating them onto every
+ * office row is how three offices come to list three different sales numbers.
+ *
+ * Every template reads through this class rather than the config array or the
+ * model, so the contact page, the footer and the structured data cannot end up
+ * disagreeing about either kind.
  */
 final class Contact
 {
-    /** A plain, language-independent value: a phone number, an email address. */
+    /** Per-request memo: the footer and the page both want the same rows. */
+    private const OFFICES_KEY = 'contact.offices';
+
+    /** A desk: a way to reach the company that is not tied to an address. */
     public static function value(string $field): string
     {
         $stored = Setting::get('contact.'.$field);
 
         return filled($stored) && is_string($stored)
             ? $stored
-            : (string) (config('site.contact.'.self::CONFIG[$field]) ?? '');
+            : (string) (config('site.contact.'.(self::CONFIG[$field] ?? $field)) ?? '');
     }
 
-    /** A value written once per language: an address, the opening hours. */
-    public static function lines(string $field): string
+    /** A phone number as `tel:` wants it: no spaces. */
+    public static function tel(string $field): string
     {
-        $stored = Setting::get('contact.'.$field);
-
-        if (filled($stored) && is_string($stored)) {
-            return $stored;
-        }
-
-        $fallback = config('site.contact.'.self::CONFIG[$field]);
-
-        if (! is_array($fallback)) {
-            return (string) ($fallback ?? '');
-        }
-
-        return (string) ($fallback[Locales::current()] ?? $fallback[Locales::default()] ?? '');
+        return str_replace(' ', '', self::value($field));
     }
 
-    /** @return array{lat: string, lng: string} */
-    public static function geo(): array
+    /**
+     * Every published place, offices first and the plant last.
+     *
+     * @return Collection<int, Office>
+     */
+    public static function offices(): Collection
     {
-        return [
-            'lat' => self::value('plant_lat'),
-            'lng' => self::value('plant_lng'),
-        ];
+        if (! app()->bound(self::OFFICES_KEY)) {
+            app()->scoped(self::OFFICES_KEY, fn () => Office::query()
+                ->active()
+                ->forContactPage()
+                ->ordered()
+                ->get());
+        }
+
+        return app()->make(self::OFFICES_KEY);
+    }
+
+    /**
+     * The address that stands for the company — the first office, or failing
+     * that whatever place exists. This is what the footer prints and what goes
+     * into the Organization node.
+     */
+    public static function headOffice(): ?Office
+    {
+        return self::offices()->firstWhere('kind', Office::KIND_OFFICE)
+            ?? self::offices()->first();
+    }
+
+    /** The works. What LocalBusiness has to point at, if it is published. */
+    public static function plant(): ?Office
+    {
+        return self::offices()->firstWhere('kind', Office::KIND_PLANT);
     }
 
     /**
@@ -85,38 +109,23 @@ final class Contact
         return $links;
     }
 
-    /** A phone number as `tel:` wants it: no spaces. */
-    public static function tel(string $field): string
-    {
-        return str_replace(' ', '', self::value($field));
-    }
-
     /**
-     * Setting field → the path it falls back to under `config('site.contact')`.
+     * Desk field → the key it falls back to under `config('site.contact')`.
      *
-     * Kept explicit rather than derived: the setting names say what an editor
-     * is looking at ("plant_lines"), the config keys are nested the way the
-     * original array happened to be shaped, and neither should have to change
-     * to keep matching the other.
+     * The addresses that used to be listed here moved into the `offices` table;
+     * what remains is the handful of company-wide contact points, which are
+     * still worth a shipped default so a fresh install is never blank.
      */
     private const CONFIG = [
-        'phone' => 'phone',
-        'fax' => 'fax',
         'email' => 'email',
         'sales_phone' => 'sales_phone',
         'sales_email' => 'sales_email',
         'export_email' => 'export_email',
         'whatsapp' => 'whatsapp',
-        'hq_lines' => 'hq.lines',
-        'hq_postal_code' => 'hq.postal_code',
-        'plant_lines' => 'plant.lines',
-        'plant_lat' => 'plant.geo.lat',
-        'plant_lng' => 'plant.geo.lng',
-        'hours' => 'hours',
     ];
 
     /**
-     * Every field this class knows about, in the order the panel shows them.
+     * Every desk field, in the order the panel shows them.
      *
      * @return list<string>
      */
@@ -126,12 +135,12 @@ final class Contact
     }
 
     /**
-     * The shipped value behind each field: a string, or a map keyed by locale.
+     * The shipped value behind each desk field.
      *
      * The panel shows these as placeholders, so an empty box reads as "still
      * the value the site was built with" rather than as "nothing".
      *
-     * @return array<string, string|array<string, string>>
+     * @return array<string, string>
      */
     public static function defaults(): array
     {
@@ -140,8 +149,8 @@ final class Contact
         foreach (self::CONFIG as $field => $path) {
             $value = config('site.contact.'.$path);
 
-            if (is_array($value) || filled($value)) {
-                $defaults[$field] = is_array($value) ? $value : (string) $value;
+            if (filled($value)) {
+                $defaults[$field] = (string) $value;
             }
         }
 

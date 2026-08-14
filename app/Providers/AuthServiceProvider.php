@@ -10,6 +10,7 @@ use App\Models\ContactMessage;
 use App\Models\Download;
 use App\Models\Faq;
 use App\Models\GalleryImage;
+use App\Models\Office;
 use App\Models\Page;
 use App\Models\Partner;
 use App\Models\Post;
@@ -42,6 +43,7 @@ class AuthServiceProvider extends ServiceProvider
         Download::class => ContentPolicy::class,
         Certificate::class => ContentPolicy::class,
         Faq::class => ContentPolicy::class,
+        Office::class => ContentPolicy::class,
         Page::class => ContentPolicy::class,
         Partner::class => ContentPolicy::class,
         GalleryImage::class => ContentPolicy::class,

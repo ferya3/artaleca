@@ -11,6 +11,13 @@ return [
     'inactive' => 'This account has been deactivated.',
 
     'fields' => [
+        'office_name' => 'Office name',
+        'office_name_hint' => 'For example "Tehran sales office" or "Ardabil sales office". This heads the card on the contact page.',
+        'office_kind' => 'Kind',
+        'office_kind_hint' => 'Only one plant: it is the one the footer and Google present as the works.',
+        'office_address' => 'Address',
+        'office_position_hint' => 'A lower number comes first.',
+        'office_geo_hint' => 'Optional. Filled in, it adds a "find us on the map" link under the address.',
         'name' => 'Name',
         'tagline' => 'Tagline',
         'summary' => 'Summary',
@@ -53,6 +60,7 @@ return [
     'downloads' => 'Documents',
     'certificates' => 'Certificates',
     'faqs' => 'FAQs',
+    'offices' => 'Offices and plant',
     'redirects' => 'Redirects',
     'settings' => 'Settings',
     'users' => 'Users',
@@ -91,6 +99,11 @@ return [
         'media' => 'Site imagery',
         'seo' => 'SEO settings',
         'business' => 'Business details (LocalBusiness)',
+    ],
+
+    'office_kinds' => [
+        'office' => 'Office',
+        'plant' => 'Plant',
     ],
 
     'settings_all' => 'All settings',

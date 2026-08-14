@@ -1,6 +1,11 @@
 @php
     use App\Support\Contact;
     use App\Support\Navigation;
+
+    // The company's main address and the works, from the same list the contact
+    // page reads — so the footer can never fall behind an office that moved.
+    $head = Contact::headOffice();
+    $plant = Contact::plant();
 @endphp
 
 <footer class="bg-night-950 text-night-300">
@@ -44,22 +49,35 @@
             </nav>
         @endforeach
 
+        {{-- The main address and the works. Not every office: the footer sits
+             under every page and a list of six would bury the navigation above
+             it. The contact page is where they all are, and it is one link
+             away in the column beside this one. --}}
         <div class="lg:col-span-2">
-            <h2 class="eyebrow text-night-400!">{{ content('common.headquarters') }}</h2>
+            <h2 class="eyebrow text-night-400!">{{ $head?->name ?? content('common.headquarters') }}</h2>
             <address class="mt-4 space-y-3 text-sm not-italic leading-relaxed text-night-400">
-                <p>{{ Contact::lines('hq_lines') }}</p>
-                <p>
-                    <span class="block text-night-400">{{ content('common.phone') }}</span>
-                    <a class="ltr-run text-night-200 hover:text-white" href="tel:{{ Contact::tel('phone') }}">{{ Contact::value('phone') }}</a>
-                </p>
+                @if ($head)
+                    <p>{{ $head->address }}</p>
+
+                    @if (filled($head->phone))
+                        <p>
+                            <span class="block text-night-400">{{ content('common.phone') }}</span>
+                            <a class="ltr-run text-night-200 hover:text-white" href="tel:{{ $head->telephone() }}">{{ $head->phone }}</a>
+                        </p>
+                    @endif
+                @endif
+
                 <p>
                     <span class="block text-night-400">{{ content('common.email') }}</span>
                     <a class="ltr-run text-night-200 hover:text-white" href="mailto:{{ Contact::value('email') }}">{{ Contact::value('email') }}</a>
                 </p>
-                <p>
-                    <span class="block text-night-400">{{ content('common.plant') }}</span>
-                    {{ Contact::lines('plant_lines') }}
-                </p>
+
+                @if ($plant)
+                    <p>
+                        <span class="block text-night-400">{{ $plant->name }}</span>
+                        {{ $plant->address }}
+                    </p>
+                @endif
             </address>
         </div>
     </div>

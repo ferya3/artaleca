@@ -28,68 +28,84 @@
         <div class="container-page">
             <h2 class="text-xl font-bold text-ink-950 md:text-2xl">{{ content('contact.reach_us') }}</h2>
 
+            {{-- One card per place. The plant had two addresses fixed in a
+                 config file when it had two; adding an office is now a row in
+                 the panel, and this grid simply grows. --}}
             <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                @foreach ($offices as $office)
+                    <div class="panel flex h-full min-w-0 flex-col p-6">
+                        <h3 class="eyebrow mb-4">{{ $office->name }}</h3>
 
-                {{-- Head office --}}
-                <div class="panel h-full p-6">
-                    <h3 class="eyebrow mb-4">{{ content('common.headquarters') }}</h3>
+                        <address class="text-sm not-italic leading-relaxed text-ink-800">
+                            {{ $office->address }}
+                        </address>
 
-                    <address class="text-sm not-italic leading-relaxed text-ink-800">
-                        {{ Contact::lines('hq_lines') }}
-                    </address>
+                        <dl class="mt-5 space-y-4 text-sm">
+                            @if (filled($office->postal_code))
+                                <div>
+                                    <dt class="text-xs text-ink-500">{{ content('common.postal_code') }}</dt>
+                                    <dd class="ltr-run tabular mt-1 text-ink-900">{{ $office->postal_code }}</dd>
+                                </div>
+                            @endif
 
-                    <dl class="mt-5 space-y-4 text-sm">
-                        <div>
-                            <dt class="text-xs text-ink-500">{{ content('common.postal_code') }}</dt>
-                            <dd class="ltr-run tabular mt-1 text-ink-900">{{ Contact::value('hq_postal_code') }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-xs text-ink-500">{{ content('common.phone') }}</dt>
-                            <dd class="mt-1">
-                                <a class="ltr-run font-medium text-ink-900 hover:text-brand-600"
-                                   href="tel:{{ Contact::tel('phone') }}">{{ Contact::value('phone') }}</a>
-                            </dd>
-                        </div>
-                        <div>
-                            <dt class="text-xs text-ink-500">{{ content('common.fax') }}</dt>
-                            <dd class="ltr-run mt-1 text-ink-900">{{ Contact::value('fax') }}</dd>
-                        </div>
-                    </dl>
-                </div>
+                            @if (filled($office->phone))
+                                <div>
+                                    <dt class="text-xs text-ink-500">{{ content('common.phone') }}</dt>
+                                    <dd class="mt-1">
+                                        <a class="ltr-run font-medium text-ink-900 hover:text-brand-600"
+                                           href="tel:{{ $office->telephone() }}">{{ $office->phone }}</a>
+                                    </dd>
+                                </div>
+                            @endif
 
-                {{-- Plant --}}
-                <div class="panel flex h-full flex-col p-6">
-                    <h3 class="eyebrow mb-4">{{ content('common.plant') }}</h3>
+                            @if (filled($office->fax))
+                                <div>
+                                    <dt class="text-xs text-ink-500">{{ content('common.fax') }}</dt>
+                                    <dd class="ltr-run mt-1 text-ink-900">{{ $office->fax }}</dd>
+                                </div>
+                            @endif
 
-                    <address class="text-sm not-italic leading-relaxed text-ink-800">
-                        {{ Contact::lines('plant_lines') }}
-                    </address>
+                            @if (filled($office->email))
+                                <div>
+                                    <dt class="text-xs text-ink-500">{{ content('common.email') }}</dt>
+                                    <dd class="mt-1">
+                                        <a class="ltr-run text-ink-600 hover:text-brand-600"
+                                           href="mailto:{{ $office->email }}">{{ $office->email }}</a>
+                                    </dd>
+                                </div>
+                            @endif
 
-                    <dl class="mt-5 text-sm">
-                        <dt class="text-xs text-ink-500">{{ content('common.working_hours') }}</dt>
-                        <dd class="mt-1 text-ink-900">{{ Contact::lines('hours') }}</dd>
-                    </dl>
+                            @if (filled($office->hours))
+                                <div>
+                                    <dt class="text-xs text-ink-500">{{ content('common.working_hours') }}</dt>
+                                    <dd class="mt-1 text-ink-900">{{ $office->hours }}</dd>
+                                </div>
+                            @endif
+                        </dl>
 
-                    {{-- A static map link rather than an embedded iframe: no
-                         third-party script, no cookie, no CSP exception, and one
-                         fewer render-blocking request. --}}
-                    <a
-                        href="https://www.openstreetmap.org/?mlat={{ Contact::geo()['lat'] }}&mlon={{ Contact::geo()['lng'] }}#map=13/{{ Contact::geo()['lat'] }}/{{ Contact::geo()['lng'] }}"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="mt-6 flex items-center justify-between gap-4 rounded-md border border-hairline px-4 py-3 text-sm transition-colors hover:border-ink-400"
-                    >
-                        <span class="font-medium text-ink-900">{{ content('contact.find_us') }}</span>
-                        <span class="ltr-run tabular shrink-0 text-xs text-ink-500">
-                            {{ Contact::geo()['lat'] }}, {{ Contact::geo()['lng'] }}
-                        </span>
-                    </a>
-                </div>
+                        @if ($office->hasMap())
+                            {{-- A static map link rather than an embedded iframe: no
+                                 third-party script, no cookie, no CSP exception, and
+                                 one fewer render-blocking request. --}}
+                            <a
+                                href="{{ $office->mapUrl() }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="mt-6 flex items-center justify-between gap-4 rounded-md border border-hairline px-4 py-3 text-sm transition-colors hover:border-ink-400"
+                            >
+                                <span class="font-medium text-ink-900">{{ content('contact.find_us') }}</span>
+                                <span class="ltr-run tabular shrink-0 text-xs text-ink-500">
+                                    {{ $office->latitude }}, {{ $office->longitude }}
+                                </span>
+                            </a>
+                        @endif
+                    </div>
+                @endforeach
 
-                {{-- Desks. On a phone this is the card most visitors want, but
-                     it sits last because the two above answer "who are you and
-                     where" first — and it is one screen away, not five. --}}
-                <div class="panel h-full min-w-0 p-6 md:col-span-2 lg:col-span-1">
+                {{-- Desks. Not a place: one sales line and one export mailbox
+                     serve every office, so they get their own card rather than
+                     being repeated on each. --}}
+                <div class="panel h-full min-w-0 p-6">
                     <h3 class="eyebrow mb-4">{{ content('contact.desks') }}</h3>
 
                     <dl class="grid gap-5 text-sm sm:grid-cols-2 lg:grid-cols-1">

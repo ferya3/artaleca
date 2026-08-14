@@ -36,8 +36,8 @@ final class Schema
             'description' => content('seo.default_description'),
             'address' => [
                 '@type' => 'PostalAddress',
-                'streetAddress' => Contact::lines('hq_lines'),
-                'postalCode' => Contact::value('hq_postal_code'),
+                'streetAddress' => Contact::headOffice()?->address,
+                'postalCode' => Contact::headOffice()?->postal_code,
                 'addressCountry' => 'IR',
             ],
             'contactPoint' => [

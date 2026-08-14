@@ -54,6 +54,7 @@
         // Facts about the company, as opposed to content about it. The two
         // most-wanted areas are linked directly; the rest are one click on.
         $sections[__('admin.groups.company')] = [
+            ['route' => 'admin.offices.index', 'label' => __('admin.offices')],
             ['route' => 'admin.settings.edit', 'params' => 'contact', 'label' => __('admin.settings_groups.contact')],
             ['route' => 'admin.settings.edit', 'params' => 'figures', 'label' => __('admin.settings_groups.figures')],
             ['route' => 'admin.settings.index', 'label' => __('admin.settings_all')],

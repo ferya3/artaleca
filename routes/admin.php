@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DownloadController;
 use App\Http\Controllers\Admin\EnquiryController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\GalleryController;
+use App\Http\Controllers\Admin\OfficeController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\PostController;
@@ -63,6 +64,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             'downloads' => DownloadController::class,
             'certificates' => CertificateController::class,
             'faqs' => FaqController::class,
+            'offices' => OfficeController::class,
             'pages' => PageController::class,
             'partners' => PartnerController::class,
             'gallery' => GalleryController::class,

@@ -39,14 +39,6 @@ class SettingController extends Controller
         return [
             // ── Where the company is and how to reach it ────────────────
             'contact' => [
-                'contact.hq_lines' => ['label' => __('admin.settings_fields.hq_lines'), 'type' => 'textarea', 'max' => 300],
-                'contact.hq_postal_code' => ['label' => content('common.postal_code'), 'type' => 'text', 'max' => 20, 'translatable' => false],
-                'contact.plant_lines' => ['label' => __('admin.settings_fields.plant_lines'), 'type' => 'textarea', 'max' => 300],
-                'contact.plant_lat' => ['label' => __('admin.settings_fields.latitude'), 'type' => 'text', 'max' => 20, 'translatable' => false],
-                'contact.plant_lng' => ['label' => __('admin.settings_fields.longitude'), 'type' => 'text', 'max' => 20, 'translatable' => false],
-                'contact.hours' => ['label' => content('common.working_hours'), 'type' => 'text', 'max' => 120],
-                'contact.phone' => ['label' => __('admin.settings_fields.switchboard'), 'type' => 'text', 'max' => 40, 'translatable' => false],
-                'contact.fax' => ['label' => content('common.fax'), 'type' => 'text', 'max' => 40, 'translatable' => false],
                 'contact.email' => ['label' => __('admin.settings_fields.general_email'), 'type' => 'text', 'max' => 120, 'translatable' => false],
                 'contact.sales_phone' => ['label' => __('admin.settings_fields.sales_phone'), 'type' => 'text', 'max' => 40, 'translatable' => false],
                 'contact.sales_email' => ['label' => __('admin.settings_fields.sales_email'), 'type' => 'text', 'max' => 120, 'translatable' => false],

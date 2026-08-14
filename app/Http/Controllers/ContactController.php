@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Concerns\NotifiesSalesDesk;
 use App\Http\Requests\ContactRequest;
 use App\Models\ContactMessage;
+use App\Support\Contact;
 use App\Support\Locales;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -24,7 +25,7 @@ class ContactController extends Controller
                 ['label' => content('nav.contact'), 'url' => null],
             ]));
 
-        return view('pages.contact');
+        return view('pages.contact', ['offices' => Contact::offices()]);
     }
 
     public function store(ContactRequest $request): RedirectResponse
