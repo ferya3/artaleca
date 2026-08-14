@@ -355,39 +355,80 @@ across deliberately:
 
 | What | Where | Why it is not in git |
 |:-----|:------|:---------------------|
-| Uploaded images | `storage/app/public/` | Ignored on purpose — binaries do not belong in a repository, and they change without a deploy |
-| The database | `database/database.sqlite`, or MySQL | Products, projects, settings, edited copy, and every enquiry received |
+| Uploaded images | `storage/app/public/media/` | Ignored on purpose — binaries do not belong in a repository, and they change without a deploy |
+| Catalogues and datasheets | `storage/app/private/documents/` | Same, and these are deliberately outside the document root so an unpublished one stays unreachable |
+| The database | `database/database.sqlite`, or MySQL | Products, offices, projects, settings, edited copy, and every enquiry received |
 | `.env` | project root | Holds `APP_KEY` and the credentials, and must never be committed |
+
+Nothing in the database records a hostname: an uploaded image is stored as
+`/storage/media/…`, a path rather than a URL. So the content is portable as it
+stands, and the move is a file copy rather than a search-and-replace.
 
 On the **old** server:
 
 ```bash
-cd /var/www/artaleca
-php artisan down
-tar czf ~/artaleca-content.tar.gz storage/app/public database/database.sqlite .env
-php artisan up
+cd /var/www/artaleca && php artisan down \
+  && tar czf /root/artaleca-content.tar.gz storage/app database/database.sqlite* .env \
+  && php artisan up && ls -lh /root/artaleca-content.tar.gz
 ```
 
-(Using MySQL instead? Swap the sqlite file for
-`mysqldump -u USER -p artaleca > db.sql` and add that to the archive.)
+`storage/app`, not `storage/app/public`: the private documents tree sits beside
+it and is just as unrecoverable. `database.sqlite*` with the glob, because
+SQLite in WAL mode keeps recent writes in a `-wal` file next to the database —
+copy only the database and you silently lose the last few edits.
 
-Copy the archive across, install as in sections 1–4, then on the **new** server:
+(Using MySQL instead? Swap the sqlite files for
+`mysqldump -u USER -p --single-transaction artaleca > db.sql` and add `db.sql`
+to the archive.)
+
+Copy it across — from the **new** server, which avoids putting a private key on
+the old one:
 
 ```bash
-cd /var/www/artaleca
-tar xzf ~/artaleca-content.tar.gz
-php artisan migrate --force        # applies anything newer than the dump
-php artisan storage:link
-php artisan optimize
-sudo chown -R www-data:www-data storage bootstrap/cache database
+scp root@OLD-SERVER-IP:/root/artaleca-content.tar.gz /root/
 ```
 
-Do **not** run `--seed` on a restored database: the seeders create the
-demonstration catalogue and would put it back alongside the real one.
+Then install as in section 0 — **but stop before `migrate --force --seed`**, or
+run the whole thing and accept that the next step overwrites the demonstration
+data. On the **new** server:
 
-Keep the `.env` from the old server rather than generating a new key. A fresh
-`APP_KEY` signs out every admin session and invalidates the timing token that
-the public forms carry, so anyone mid-form gets an error they cannot explain.
+```bash
+cd /var/www/artaleca && php artisan down \
+  && tar xzf /root/artaleca-content.tar.gz \
+  && sed -i "s|^APP_URL=.*|APP_URL=http://NEW-IP-OR-DOMAIN|" .env \
+  && php artisan migrate --force \
+  && php artisan storage:link && php artisan optimize \
+  && chown -R www-data:www-data storage bootstrap/cache database \
+  && chmod -R 775 storage bootstrap/cache database && chmod 640 .env \
+  && php artisan up
+```
+
+Three things in there are worth knowing:
+
+- **`migrate --force`, never `--seed`.** The restored database already has the
+  real content. The seeders create the demonstration catalogue and would put it
+  back alongside it. `migrate` on its own is still needed: the archive may
+  predate a schema change in the repository.
+- **Keep the old `.env`, change only `APP_URL`.** A fresh `APP_KEY` signs out
+  every admin session and invalidates the timing token the public forms carry,
+  so anyone mid-form gets an error they cannot explain. `APP_URL` is the one
+  line that is about the server rather than about the application.
+- **`storage:link` after the restore.** The archive does not carry
+  `public/storage`, which is a symlink into `storage/app/public`; without it
+  every image 404s while the files sit right there on disk.
+
+Check it landed before pointing DNS at the new box:
+
+```bash
+cd /var/www/artaleca && php artisan tinker --execute='
+    printf("products %d | offices %d | images %d | enquiries %d\n",
+        App\Models\Product::count(), App\Models\Office::count(),
+        App\Models\GalleryImage::count(), App\Models\ContactMessage::count());'
+du -sh /var/www/artaleca/storage/app/public/media
+```
+
+The counts should match the old server, and the media directory should not be
+a few kilobytes.
 
 ---
 
