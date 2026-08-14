@@ -219,6 +219,20 @@ half-deploying:
 cd /var/www/artaleca && git config --global --add safe.directory /var/www/artaleca; git fetch origin claude/industrial-company-website-6vty0h && git reset --hard FETCH_HEAD && composer install --no-dev --optimize-autoloader && npm ci && npm run build && php artisan migrate --force && php artisan storage:link && php artisan optimize && sudo chown -R www-data:www-data storage bootstrap/cache public/build database && sudo systemctl reload "$(systemctl list-units --type=service --plain --no-legend 'php*-fpm.service' | awk '{print $1}')" nginx
 ```
 
+### As the `ubuntu` user
+
+The line above assumes a shell that can already write the tree. On a stock
+Ubuntu box you log in as `ubuntu` and the files belong to `www-data`, so the
+whole chain runs through `sudo` and hands ownership back at the end:
+
+```bash
+sudo -H bash -c 'cd /var/www/artaleca && git config --global --add safe.directory /var/www/artaleca; git fetch origin claude/industrial-company-website-6vty0h && git reset --hard FETCH_HEAD && composer install --no-dev --optimize-autoloader && npm ci && npm run build && php artisan migrate --force && php artisan storage:link && php artisan optimize && chown -R www-data:www-data storage bootstrap/cache public/build database && systemctl reload $(systemctl list-units --type=service --plain --no-legend "php*-fpm.service" | cut -d" " -f1) nginx'
+```
+
+`sudo -H` matters: without it `sudo` keeps `HOME=/home/ubuntu`, and the
+`safe.directory` exemption is then written to a file the root-owned `git`
+that follows will not read.
+
 Four things in there are not obvious:
 
 - **`git reset --hard`, not `git pull`.** A deploy target has no local work
