@@ -88,7 +88,7 @@ class PersianDigitsTest extends TestCase
         Setting::put('figures.annual_capacity_m3', 987654, 'figures', translatable: false);
 
         $this->actingAs($this->makeAdmin())
-            ->get('/admin/settings')
+            ->get('/admin/settings/figures')
             ->assertOk()
             ->assertSee('987654');
     }

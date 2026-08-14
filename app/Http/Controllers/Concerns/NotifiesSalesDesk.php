@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Concerns;
 
 use App\Mail\EnquiryReceived;
 use App\Models\ContactMessage;
+use App\Support\Contact;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -19,7 +20,7 @@ trait NotifiesSalesDesk
     protected function notifySalesDesk(ContactMessage $message): void
     {
         try {
-            Mail::to(config('site.contact.sales_email'))->send(new EnquiryReceived($message));
+            Mail::to(Contact::value('sales_email'))->send(new EnquiryReceived($message));
         } catch (\Throwable $e) {
             Log::error('Enquiry notification failed', [
                 'enquiry_id' => $message->id,

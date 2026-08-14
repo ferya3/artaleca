@@ -80,8 +80,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('enquiries/{enquiry}', [EnquiryController::class, 'update'])->name('enquiries.update');
         Route::delete('enquiries/{enquiry}', [EnquiryController::class, 'destroy'])->name('enquiries.destroy');
 
-        Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
-        Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
+        Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
+        Route::get('settings/{group}', [SettingController::class, 'edit'])->name('settings.edit');
+        Route::put('settings/{group}', [SettingController::class, 'update'])->name('settings.update');
 
         Route::get('content', [SiteContentController::class, 'index'])->name('content.index');
         Route::get('content/{group}', [SiteContentController::class, 'edit'])->name('content.edit');

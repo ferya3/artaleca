@@ -2,15 +2,10 @@
      slot Blade compiles the block into a closure body, where it is a syntax
      error. --}}
 @php
-    use App\Support\Locales;
+    use App\Support\Contact;
 @endphp
 
 <x-layouts.app>
-
-    @php
-        $contact = config('site.contact');
-        $locale = Locales::current();
-    @endphp
 
     <x-page-header
         :eyebrow="content('nav.contact')"
@@ -40,24 +35,24 @@
                     <h3 class="eyebrow mb-4">{{ content('common.headquarters') }}</h3>
 
                     <address class="text-sm not-italic leading-relaxed text-ink-800">
-                        {{ $contact['hq']['lines'][$locale] ?? $contact['hq']['lines']['en'] }}
+                        {{ Contact::lines('hq_lines') }}
                     </address>
 
                     <dl class="mt-5 space-y-4 text-sm">
                         <div>
                             <dt class="text-xs text-ink-500">{{ content('common.postal_code') }}</dt>
-                            <dd class="ltr-run tabular mt-1 text-ink-900">{{ $contact['hq']['postal_code'] }}</dd>
+                            <dd class="ltr-run tabular mt-1 text-ink-900">{{ Contact::value('hq_postal_code') }}</dd>
                         </div>
                         <div>
                             <dt class="text-xs text-ink-500">{{ content('common.phone') }}</dt>
                             <dd class="mt-1">
                                 <a class="ltr-run font-medium text-ink-900 hover:text-brand-600"
-                                   href="tel:{{ str_replace(' ', '', $contact['phone']) }}">{{ $contact['phone'] }}</a>
+                                   href="tel:{{ Contact::tel('phone') }}">{{ Contact::value('phone') }}</a>
                             </dd>
                         </div>
                         <div>
                             <dt class="text-xs text-ink-500">{{ content('common.fax') }}</dt>
-                            <dd class="ltr-run mt-1 text-ink-900">{{ $contact['fax'] }}</dd>
+                            <dd class="ltr-run mt-1 text-ink-900">{{ Contact::value('fax') }}</dd>
                         </div>
                     </dl>
                 </div>
@@ -67,26 +62,26 @@
                     <h3 class="eyebrow mb-4">{{ content('common.plant') }}</h3>
 
                     <address class="text-sm not-italic leading-relaxed text-ink-800">
-                        {{ $contact['plant']['lines'][$locale] ?? $contact['plant']['lines']['en'] }}
+                        {{ Contact::lines('plant_lines') }}
                     </address>
 
                     <dl class="mt-5 text-sm">
                         <dt class="text-xs text-ink-500">{{ content('common.working_hours') }}</dt>
-                        <dd class="mt-1 text-ink-900">{{ $contact['hours'][$locale] ?? $contact['hours']['en'] }}</dd>
+                        <dd class="mt-1 text-ink-900">{{ Contact::lines('hours') }}</dd>
                     </dl>
 
                     {{-- A static map link rather than an embedded iframe: no
                          third-party script, no cookie, no CSP exception, and one
                          fewer render-blocking request. --}}
                     <a
-                        href="https://www.openstreetmap.org/?mlat={{ $contact['plant']['geo']['lat'] }}&mlon={{ $contact['plant']['geo']['lng'] }}#map=13/{{ $contact['plant']['geo']['lat'] }}/{{ $contact['plant']['geo']['lng'] }}"
+                        href="https://www.openstreetmap.org/?mlat={{ Contact::geo()['lat'] }}&mlon={{ Contact::geo()['lng'] }}#map=13/{{ Contact::geo()['lat'] }}/{{ Contact::geo()['lng'] }}"
                         target="_blank"
                         rel="noopener noreferrer"
                         class="mt-6 flex items-center justify-between gap-4 rounded-md border border-hairline px-4 py-3 text-sm transition-colors hover:border-ink-400"
                     >
                         <span class="font-medium text-ink-900">{{ content('contact.find_us') }}</span>
                         <span class="ltr-run tabular shrink-0 text-xs text-ink-500">
-                            {{ $contact['plant']['geo']['lat'] }}, {{ $contact['plant']['geo']['lng'] }}
+                            {{ Contact::geo()['lat'] }}, {{ Contact::geo()['lng'] }}
                         </span>
                     </a>
                 </div>
@@ -102,9 +97,9 @@
                             <dt class="text-xs text-ink-500">{{ content('contact.sales_desk') }}</dt>
                             <dd class="mt-1 space-y-1">
                                 <a class="ltr-run block font-medium text-ink-900 hover:text-brand-600"
-                                   href="tel:{{ str_replace(' ', '', $contact['sales_phone']) }}">{{ $contact['sales_phone'] }}</a>
+                                   href="tel:{{ Contact::tel('sales_phone') }}">{{ Contact::value('sales_phone') }}</a>
                                 <a class="ltr-run block text-ink-600 hover:text-brand-600"
-                                   href="mailto:{{ $contact['sales_email'] }}">{{ $contact['sales_email'] }}</a>
+                                   href="mailto:{{ Contact::value('sales_email') }}">{{ Contact::value('sales_email') }}</a>
                             </dd>
                         </div>
 
@@ -112,7 +107,7 @@
                             <dt class="text-xs text-ink-500">{{ content('contact.export_desk') }}</dt>
                             <dd class="mt-1">
                                 <a class="ltr-run block text-ink-600 hover:text-brand-600"
-                                   href="mailto:{{ $contact['export_email'] }}">{{ $contact['export_email'] }}</a>
+                                   href="mailto:{{ Contact::value('export_email') }}">{{ Contact::value('export_email') }}</a>
                             </dd>
                         </div>
                     </dl>

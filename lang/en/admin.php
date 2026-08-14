@@ -34,8 +34,9 @@ return [
     'groups' => [
         'inbox' => 'Inbox',
         'catalogue' => 'Catalogue',
-        'content' => 'Site content',
-        'library' => 'Document library',
+        'content' => 'Pages and text',
+        'library' => 'Media and files',
+        'company' => 'Company details',
         'system' => 'System',
     ],
 
@@ -83,6 +84,8 @@ return [
     'image_inherited' => 'No image uploaded for this language — the :locale one is shown. If the artwork carries text, upload a version for this language.',
 
     'settings_groups' => [
+        'contact' => 'Contact and addresses',
+        'social' => 'Social profiles',
         'figures' => 'Key numbers',
         'copy' => 'Homepage copy',
         'media' => 'Site imagery',
@@ -90,7 +93,28 @@ return [
         'business' => 'Business details (LocalBusiness)',
     ],
 
+    'settings_all' => 'All settings',
+    'settings_intro' => 'The facts that repeat across the site — addresses, numbers, headline figures and SEO. Each area has a page of its own.',
+    'settings_fields_count' => 'fields',
+    'settings_placeholder_hint' => 'An empty box shows the value the site ships with, greyed out inside it. Anything you type replaces it.',
+    'settings_group_intros' => [
+        'contact' => 'Head office and plant addresses, phone, fax, email and opening hours. These are what the contact page and the footer show.',
+        'social' => 'Links to the company profiles. Leave one blank and it does not appear on the site.',
+        'figures' => 'Annual capacity, plant area, kiln lines, export countries and headcount.',
+        'seo' => 'Default title and description for search engines, and site-ownership verification codes.',
+        'business' => 'Structured data that puts the plant on the map and in Google results.',
+    ],
+
     'settings_fields' => [
+        'hq_lines' => 'Head office address',
+        'plant_lines' => 'Plant address',
+        'switchboard' => 'Head office phone',
+        'sales_phone' => 'Sales desk phone',
+        'general_email' => 'General email',
+        'sales_email' => 'Sales email',
+        'export_email' => 'Export email',
+        'latitude' => 'Latitude',
+        'longitude' => 'Longitude',
         'media_logo' => 'Site logo',
         'media_logo_hint' => 'Shown in the header and the footer. Use a PNG with a transparent background, or an SVG. If your logo is dark, upload a light version for the night theme as well — otherwise it disappears against the dark ground.',
         'media_hero' => 'Hero image — desktop',

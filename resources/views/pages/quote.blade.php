@@ -97,9 +97,9 @@
                     <div class="mt-6 space-y-2 border-t border-hairline pt-5 text-sm">
                         <p class="text-ink-500">{{ content('contact.export_desk') }}</p>
                         <a class="ltr-run block font-medium text-ink-900 hover:text-brand-600"
-                           href="mailto:{{ config('site.contact.export_email') }}">{{ config('site.contact.export_email') }}</a>
+                           href="mailto:{{ \App\Support\Contact::value('export_email') }}">{{ \App\Support\Contact::value('export_email') }}</a>
                         <a class="ltr-run block text-ink-600 hover:text-brand-600"
-                           href="tel:{{ str_replace(' ', '', config('site.contact.sales_phone')) }}">{{ config('site.contact.sales_phone') }}</a>
+                           href="tel:{{ \App\Support\Contact::tel('sales_phone') }}">{{ \App\Support\Contact::value('sales_phone') }}</a>
                     </div>
                 </div>
             </aside>

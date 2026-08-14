@@ -1,4 +1,5 @@
 @php
+    use App\Support\Contact;
     use App\Support\Locales;
     use App\Support\Navigation;
     use App\Support\Url;
@@ -36,16 +37,16 @@
     <div class="hidden border-b border-hairline lg:block">
         <div class="container-page flex h-9 items-center justify-between gap-6 text-xs text-ink-500">
             <div class="flex items-center gap-5">
-                <a href="tel:{{ str_replace(' ', '', config('site.contact.sales_phone')) }}"
+                <a href="tel:{{ Contact::tel('sales_phone') }}"
                    class="hover:text-ink-900 transition-colors">
                     <span class="text-ink-400">{{ content('common.sales') }}</span>
-                    <span class="ltr-run ms-1.5 font-medium tabular">{{ config('site.contact.sales_phone') }}</span>
+                    <span class="ltr-run ms-1.5 font-medium tabular">{{ Contact::value('sales_phone') }}</span>
                 </a>
                 <span class="h-3 w-px bg-hairline" aria-hidden="true"></span>
-                <a href="mailto:{{ config('site.contact.export_email') }}"
+                <a href="mailto:{{ Contact::value('export_email') }}"
                    class="hover:text-ink-900 transition-colors">
                     <span class="text-ink-400">{{ content('common.export') }}</span>
-                    <span class="ltr-run ms-1.5 font-medium">{{ config('site.contact.export_email') }}</span>
+                    <span class="ltr-run ms-1.5 font-medium">{{ Contact::value('export_email') }}</span>
                 </a>
             </div>
 

@@ -1,4 +1,5 @@
 @php
+    use App\Support\Contact;
     use App\Support\Locales;
     use App\Support\Navigation;
 @endphp
@@ -106,13 +107,13 @@
             </div>
 
             <div class="mt-8 space-y-2 border-t border-hairline pt-6 text-sm text-ink-600">
-                <a class="block" href="tel:{{ str_replace(' ', '', config('site.contact.sales_phone')) }}">
+                <a class="block" href="tel:{{ Contact::tel('sales_phone') }}">
                     <span class="text-ink-400">{{ content('common.sales') }}</span>
-                    <span class="ltr-run ms-1.5 font-medium">{{ config('site.contact.sales_phone') }}</span>
+                    <span class="ltr-run ms-1.5 font-medium">{{ Contact::value('sales_phone') }}</span>
                 </a>
-                <a class="block" href="mailto:{{ config('site.contact.export_email') }}">
+                <a class="block" href="mailto:{{ Contact::value('export_email') }}">
                     <span class="text-ink-400">{{ content('common.export') }}</span>
-                    <span class="ltr-run ms-1.5 font-medium">{{ config('site.contact.export_email') }}</span>
+                    <span class="ltr-run ms-1.5 font-medium">{{ Contact::value('export_email') }}</span>
                 </a>
             </div>
         </nav>

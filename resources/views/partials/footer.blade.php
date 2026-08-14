@@ -1,9 +1,6 @@
 @php
-    use App\Support\Locales;
+    use App\Support\Contact;
     use App\Support\Navigation;
-
-    $contact = config('site.contact');
-    $locale = Locales::current();
 @endphp
 
 <footer class="bg-night-950 text-night-300">
@@ -19,7 +16,7 @@
             </p>
 
             <div class="mt-6 flex gap-3">
-                @foreach (array_filter(config('site.social')) as $network => $href)
+                @foreach (Contact::social() as $network => $href)
                     <a
                         href="{{ $href }}"
                         rel="noopener noreferrer me"
@@ -50,18 +47,18 @@
         <div class="lg:col-span-2">
             <h2 class="eyebrow text-night-400!">{{ content('common.headquarters') }}</h2>
             <address class="mt-4 space-y-3 text-sm not-italic leading-relaxed text-night-400">
-                <p>{{ $contact['hq']['lines'][$locale] ?? $contact['hq']['lines']['en'] }}</p>
+                <p>{{ Contact::lines('hq_lines') }}</p>
                 <p>
                     <span class="block text-night-400">{{ content('common.phone') }}</span>
-                    <a class="ltr-run text-night-200 hover:text-white" href="tel:{{ str_replace(' ', '', $contact['phone']) }}">{{ $contact['phone'] }}</a>
+                    <a class="ltr-run text-night-200 hover:text-white" href="tel:{{ Contact::tel('phone') }}">{{ Contact::value('phone') }}</a>
                 </p>
                 <p>
                     <span class="block text-night-400">{{ content('common.email') }}</span>
-                    <a class="ltr-run text-night-200 hover:text-white" href="mailto:{{ $contact['email'] }}">{{ $contact['email'] }}</a>
+                    <a class="ltr-run text-night-200 hover:text-white" href="mailto:{{ Contact::value('email') }}">{{ Contact::value('email') }}</a>
                 </p>
                 <p>
                     <span class="block text-night-400">{{ content('common.plant') }}</span>
-                    {{ $contact['plant']['lines'][$locale] ?? $contact['plant']['lines']['en'] }}
+                    {{ Contact::lines('plant_lines') }}
                 </p>
             </address>
         </div>

@@ -74,10 +74,10 @@ class ValidationMessagesTest extends TestCase
         $limit = (int) config('site.uploads.max_image_kb');
 
         $html = $this->actingAs($admin)
-            ->from('/admin/settings')
+            ->from('/admin/site-images')
             ->followingRedirects()
-            ->put('/admin/settings', [
-                'media|hero' => ['fa' => UploadedFile::fake()->create('huge.jpg', $limit + 512, 'image/jpeg')],
+            ->put('/admin/site-images', [
+                'media|hero' => ['fa' => ['light' => UploadedFile::fake()->create('huge.jpg', $limit + 512, 'image/jpeg')]],
             ])
             ->assertOk()
             ->getContent();

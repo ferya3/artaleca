@@ -10,38 +10,56 @@
     $adminLocale = $user?->locale ?? Locales::default();
     $dir = Locales::direction($adminLocale);
 
-    // Group headings name the *area*, never repeat the first link inside it.
+    /*
+     * The sidebar, grouped by the job rather than by the table.
+     *
+     * Two rules hold it together. A group heading names the area and never
+     * repeats the first link inside it; and anything an editor goes looking for
+     * by name gets a line of its own rather than being a section of a longer
+     * page — the plant address used to be a stretch of one enormous settings
+     * form, which is to say it could not be found at all.
+     */
     $sections = [
         __('admin.groups.inbox') => [
             ['route' => 'admin.enquiries.index', 'label' => __('admin.enquiries'), 'badge' => \App\Models\ContactMessage::query()->unhandled()->count()],
         ],
+
+        // What the plant sells.
         __('admin.groups.catalogue') => [
             ['route' => 'admin.products.index', 'label' => __('admin.products')],
             ['route' => 'admin.product-categories.index', 'label' => __('admin.product_categories')],
             ['route' => 'admin.applications.index', 'label' => __('admin.applications')],
         ],
+
+        // The words on the pages.
         __('admin.groups.content') => [
+            ['route' => 'admin.content.index', 'label' => __('admin.site_content')],
+            ['route' => 'admin.faqs.index', 'label' => __('admin.faqs')],
+            ['route' => 'admin.pages.index', 'label' => __('admin.pages')],
             ['route' => 'admin.projects.index', 'label' => __('admin.projects')],
             ['route' => 'admin.posts.index', 'label' => __('admin.posts')],
-            ['route' => 'admin.pages.index', 'label' => __('admin.pages')],
-            ['route' => 'admin.faqs.index', 'label' => __('admin.faqs')],
         ],
+
+        // The files: pictures, documents, logos.
         __('admin.groups.library') => [
-            // Beside the gallery rather than under Settings: uploading the
-            // site's photography is a different job from editing configuration,
-            // and it is what an editor comes here to do most often.
-            ['route' => 'admin.content.index', 'label' => __('admin.site_content')],
             ['route' => 'admin.site-images.edit', 'label' => __('admin.site_images')],
-            ['route' => 'admin.downloads.index', 'label' => __('admin.downloads')],
             ['route' => 'admin.gallery.index', 'label' => __('admin.gallery')],
+            ['route' => 'admin.downloads.index', 'label' => __('admin.downloads')],
             ['route' => 'admin.certificates.index', 'label' => __('admin.certificates')],
             ['route' => 'admin.partners.index', 'label' => __('admin.partners')],
         ],
     ];
 
     if ($user?->isAdmin()) {
+        // Facts about the company, as opposed to content about it. The two
+        // most-wanted areas are linked directly; the rest are one click on.
+        $sections[__('admin.groups.company')] = [
+            ['route' => 'admin.settings.edit', 'params' => 'contact', 'label' => __('admin.settings_groups.contact')],
+            ['route' => 'admin.settings.edit', 'params' => 'figures', 'label' => __('admin.settings_groups.figures')],
+            ['route' => 'admin.settings.index', 'label' => __('admin.settings_all')],
+        ];
+
         $sections[__('admin.groups.system')] = [
-            ['route' => 'admin.settings.edit', 'label' => __('admin.settings')],
             ['route' => 'admin.redirects.index', 'label' => __('admin.redirects')],
             ['route' => 'admin.users.index', 'label' => __('admin.users')],
         ];
@@ -94,9 +112,25 @@
                     <p class="eyebrow eyebrow-muted px-3 pb-2">{{ $heading }}</p>
                     <ul class="space-y-0.5">
                         @foreach ($links as $link)
-                            @php $active = request()->routeIs(str_replace('.index', '.*', str_replace('.edit', '.*', $link['route']))); @endphp
+                            @php
+                                $active = request()->routeIs(str_replace('.index', '.*', str_replace('.edit', '.*', $link['route'])));
+
+                                /*
+                                 * Two links can share a route name and differ only in
+                                 * the segment after it — Settings has one line per area.
+                                 * Highlighting by name alone would light all of them up,
+                                 * so a link that carries a parameter has to match it too;
+                                 * and the parameterless "all settings" link steps aside
+                                 * whenever one of its siblings is the page being shown.
+                                 */
+                                if (isset($link['params'])) {
+                                    $active = $active && request()->route('group') === $link['params'];
+                                } elseif ($link['route'] === 'admin.settings.index') {
+                                    $active = request()->routeIs('admin.settings.index');
+                                }
+                            @endphp
                             <li>
-                                <a href="{{ route($link['route']) }}"
+                                <a href="{{ route($link['route'], $link['params'] ?? []) }}"
                                    @if ($active) aria-current="page" @endif
                                    class="flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors
                                           {{ $active ? 'bg-brand-50 font-medium text-brand-700' : 'text-ink-600 hover:bg-ink-50' }}">

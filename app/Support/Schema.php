@@ -22,9 +22,6 @@ final class Schema
 {
     public static function organization(): array
     {
-        $contact = config('site.contact');
-        $locale = Locales::current();
-
         return array_filter([
             '@type' => 'Organization',
             '@id' => url('/').'#organization',
@@ -39,20 +36,20 @@ final class Schema
             'description' => content('seo.default_description'),
             'address' => [
                 '@type' => 'PostalAddress',
-                'streetAddress' => $contact['hq']['lines'][$locale] ?? $contact['hq']['lines']['en'],
-                'postalCode' => $contact['hq']['postal_code'],
+                'streetAddress' => Contact::lines('hq_lines'),
+                'postalCode' => Contact::value('hq_postal_code'),
                 'addressCountry' => 'IR',
             ],
             'contactPoint' => [
                 [
                     '@type' => 'ContactPoint',
                     'contactType' => 'sales',
-                    'telephone' => $contact['sales_phone'],
-                    'email' => $contact['sales_email'],
+                    'telephone' => Contact::value('sales_phone'),
+                    'email' => Contact::value('sales_email'),
                     'availableLanguage' => ['fa', 'en', 'ar'],
                 ],
             ],
-            'sameAs' => array_values(array_filter(config('site.social'))),
+            'sameAs' => array_values(Contact::social()),
         ]);
     }
 
@@ -85,8 +82,8 @@ final class Schema
             'name' => config('site.company.legal_name'),
             'url' => url('/'),
             'image' => url(config('site.seo.default_og_image')),
-            'telephone' => config('site.contact.sales_phone'),
-            'email' => config('site.contact.sales_email'),
+            'telephone' => Contact::value('sales_phone'),
+            'email' => Contact::value('sales_email'),
             'parentOrganization' => ['@id' => url('/').'#organization'],
             'address' => array_filter([
                 '@type' => 'PostalAddress',
