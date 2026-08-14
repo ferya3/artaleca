@@ -6,6 +6,98 @@ compression, cache headers, and keeping the document root honest.
 
 ---
 
+## 0. A bare server, start to finish
+
+Five pastes on a fresh Ubuntu box, as `root`. Sections 1–4 explain each of
+them; this is the same thing without the prose.
+
+The database is SQLite, which is what `.env.example` selects — no MySQL to
+install, no credentials to invent, and a backup is one file. Section 2 covers
+switching to MySQL if the traffic ever justifies it.
+
+```bash
+# 1. Packages. Unversioned names on purpose: they follow whatever PHP the
+#    distribution ships, so this does not rot when Ubuntu moves to 8.4.
+apt update && apt install -y nginx git unzip curl \
+    php-fpm php-cli php-mbstring php-xml php-curl php-zip php-gd php-intl php-bcmath php-sqlite3 \
+  && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt install -y nodejs \
+  && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+```
+
+```bash
+# 2. The application. Set the two variables on the first line first.
+SITE=http://YOUR-IP-OR-DOMAIN; ADMPW='choose-a-long-password'; \
+git clone -b claude/industrial-company-website-6vty0h https://github.com/ferya3/artaleca.git /var/www/artaleca \
+  && cd /var/www/artaleca \
+  && composer install --no-dev --optimize-autoloader && npm ci && npm run build \
+  && cp .env.example .env && touch database/database.sqlite \
+  && php artisan key:generate \
+  && sed -i "s|^APP_DEBUG=.*|APP_DEBUG=false|; s|^APP_URL=.*|APP_URL=$SITE|; s|^ADMIN_PASSWORD=.*|ADMIN_PASSWORD=$ADMPW|" .env \
+  && php artisan migrate --force --seed && php artisan storage:link && php artisan optimize
+```
+
+```bash
+# 3. Ownership. The web server writes to exactly three trees and nothing else
+#    — the third is `database/`, because SQLite needs to write the directory
+#    as well as the file.
+cd /var/www/artaleca \
+  && chown -R www-data:www-data storage bootstrap/cache database \
+  && chmod -R 775 storage bootstrap/cache database \
+  && chmod 640 .env
+```
+
+```bash
+# 4. Nginx, over plain HTTP for now. The socket path is looked up rather than
+#    guessed, for the same reason the package names are unversioned.
+cat > /etc/nginx/sites-available/artaleca <<EOF
+server {
+    listen 80;
+    server_name _;
+    root /var/www/artaleca/public;
+    index index.php;
+    charset utf-8;
+    client_max_body_size 12M;
+    autoindex off;
+    location ~ /\. { deny all; access_log off; }
+    gzip on; gzip_vary on; gzip_comp_level 6; gzip_min_length 512;
+    gzip_types text/plain text/css application/javascript application/json image/svg+xml application/xml;
+    location ^~ /build/ { expires 1y; add_header Cache-Control "public, max-age=31536000, immutable"; access_log off; }
+    location ~* \.(woff2|avif|webp|jpe?g|png|gif|svg|ico)\$ { expires 1y; add_header Cache-Control "public, max-age=31536000, immutable"; access_log off; }
+    location ^~ /storage/ { location ~ \.php\$ { deny all; } }
+    location / { try_files \$uri \$uri/ /index.php?\$query_string; }
+    location ~ \.php\$ {
+        fastcgi_pass unix:$(ls /run/php/php*-fpm.sock | head -1);
+        fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;
+        fastcgi_hide_header X-Powered-By;
+        include fastcgi_params;
+    }
+}
+EOF
+ln -sf /etc/nginx/sites-available/artaleca /etc/nginx/sites-enabled/artaleca \
+  && rm -f /etc/nginx/sites-enabled/default && nginx -t && systemctl reload nginx
+```
+
+```bash
+# 5. PHP limits. Ubuntu ships upload_max_filesize = 2M, and PHP rejects a
+#    larger file before any validation rule runs.
+PHPV=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;'); \
+printf 'expose_php=Off\ndisplay_errors=Off\nlog_errors=On\nupload_max_filesize=12M\npost_max_size=14M\nmemory_limit=256M\nopcache.enable=1\nopcache.memory_consumption=192\nopcache.max_accelerated_files=20000\n' \
+  > /etc/php/$PHPV/fpm/conf.d/99-artaleca.ini \
+  && systemctl restart php$PHPV-fpm
+```
+
+The site is now on `http://YOUR-IP`, and the panel at `/admin` with
+`admin@artaleca.com` and the password set in step 2.
+
+**Before pointing a domain at it**, get a certificate
+(`apt install -y certbot python3-certbot-nginx && certbot --nginx -d your-domain.com`)
+and only then set `APP_ENV=production` in `.env` followed by
+`php artisan optimize`. In `production` the application forces every generated
+URL to `https`, which is right behind TLS and breaks the site outright while it
+is still being served over plain HTTP.
+
+---
+
 ## 1. Packages
 
 ```bash
