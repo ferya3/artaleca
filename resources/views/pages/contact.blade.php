@@ -86,7 +86,12 @@
                         @if ($office->hasMap())
                             {{-- A static map link rather than an embedded iframe: no
                                  third-party script, no cookie, no CSP exception, and
-                                 one fewer render-blocking request. --}}
+                                 one fewer render-blocking request.
+
+                                 The coordinates themselves are not printed. They are
+                                 how the link is built, not something a visitor reads —
+                                 a pair of decimals beside the address answers no
+                                 question anyone arrived with. --}}
                             <a
                                 href="{{ $office->mapUrl() }}"
                                 target="_blank"
@@ -94,9 +99,7 @@
                                 class="mt-6 flex items-center justify-between gap-4 rounded-md border border-hairline px-4 py-3 text-sm transition-colors hover:border-ink-400"
                             >
                                 <span class="font-medium text-ink-900">{{ content('contact.find_us') }}</span>
-                                <span class="ltr-run tabular shrink-0 text-xs text-ink-500">
-                                    {{ $office->latitude }}, {{ $office->longitude }}
-                                </span>
+                                <span class="shrink-0 text-ink-400 rtl:rotate-180" aria-hidden="true">&rarr;</span>
                             </a>
                         @endif
                     </div>

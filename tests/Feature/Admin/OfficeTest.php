@@ -6,6 +6,7 @@ namespace Tests\Feature\Admin;
 
 use App\Models\Office;
 use App\Support\Contact;
+use App\Support\Digits;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -160,6 +161,28 @@ class OfficeTest extends TestCase
 
         $this->assertFalse($this->office(['latitude' => null])->hasMap());
         $this->assertTrue($this->office(['latitude' => '38.24', 'longitude' => '48.29'])->hasMap());
+    }
+
+    /**
+     * The coordinates build the link; they are not something a visitor reads.
+     * A pair of decimals printed beside the address answers no question anyone
+     * arrived with, and it was on the page for a while.
+     */
+    public function test_the_coordinates_are_not_printed_on_the_page(): void
+    {
+        $office = $this->office(['latitude' => '38.2498', 'longitude' => '48.2933']);
+
+        $html = $this->get('/fa/contact')->assertOk()->getContent();
+
+        // `e()`, because Blade escapes the `&` joining the two query parameters.
+        $this->assertStringContainsString(e($office->mapUrl()), $html, 'The map link should still be there.');
+
+        // The href carries them; nothing between the tags should.
+        $text = strip_tags(preg_replace('/<a\b[^>]*>/', '<a>', $html) ?? $html);
+
+        $this->assertStringNotContainsString('38.2498', $text);
+        $this->assertStringNotContainsString('48.2933', $text);
+        $this->assertStringNotContainsString(Digits::text('38.2498'), $text);
     }
 
     public function test_an_office_needs_a_name_and_an_address(): void
