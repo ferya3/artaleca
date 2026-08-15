@@ -18,6 +18,18 @@ return [
         'key' => env('POSTMARK_API_KEY'),
     ],
 
+    /*
+    | Bale, the Iranian messenger, used to put a new enquiry on the sales
+    | desk's phone. The bot token is not here: it is editor-owned and lives
+    | encrypted in the settings table. Only the endpoint is configuration —
+    | it is the part outside our control, and if Bale moves it, it should
+    | move in .env rather than in a release.
+    */
+    'bale' => [
+        'base_url' => env('BALE_API_URL', 'https://tapi.bale.ai'),
+        'timeout' => env('BALE_TIMEOUT', 8),
+    ],
+
     'resend' => [
         'key' => env('RESEND_API_KEY'),
     ],

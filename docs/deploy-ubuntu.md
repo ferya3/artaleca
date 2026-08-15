@@ -302,13 +302,56 @@ With `validate_timestamps = 0`, a deploy must end in
 
 ---
 
+## 4b. The queue worker
+
+Enquiry alerts are queued, so a messenger that is slow or unreachable never
+makes a visitor wait behind the contact form. Queued work needs something to
+run it — without a worker the alerts sit in the `jobs` table and no phone ever
+buzzes.
+
+```bash
+cat > /etc/systemd/system/artaleca-worker.service <<'EOF'
+[Unit]
+Description=Arta Leca queue worker
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+Restart=always
+RestartSec=5
+WorkingDirectory=/var/www/artaleca
+ExecStart=/usr/bin/php artisan queue:work --sleep=3 --tries=3 --max-time=3600
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl daemon-reload && systemctl enable --now artaleca-worker && systemctl status artaleca-worker --no-pager
+```
+
+`--max-time=3600` retires the worker every hour and lets systemd start a fresh
+one. A long-lived PHP process holds the code it booted with, so without this a
+deploy would leave the old job classes running until somebody restarted it by
+hand.
+
+Which is also why a deploy has to tell it to stop:
+
+```bash
+php artisan queue:restart
+```
+
+That is already in the deploy line in section 5. It asks the worker to finish
+the job in hand and exit; systemd starts a replacement on the new code.
+
+---
+
 ## 5. Deploying an update
 
 One line, safe to re-run, and it stops at the first failure rather than
 half-deploying:
 
 ```bash
-cd /var/www/artaleca && git config --global --add safe.directory /var/www/artaleca; git fetch origin claude/industrial-company-website-6vty0h && git reset --hard FETCH_HEAD && composer install --no-dev --optimize-autoloader && npm ci && npm run build && php artisan migrate --force && php artisan storage:link && php artisan optimize && sudo chown -R www-data:www-data storage bootstrap/cache public/build database && sudo systemctl reload "$(systemctl list-units --type=service --plain --no-legend 'php*-fpm.service' | awk '{print $1}')" nginx
+cd /var/www/artaleca && git config --global --add safe.directory /var/www/artaleca; git fetch origin claude/industrial-company-website-6vty0h && git reset --hard FETCH_HEAD && composer install --no-dev --optimize-autoloader && npm ci && npm run build && php artisan migrate --force && php artisan storage:link && php artisan optimize && php artisan queue:restart && sudo chown -R www-data:www-data storage bootstrap/cache public/build database && sudo systemctl reload "$(systemctl list-units --type=service --plain --no-legend 'php*-fpm.service' | awk '{print $1}')" nginx
 ```
 
 ### As the `ubuntu` user
@@ -318,7 +361,7 @@ Ubuntu box you log in as `ubuntu` and the files belong to `www-data`, so the
 whole chain runs through `sudo` and hands ownership back at the end:
 
 ```bash
-sudo -H bash -c 'cd /var/www/artaleca && git config --global --add safe.directory /var/www/artaleca; git fetch origin claude/industrial-company-website-6vty0h && git reset --hard FETCH_HEAD && composer install --no-dev --optimize-autoloader && npm ci && npm run build && php artisan migrate --force && php artisan storage:link && php artisan optimize && chown -R www-data:www-data storage bootstrap/cache public/build database && systemctl reload $(systemctl list-units --type=service --plain --no-legend "php*-fpm.service" | cut -d" " -f1) nginx'
+sudo -H bash -c 'cd /var/www/artaleca && git config --global --add safe.directory /var/www/artaleca; git fetch origin claude/industrial-company-website-6vty0h && git reset --hard FETCH_HEAD && composer install --no-dev --optimize-autoloader && npm ci && npm run build && php artisan migrate --force && php artisan storage:link && php artisan optimize && php artisan queue:restart && chown -R www-data:www-data storage bootstrap/cache public/build database && systemctl reload $(systemctl list-units --type=service --plain --no-legend "php*-fpm.service" | cut -d" " -f1) nginx'
 ```
 
 `sudo -H` matters: without it `sudo` keeps `HOME=/home/ubuntu`, and the

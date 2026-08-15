@@ -57,6 +57,7 @@
             ['route' => 'admin.offices.index', 'label' => __('admin.offices')],
             ['route' => 'admin.settings.edit', 'params' => 'contact', 'label' => __('admin.settings_groups.contact')],
             ['route' => 'admin.settings.edit', 'params' => 'figures', 'label' => __('admin.settings_groups.figures')],
+            ['route' => 'admin.notifications.edit', 'label' => __('admin.notifications.title')],
             ['route' => 'admin.settings.index', 'label' => __('admin.settings_all')],
         ];
 
@@ -172,6 +173,15 @@
             @if (session('status'))
                 <div role="status" class="mb-6 rounded-md border-s-2 border-green-600 bg-green-50 px-4 py-3 text-sm text-green-900">
                     {{ session('status') }}
+                </div>
+            @endif
+
+            {{-- A failure that is not a validation error still has to be seen:
+                 "the server cannot reach Bale" is the single most useful thing
+                 this panel can say, and it has no field to attach itself to. --}}
+            @if (session('error'))
+                <div role="alert" class="mb-6 rounded-md border-s-2 border-red-600 bg-red-50 px-4 py-3 text-sm text-red-900">
+                    {{ session('error') }}
                 </div>
             @endif
 

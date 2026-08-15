@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Concerns;
 
+use App\Jobs\SendBaleAlert;
 use App\Mail\EnquiryReceived;
 use App\Models\ContactMessage;
 use App\Support\Contact;
@@ -19,6 +20,14 @@ trait NotifiesSalesDesk
      */
     protected function notifySalesDesk(ContactMessage $message): void
     {
+        /*
+         * Queued, and dispatched before the mail: it is the one that reaches a
+         * phone, and it should not wait behind an SMTP handshake. If no worker
+         * is running it simply sits in the table until one is — the enquiry is
+         * saved either way.
+         */
+        SendBaleAlert::dispatch($message->id);
+
         try {
             Mail::to(Contact::value('sales_email'))->send(new EnquiryReceived($message));
         } catch (\Throwable $e) {

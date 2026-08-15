@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DownloadController;
 use App\Http\Controllers\Admin\EnquiryController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\GalleryController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\OfficeController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PartnerController;
@@ -89,6 +90,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('content', [SiteContentController::class, 'index'])->name('content.index');
         Route::get('content/{group}', [SiteContentController::class, 'edit'])->name('content.edit');
         Route::put('content/{group}', [SiteContentController::class, 'update'])->name('content.update');
+
+        /*
+         * Notifications. Four verbs rather than two: finding a chat id and
+         * proving the path works are actions, not fields, and both change
+         * nothing — but both call out to a third party, so neither belongs
+         * behind a GET a browser might prefetch.
+         */
+        Route::get('notifications', [NotificationController::class, 'edit'])->name('notifications.edit');
+        Route::put('notifications', [NotificationController::class, 'update'])->name('notifications.update');
+        Route::delete('notifications', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+        Route::post('notifications/chats', [NotificationController::class, 'chats'])->name('notifications.chats');
+        Route::post('notifications/test', [NotificationController::class, 'test'])->name('notifications.test');
 
         Route::get('site-images', [SiteImageController::class, 'edit'])->name('site-images.edit');
         Route::put('site-images', [SiteImageController::class, 'update'])->name('site-images.update');
