@@ -82,15 +82,33 @@ class Office extends Model
         return filled($this->latitude) && filled($this->longitude);
     }
 
+    /**
+     * The link everything can follow.
+     *
+     * Google's universal maps URL rather than a provider-specific one: on a
+     * desktop it opens a map in the browser, and on a phone with the Google
+     * Maps app installed the operating system hands it straight to the app.
+     */
     public function mapUrl(): string
     {
-        return sprintf(
-            'https://www.openstreetmap.org/?mlat=%s&mlon=%s#map=13/%s/%s',
-            $this->latitude,
-            $this->longitude,
-            $this->latitude,
-            $this->longitude,
-        );
+        return 'https://www.google.com/maps/search/?api=1&query='
+            .$this->latitude.','.$this->longitude;
+    }
+
+    /**
+     * The same point as an RFC 5870 `geo:` URI.
+     *
+     * This is the one that asks the phone rather than the browser: Android
+     * offers whichever navigation apps are installed — Neshan, Balad, Waze,
+     * Google Maps — instead of assuming one. Nothing else handles the scheme
+     * reliably, so it is offered alongside `mapUrl()` rather than instead of
+     * it, and app.js swaps it in only where it is an improvement.
+     */
+    public function geoUri(): string
+    {
+        $point = $this->latitude.','.$this->longitude;
+
+        return 'geo:'.$point.'?q='.$point.'('.rawurlencode((string) $this->name).')';
     }
 
     public function telephone(): string

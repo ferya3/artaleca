@@ -108,6 +108,35 @@ function bindAutoSubmitFilters() {
  * variable, because the first click has to flip whatever the system decided,
  * not whatever this file assumed.
  */
+/*
+ * "Find us on the map", handed to the phone rather than to a website.
+ *
+ * The link ships as a Google Maps URL, which is the answer that works
+ * everywhere: a map in the browser on a desktop, and the Google Maps app on a
+ * phone that has it. On Android there is a better answer — a `geo:` URI, which
+ * the system resolves to whichever navigation apps are actually installed, so a
+ * visitor with Neshan or Balad and no Google Maps gets their own app instead of
+ * a web page they cannot navigate from.
+ *
+ * Only Android, because only Android handles the scheme reliably; iOS has no
+ * `geo:` handler at all and would leave the tap doing nothing. And swapped at
+ * load rather than on click, so the anchor stays an ordinary link — no
+ * preventDefault, nothing for a popup blocker to catch, and the address bar
+ * shows where it goes.
+ */
+function bindMapLinks() {
+    if (! /android/i.test(navigator.userAgent)) return;
+
+    document.querySelectorAll('[data-map-link][data-geo]').forEach((link) => {
+        link.href = link.dataset.geo;
+
+        // Handing off to an app is not opening a tab; `_blank` would leave an
+        // empty one behind on the way out.
+        link.removeAttribute('target');
+        link.removeAttribute('rel');
+    });
+}
+
 function bindThemeToggle() {
     const buttons = document.querySelectorAll('[data-theme-toggle]');
     if (buttons.length === 0) return;
@@ -148,6 +177,7 @@ function bindThemeToggle() {
     lockScrollWithMobileMenu,
     bindGalleries,
     bindAutoSubmitFilters,
+    bindMapLinks,
     bindThemeToggle,
 ].forEach((enhance) => {
     try {

@@ -164,6 +164,27 @@ class OfficeTest extends TestCase
     }
 
     /**
+     * The link ships as something every browser can follow, and carries the
+     * `geo:` alternative for the phone that can do better with it.
+     */
+    public function test_the_map_link_offers_both_a_web_map_and_the_phone_apps(): void
+    {
+        $office = $this->office(['latitude' => '38.2498', 'longitude' => '48.2933']);
+
+        $this->assertSame(
+            'https://www.google.com/maps/search/?api=1&query=38.2498,48.2933',
+            $office->mapUrl(),
+        );
+
+        $this->assertStringStartsWith('geo:38.2498,48.2933?q=38.2498,48.2933(', $office->geoUri());
+
+        $html = $this->get('/fa/contact')->assertOk()->getContent();
+
+        $this->assertStringContainsString('data-map-link', $html);
+        $this->assertStringContainsString(e($office->geoUri()), $html);
+    }
+
+    /**
      * The coordinates build the link; they are not something a visitor reads.
      * A pair of decimals printed beside the address answers no question anyone
      * arrived with, and it was on the page for a while.

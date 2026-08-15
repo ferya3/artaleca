@@ -94,6 +94,8 @@
                                  question anyone arrived with. --}}
                             <a
                                 href="{{ $office->mapUrl() }}"
+                                data-map-link
+                                data-geo="{{ $office->geoUri() }}"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 class="mt-6 flex items-center justify-between gap-4 rounded-md border border-hairline px-4 py-3 text-sm transition-colors hover:border-ink-400"
