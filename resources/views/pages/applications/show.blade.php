@@ -25,7 +25,7 @@
                 @endif
             </div>
 
-            @php $benefits = $application->benefitsForLocale(); @endphp
+            @php $benefits = $application->bullets('benefits'); @endphp
 
             @if ($benefits !== [])
                 <aside class="min-w-0 lg:col-span-5">

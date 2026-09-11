@@ -6,7 +6,6 @@ namespace App\Models;
 
 use App\Concerns\HasTranslations;
 use App\Concerns\Publishable;
-use App\Support\Locales;
 use App\Support\Search;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -85,25 +84,6 @@ class Product extends Model
     public function downloads(): BelongsToMany
     {
         return $this->belongsToMany(Download::class);
-    }
-
-    /**
-     * Flatten a translatable bullet list (features, advantages) to the active
-     * locale, dropping entries that have no usable value.
-     *
-     * @return list<string>
-     */
-    public function bullets(string $attribute, ?string $locale = null): array
-    {
-        $locale = $locale ?? Locales::current();
-        $default = Locales::default();
-
-        return array_values(array_filter(array_map(
-            fn ($item) => is_array($item)
-                ? ($item[$locale] ?? $item[$default] ?? (reset($item) ?: null))
-                : $item,
-            $this->{$attribute} ?? []
-        )));
     }
 
     /**

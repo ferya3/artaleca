@@ -60,7 +60,8 @@ class ApplicationController extends ResourceController
                 'rows' => 10, 'rules' => ['nullable', 'string', 'max:8000']],
 
             ['name' => 'benefits', 'label' => content('applications.benefits'), 'type' => 'list',
-                'hint' => 'One benefit per line (single language).'],
+                'translatable' => true, 'rows' => 5,
+                'hint' => __('admin.fields.list_hint')],
 
             ['name' => 'image', 'label' => __('admin.fields.image_path'), 'type' => 'image'],
 

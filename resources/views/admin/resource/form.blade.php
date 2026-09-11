@@ -77,15 +77,32 @@
                             @foreach ($locales as $code => $meta)
                                 @php
                                     $inputName = $name.'['.$code.']';
-                                    $value = old($name.'.'.$code, $record->getTranslations($name)[$code] ?? '');
                                     $key = $name.'.'.$code;
+
+                                    /*
+                                     * A translatable *list* is stored as a list
+                                     * of per-locale maps, not a per-locale map
+                                     * of strings — so its value comes from
+                                     * `bullets()`, one entry per line, and
+                                     * `getTranslations()` would hand back the
+                                     * wrong shape entirely. It did, and the
+                                     * form died on "Array to string
+                                     * conversion" for every seeded record.
+                                     */
+                                    $value = $type === 'list'
+                                        ? old($key, implode("\n", $record->bullets($name, $code)))
+                                        : old($key, $record->getTranslations($name)[$code] ?? '');
                                 @endphp
 
                                 <div class="flex items-start gap-2.5">
                                     <span class="mt-2.5 w-7 shrink-0 text-[0.6875rem] font-semibold uppercase text-ink-400"
                                           dir="ltr">{{ $code }}</span>
 
-                                    @if ($type === 'textarea')
+                                    @if ($type === 'list')
+                                        <textarea name="{{ $inputName }}" rows="{{ $field['rows'] ?? 4 }}"
+                                                  lang="{{ $code }}" dir="{{ $meta['dir'] }}"
+                                                  class="{{ $inputClass }} @error($key) border-red-500 @enderror">{{ $value }}</textarea>
+                                    @elseif ($type === 'textarea')
                                         <textarea name="{{ $inputName }}" rows="{{ $field['rows'] ?? 4 }}"
                                                   lang="{{ $code }}" dir="{{ $meta['dir'] }}"
                                                   class="{{ $inputClass }} @error($key) border-red-500 @enderror">{{ $value }}</textarea>
@@ -122,9 +139,14 @@
 
                     @elseif ($type === 'list')
                         {{-- JSON lists are edited as one item per line; the
-                             controller parses them back. Editors never see JSON. --}}
+                             controller parses them back. Editors never see JSON.
+
+                             Read through `bullets()` rather than imploding the
+                             raw column: a list of plain strings comes back
+                             unchanged, and one that happens to hold per-locale
+                             maps is flattened instead of throwing. --}}
                         <textarea id="f-{{ $name }}" name="{{ $name }}" rows="{{ $field['rows'] ?? 5 }}"
-                                  class="{{ $inputClass }} font-mono text-xs">{{ old($name, implode("\n", (array) ($record->{$name} ?? []))) }}</textarea>
+                                  class="{{ $inputClass }} font-mono text-xs">{{ old($name, implode("\n", $record->bullets($name))) }}</textarea>
 
                     @elseif ($type === 'pairs')
                         @php

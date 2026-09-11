@@ -180,6 +180,16 @@ abstract class ResourceController extends Controller
             $base = $this->resolveRules($field, $record);
 
             if ($field['translatable'] ?? false) {
+                // A list arrives as one textarea of lines per locale, so the
+                // per-field rules (max length, and so on) do not apply to it.
+                if ($type === 'list') {
+                    foreach (Locales::codes() as $locale) {
+                        $rules[$name.'.'.$locale] = ['nullable', 'string', 'max:4000'];
+                    }
+
+                    continue;
+                }
+
                 foreach (Locales::codes() as $locale) {
                     if ($locale === Locales::default()) {
                         $rules[$name.'.'.$locale] = $base;
@@ -279,7 +289,20 @@ abstract class ResourceController extends Controller
             $value = $data[$name];
 
             if ($field['translatable'] ?? false) {
-                $model->setTranslations($name, is_array($value) ? $value : []);
+                $value = is_array($value) ? $value : [];
+
+                /*
+                 * A translatable list is not a translatable string. It is
+                 * stored as a list of per-locale entries — one per bullet, each
+                 * carrying all three languages — so the three textareas are
+                 * zipped back together by position. `setTranslations` expects a
+                 * map of strings and would write the wrong shape.
+                 */
+                if ($type === 'list') {
+                    $model->{$name} = $this->parseTranslatedList($value);
+                } else {
+                    $model->setTranslations($name, $value);
+                }
 
                 continue;
             }
@@ -379,6 +402,47 @@ abstract class ResourceController extends Controller
      *
      * @return list<string>
      */
+    /**
+     * Three textareas of lines into one list of per-locale entries.
+     *
+     * Zipped by position: the second line of the Persian box and the second
+     * line of the English box are the same bullet in two languages. The list is
+     * as long as the longest box, so adding a line in one language does not
+     * silently drop it for want of a translation — an entry missing a language
+     * falls back through `bullets()` exactly as a missing translation does
+     * anywhere else.
+     *
+     * @param  array<string, string|null>  $byLocale
+     * @return list<array<string, string>>
+     */
+    protected function parseTranslatedList(array $byLocale): array
+    {
+        $lines = [];
+
+        foreach (Locales::codes() as $locale) {
+            $lines[$locale] = $this->parseList($byLocale[$locale] ?? null);
+        }
+
+        $length = max(array_map('count', $lines) ?: [0]);
+        $entries = [];
+
+        for ($i = 0; $i < $length; $i++) {
+            $entry = [];
+
+            foreach ($lines as $locale => $values) {
+                if (filled($values[$i] ?? null)) {
+                    $entry[$locale] = $values[$i];
+                }
+            }
+
+            if ($entry !== []) {
+                $entries[] = $entry;
+            }
+        }
+
+        return $entries;
+    }
+
     protected function parseList(?string $value): array
     {
         return collect(preg_split('/\r\n|\r|\n/', (string) $value))

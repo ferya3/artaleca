@@ -82,7 +82,8 @@ class ProjectController extends ResourceController
                 'rows' => 10, 'rules' => ['nullable', 'string', 'max:10000']],
 
             ['name' => 'scope', 'label' => content('projects.scope'), 'type' => 'list',
-                'hint' => 'One line per scope item.'],
+                'translatable' => true, 'rows' => 5,
+                'hint' => __('admin.fields.list_hint')],
 
             ['name' => 'cover_image', 'label' => __('admin.fields.cover_path'), 'type' => 'image'],
 

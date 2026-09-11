@@ -6,7 +6,6 @@ namespace App\Models;
 
 use App\Concerns\HasTranslations;
 use App\Concerns\Publishable;
-use App\Support\Locales;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -50,24 +49,5 @@ class Application extends Model
     public function projects(): BelongsToMany
     {
         return $this->belongsToMany(Project::class);
-    }
-
-    /**
-     * Benefits are stored as a list of per-locale maps; flatten to plain
-     * strings for the active locale.
-     *
-     * @return list<string>
-     */
-    public function benefitsForLocale(?string $locale = null): array
-    {
-        $locale = $locale ?? Locales::current();
-        $default = Locales::default();
-
-        return array_values(array_filter(array_map(
-            fn ($benefit) => is_array($benefit)
-                ? ($benefit[$locale] ?? $benefit[$default] ?? reset($benefit) ?: null)
-                : $benefit,
-            $this->benefits ?? []
-        )));
     }
 }

@@ -11,6 +11,8 @@ return [
     'inactive' => 'This account has been deactivated.',
 
     'fields' => [
+        'list_hint' => 'One item per line. The boxes line up: the second line in Persian and the second line in English are the same item in two languages.',
+        'standards_hint' => 'One standard per line, e.g. EN 13055-1. The codes are the same in every language, so there is one box.',
         'office_name' => 'Office name',
         'office_name_hint' => 'For example "Tehran sales office" or "Ardabil sales office". This heads the card on the contact page.',
         'office_kind' => 'Kind',
@@ -51,6 +53,7 @@ return [
     'enquiries' => 'Enquiries',
     'products' => 'Products',
     'product_categories' => 'Product categories',
+    'applications' => 'Applications',
     'projects' => 'Projects',
     'posts' => 'News & articles',
     'pages' => 'Pages',

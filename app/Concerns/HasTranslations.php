@@ -28,6 +28,31 @@ use App\Support\Locales;
  */
 trait HasTranslations
 {
+    /**
+     * A JSON *list* whose entries are translated, flattened for one locale.
+     *
+     *     [{"fa": "سبک", "en": "Light"}, {"fa": "عایق", "en": "Insulating"}]
+     *
+     * A plain string entry stands for every language and is returned as it is,
+     * which is what a list of standard codes looks like — `EN 13055-1` is the
+     * same in all three. So both shapes live in the same column and neither
+     * needs converting.
+     *
+     * @return list<string>
+     */
+    public function bullets(string $attribute, ?string $locale = null): array
+    {
+        $locale ??= Locales::current();
+        $default = Locales::default();
+
+        return array_values(array_filter(array_map(
+            fn ($entry) => is_array($entry)
+                ? ($entry[$locale] ?? $entry[$default] ?? (reset($entry) ?: null))
+                : $entry,
+            (array) ($this->{$attribute} ?? []),
+        ), 'filled'));
+    }
+
     /** @return list<string> */
     public function translatableAttributes(): array
     {

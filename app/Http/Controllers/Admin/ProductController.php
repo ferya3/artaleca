@@ -82,10 +82,12 @@ class ProductController extends ResourceController
                 'rows' => 10, 'rules' => ['nullable', 'string', 'max:8000']],
 
             ['name' => 'features', 'label' => __('admin.fields.features'), 'type' => 'list',
-                'hint' => 'One feature per line.'],
+                'translatable' => true, 'rows' => 5,
+                'hint' => __('admin.fields.list_hint')],
 
             ['name' => 'advantages', 'label' => __('admin.fields.advantages'), 'type' => 'list',
-                'hint' => 'One advantage per line.'],
+                'translatable' => true, 'rows' => 5,
+                'hint' => __('admin.fields.list_hint')],
 
             // ── Technical data ──────────────────────────────────────────
             ['name' => 'grain_min_mm', 'label' => content('product.grain_size').' — min (mm)', 'type' => 'number',
@@ -110,7 +112,7 @@ class ProductController extends ResourceController
                 'step' => '1', 'width' => 'half', 'rules' => ['nullable', 'numeric', 'min:0', 'max:5000']],
 
             ['name' => 'standards', 'label' => content('product.standards'), 'type' => 'list',
-                'hint' => 'One standard per line, e.g. EN 13055-1'],
+                'hint' => __('admin.fields.standards_hint')],
 
             ['name' => 'specs', 'label' => content('product.properties'), 'type' => 'pairs',
                 'hint' => 'One row per line: label | value'],
