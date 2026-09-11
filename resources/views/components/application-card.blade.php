@@ -14,7 +14,7 @@
         :seed="$application->slug"
         :alt="$application->name"
         :eager="$eager"
-        ratio="4/3"
+        ratio="1/1"
         sizes="(min-width: 1280px) 300px, (min-width: 768px) 33vw, 100vw"
     />
 

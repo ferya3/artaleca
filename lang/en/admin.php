@@ -27,6 +27,7 @@ return [
         'features' => 'Features',
         'advantages' => 'Advantages',
         'image_path' => 'Image',
+        'image_square_hint' => 'Shown square (1:1) on the application card. Another aspect ratio is cropped to fit, so keep the subject centred.',
         'cover_path' => 'Cover image',
         'gallery' => 'Image gallery',
         'datasheet_path' => 'Datasheet',
