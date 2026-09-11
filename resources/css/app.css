@@ -415,6 +415,23 @@
     }
 
     /*
+     * Carousel on a phone, plain grid above it.
+     *
+     * For the home page, where the same four products are a swipeable row on a
+     * narrow screen and a four-up grid on a wide one. Only three properties
+     * need cancelling: the grid utilities on the element already outrank
+     * `.carousel` for `display`, being utilities, and these three have no
+     * utility to do it with.
+     */
+    @media (min-width: 640px) {
+        .carousel-phone {
+            overflow-x: visible;
+            scroll-snap-type: none;
+            scroll-padding-inline: 0;
+        }
+    }
+
+    /*
      * The arrows are added by app.js and revealed here, rather than shipped
      * visible and wired up later: a button that scrolls nothing is worse than
      * no button. They stay off touch-sized screens, where the swipe is the

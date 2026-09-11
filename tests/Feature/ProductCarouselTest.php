@@ -113,6 +113,56 @@ class ProductCarouselTest extends TestCase
             ->assertSee('aria-label="'.content('product.grades_title').'"', false);
     }
 
+    // ── The home page: a carousel on a phone only ───────────────────────
+
+    /**
+     * One element that is a carousel on a phone and the grid it always was
+     * above that.
+     *
+     * Rendering the cards twice and hiding a copy would be the obvious way to
+     * do it and the wrong one — double the markup and double the image URLs for
+     * a section that shows the same four products either way. So the test is
+     * that there is one row carrying both behaviours, not two rows.
+     */
+    public function test_the_home_page_row_is_a_carousel_and_a_grid_at_once(): void
+    {
+        $this->catalogue(4);
+
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        $this->assertStringContainsString('carousel carousel-phone', $html);
+
+        // The grid it becomes at `sm`, on the same element.
+        $this->assertStringContainsString('sm:grid sm:grid-cols-2', $html);
+        $this->assertStringContainsString('lg:grid-cols-4', $html);
+
+        // And the card sizing that reverts with it.
+        $this->assertStringContainsString('basis-[78%] sm:basis-auto', $html);
+    }
+
+    /** The three properties no utility can cancel, cancelled at `sm`. */
+    public function test_the_phone_only_carousel_switches_off_above_a_phone(): void
+    {
+        $css = (string) file_get_contents(resource_path('css/app.css'));
+
+        $this->assertMatchesRegularExpression(
+            '/@media \(min-width: 640px\) \{\s*\.carousel-phone \{[^}]*overflow-x: visible;[^}]*scroll-snap-type: none;[^}]*scroll-padding-inline: 0;/',
+            $css,
+            'The home row must stop being a scroller once it is a grid.',
+        );
+    }
+
+    /** The catalogue row is a carousel at every width, and keeps its arrows. */
+    public function test_the_catalogue_row_is_not_the_phone_only_kind(): void
+    {
+        $this->catalogue();
+
+        $html = $this->get('/fa/products')->assertOk()->getContent();
+
+        $this->assertStringNotContainsString('carousel-phone', $html);
+        $this->assertStringContainsString('data-carousel-next', $html);
+    }
+
     /** Whatever the row does, the products are still in it. */
     public function test_every_product_is_still_on_the_page(): void
     {

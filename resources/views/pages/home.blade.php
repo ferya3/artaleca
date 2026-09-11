@@ -127,11 +127,27 @@
                     :href="route('products.index')"
                 />
 
-                <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {{--
+                    A carousel on a phone, the grid it always was above that.
+
+                    One element, not two: rendering the cards twice and hiding a
+                    copy would double the markup and the image URLs for a
+                    section that shows the same four products either way. The
+                    carousel mechanics switch off at `sm` — see
+                    `.carousel-phone` — and the grid utilities here take over.
+
+                    No arrows and no `tabindex` unlike the catalogue row: this
+                    is only ever a carousel at phone widths, where the swipe is
+                    the control and there is no keyboard to serve.
+                --}}
+                <ul class="no-scrollbar carousel carousel-phone mt-12 -mx-5 px-5 pb-2
+                           sm:mx-0 sm:grid sm:grid-cols-2 sm:px-0 sm:pb-0 lg:grid-cols-4">
                     @foreach ($products as $product)
-                        <x-product-card :product="$product" />
+                        <li class="flex shrink-0 basis-[78%] sm:basis-auto sm:shrink">
+                            <x-product-card :product="$product" class="w-full" />
+                        </li>
                     @endforeach
-                </div>
+                </ul>
             </div>
         </section>
     @endif
