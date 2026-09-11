@@ -4,24 +4,28 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Models\Application;
+use App\Support\Digits;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * The grades row on the products page.
+ * The three card rows that scroll: the grades on the catalogue page, and the
+ * products and the uses on the home page.
  *
- * It is a scroller rather than a grid, and the thing that makes it read as one
- * is the peek: every card is a little narrower than an exact fit, so part of
- * the next is always on screen. That is a number in a class name, which is
- * exactly the kind of detail a later tidy-up rounds to something neat and
- * silently turns the carousel back into a row that looks like it ends.
+ * What makes them read as rows rather than blocks that end is the peek — every
+ * card is a little narrower than an exact fit, so part of the next is always on
+ * screen. That is a number in a class name, which is exactly the kind of detail
+ * a later tidy-up rounds to something neat and silently turns a carousel back
+ * into a row that looks finished.
  *
  * The scrolling itself is the browser's, so there is nothing to test in a
- * headless request beyond the two things that could break it: the markup that
- * opts into snapping, and the arrows staying hidden until a script arrives to
- * make them do something.
+ * headless request beyond what could actually break it: the markup that opts
+ * into snapping, the widths that produce the peek, the arrows staying hidden
+ * until a script arrives to make them do something, and the two home rows
+ * turning back into the grids they were above a phone.
  */
-class ProductCarouselTest extends TestCase
+class CarouselTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -32,6 +36,20 @@ class ProductCarouselTest extends TestCase
                 'slug' => 'grade-'.$i,
                 'sku' => 'ALS-'.$i,
                 'name' => ['fa' => 'گرید '.$i, 'en' => 'Grade '.$i, 'ar' => 'درجة '.$i],
+            ]);
+        }
+    }
+
+    /** N published uses, in the order they were made. */
+    private function uses(int $count): void
+    {
+        for ($i = 1; $i <= $count; $i++) {
+            Application::create([
+                'slug' => 'use-'.$i,
+                'name' => ['fa' => 'کاربرد '.$i, 'en' => 'Use '.$i, 'ar' => 'استخدام '.$i],
+                'summary' => ['fa' => 'خلاصه '.$i, 'en' => 'Summary '.$i, 'ar' => 'ملخص '.$i],
+                'position' => $i,
+                'is_active' => true,
             ]);
         }
     }
@@ -161,6 +179,54 @@ class ProductCarouselTest extends TestCase
 
         $this->assertStringNotContainsString('carousel-phone', $html);
         $this->assertStringContainsString('data-carousel-next', $html);
+    }
+
+    // ── The home page: the seven uses ───────────────────────────────────
+
+    /**
+     * The uses get the same treatment as the products above them, so the two
+     * sections behave the same way under the same thumb.
+     */
+    public function test_the_uses_row_is_a_carousel_on_a_phone_too(): void
+    {
+        $this->catalogue(4);
+        $this->uses(7);
+
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        // Two rows carrying the phone-only behaviour: products, then uses.
+        $this->assertSame(2, substr_count($html, 'carousel carousel-phone'));
+
+        // Digits::text, because the Persian pages are rewritten on the way
+        // out and "1" reaches the browser as "۱" — see LocaliseDigits.
+        foreach (range(1, 7) as $i) {
+            $this->assertStringContainsString(
+                'کاربرد '.Digits::text((string) $i),
+                $html,
+                "Use {$i} is missing from the home row.",
+            );
+        }
+    }
+
+    /**
+     * Seven, and seven is a cap rather than a coincidence — an eighth use
+     * should extend the page it has of its own, not this row.
+     */
+    public function test_the_uses_row_is_capped_at_seven(): void
+    {
+        $this->uses(10);
+
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        $this->assertStringContainsString('کاربرد ۷', $html, 'The seventh use belongs in the row.');
+
+        foreach ([8, 9, 10] as $beyond) {
+            $this->assertStringNotContainsString(
+                'کاربرد '.Digits::text((string) $beyond),
+                $html,
+                "Use {$beyond} should stay on the applications page, not the home row.",
+            );
+        }
     }
 
     /** Whatever the row does, the products are still in it. */

@@ -226,6 +226,29 @@
                     />
                 @endif
             </div>
+
+            {{--
+                The seven uses, under the picture that explains them.
+
+                The infographic says how grade relates to use; these say where
+                to read more, one card per use. Same treatment as the products
+                row above — a carousel on a phone, a grid from `sm` up — so the
+                two sections behave the same way under the same thumb.
+
+                Seven into four columns leaves a row of four and a row of three.
+                Deliberate: three columns would leave a single card stranded on
+                a third row, which reads as a mistake rather than a wrap.
+            --}}
+            @if ($applications->isNotEmpty())
+                <ul class="no-scrollbar carousel carousel-phone mt-10 -mx-5 px-5 pb-2
+                           sm:mx-0 sm:grid sm:grid-cols-2 sm:px-0 sm:pb-0 lg:grid-cols-4">
+                    @foreach ($applications as $application)
+                        <li class="flex shrink-0 basis-[78%] sm:basis-auto sm:shrink">
+                            <x-application-card :application="$application" class="w-full" />
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
         </div>
     </section>
 

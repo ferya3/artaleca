@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\Application;
 use App\Models\Post;
 use App\Models\Product;
 use App\Models\Project;
@@ -26,6 +27,16 @@ class HomeController extends Controller
                 ->active()->featured()->ordered()
                 ->with('category')
                 ->take(4)->get(),
+
+            /*
+             * Seven, which is every use the plant currently lists — and a cap
+             * rather than a coincidence: this row is a carousel on a phone and
+             * a grid above it, and an eighth use should extend the page it has
+             * of its own, not this one.
+             */
+            'applications' => Application::query()
+                ->active()->ordered()
+                ->take(7)->get(),
 
             'projects' => Project::query()
                 ->active()->featured()->recentFirst()
