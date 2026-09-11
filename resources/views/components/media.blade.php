@@ -3,6 +3,10 @@
     'alt' => '',
     'seed' => 'arta',
     'ratio' => '4/3',
+    // `cover` fills the box and crops what does not fit; `contain` fits the
+    // whole picture inside it and letterboxes the remainder against the box's
+    // own background. Photographs want the first, artwork the second.
+    'fit' => 'cover',
     'tone' => 'light',
     'eager' => false,
     'sizes' => '(min-width: 1024px) 33vw, 100vw',
@@ -110,6 +114,15 @@
 
 @php
     /*
+     * Literal class names, for the same reason the aspect ratio is one: an
+     * interpolated `object-{{ $fit }}` is invisible to Tailwind's scanner and
+     * would simply not be generated.
+     */
+    $objectFit = $fit === 'contain' ? 'object-contain' : 'object-cover';
+@endphp
+
+@php
+    /*
      * `position` is chosen here rather than by writing both and hoping: two
      * position utilities on one element are resolved by Tailwind's own
      * ordering, not by the order they appear in the attribute — so emitting
@@ -144,7 +157,7 @@
                 :eager="$eager"
                 :preload="$eager"
                 :preload-media="$preloadMedia"
-                class="h-full w-full object-cover"
+                class="h-full w-full {{ $objectFit }}"
             />
         @else
             {{--
@@ -171,7 +184,7 @@
                     :preload="$eager"
                     :preload-media="$preloadMedia"
                     theme="light"
-                    class="h-full w-full object-cover"
+                    class="h-full w-full {{ $objectFit }}"
                 />
             </span>
 
@@ -185,7 +198,7 @@
                     :preload="$eager"
                     :preload-media="$preloadMedia"
                     theme="dark"
-                    class="h-full w-full object-cover"
+                    class="h-full w-full {{ $objectFit }}"
                 />
             </span>
         @endif

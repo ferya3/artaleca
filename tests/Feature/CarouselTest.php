@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\Application;
+use App\Models\Product;
 use App\Support\Digits;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -227,6 +228,41 @@ class CarouselTest extends TestCase
                 "Use {$beyond} should stay on the applications page, not the home row.",
             );
         }
+    }
+
+    // ── The picture on a use card ───────────────────────────────────────
+
+    /**
+     * Square, and the whole picture inside it.
+     *
+     * `cover` fills the box by cropping whatever does not fit, which is right
+     * for a photograph of aggregate and wrong for a picture somebody chose to
+     * show a use: a wide upload lost both its ends. `contain` fits it instead
+     * and letterboxes the rest against the box's own background.
+     */
+    public function test_a_use_card_fits_the_whole_picture_in_a_square(): void
+    {
+        // An `object-fit` only exists once there is a real image: without one
+        // the card renders the placeholder SVG, which has no such class.
+        $this->uses(1);
+        Application::query()->update(['image' => '/storage/media/applications/wide-1600x700.jpg']);
+
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        $this->assertStringContainsString('aspect-square', $html);
+        $this->assertStringContainsString('object-contain', $html);
+    }
+
+    /** The product photographs still fill their box, as they always did. */
+    public function test_a_product_card_still_crops_to_fill(): void
+    {
+        $this->catalogue(1);
+        Product::query()->update(['hero_image' => '/storage/media/products/grade-1200x900.jpg']);
+
+        $html = $this->get('/fa/products')->assertOk()->getContent();
+
+        $this->assertStringContainsString('object-cover', $html);
+        $this->assertStringContainsString('aspect-[4/3]', $html);
     }
 
     /** Whatever the row does, the products are still in it. */

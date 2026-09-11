@@ -15,6 +15,7 @@
         :alt="$application->name"
         :eager="$eager"
         ratio="1/1"
+        fit="contain"
         sizes="(min-width: 1280px) 300px, (min-width: 768px) 33vw, 100vw"
     />
 
