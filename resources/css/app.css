@@ -374,6 +374,62 @@
         }
     }
 
+    /*
+     * Peek carousel.
+     *
+     * A plain horizontal scroller, not a slider library. Swipe works because
+     * the browser scrolls; snapping lands each card where it should; and with
+     * the bundle blocked the whole thing still works, minus the two arrows.
+     *
+     * The point of it is the peek. Two rules produce it, one per side:
+     *
+     *  - cards are sized to a little under an exact fit, so part of the *next*
+     *    one is always on screen and the row reads as continuing rather than
+     *    ending;
+     *  - `scroll-padding-inline` stops a card short of the edge, and the
+     *    *previous* one shows through the space left over. It moves snap
+     *    positions only, never layout, so the first card still sits flush with
+     *    the heading above it at rest.
+     *
+     * That second number is the gap plus the peek, not a round figure: the gap
+     * sits between the two cards and shows nothing, so 3.25rem is 1.5rem of gap
+     * and about 1.75rem of the previous card. Measured at 390, 768, 1100 and
+     * 1440: roughly 28px behind and 40-75px ahead at every one of them.
+     *
+     * `overscroll-behavior-x: contain` keeps a horizontal swipe from turning
+     * into the browser's back gesture, which is the one thing that makes a
+     * carousel feel broken on a phone.
+     */
+    .carousel {
+        display: flex;
+        gap: 1.5rem;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+        scroll-padding-inline: 3.25rem;
+    }
+
+    .carousel > * {
+        scroll-snap-align: start;
+    }
+
+    /*
+     * The arrows are added by app.js and revealed here, rather than shipped
+     * visible and wired up later: a button that scrolls nothing is worse than
+     * no button. They stay off touch-sized screens, where the swipe is the
+     * control and an arrow over a card is just something to hit by accident.
+     */
+    [data-carousel-controls] {
+        display: none;
+    }
+
+    @media (min-width: 1024px) {
+        [data-carousel-controls][data-ready] {
+            display: flex;
+        }
+    }
+
     /* Small uppercase label used above section headings and on spec rows.
        Uppercasing is a no-op for Persian/Arabic, which is the correct
        behaviour — the letter-spacing carries the effect there instead. */

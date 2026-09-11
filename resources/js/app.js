@@ -97,17 +97,64 @@ function bindAutoSubmitFilters() {
 }
 
 /**
- * Day/night toggle.
+ * Arrows for the peek carousel.
  *
- * The theme itself is CSS: `prefers-color-scheme` handles a visitor who has
- * never chosen, and `data-theme` on <html> overrides it in either direction.
- * This adds only the choosing — so with the bundle blocked the site still
- * follows the operating system, it simply cannot be argued with.
+ * The scrolling itself is the browser's — CSS does the snapping and the swipe
+ * needs nothing from here. This adds only the two arrows a mouse wants, which
+ * is why they are hidden until this runs: an arrow that scrolls nothing is
+ * worse than no arrow at all.
  *
- * The current theme is read back from the document rather than tracked in a
- * variable, because the first click has to flip whatever the system decided,
- * not whatever this file assumed.
+ * Everything is measured rather than assumed. The step is the first card's real
+ * width plus the real gap, so a breakpoint change needs no matching change
+ * here; `scrollLeft` is read through `Math.abs`, because in a right-to-left
+ * document browsers disagree about whether it counts up or down from zero; and
+ * the arrows disable at each end from the same measurement, so they vanish
+ * exactly when there is nothing left to scroll to.
  */
+function bindCarousels() {
+    document.querySelectorAll('[data-carousel]').forEach((track) => {
+        const controls = track.parentElement?.querySelector('[data-carousel-controls]');
+        const prev = controls?.querySelector('[data-carousel-prev]');
+        const next = controls?.querySelector('[data-carousel-next]');
+
+        if (!controls || !prev || !next) return;
+
+        // Logical direction: in Persian the "next" card is to the left.
+        const rtl = getComputedStyle(track).direction === 'rtl';
+
+        const step = () => {
+            const card = track.firstElementChild?.getBoundingClientRect().width ?? track.clientWidth;
+            const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+
+            return card + gap;
+        };
+
+        // A couple of pixels of slack: scroll offsets are fractional, and an
+        // exact comparison leaves an arrow live with nowhere to go.
+        const sync = () => {
+            const travel = track.scrollWidth - track.clientWidth;
+            const at = Math.abs(track.scrollLeft);
+
+            controls.toggleAttribute('data-ready', travel > 4);
+            prev.disabled = at <= 4;
+            next.disabled = at >= travel - 4;
+        };
+
+        const go = (direction) => track.scrollBy({
+            left: (rtl ? -direction : direction) * step(),
+            behavior: 'smooth',
+        });
+
+        prev.addEventListener('click', () => go(-1));
+        next.addEventListener('click', () => go(1));
+
+        track.addEventListener('scroll', sync, { passive: true });
+        window.addEventListener('resize', sync);
+
+        sync();
+    });
+}
+
 /*
  * "Find us on the map", handed to the phone rather than to a website.
  *
@@ -137,6 +184,18 @@ function bindMapLinks() {
     });
 }
 
+/**
+ * Day/night toggle.
+ *
+ * The theme itself is CSS: `prefers-color-scheme` handles a visitor who has
+ * never chosen, and `data-theme` on <html> overrides it in either direction.
+ * This adds only the choosing — so with the bundle blocked the site still
+ * follows the operating system, it simply cannot be argued with.
+ *
+ * The current theme is read back from the document rather than tracked in a
+ * variable, because the first click has to flip whatever the system decided,
+ * not whatever this file assumed.
+ */
 function bindThemeToggle() {
     const buttons = document.querySelectorAll('[data-theme-toggle]');
     if (buttons.length === 0) return;
@@ -177,6 +236,7 @@ function bindThemeToggle() {
     lockScrollWithMobileMenu,
     bindGalleries,
     bindAutoSubmitFilters,
+    bindCarousels,
     bindMapLinks,
     bindThemeToggle,
 ].forEach((enhance) => {
