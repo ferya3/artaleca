@@ -35,7 +35,7 @@ class SiteImageryTest extends TestCase
     {
         $html = $this->actingAs($this->admin())->get('/admin/site-images')->assertOk()->getContent();
 
-        foreach (['media|hero', 'media|applications_infographic', 'media|quality_lab', 'media|plant_exterior', 'media|kiln', 'media|screening'] as $field) {
+        foreach (['media|hero', 'media|quality_lab', 'media|plant_exterior', 'media|kiln', 'media|screening'] as $field) {
             $this->assertStringContainsString($field, $html, "The imagery screen is missing {$field}.");
         }
     }
@@ -132,74 +132,12 @@ class SiteImageryTest extends TestCase
     }
 
     /**
-     * The applications infographic must reach the page *uncropped*.
-     *
-     * Every other photograph on the site is `object-cover` inside a fixed
-     * ratio; an infographic carries text, so cropping it would cut the content
-     * off. It keeps its own ratio and takes the height the artwork asks for —
-     * with `width`/`height` still on the tag so nothing below it shifts.
+     * A use with no photograph yet is a card with a placeholder, not a card
+     * with a gap — which is what stops the section collapsing on a fresh
+     * install, where nothing has been uploaded at all.
      */
-    public function test_the_applications_infographic_reaches_the_home_page_uncropped(): void
-    {
-        Storage::fake('media');
-
-        $this->actingAs($this->admin())->put('/admin/site-images', [
-            'media|applications_infographic' => ['fa' => ['light' => UploadedFile::fake()->image('info.jpg', 1600, 2200)]],
-        ]);
-
-        $html = $this->get('/fa')->assertOk()->getContent();
-
-        $this->assertStringContainsString('-1600x2200.jpg', $html);
-        $this->assertStringContainsString('-1600x2200-1024.webp', $html);
-        $this->assertStringContainsString('width="1600" height="2200"', $html);
-        // `h-auto w-full`, not `object-cover` inside a ratio box: the artwork
-        // decides the height, so none of it is cut off.
-        $this->assertStringContainsString('class="h-auto w-full"', $html);
-    }
-
-    /** A phone can be given its own, taller version of the same infographic. */
-    public function test_the_infographic_takes_a_separate_mobile_version(): void
-    {
-        Storage::fake('media');
-
-        $this->actingAs($this->admin())->put('/admin/site-images', [
-            'media|applications_infographic' => ['fa' => ['light' => UploadedFile::fake()->image('wide.jpg', 1600, 900)]],
-            'media|applications_infographic_mobile' => ['fa' => ['light' => UploadedFile::fake()->image('tall.jpg', 800, 1800)]],
-        ]);
-
-        $html = $this->get('/fa')->assertOk()->getContent();
-
-        $this->assertStringContainsString('-800x1800-', $html);
-        $this->assertStringContainsString('-1600x900-', $html);
-
-        // Art direction, not resolution switching: the phone must be able to
-        // fetch the tall version and nothing else.
-        $this->assertMatchesRegularExpression(
-            '/<source media="\(max-width: 767\.98px\)"[^>]*-800x1800-/',
-            $html,
-        );
-
-        /*
-         * And the art-directed source must declare its own intrinsic size.
-         *
-         * `width`/`height` on the <img> describe the desktop photograph, and
-         * the browser reserves that ratio before it knows which source it will
-         * take — so the taller phone crop pushed the whole page down when it
-         * arrived. Measured on a 390px screen: a box reserved at 348x218 that
-         * settled at 348x618.
-         */
-        $this->assertMatchesRegularExpression(
-            '/<source media="\(max-width: 767\.98px\)"[^>]*width="800" height="1800"/',
-            $html,
-            'The phone source must carry its own dimensions, or the page shifts when it loads.',
-        );
-    }
-
-    /** The heading stands whether or not an infographic has been uploaded. */
     public function test_the_applications_section_holds_its_space_before_an_upload(): void
     {
-        $this->assertNull(Setting::get('media.applications_infographic'));
-
         $this->get('/fa')
             ->assertOk()
             ->assertSee(__('home.applications_title'))
@@ -210,16 +148,16 @@ class SiteImageryTest extends TestCase
      * An image can carry text, so it is uploaded per language.
      *
      * This was invisible because nothing in the pipeline treats a picture as
-     * copy: an infographic lettered in Persian was served to the English site
-     * exactly as a Persian paragraph would have been, and no test or type
-     * could tell the difference.
+     * copy: artwork lettered in Persian was served to the English site exactly
+     * as a Persian paragraph would have been, and no test or type could tell
+     * the difference.
      */
     public function test_each_language_serves_its_own_artwork(): void
     {
         Storage::fake('media');
 
         $this->actingAs($this->admin())->put('/admin/site-images', [
-            'media|applications_infographic' => [
+            'media|quality_lab' => [
                 'fa' => ['light' => UploadedFile::fake()->image('fa.jpg', 1600, 1000)],
                 'en' => ['light' => UploadedFile::fake()->image('en.jpg', 1500, 1000)],
                 'ar' => ['light' => UploadedFile::fake()->image('ar.jpg', 1400, 1000)],
@@ -242,7 +180,7 @@ class SiteImageryTest extends TestCase
         Storage::fake('media');
 
         $this->actingAs($this->admin())->put('/admin/site-images', [
-            'media|applications_infographic' => ['fa' => ['light' => UploadedFile::fake()->image('fa.jpg', 1600, 1000)]],
+            'media|quality_lab' => ['fa' => ['light' => UploadedFile::fake()->image('fa.jpg', 1600, 1000)]],
         ]);
 
         $this->get('/en')->assertOk()->assertSee('-1600x1000-', false);
@@ -255,14 +193,14 @@ class SiteImageryTest extends TestCase
         $admin = $this->admin();
 
         $this->actingAs($admin)->put('/admin/site-images', [
-            'media|applications_infographic' => ['fa' => ['light' => UploadedFile::fake()->image('fa.jpg', 1600, 1000)]],
+            'media|quality_lab' => ['fa' => ['light' => UploadedFile::fake()->image('fa.jpg', 1600, 1000)]],
         ]);
 
         $this->actingAs($admin)->put('/admin/site-images', [
-            'media|applications_infographic' => ['en' => ['light' => UploadedFile::fake()->image('en.jpg', 1500, 1000)]],
+            'media|quality_lab' => ['en' => ['light' => UploadedFile::fake()->image('en.jpg', 1500, 1000)]],
         ]);
 
-        $stored = SiteImage::get('media.applications_infographic', 'fa');
+        $stored = SiteImage::get('media.quality_lab', 'fa');
 
         $this->assertStringContainsString('-1600x1000.jpg', (string) $stored['light']);
         $this->get('/en')->assertOk()->assertSee('-1500x1000-', false);
@@ -274,7 +212,7 @@ class SiteImageryTest extends TestCase
      */
     public function test_an_image_stored_as_a_plain_string_still_serves_every_language(): void
     {
-        Setting::put('media.applications_infographic', '/storage/media/settings/legacy-1600x1000.jpg', 'media', false);
+        Setting::put('media.quality_lab', '/storage/media/settings/legacy-1600x1000.jpg', 'media', false);
 
         foreach (['fa', 'en', 'ar'] as $locale) {
             $this->get('/'.$locale)->assertOk()->assertSee('legacy-1600x1000.jpg', false);
@@ -284,8 +222,8 @@ class SiteImageryTest extends TestCase
     /**
      * Artwork with a background of its own needs one file per theme.
      *
-     * An infographic lettered on white is unreadable on a dark page for the
-     * same reason a Persian one is unreadable in English: the picture carries
+     * A diagram lettered on white is unreadable on a dark page for the same
+     * reason a Persian one is unreadable in English: the picture carries
      * something the theme has an opinion about. Both files go into the page and
      * CSS shows one — not `<source media="(prefers-color-scheme: dark)">`,
      * which can only see the operating system and would ignore the site's own
@@ -296,7 +234,7 @@ class SiteImageryTest extends TestCase
         Storage::fake('media');
 
         $this->actingAs($this->admin())->put('/admin/site-images', [
-            'media|applications_infographic' => ['fa' => [
+            'media|quality_lab' => ['fa' => [
                 'light' => UploadedFile::fake()->image('day.jpg', 1600, 1000),
                 'dark' => UploadedFile::fake()->image('night.jpg', 1500, 1000),
             ]],
@@ -356,14 +294,14 @@ class SiteImageryTest extends TestCase
         $admin = $this->admin();
 
         $this->actingAs($admin)->put('/admin/site-images', [
-            'media|applications_infographic' => ['fa' => ['light' => UploadedFile::fake()->image('day.jpg', 1600, 1000)]],
+            'media|quality_lab' => ['fa' => ['light' => UploadedFile::fake()->image('day.jpg', 1600, 1000)]],
         ]);
 
         $this->actingAs($admin)->put('/admin/site-images', [
-            'media|applications_infographic' => ['fa' => ['dark' => UploadedFile::fake()->image('night.jpg', 1500, 1000)]],
+            'media|quality_lab' => ['fa' => ['dark' => UploadedFile::fake()->image('night.jpg', 1500, 1000)]],
         ]);
 
-        $stored = SiteImage::get('media.applications_infographic', 'fa');
+        $stored = SiteImage::get('media.quality_lab', 'fa');
 
         $this->assertStringContainsString('-1600x1000.jpg', (string) $stored['light']);
         $this->assertStringContainsString('-1500x1000.jpg', (string) $stored['dark']);

@@ -154,18 +154,14 @@
 
     {{--
         ── Applications ───────────────────────────────────────────────────
-        One infographic instead of a card grid: the relationship between grade
-        and use is a single picture, and nine cards were telling it in pieces.
+        Seven cards, one per use, built like the product cards above them: a
+        picture, a name, a line of what it is for.
 
-        The image is deliberately *not* `object-cover` like every other
-        photograph on the site. An infographic carries text, and cropping it to
-        a fixed ratio would cut that text off — so it keeps its own aspect ratio
-        and the box takes whatever height the artwork asks for. `width`/`height`
-        still come off the filename, so the space is reserved before it loads
-        and nothing below it shifts.
+        There was an infographic here — one picture of how grade relates to use,
+        which replaced an earlier card grid. It is gone: it explained the
+        relationship and then left you nowhere to go, because a picture cannot
+        link to the seven pages behind it. The cards can.
     --}}
-    @php($infographic = site_image('media.applications_infographic'))
-    @php($infographicMobile = site_image('media.applications_infographic_mobile'))
     <section class="border-y border-hairline bg-surface-muted py-section">
         <div class="container-page">
             <x-section-heading
@@ -175,72 +171,17 @@
                 :href="route('applications.index')"
             />
 
-            {{-- Full width of the page container, in a framed box. Edge to edge
-                 was tried and pulled back: at 1440px the artwork ran wider than
-                 every other block on the page and stopped reading as part of
-                 it. --}}
-            <div class="mt-12 overflow-hidden rounded-lg border border-hairline bg-surface shadow-soft">
-                @if ($infographic['light'])
-                    <span class="theme-only-light">
-                        <x-picture
-                            :src="$infographic['light']"
-                            :mobile-src="$infographicMobile['light']"
-                            :alt="content('home.applications_infographic_alt')"
-                            sizes="(min-width: 1280px) 1216px, (min-width: 768px) calc(100vw - 4rem), calc(100vw - 2.5rem)"
-                            mobile-sizes="calc(100vw - 2.5rem)"
-                            class="h-auto w-full"
-                        />
-                    </span>
-
-                    @if ($infographic['dark'] !== $infographic['light'] || $infographicMobile['dark'] !== $infographicMobile['light'])
-                        <span class="theme-only-dark">
-                            <x-picture
-                                :src="$infographic['dark']"
-                                :mobile-src="$infographicMobile['dark']"
-                                :alt="content('home.applications_infographic_alt')"
-                                sizes="(min-width: 1280px) 1216px, (min-width: 768px) calc(100vw - 4rem), calc(100vw - 2.5rem)"
-                                mobile-sizes="calc(100vw - 2.5rem)"
-                                class="h-auto w-full"
-                            />
-                        </span>
-                    @endif
-                @else
-                    {{-- Nothing uploaded yet: the granule field holds the space
-                         rather than an empty box collapsing the section. Portrait
-                         on a phone and landscape above it, matching the two
-                         uploads the admin asks for — so the empty state is the
-                         shape of the thing that will replace it. --}}
-                    <x-media
-                        seed="arta-applications"
-                        ratio="3/4"
-                        :alt="content('home.applications_title')"
-                        sizes="calc(100vw - 2.5rem)"
-                        class="md:hidden"
-                    />
-                    <x-media
-                        seed="arta-applications"
-                        ratio="16/9"
-                        :alt="content('home.applications_title')"
-                        sizes="(min-width: 1280px) 1216px, (min-width: 768px) calc(100vw - 4rem), calc(100vw - 2.5rem)"
-                        class="hidden md:block"
-                    />
-                @endif
-            </div>
-
             {{--
-                The seven uses, under the picture that explains them.
-
-                The infographic says how grade relates to use; these say where
-                to read more, one card per use. Same treatment as the products
-                row above — a carousel on a phone, a grid from `sm` up — so the
-                two sections behave the same way under the same thumb.
+                Same treatment as the products row above — a carousel on a
+                phone, a grid from `sm` up — so the two sections behave the same
+                way under the same thumb.
 
                 Seven into four columns leaves a row of four and a row of three.
                 Deliberate: three columns would leave a single card stranded on
                 a third row, which reads as a mistake rather than a wrap.
             --}}
             @if ($applications->isNotEmpty())
-                <ul class="no-scrollbar carousel carousel-phone mt-10 -mx-5 px-5 pb-2
+                <ul class="no-scrollbar carousel carousel-phone mt-12 -mx-5 px-5 pb-2
                            sm:mx-0 sm:grid sm:grid-cols-2 sm:px-0 sm:pb-0 lg:grid-cols-4">
                     @foreach ($applications as $application)
                         <li class="flex shrink-0 basis-[78%] sm:basis-auto sm:shrink">

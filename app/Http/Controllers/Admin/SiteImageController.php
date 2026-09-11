@@ -56,17 +56,6 @@ class SiteImageController extends Controller
                 ],
             ],
 
-            'applications' => [
-                'media.applications_infographic' => [
-                    'label' => __('admin.settings_fields.media_applications_infographic'),
-                    'hint' => __('admin.settings_fields.media_applications_infographic_hint'),
-                ],
-                'media.applications_infographic_mobile' => [
-                    'label' => __('admin.settings_fields.media_applications_infographic_mobile'),
-                    'hint' => __('admin.settings_fields.media_applications_infographic_mobile_hint'),
-                ],
-            ],
-
             'showcase' => [
                 'media.showcase' => [
                     'label' => __('admin.settings_fields.media_showcase'),
