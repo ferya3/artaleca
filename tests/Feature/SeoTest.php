@@ -123,4 +123,23 @@ class SeoTest extends TestCase
     {
         $this->get('/robots.txt')->assertSee("User-agent: *\nDisallow: /");
     }
+
+    /**
+     * The two tests above pass whether or not the routes are the thing a
+     * search engine actually reaches: they go through the kernel directly,
+     * while nginx serves `try_files $uri` first. A file of either name sitting
+     * in `public/` therefore shadows its route in production and nowhere else
+     * — which is how the Laravel skeleton's own `robots.txt` ("Disallow:",
+     * i.e. allow everything, no sitemap line) stayed in front of this
+     * controller without a single test noticing.
+     */
+    public function test_no_static_file_shadows_the_generated_ones(): void
+    {
+        foreach (['robots.txt', 'sitemap.xml'] as $name) {
+            $this->assertFileDoesNotExist(
+                public_path($name),
+                "public/$name would be served by the web server instead of the route that generates it.",
+            );
+        }
+    }
 }
