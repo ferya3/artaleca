@@ -28,7 +28,7 @@ apt update && apt install -y nginx git unzip curl \
 # 2. The application. Set the two variables on the first line first.
 SITE=http://YOUR-IP-OR-DOMAIN; ADMPW='choose-a-long-password'; \
 git clone -b claude/industrial-company-website-6vty0h https://github.com/ferya3/artaleca.git /var/www/artaleca \
-  && cd /var/www/artaleca \
+  && cd /var/www/artaleca && git config core.fileMode false \
   && composer install --no-dev --optimize-autoloader && npm ci && npm run build \
   && cp .env.example .env && touch database/database.sqlite \
   && php artisan key:generate \
@@ -39,10 +39,13 @@ git clone -b claude/industrial-company-website-6vty0h https://github.com/ferya3/
 ```bash
 # 3. Ownership. The web server writes to exactly three trees and nothing else
 #    — the third is `database/`, because SQLite needs to write the directory
-#    as well as the file.
+#    as well as the file. Not `-R` over that one: it would set the execute bit
+#    on every migration and seeder, git tracks the execute bit, and the next
+#    `git pull` then refuses to run over "local changes" that are nothing of
+#    the sort.
 cd /var/www/artaleca \
   && chown -R www-data:www-data storage bootstrap/cache database \
-  && chmod -R 775 storage bootstrap/cache database \
+  && chmod -R 775 storage bootstrap/cache && chmod 775 database && chmod 664 database/database.sqlite \
   && chmod 640 .env
 ```
 
@@ -117,7 +120,7 @@ apt update && apt install -y nginx certbot git unzip curl php-fpm php-cli php-mb
 
 ```bash
 # 2. The application. Change the password on the first line before pasting.
-ADMPW='CHANGE-THIS-PASSWORD'; git clone -b claude/industrial-company-website-6vty0h https://github.com/ferya3/artaleca.git /var/www/artaleca && cd /var/www/artaleca && composer install --no-dev --optimize-autoloader && npm ci && npm run build && cp .env.example .env && touch database/database.sqlite && php artisan key:generate && sed -i "s|^APP_DEBUG=.*|APP_DEBUG=false|; s|^APP_URL=.*|APP_URL=http://artaleca.com|; s|^ADMIN_PASSWORD=.*|ADMIN_PASSWORD=$ADMPW|" .env && php artisan migrate --force --seed && php artisan storage:link && php artisan optimize && chown -R www-data:www-data storage bootstrap/cache database && chmod -R 775 storage bootstrap/cache database && chmod 640 .env
+ADMPW='CHANGE-THIS-PASSWORD'; git clone -b claude/industrial-company-website-6vty0h https://github.com/ferya3/artaleca.git /var/www/artaleca && cd /var/www/artaleca && git config core.fileMode false && composer install --no-dev --optimize-autoloader && npm ci && npm run build && cp .env.example .env && touch database/database.sqlite && php artisan key:generate && sed -i "s|^APP_DEBUG=.*|APP_DEBUG=false|; s|^APP_URL=.*|APP_URL=http://artaleca.com|; s|^ADMIN_PASSWORD=.*|ADMIN_PASSWORD=$ADMPW|" .env && php artisan migrate --force --seed && php artisan storage:link && php artisan optimize && chown -R www-data:www-data storage bootstrap/cache database && chmod -R 775 storage bootstrap/cache && chmod 775 database && chmod 664 database/database.sqlite && chmod 640 .env
 ```
 
 ```bash
@@ -651,6 +654,13 @@ sudo -H bash -c 'cd /var/www/artaleca && git config --global --add safe.director
 `safe.directory` exemption is then written to a file the root-owned `git`
 that follows will not read.
 
+`git reset --hard` rather than `git pull`, and for a reason worth knowing: git
+tracks the execute bit, a `chmod -R` over a tracked directory sets it on every
+file underneath, and `git pull` then refuses to run over "local changes" that
+are only the mode. `git config core.fileMode false` in the install steps stops
+it happening; on a server already in that state, set it and the phantom
+changes disappear with nothing discarded.
+
 Four things in there are not obvious:
 
 - **`git reset --hard`, not `git pull`.** A deploy target has no local work
@@ -725,7 +735,7 @@ cd /var/www/artaleca && php artisan down \
   && php artisan migrate --force \
   && php artisan storage:link && php artisan optimize \
   && chown -R www-data:www-data storage bootstrap/cache database \
-  && chmod -R 775 storage bootstrap/cache database && chmod 640 .env \
+  && chmod -R 775 storage bootstrap/cache && chmod 775 database && chmod 664 database/database.sqlite && chmod 640 .env \
   && php artisan up
 ```
 
