@@ -98,6 +98,89 @@ is still being served over plain HTTP.
 
 ---
 
+## 0b. A rebuild when only port 443 reaches you
+
+Some networks let nothing out but 443. On such a connection SSH on port 22 is
+unreachable, so the server has to serve the website *and* accept SSH on the
+same port. nginx can do that: its `stream` module reads the first few bytes of
+each connection and a TLS handshake announces its version where an SSH client
+(`SSH-2.0-…`) does not. That is enough to route the two apart without
+decrypting anything.
+
+**Run all of this from the hosting provider's web console, not over SSH.** A
+freshly installed server puts sshd back on port 22; until step 7 lands there is
+no way in from a 443-only network. Note also that only *your* connection is
+restricted — Let's Encrypt reaches port 80 from the outside normally, which is
+why the certificate step below still works.
+
+```bash
+# 1. Packages. nginx-full and libnginx-mod-stream carry ssl_preread; the last
+#    command prints 1 if the module is really there.
+apt update && apt install -y nginx-full libnginx-mod-stream certbot git unzip curl php-fpm php-cli php-mbstring php-xml php-curl php-zip php-gd php-intl php-bcmath php-sqlite3 && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt install -y nodejs && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && nginx -V 2>&1 | tr ' ' '\n' | grep -c ssl_preread
+```
+
+```bash
+# 2. The application. Change the password on the first line before pasting.
+ADMPW='CHANGE-THIS-PASSWORD'; git clone -b claude/industrial-company-website-6vty0h https://github.com/ferya3/artaleca.git /var/www/artaleca && cd /var/www/artaleca && composer install --no-dev --optimize-autoloader && npm ci && npm run build && cp .env.example .env && touch database/database.sqlite && php artisan key:generate && sed -i "s|^APP_DEBUG=.*|APP_DEBUG=false|; s|^APP_URL=.*|APP_URL=http://artaleca.com|; s|^ADMIN_PASSWORD=.*|ADMIN_PASSWORD=$ADMPW|" .env && php artisan migrate --force --seed && php artisan storage:link && php artisan optimize && chown -R www-data:www-data storage bootstrap/cache database && chmod -R 775 storage bootstrap/cache database && chmod 640 .env
+```
+
+```bash
+# 3. PHP limits and the queue worker (the worker is what sends the Bale alert).
+PHPV=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;'); printf 'expose_php=Off\ndisplay_errors=Off\nlog_errors=On\nupload_max_filesize=12M\npost_max_size=14M\nmemory_limit=256M\nopcache.enable=1\nopcache.memory_consumption=192\nopcache.max_accelerated_files=20000\n' > /etc/php/$PHPV/fpm/conf.d/99-artaleca.ini && printf '[Unit]\nDescription=Arta Leca queue worker\nAfter=network.target\n\n[Service]\nUser=www-data\nGroup=www-data\nRestart=always\nRestartSec=5\nWorkingDirectory=/var/www/artaleca\nExecStart=/usr/bin/php artisan queue:work --sleep=3 --tries=3 --max-time=3600\n\n[Install]\nWantedBy=multi-user.target\n' > /etc/systemd/system/artaleca-worker.service && systemctl daemon-reload && systemctl enable --now artaleca-worker && systemctl restart php$PHPV-fpm
+```
+
+```bash
+# 4. Plain HTTP on all four names — all the certificate check needs. Prints 200.
+printf 'server {\n    listen 80;\n    listen [::]:80;\n    server_name artaleca.com www.artaleca.com artaleca.ir www.artaleca.ir;\n    root /var/www/artaleca/public;\n    index index.php;\n    charset utf-8;\n    client_max_body_size 12M;\n    location ^~ /.well-known/acme-challenge/ { allow all; }\n    location / { try_files $uri $uri/ /index.php?$query_string; }\n    location ~ \\.php$ {\n        fastcgi_pass unix:%s;\n        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;\n        fastcgi_hide_header X-Powered-By;\n        include fastcgi_params;\n    }\n}\n' "$(ls /run/php/php*-fpm.sock | head -1)" > /etc/nginx/sites-available/artaleca && ln -sf /etc/nginx/sites-available/artaleca /etc/nginx/sites-enabled/artaleca && rm -f /etc/nginx/sites-enabled/default && nginx -t && systemctl reload nginx && curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1/fa
+```
+
+```bash
+# 5. One certificate for all four names, over port 80.
+certbot certonly --webroot -w /var/www/artaleca/public -d artaleca.com -d www.artaleca.com -d artaleca.ir -d www.artaleca.ir --agree-tos -m info@artaleca.com --non-interactive && ls /etc/letsencrypt/live/artaleca.com/
+```
+
+```bash
+# 6. The real site, on 127.0.0.1:8443 rather than 443 — step 7 puts the shared
+#    listener in front of it. `.com` serves, the other three names 301 to it.
+printf 'server {\n    listen 80;\n    listen [::]:80;\n    server_name artaleca.com www.artaleca.com artaleca.ir www.artaleca.ir;\n    root /var/www/artaleca/public;\n    location ^~ /.well-known/acme-challenge/ { allow all; }\n    location / { return 301 https://artaleca.com$request_uri; }\n}\nserver {\n    listen 127.0.0.1:8443 ssl http2 proxy_protocol;\n    server_name artaleca.com www.artaleca.com artaleca.ir www.artaleca.ir;\n    set_real_ip_from 127.0.0.1;\n    real_ip_header proxy_protocol;\n    ssl_certificate /etc/letsencrypt/live/artaleca.com/fullchain.pem;\n    ssl_certificate_key /etc/letsencrypt/live/artaleca.com/privkey.pem;\n    ssl_protocols TLSv1.2 TLSv1.3;\n    ssl_session_cache shared:SSL:10m;\n    if ($host != "artaleca.com") { return 301 https://artaleca.com$request_uri; }\n    root /var/www/artaleca/public;\n    index index.php;\n    charset utf-8;\n    client_max_body_size 12M;\n    add_header Strict-Transport-Security "max-age=31536000" always;\n    location / { try_files $uri $uri/ /index.php?$query_string; }\n    location ~ \\.php$ {\n        fastcgi_pass unix:%s;\n        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;\n        fastcgi_hide_header X-Powered-By;\n        include fastcgi_params;\n    }\n}\n' "$(ls /run/php/php*-fpm.sock | head -1)" > /etc/nginx/sites-available/artaleca && nginx -t && systemctl reload nginx && curl -sk -o /dev/null -w '8443 says %{http_code}\n' --resolve artaleca.com:8443:127.0.0.1 https://artaleca.com/fa
+```
+
+```bash
+# 7. sshd retreats to 127.0.0.1, nginx takes 443 and hands each connection to
+#    whichever of the two it turns out to be.
+printf 'stream {\n    map $ssl_preread_protocol $backend {\n        default   ssh;\n        "TLSv1.0" web;\n        "TLSv1.1" web;\n        "TLSv1.2" web;\n        "TLSv1.3" web;\n        ""        ssh;\n    }\n    upstream web { server 127.0.0.1:8443; }\n    upstream ssh { server 127.0.0.1:2200; }\n    server {\n        listen 443;\n        listen [::]:443;\n        ssl_preread on;\n        proxy_protocol on;\n        proxy_pass $backend;\n        proxy_timeout 12h;\n    }\n    server {\n        listen 127.0.0.1:2200 proxy_protocol;\n        proxy_pass 127.0.0.1:22;\n        proxy_timeout 12h;\n    }\n}\n' > /etc/nginx/stream-artaleca.conf && { grep -q stream-artaleca /etc/nginx/nginx.conf || printf '\ninclude /etc/nginx/stream-artaleca.conf;\n' >> /etc/nginx/nginx.conf; } && mkdir -p /etc/ssh/sshd_config.d && printf 'ListenAddress 127.0.0.1\nPort 22\n' > /etc/ssh/sshd_config.d/99-local.conf && { systemctl disable --now ssh.socket 2>/dev/null; systemctl enable ssh; } && systemctl restart ssh && nginx -t && systemctl restart nginx && ss -lntp | grep -E ':(22|443|8443|2200) '
+```
+
+```bash
+# 8. Tell the application its own address, then check all four names.
+cd /var/www/artaleca && sed -i "s|^APP_URL=.*|APP_URL=https://artaleca.com|; s|^APP_ENV=.*|APP_ENV=production|" .env && php artisan optimize && systemctl reload php$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')-fpm && for u in https://artaleca.ir https://www.artaleca.ir https://www.artaleca.com https://artaleca.com/fa; do printf '%-28s ' "$u"; curl -sk -o /dev/null -m 10 -w '%{http_code} %{redirect_url}\n' "$u"; done
+```
+
+After step 7, `ssh -p 443 ubuntu@artaleca.com` works from a 443-only network
+and `https://artaleca.com` works for everyone else, on the same port.
+
+Three details worth knowing rather than rediscovering:
+
+- **`proxy_protocol` is not optional.** Without it every visitor arrives from
+  `127.0.0.1`, so the per-IP rate limit on the contact and quote forms becomes
+  one shared bucket and the first spammer locks out everybody. `set_real_ip_from`
+  plus `real_ip_header proxy_protocol` in the `8443` block is what undoes that.
+- **sshd does not speak the PROXY protocol**, which is why the connection takes
+  the extra hop through `127.0.0.1:2200`. The real client IP is lost for SSH —
+  no cost, since only the website needs it.
+- **Ubuntu 24.04 starts sshd through `ssh.socket`**, and a socket-activated sshd
+  ignores `ListenAddress`. Step 7 disables the socket and enables the service,
+  otherwise sshd keeps port 22 open to the world and nginx cannot bind 443.
+
+Renewal keeps working: `certbot renew` uses the port-80 block, which leaves
+`/.well-known/` unredirected. Confirm with `certbot renew --dry-run`.
+
+`APP_ENV=production` belongs in step 8 and not step 2 — it forces every
+generated URL to `https`, which is right behind a certificate and breaks the
+site outright before there is one.
+
+---
+
 ## 1. Packages
 
 ```bash
