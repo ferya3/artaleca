@@ -260,6 +260,194 @@ sudo nginx -t && sudo systemctl reload nginx
 
 ---
 
+## 3b. The domains
+
+`artaleca.com` is the canonical name. `artaleca.ir` and both `www` forms
+redirect to it permanently, so a page is never reachable at four addresses —
+which is the thing that splits a search ranking four ways and makes the
+analytics meaningless.
+
+**DNS first.** Four A records at the registrar, all pointing at the server:
+`artaleca.com`, `www.artaleca.com`, `artaleca.ir`, `www.artaleca.ir`. Nothing
+below works until they resolve, because Let's Encrypt proves you own a name by
+fetching a file from it.
+
+```bash
+for d in artaleca.com www.artaleca.com artaleca.ir www.artaleca.ir; do echo -n "$d "; dig +short "$d" | tail -1; done
+```
+
+**1. Plain HTTP on every name**, which is all the certificate check needs:
+
+```bash
+cat > /etc/nginx/sites-available/artaleca <<EOF
+# Plain HTTP, every name. Enough for Let's Encrypt to validate all four.
+server {
+    listen 80;
+    listen [::]:80;
+    server_name artaleca.com www.artaleca.com artaleca.ir www.artaleca.ir;
+    root /var/www/artaleca/public;
+    index index.php;
+    charset utf-8;
+
+    location ^~ /.well-known/acme-challenge/ { allow all; }
+
+    location / { try_files \$uri \$uri/ /index.php?\$query_string; }
+
+    location ~ \\.php\$ {
+        fastcgi_pass unix:$(ls /run/php/php*-fpm.sock | head -1);
+        fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+EOF
+ln -sf /etc/nginx/sites-available/artaleca /etc/nginx/sites-enabled/artaleca
+rm -f /etc/nginx/sites-enabled/default
+nginx -t && systemctl reload nginx
+```
+
+**2. One certificate covering all four names.** `certonly --webroot` leaves the
+nginx config alone, so what runs is what is written here rather than whatever
+the plugin rewrote it into:
+
+```bash
+apt install -y certbot
+certbot certonly --webroot -w /var/www/artaleca/public \
+    -d artaleca.com -d www.artaleca.com -d artaleca.ir -d www.artaleca.ir \
+    --agree-tos -m info@artaleca.com --non-interactive
+```
+
+**3. The real config** — the site on the canonical name, everything else a 301:
+
+```bash
+cat > /etc/nginx/sites-available/artaleca <<EOF
+# ── artaleca.com — the site ──────────────────────────────────────────────
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name artaleca.com;
+    root /var/www/artaleca/public;
+
+    ssl_certificate     /etc/letsencrypt/live/artaleca.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/artaleca.com/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers off;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 1d;
+    ssl_session_tickets off;
+
+    index index.php;
+    charset utf-8;
+    client_max_body_size 12M;
+
+    autoindex off;
+    location ~ /\\. { deny all; access_log off; log_not_found off; }
+
+    gzip on;
+    gzip_vary on;
+    gzip_comp_level 6;
+    gzip_min_length 512;
+    gzip_proxied any;
+    gzip_types text/plain text/css text/xml application/javascript application/json
+               application/xml image/svg+xml application/manifest+json;
+
+    # Vite writes a content hash into every build filename, so a changed file is
+    # a changed URL — which is what makes \`immutable\` correct here.
+    location ^~ /build/ {
+        expires 1y;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        access_log off;
+    }
+
+    location ~* \\.(woff2|avif|webp|jpe?g|png|gif|svg|ico)\$ {
+        expires 1y;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        access_log off;
+    }
+
+    # An upload directory that can run code is the worst possible outcome.
+    location ^~ /storage/ {
+        location ~ \\.php\$ { deny all; }
+    }
+
+    location / { try_files \$uri \$uri/ /index.php?\$query_string; }
+
+    location ~ \\.php\$ {
+        fastcgi_pass unix:$(ls /run/php/php*-fpm.sock | head -1);
+        fastcgi_param SCRIPT_FILENAME \$realpath_root\$fastcgi_script_name;
+        fastcgi_hide_header X-Powered-By;
+        include fastcgi_params;
+    }
+}
+
+# ── .ir and both www — one permanent redirect to the canonical name ──────
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    http2 on;
+    server_name www.artaleca.com artaleca.ir www.artaleca.ir;
+
+    ssl_certificate     /etc/letsencrypt/live/artaleca.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/artaleca.com/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers off;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 1d;
+    ssl_session_tickets off;
+
+    return 301 https://artaleca.com\$request_uri;
+}
+
+# ── Plain HTTP — renewal first, then up to TLS ───────────────────────────
+server {
+    listen 80;
+    listen [::]:80;
+    server_name artaleca.com www.artaleca.com artaleca.ir www.artaleca.ir;
+
+    # Renewals validate over HTTP, so this must stay reachable unredirected.
+    location ^~ /.well-known/acme-challenge/ {
+        root /var/www/artaleca/public;
+        allow all;
+    }
+
+    location / { return 301 https://artaleca.com\$request_uri; }
+}
+EOF
+nginx -t && systemctl reload nginx
+```
+
+**4. Tell the application its own address.** This is the step that matters
+beyond nginx: canonical tags, `hreflang`, the sitemap and every generated link
+come from `APP_URL`, so redirecting without it leaves the .ir pages still
+*claiming* to be canonical — which is the version Google keeps.
+
+```bash
+cd /var/www/artaleca \
+  && sed -i "s|^APP_URL=.*|APP_URL=https://artaleca.com|; s|^APP_ENV=.*|APP_ENV=production|; s|^APP_DEBUG=.*|APP_DEBUG=false|" .env \
+  && php artisan optimize \
+  && systemctl reload $(systemctl list-units --type=service --plain --no-legend "php*-fpm.service" | cut -d" " -f1)
+```
+
+`APP_ENV=production` belongs *here* and not earlier: it forces every generated
+URL to `https`, which is right behind a certificate and breaks the site
+outright before there is one.
+
+**5. Check it.** The three aliases should answer `301` and name the canonical
+address; the canonical one should answer `200` and point its canonical tag at
+itself:
+
+```bash
+for u in https://artaleca.ir https://www.artaleca.ir https://www.artaleca.com; do echo -n "$u -> "; curl -sk -o /dev/null -w "%{http_code} %{redirect_url}\n" "$u"; done
+curl -s -o /dev/null -w "canonical host: %{http_code}\n" https://artaleca.com/fa
+curl -s https://artaleca.com/fa | grep -o 'rel="canonical" href="[^"]*"'
+```
+
+Renewal is a systemd timer certbot installs for itself, and the port-80 block
+above keeps `/.well-known/` unredirected so it keeps working. Confirm with
+`certbot renew --dry-run`.
+
+---
+
 ## 4. PHP-FPM
 
 ```ini
