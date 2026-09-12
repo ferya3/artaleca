@@ -102,12 +102,13 @@ is still being served over plain HTTP.
 
 Section 0 gets a site onto an IP address. This is the same rebuild but
 finished: all four names, one certificate, HTTPS on 443 and the three aliases
-redirecting to the canonical `artaleca.com`. Eight pastes, each one line.
+redirecting to the canonical `artaleca.com`. Four pastes, each one line.
 
 **Point DNS first.** Four A records at the registrar — `artaleca.com`,
 `www.artaleca.com`, `artaleca.ir`, `www.artaleca.ir` — all at the new server.
-Nothing from step 5 onward works until they resolve, because Let's Encrypt
-proves you own a name by fetching a file from it.
+Nothing in step 4 works until they resolve, because Let's Encrypt proves you
+own a name by fetching a file from it; the script checks and stops rather than
+burning a rate-limited request on a name that points somewhere else.
 
 ```bash
 # 1. Packages.
@@ -125,43 +126,38 @@ PHPV=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;'); printf 'expose_p
 ```
 
 ```bash
-# 4. Plain HTTP on all four names — all the certificate check needs. Prints 200.
-printf 'server {\n    listen 80;\n    listen [::]:80;\n    server_name artaleca.com www.artaleca.com artaleca.ir www.artaleca.ir;\n    root /var/www/artaleca/public;\n    index index.php;\n    charset utf-8;\n    client_max_body_size 12M;\n    location ^~ /.well-known/acme-challenge/ { allow all; }\n    location / { try_files $uri $uri/ /index.php?$query_string; }\n    location ~ \\.php$ {\n        fastcgi_pass unix:%s;\n        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;\n        fastcgi_hide_header X-Powered-By;\n        include fastcgi_params;\n    }\n}\n' "$(ls /run/php/php*-fpm.sock | head -1)" > /etc/nginx/sites-available/artaleca && ln -sf /etc/nginx/sites-available/artaleca /etc/nginx/sites-enabled/artaleca && rm -f /etc/nginx/sites-enabled/default && nginx -t && systemctl reload nginx && curl -s -o /dev/null -w '%{http_code}\n' http://127.0.0.1/fa
+# 4. Everything else — DNS check, certificate, the real nginx config, APP_URL,
+#    and the proof that all four names behave. The script is in the repository
+#    rather than in this document because a chat window or an issue tracker
+#    turns a bare `www.` into a hyperlink the moment the text is copied, and a
+#    mangled `server_name` is exactly the kind of thing nginx accepts without
+#    complaint and only misbehaves about later. Pulling the file is paste-proof.
+cd /var/www/artaleca && git pull && bash deploy/https.sh
 ```
+
+That last one is safe to run again: an existing certificate is reused rather
+than re-issued, which also keeps clear of Let's Encrypt's five-per-week limit
+on the same set of names. It prints a 301 for each alias naming
+`https://artaleca.com`, then a 200 for the canonical name and the canonical tag
+it serves.
+
+To point the same script at different names, set the variables it reads:
 
 ```bash
-# 5. One certificate for all four names. `certonly --webroot` leaves the nginx
-#    config alone, so what runs is what step 6 writes rather than whatever the
-#    certbot nginx plugin would have rewritten it into.
-certbot certonly --webroot -w /var/www/artaleca/public -d artaleca.com -d www.artaleca.com -d artaleca.ir -d www.artaleca.ir --agree-tos -m info@artaleca.com --non-interactive && ls /etc/letsencrypt/live/artaleca.com/
+APEX=example.com ALIASES="www.example.com example.ir" bash deploy/https.sh
 ```
 
-```bash
-# 6. The real config: HTTPS on 443, `.com` serves, the other three names 301.
-printf 'server {\n    listen 80;\n    listen [::]:80;\n    server_name artaleca.com www.artaleca.com artaleca.ir www.artaleca.ir;\n    root /var/www/artaleca/public;\n    location ^~ /.well-known/acme-challenge/ { allow all; }\n    location / { return 301 https://artaleca.com$request_uri; }\n}\nserver {\n    listen 443 ssl http2;\n    listen [::]:443 ssl http2;\n    server_name artaleca.com www.artaleca.com artaleca.ir www.artaleca.ir;\n    ssl_certificate /etc/letsencrypt/live/artaleca.com/fullchain.pem;\n    ssl_certificate_key /etc/letsencrypt/live/artaleca.com/privkey.pem;\n    ssl_protocols TLSv1.2 TLSv1.3;\n    ssl_session_cache shared:SSL:10m;\n    if ($host != "artaleca.com") { return 301 https://artaleca.com$request_uri; }\n    root /var/www/artaleca/public;\n    index index.php;\n    charset utf-8;\n    client_max_body_size 12M;\n    autoindex off;\n    add_header Strict-Transport-Security "max-age=31536000" always;\n    gzip on; gzip_vary on; gzip_comp_level 6; gzip_min_length 512;\n    gzip_types text/plain text/css application/javascript application/json image/svg+xml application/xml;\n    location ~ /\\. { deny all; access_log off; }\n    location ^~ /build/ { expires 1y; add_header Cache-Control "public, max-age=31536000, immutable"; access_log off; }\n    location ~* \\.(woff2|avif|webp|jpe?g|png|gif|svg|ico)$ { expires 1y; add_header Cache-Control "public, max-age=31536000, immutable"; access_log off; }\n    location ^~ /storage/ { location ~ \\.php$ { deny all; } }\n    location / { try_files $uri $uri/ /index.php?$query_string; }\n    location ~ \\.php$ {\n        fastcgi_pass unix:%s;\n        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;\n        fastcgi_hide_header X-Powered-By;\n        include fastcgi_params;\n    }\n}\n' "$(ls /run/php/php*-fpm.sock | head -1)" > /etc/nginx/sites-available/artaleca && nginx -t && systemctl reload nginx
-```
-
-```bash
-# 7. Tell the application its own address. This is the step that matters beyond
-#    nginx: canonical tags, hreflang, the sitemap and every generated link come
-#    from APP_URL, so redirecting without it leaves the .ir pages still
-#    *claiming* to be canonical — which is the version Google keeps.
-cd /var/www/artaleca && sed -i "s|^APP_URL=.*|APP_URL=https://artaleca.com|; s|^APP_ENV=.*|APP_ENV=production|" .env && php artisan optimize && systemctl reload php$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;')-fpm
-```
-
-```bash
-# 8. Check it. Three 301s naming the canonical address, then a 200 whose
-#    canonical tag points at itself.
-for u in https://artaleca.ir https://www.artaleca.ir https://www.artaleca.com https://artaleca.com/fa; do printf '%-28s ' "$u"; curl -sk -o /dev/null -m 10 -w '%{http_code} %{redirect_url}\n' "$u"; done; curl -s https://artaleca.com/fa | grep -o 'rel="canonical" href="[^"]*"'
-```
-
-`APP_ENV=production` belongs in step 7 and not step 2 — it forces every
+Two things it does that are easy to leave out by hand. It sets `APP_URL` **and**
+`APP_ENV=production` at the end rather than at install time: canonical tags,
+`hreflang`, the sitemap and every generated link come from `APP_URL`, so
+redirecting without it leaves the alias pages still *claiming* to be canonical
+— which is the version a search engine keeps. And `production` forces every
 generated URL to `https`, which is right behind a certificate and breaks the
 site outright before there is one.
 
 Renewal is a systemd timer certbot installs for itself, and the port-80 block
-in step 6 keeps `/.well-known/` unredirected so it keeps working. Confirm with
-`certbot renew --dry-run`.
+the script writes keeps `/.well-known/` unredirected so it keeps working.
+Confirm with `certbot renew --dry-run`.
 
 ### If port 22 is unreachable from where you administer the server
 
