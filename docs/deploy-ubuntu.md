@@ -631,6 +631,33 @@ the job in hand and exit; systemd starts a replacement on the new code.
 
 ---
 
+## 4c. The panel password
+
+```bash
+cd /var/www/artaleca && php artisan admin:password
+```
+
+It prompts, hashes, writes, and reads the hash back before saying it worked.
+
+Do **not** reset it by editing `ADMIN_PASSWORD` in `.env` and re-running the
+seeder. That route failed twice on a live server, in two different ways, and
+both times reported success:
+
+- `php artisan optimize` caches the config, and a cached config makes Laravel
+  skip loading `.env` altogether. `env()` then returns null with no error, the
+  seeder took its "no password configured" branch, and set a *random* password
+  over a working one. (Fixed — the seeder reads config now — but the habit is
+  still worth breaking.)
+- A password containing `#`, a space, or a quote means one thing to the person
+  who typed it and another to the dotenv parser, which treats `#` in an
+  unquoted value as the start of a comment. The account ends up with a
+  truncated password nobody can guess.
+
+`ADMIN_PASSWORD` in `.env` still seeds the first install, which is the one
+moment nothing is running yet and no account exists to reset.
+
+---
+
 ## 5. Deploying an update
 
 One line, safe to re-run, and it stops at the first failure rather than
