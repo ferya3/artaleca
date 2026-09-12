@@ -37,6 +37,9 @@ return [
     'export' => 'Export',
     'address' => 'Address',
     'postal_code' => 'Postal code',
+    'plant_address' => 'Plant address',
+    'head_office_address' => 'Head office address',
+    'phones' => 'Telephone',
 
     'copyright' => '© :year :brand. All rights reserved.',
     'all_rights' => 'All rights reserved',

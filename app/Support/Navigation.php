@@ -127,23 +127,24 @@ final class Navigation
      */
     public static function footer(): array
     {
+        // Two columns of five, not three groups under headings. The headings
+        // are kept as the accessible name of each <nav> but not drawn: on a
+        // phone a heading costs as much vertical space as a link, and the
+        // footer was running to a screen and a half. Everything dropped here
+        // — the gallery, quality control, the plant page, the quote form — is
+        // one tap away from a page that is still listed.
         return [
             content('nav.products') => [
+                ['label' => content('nav.home'), 'route' => 'home'],
                 ['label' => content('nav.all_products'), 'route' => 'products.index'],
                 ['label' => content('nav.applications'), 'route' => 'applications.index'],
                 ['label' => content('nav.downloads'), 'route' => 'downloads.index'],
-                ['label' => content('nav.gallery'), 'route' => 'gallery'],
+                ['label' => content('nav.projects'), 'route' => 'projects.index'],
             ],
             content('nav.about') => [
                 ['label' => content('nav.about'), 'route' => 'about'],
-                ['label' => content('nav.representatives'), 'route' => 'representatives'],
-                ['label' => content('nav.quality'), 'route' => 'about.quality'],
-                ['label' => content('nav.plant'), 'route' => 'about.plant'],
-                ['label' => content('nav.projects'), 'route' => 'projects.index'],
-            ],
-            content('nav.contact') => [
                 ['label' => content('nav.contact'), 'route' => 'contact'],
-                ['label' => content('nav.quote'), 'route' => 'quote'],
+                ['label' => content('nav.representatives'), 'route' => 'representatives'],
                 ['label' => content('nav.faq'), 'route' => 'faq'],
                 ['label' => content('nav.news'), 'route' => 'articles.index'],
             ],

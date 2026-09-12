@@ -30,30 +30,43 @@ class FooterMarkupTest extends TestCase
     }
 
     /**
-     * Stacked, the five blocks put the legal line about a screen and a half
-     * below the last thing anyone came here to read — measured at 390px wide,
-     * 1376px of footer. Two columns brings it to 786px.
+     * Stacked one block per row, this footer measured 1376px tall at 390px
+     * wide — the legal line sat about a screen and a half below the last thing
+     * anyone came here to read. Two columns of five links, with the contact
+     * details a line each underneath, brings it to 650px.
      *
-     * The grid is asserted rather than the height because the height depends on
-     * how much address an editor has typed, and the layout should hold either
-     * way.
+     * The markup is asserted rather than the height, because the height also
+     * depends on how much address an editor has typed and the layout should
+     * hold either way.
      */
-    public function test_the_footer_is_two_columns_on_a_phone(): void
+    public function test_the_links_sit_in_two_columns_on_a_phone(): void
     {
         $footer = $this->footer();
 
-        preg_match('~<div class="container-page grid[^"]*"~', $footer, $grid);
-        $this->assertNotEmpty($grid, 'The footer grid is not where this test expects it.');
+        preg_match('~<div class="mt-8 grid[^"]*"~', $footer, $grid);
+        $this->assertNotEmpty($grid, 'The footer link grid is not where this test expects it.');
 
         $this->assertStringContainsString(
             'grid-cols-2',
             $grid[0],
-            'Without an unprefixed column count the grid falls back to one column on phones.',
+            'Without an unprefixed column count the links fall back to one column on phones.',
         );
 
-        // The brand block spans both, so the three link groups and the address
-        // pair off into two even rows underneath rather than leaving an orphan.
-        $this->assertStringContainsString('class="col-span-2 lg:col-span-4"', $footer);
+        $this->assertSame(
+            2,
+            substr_count($footer, '<nav aria-label='),
+            'The footer is meant to be two columns of links, not three or more.',
+        );
+    }
+
+    /**
+     * Each group heading is the accessible name of its <nav> and nothing more.
+     * Drawn, a heading costs as much vertical space as a link does, which is a
+     * poor trade for two words on a phone.
+     */
+    public function test_the_group_headings_are_not_drawn(): void
+    {
+        $this->assertStringNotContainsString('eyebrow', $this->footer());
     }
 
     /**

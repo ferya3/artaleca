@@ -37,6 +37,9 @@ return [
     'export' => 'صادرات',
     'address' => 'نشانی',
     'postal_code' => 'کد پستی',
+    'plant_address' => 'آدرس کارخانه',
+    'head_office_address' => 'آدرس دفتر مرکزی',
+    'phones' => 'تلفن‌های تماس',
 
     'copyright' => '© :year :brand — کلیه حقوق محفوظ است.',
     'all_rights' => 'تمامی حقوق محفوظ است',

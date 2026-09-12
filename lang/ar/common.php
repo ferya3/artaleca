@@ -37,6 +37,9 @@ return [
     'export' => 'التصدير',
     'address' => 'العنوان',
     'postal_code' => 'الرمز البريدي',
+    'plant_address' => 'عنوان المصنع',
+    'head_office_address' => 'عنوان المكتب الرئيسي',
+    'phones' => 'أرقام الهاتف',
 
     'copyright' => '© :year :brand — جميع الحقوق محفوظة.',
     'all_rights' => 'جميع الحقوق محفوظة',
