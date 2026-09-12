@@ -294,11 +294,18 @@
                     :href="route('projects.index')"
                 />
 
-                <div class="mt-12 grid gap-6 md:grid-cols-3">
+                {{-- Same carousel as the products and uses rows: swipeable on a
+                     phone, the three-up grid it always was from `sm`. One
+                     element rather than two, so the cards and their image URLs
+                     are in the document once. --}}
+                <ul class="no-scrollbar carousel carousel-phone mt-12 -mx-5 px-5 pb-2
+                           sm:mx-0 sm:grid sm:grid-cols-2 sm:px-0 sm:pb-0 md:grid-cols-3">
                     @foreach ($projects as $project)
-                        <x-project-card :project="$project" />
+                        <li class="flex shrink-0 basis-[78%] sm:basis-auto sm:shrink">
+                            <x-project-card :project="$project" class="w-full" />
+                        </li>
                     @endforeach
-                </div>
+                </ul>
             </div>
         </section>
     @endif
@@ -314,11 +321,18 @@
                     :href="route('articles.index')"
                 />
 
-                <div class="mt-12 grid gap-6 md:grid-cols-3">
+                {{-- Same carousel as the products and uses rows: swipeable on a
+                     phone, the three-up grid it always was from `sm`. One
+                     element rather than two, so the cards and their image URLs
+                     are in the document once. --}}
+                <ul class="no-scrollbar carousel carousel-phone mt-12 -mx-5 px-5 pb-2
+                           sm:mx-0 sm:grid sm:grid-cols-2 sm:px-0 sm:pb-0 md:grid-cols-3">
                     @foreach ($posts as $post)
-                        <x-post-card :post="$post" />
+                        <li class="flex shrink-0 basis-[78%] sm:basis-auto sm:shrink">
+                            <x-post-card :post="$post" class="w-full" />
+                        </li>
                     @endforeach
-                </div>
+                </ul>
             </div>
         </section>
     @endif

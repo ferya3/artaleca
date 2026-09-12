@@ -5,14 +5,16 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\Application;
+use App\Models\Post;
 use App\Models\Product;
+use App\Models\Project;
 use App\Support\Digits;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * The three card rows that scroll: the grades on the catalogue page, and the
- * products and the uses on the home page.
+ * The card rows that scroll: the grades on the catalogue page, and the
+ * products, the uses, the projects and the news on the home page.
  *
  * What makes them read as rows rather than blocks that end is the peek — every
  * card is a little narrower than an exact fit, so part of the next is always on
@@ -23,7 +25,7 @@ use Tests\TestCase;
  * The scrolling itself is the browser's, so there is nothing to test in a
  * headless request beyond what could actually break it: the markup that opts
  * into snapping, the widths that produce the peek, the arrows staying hidden
- * until a script arrives to make them do something, and the two home rows
+ * until a script arrives to make them do something, and the home rows
  * turning back into the grids they were above a phone.
  */
 class CarouselTest extends TestCase
@@ -50,6 +52,29 @@ class CarouselTest extends TestCase
                 'name' => ['fa' => 'کاربرد '.$i, 'en' => 'Use '.$i, 'ar' => 'استخدام '.$i],
                 'summary' => ['fa' => 'خلاصه '.$i, 'en' => 'Summary '.$i, 'ar' => 'ملخص '.$i],
                 'position' => $i,
+                'is_active' => true,
+            ]);
+        }
+    }
+
+    /** N published projects and N published posts, so both home rows render. */
+    private function projectsAndNews(int $count = 3): void
+    {
+        for ($i = 1; $i <= $count; $i++) {
+            Project::create([
+                'slug' => 'project-'.$i,
+                'title' => ['fa' => 'پروژه '.$i, 'en' => 'Project '.$i, 'ar' => 'مشروع '.$i],
+                'position' => $i,
+                // The home row takes featured projects only.
+                'is_featured' => true,
+                'is_active' => true,
+            ]);
+
+            Post::create([
+                'slug' => 'post-'.$i,
+                'type' => 'news',
+                'title' => ['fa' => 'خبر '.$i, 'en' => 'Post '.$i, 'ar' => 'خبر '.$i],
+                'published_at' => now()->subDays($i),
                 'is_active' => true,
             ]);
         }
@@ -195,7 +220,10 @@ class CarouselTest extends TestCase
 
         $html = $this->get('/fa')->assertOk()->getContent();
 
-        // Two rows carrying the phone-only behaviour: products, then uses.
+        // Two rows carrying the phone-only behaviour here: products, then
+        // uses. The projects and news rows are the same markup but their
+        // sections are skipped while there is nothing published in them —
+        // which is what the next test seeds.
         $this->assertSame(2, substr_count($html, 'carousel carousel-phone'));
 
         // Digits::text, because the Persian pages are rewritten on the way
@@ -205,6 +233,47 @@ class CarouselTest extends TestCase
                 'کاربرد '.Digits::text((string) $i),
                 $html,
                 "Use {$i} is missing from the home row.",
+            );
+        }
+    }
+
+    /**
+     * The finished projects and the technical articles scroll on a phone the
+     * same way, so every card row on the home page behaves alike under the
+     * same thumb rather than two of four being special.
+     *
+     * These two keep the three-up grid they already had from `md`; the `sm`
+     * pair is what fills the gap between a phone and that, where a single
+     * column of three-by-two cards was a lot of scrolling for three items.
+     */
+    public function test_the_projects_and_news_rows_scroll_on_a_phone(): void
+    {
+        $this->catalogue(4);
+        $this->uses(7);
+        $this->projectsAndNews();
+
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        $this->assertSame(
+            4,
+            substr_count($html, 'carousel carousel-phone'),
+            'Every card row on the home page should carry the phone-only carousel.',
+        );
+
+        // The peek is the whole point, and it is a number in a class name —
+        // exactly what a later tidy-up rounds to something neat, turning the
+        // row back into a block that looks finished.
+        $this->assertSame(
+            4 + 7 + 3 + 3,
+            substr_count($html, 'basis-[78%]'),
+            'Each card in every row needs the under-exact width that produces the peek.',
+        );
+
+        foreach (['پروژه ', 'خبر '] as $prefix) {
+            $this->assertStringContainsString(
+                $prefix.Digits::text('1'),
+                $html,
+                "The {$prefix} row did not render.",
             );
         }
     }
