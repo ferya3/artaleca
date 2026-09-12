@@ -95,10 +95,14 @@
                 <x-brand.logo />
             </a>
 
-            <form method="POST" action="{{ route('admin.logout') }}" class="lg:hidden">
-                @csrf
-                <button type="submit" class="text-xs text-ink-500 hover:text-ink-900">{{ __('admin.sign_out') }}</button>
-            </form>
+            <div class="flex items-center gap-4 lg:hidden">
+                <a href="{{ route('admin.profile.edit') }}" class="text-xs text-ink-500 hover:text-ink-900">{{ __('admin.profile') }}</a>
+
+                <form method="POST" action="{{ route('admin.logout') }}">
+                    @csrf
+                    <button type="submit" class="text-xs text-ink-500 hover:text-ink-900">{{ __('admin.sign_out') }}</button>
+                </form>
+            </div>
         </div>
 
         <nav class="px-3 py-4 lg:sticky lg:top-0" aria-label="{{ __('admin.title') }}">
@@ -149,9 +153,17 @@
 
             <div class="mt-6 hidden border-t border-hairline pt-4 lg:block">
                 <p class="px-3 text-xs text-ink-500">{{ $user?->name }}</p>
-                <p class="px-3 text-[0.6875rem] text-ink-400">{{ $user?->role }}</p>
+                <p class="px-3 text-[0.6875rem] text-ink-400">{{ $user ? __('admin.roles.'.$user->role) : '' }}</p>
 
                 <div class="mt-3 flex flex-col gap-1">
+                    {{-- Here rather than in a section above: the users screen is
+                         administrator-only, so without this an editor has no
+                         page at all on which to change their own password. --}}
+                    <a href="{{ route('admin.profile.edit') }}"
+                       class="px-3 py-1.5 text-xs {{ request()->routeIs('admin.profile.*') ? 'font-medium text-brand-700' : 'text-ink-600 hover:text-ink-900' }}">
+                        {{ __('admin.profile') }}
+                    </a>
+
                     <a href="{{ route('home', ['locale' => $adminLocale]) }}" target="_blank" rel="noopener"
                        class="px-3 py-1.5 text-xs text-ink-600 hover:text-ink-900">↗ {{ config('site.company.brand') }}</a>
 

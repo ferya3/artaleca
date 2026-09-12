@@ -89,6 +89,24 @@ return [
     'search_placeholder' => 'Search…',
 
     'self_role_locked' => 'You cannot change your own role or deactivate your own account.',
+    'profile' => 'My account',
+    'profile_intro' => 'Your name, address, panel language and password. Role and account status are an administrator\'s decision.',
+    'change_password' => 'Change password',
+    'current_password' => 'Current password',
+    'new_password' => 'New password',
+    'confirm_password' => 'Repeat the new password',
+    'password_changed' => 'Password changed. Other sessions have been signed out.',
+    'role' => 'Access level',
+    'roles' => [
+        'admin' => 'Administrator',
+        'editor' => 'Editor',
+        'viewer' => 'Read only',
+    ],
+    'role_help' => [
+        'admin' => 'Everything: users, settings, offices and content.',
+        'editor' => 'Content and media. No access to users or settings.',
+        'viewer' => 'Reads only — for someone who just needs the enquiry inbox.',
+    ],
 
     'translations' => 'Translations',
     'translation_hint' => 'Enter each language separately. Empty languages fall back to Persian.',

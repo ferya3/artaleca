@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\OfficeController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProjectController;
@@ -46,7 +47,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('login.attempt');
     });
 
-    Route::middleware(['auth', 'admin'])->group(function () {
+    /*
+     * `AuthenticateSession` is what makes a password change actually end the
+     * other sessions: it stores the password hash in the session and logs out
+     * any session whose copy no longer matches. Without it the profile screen
+     * could change a password and leave a stolen session signed in.
+     */
+    Route::middleware(['auth', \Illuminate\Session\Middleware\AuthenticateSession::class, 'admin'])->group(function () {
         Route::post('logout', [AuthController::class, 'destroy'])->name('logout');
 
         Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -107,5 +114,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('site-images', [SiteImageController::class, 'update'])->name('site-images.update');
 
         Route::resource('users', UserController::class)->except('show');
+
+        /*
+         * Your own account — outside the users resource on purpose. That one is
+         * administrator-only, and this has to be reachable by an editor or a
+         * viewer who wants to change their own password.
+         */
+        Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::put('profile/password', [ProfileController::class, 'password'])->name('profile.password');
     });
 });

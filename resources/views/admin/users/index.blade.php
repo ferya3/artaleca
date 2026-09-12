@@ -27,7 +27,7 @@
                             @endif
                         </td>
                         <td class="ltr-run px-4 py-3 text-ink-600">{{ $user->email }}</td>
-                        <td class="px-4 py-3 text-ink-600">{{ $user->role }}</td>
+                        <td class="px-4 py-3 text-ink-600">{{ __('admin.roles.'.$user->role) }}</td>
                         <td class="px-4 py-3">
                             <span class="inline-block px-2 py-0.5 text-[0.6875rem] font-medium
                                          {{ $user->is_active ? 'bg-green-100 text-green-800' : 'bg-ink-100 text-ink-500' }}">

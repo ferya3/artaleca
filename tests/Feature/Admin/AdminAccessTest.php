@@ -122,8 +122,19 @@ class AdminAccessTest extends TestCase
         $this->actingAs($editor)->get('/admin/users')->assertForbidden();
         $this->actingAs($editor)->get('/admin/settings')->assertForbidden();
 
-        $this->actingAs($this->makeAdmin())->get('/admin/users')->assertOk();
-        $this->actingAs($this->makeAdmin())->get('/admin/settings')->assertOk();
+        /*
+         * A fresh session for the second person, and one administrator rather
+         * than two. `actingAs` swaps the user but keeps the session, and
+         * AuthenticateSession compares the password hash it finds there
+         * against the current user's — so a second person arriving in the first
+         * one's session is signed straight back out. Which is the middleware
+         * doing its job; two people only ever share a session in a test.
+         */
+        $this->flushSession();
+        $admin = $this->makeAdmin();
+
+        $this->actingAs($admin)->get('/admin/users')->assertOk();
+        $this->actingAs($admin)->get('/admin/settings')->assertOk();
     }
 
     public function test_an_admin_cannot_delete_their_own_account(): void

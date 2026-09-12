@@ -48,16 +48,16 @@
                 </div>
 
                 <div class="flex flex-col gap-1.5">
-                    <label for="password_confirmation" class="text-sm font-medium text-ink-800">{{ __('admin.password') }} ×2</label>
+                    <label for="password_confirmation" class="text-sm font-medium text-ink-800">{{ __('admin.confirm_password') }}</label>
                     <input id="password_confirmation" name="password_confirmation" type="password" dir="ltr"
                            autocomplete="new-password" @if ($isNew) required @endif class="{{ $inputClass }}">
                 </div>
 
                 <div class="flex flex-col gap-1.5">
-                    <label for="role" class="text-sm font-medium text-ink-800">Role</label>
+                    <label for="role" class="text-sm font-medium text-ink-800">{{ __('admin.role') }}</label>
                     <select id="role" name="role" class="{{ $inputClass }}" @if ($isSelf) disabled @endif>
                         @foreach (User::ROLES as $role)
-                            <option value="{{ $role }}" @selected(old('role', $user->role) === $role)>{{ $role }}</option>
+                            <option value="{{ $role }}" @selected(old('role', $user->role) === $role)>{{ __('admin.roles.'.$role) }}</option>
                         @endforeach
                     </select>
                     @if ($isSelf)
@@ -79,6 +79,14 @@
                             </option>
                         @endforeach
                     </select>
+                </div>
+
+                <div class="sm:col-span-2">
+                    <ul class="space-y-1 border-s-2 border-hairline ps-3 text-xs text-ink-500">
+                        @foreach (User::ROLES as $role)
+                            <li><span class="font-medium text-ink-700">{{ __('admin.roles.'.$role) }}</span> — {{ __('admin.role_help.'.$role) }}</li>
+                        @endforeach
+                    </ul>
                 </div>
 
                 <div class="sm:col-span-2">
