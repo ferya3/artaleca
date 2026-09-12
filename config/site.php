@@ -170,4 +170,25 @@ return [
         'max_document_kb' => min(10240, php_upload_limit_kb()),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | The administrator account
+    |--------------------------------------------------------------------------
+    |
+    | Read by UserSeeder, and here rather than through `env()` at the point of
+    | use for one reason: `php artisan config:cache` — which `optimize` runs,
+    | and which every deployment runs — makes Laravel skip loading `.env`
+    | altogether. An `env()` call outside a config file then returns null with
+    | no error, so re-seeding on a deployed server set a *random* password
+    | instead of the one in `.env` and locked the operator out of the panel.
+    |
+    | Config files are read before the cache is written, so the value is baked
+    | in and survives. Leaving the password unset is still the safe default:
+    | see UserSeeder.
+    */
+    'admin' => [
+        'email' => env('ADMIN_EMAIL', 'admin@artaleca.com'),
+        'password' => env('ADMIN_PASSWORD'),
+    ],
+
 ];
