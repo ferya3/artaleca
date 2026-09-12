@@ -322,9 +322,11 @@ certbot certonly --webroot -w /var/www/artaleca/public \
 cat > /etc/nginx/sites-available/artaleca <<EOF
 # ── artaleca.com — the site ──────────────────────────────────────────────
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
-    http2 on;
+    # `listen ... http2` rather than the newer `http2 on;` directive: that one
+    # arrived in nginx 1.25.1 and Ubuntu 24.04 ships 1.24, where it is an
+    # unknown directive and the whole config fails to load.
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
     server_name artaleca.com;
     root /var/www/artaleca/public;
 
@@ -382,9 +384,8 @@ server {
 
 # ── .ir and both www — one permanent redirect to the canonical name ──────
 server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
-    http2 on;
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
     server_name www.artaleca.com artaleca.ir www.artaleca.ir;
 
     ssl_certificate     /etc/letsencrypt/live/artaleca.com/fullchain.pem;
