@@ -26,8 +26,15 @@
                 sizes="100vw"
             />
 
-            {{-- Legibility over a photograph nobody has approved yet. --}}
-            <div class="absolute inset-0 bg-gradient-to-b from-night-950/45 via-night-950/60 to-night-950/72"
+            {{-- Legibility over a photograph nobody has approved yet.
+
+                 The middle stop is the copy's ground and carries a little more
+                 than it used to: measured against a near-white photograph the
+                 eyebrow sat at 4.4:1, just under the 4.5 an 11px label needs.
+                 The phone gets no pool of shade the way the desktop does — the
+                 copy is centred and full width here, so there is no side of the
+                 band without text on it to spare. --}}
+            <div class="absolute inset-0 bg-gradient-to-b from-night-950/45 via-night-950/70 to-night-950/72"
                  aria-hidden="true"></div>
 
             {{-- A fixed 2:3, so the picture behind it has one shape.
@@ -49,7 +56,7 @@
                      at 11px it needs 4.5:1, and over a bright picture it
                      measures 1.5:1 — the band would have to be nearly black for
                      it to pass, which is the opposite of showing a photograph.
-                     White holds at 4.9:1 in that same worst case. --}}
+                     White holds at 5.7:1 here, and 7.3:1 on the desktop band. --}}
                 <p class="eyebrow text-white!">{{ content('home.hero_eyebrow') }}</p>
 
                 <h1 class="mt-4 text-3xl font-bold">
@@ -65,9 +72,10 @@
         ── Hero, desktop ──────────────────────────────────────────────────
         A photograph fills the band and one sheet of glass covers it, edge to
         edge and the same size as the picture itself, with the copy and the
-        framed photograph on top. The tint on that sheet is as light as the
-        white text over it allows and no lighter — the figure is in app.css,
-        measured against the worst case rather than judged by eye.
+        framed photograph on top. The sheet is kept light enough to leave the
+        photograph readable; the contrast the copy needs comes from a pool of
+        shade under the copy alone. Both figures are in app.css, measured on
+        rendered pixels rather than judged by eye.
 
         The backdrop is fetched eagerly but deliberately not preloaded, so the
         one preload this band pushes still belongs to the framed picture.
@@ -100,12 +108,11 @@
                 sizes="100vw"
             />
 
-            {{-- The glass alone cannot guarantee white text over a photograph
-                 nobody has approved yet, so the picture is dimmed first and the
-                 sheet then works against a known ground. Lighter than it was:
-                 the two together are what the text needs, and the sheet giving
-                 up tint means this has to keep a little of it. --}}
-            <div class="absolute inset-0 bg-gradient-to-b from-night-950/50 via-night-950/45 to-night-950/65"
+            {{-- Only the top and the foot, now that the copy carries its own
+                 shade. The top stop keeps the header off bare photograph as it
+                 slides in; the bottom one stops the picture meeting the next
+                 section on a hard line. The middle is left alone. --}}
+            <div class="absolute inset-0 bg-gradient-to-b from-night-950/40 via-transparent to-night-950/55"
                  aria-hidden="true"></div>
         @endif
 
@@ -113,6 +120,11 @@
              motion comes after, so the kiln glow and the drifting granules stay
              on the near side of it instead of being blurred into the picture. --}}
         <div class="hero-glass" aria-hidden="true"></div>
+
+        {{-- And the shade for the copy, over the glass rather than under it:
+             under it the blur would spread it across the whole band and undo
+             the point of spending it in one place. --}}
+        <div class="hero-copy-veil" aria-hidden="true"></div>
 
         <x-hero-motion />
 

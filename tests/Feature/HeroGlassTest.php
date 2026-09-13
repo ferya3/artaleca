@@ -57,8 +57,8 @@ class HeroGlassTest extends TestCase
      * Every other eyebrow is clay. Over a photograph that colour cannot hold
      * its contrast: at 11px it needs 4.5:1 and measures 1.5:1 on a bright
      * picture, and the only way to rescue it is to darken the band until the
-     * photograph is gone. Both heroes therefore use white, which holds at 4.9:1
-     * in that same worst case.
+     * photograph is gone. Both heroes therefore use white, which holds at 5.7:1 on
+     * the phone and 7.3:1 on the desktop band in that same worst case.
      */
     public function test_neither_hero_puts_the_clay_eyebrow_over_a_photograph(): void
     {
@@ -71,6 +71,28 @@ class HeroGlassTest extends TestCase
         );
 
         $this->assertStringNotContainsString('eyebrow text-brand-400!', $html);
+    }
+
+    /**
+     * The shade under the copy has to follow the writing direction.
+     *
+     * It is a pool centred on the copy column rather than a tint over the whole
+     * band, which is what lets the photograph stay visible — and it is
+     * invisible in English if the Persian half is dropped, because the copy is
+     * on the left there and the default rule already points that way. The
+     * failure mode is a dark patch over the picture and pale text on the other
+     * side, in the language most of the visitors read.
+     */
+    public function test_the_copy_veil_is_rendered_and_follows_the_writing_direction(): void
+    {
+        $section = $this->desktopHero($this->get('/fa')->assertOk()->getContent());
+        $this->assertStringContainsString('hero-copy-veil', $section);
+
+        $css = (string) file_get_contents(resource_path('css/app.css'));
+
+        $this->assertStringContainsString('at 24% 48%', $css, 'The left-to-right pool is gone.');
+        $this->assertStringContainsString('at 76% 48%', $css, 'The right-to-left pool is gone.');
+        $this->assertStringContainsString("[dir='rtl'] .hero-copy-veil", $css);
     }
 
     /** One upload is enough: the backdrop falls back to the hero photograph. */

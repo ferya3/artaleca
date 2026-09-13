@@ -754,16 +754,25 @@
 | Hero glass
 |------------------------------------------------------------------------------
 | One sheet of glass laid over the whole desktop hero — the size of the backdrop
-| photograph itself, not a card floating on it. The picture is therefore frosted
-| edge to edge, and the tint over it is kept as light as the white text on top
-| allows.
+| photograph itself, not a card floating on it.
 |
-| That last part is the constraint everything here is set by, and it is measured
-| rather than judged by eye: against a near-white photograph, which is the worst
-| case, the ground under the headline reads rgb(117,112,108) — 4.9:1 with white,
-| where AA asks for 4.5. Any real photograph is darker than that and reads
-| better. Lower the tint further and the copy fails on a bright picture; this is
-| the floor, not a preference.
+| A flat tint over the whole band is the wrong tool for keeping white text
+| legible, because it pays for the headline with the entire photograph. Every
+| percent of it lands on the half of the band that carries no text at all. So
+| the sheet itself is kept light — enough to knit the picture into the band, not
+| enough to hide it — and the contrast the copy needs is bought separately, by
+| `.hero-copy-veil`, over the copy alone.
+|
+| That split is what let the tint fall from 45 per cent to 14 and the blur from
+| 22px to 6 while the text got *safer* rather than riskier. Measured on rendered
+| pixels with the copy hidden, against a near-white photograph — the worst case
+| an editor can upload — the lightest pixel under the headline is rgb(98,95,90),
+| 6.4:1 with white, where the flat tint managed 4.9. On the picture side of the
+| same band the lightest pixel is rgb(215,210,203): the photograph, undimmed.
+|
+| 6px is a deliberate figure too. A 22px blur averages a photograph into a
+| coloured haze — safe for text, but then there is no reason to have supplied a
+| photograph. At 6px the shapes come back and it still reads as glass.
 |
 | It is the one place on the site that is allowed this. The header is still
 | opaque, and for a reason that is not taste — `backdrop-filter` makes an
@@ -780,18 +789,53 @@
     .hero-glass {
         position: absolute;
         inset: 0;
-        background: color-mix(in oklab, var(--color-night-950) 62%, transparent);
+        /* No backdrop filter here: the sheet is the only thing standing between
+           the photograph and the text, so it has to hold the contrast alone. */
+        background: color-mix(in oklab, var(--color-night-950) 55%, transparent);
     }
 
     @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
         .hero-glass {
-            background: color-mix(in oklab, var(--color-night-950) 26%, transparent);
+            background: color-mix(in oklab, var(--color-night-950) 14%, transparent);
             /* Saturation lifts the clay tones the blur would otherwise average
-               into grey; the blur radius is wide enough that no shape in the
-               photograph survives as a distraction behind the headline. */
-            -webkit-backdrop-filter: blur(22px) saturate(135%);
-            backdrop-filter: blur(22px) saturate(135%);
+               towards grey. */
+            -webkit-backdrop-filter: blur(6px) saturate(125%);
+            backdrop-filter: blur(6px) saturate(125%);
         }
+    }
+
+    /*
+     * The contrast, spent where the words are and nowhere else.
+     *
+     * A pool rather than a ramp across the band: a linear fade dark enough to
+     * carry the headline at its far end is still half-dark across ground that
+     * holds no text, which is the flat tint again under another name. An
+     * ellipse centred on the copy column can be *stronger* where the text is
+     * and gone by the picture, and over a photograph it reads as light falling
+     * rather than as a panel.
+     *
+     * Its centre follows the writing direction, because the copy does: the
+     * first grid column is on the left in English and on the right in Persian
+     * and Arabic.
+     */
+    .hero-copy-veil {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+            ellipse 58% 78% at 24% 48%,
+            color-mix(in oklab, var(--color-night-950) 74%, transparent) 0%,
+            color-mix(in oklab, var(--color-night-950) 60%, transparent) 52%,
+            transparent 82%
+        );
+    }
+
+    [dir='rtl'] .hero-copy-veil {
+        background: radial-gradient(
+            ellipse 58% 78% at 76% 48%,
+            color-mix(in oklab, var(--color-night-950) 74%, transparent) 0%,
+            color-mix(in oklab, var(--color-night-950) 60%, transparent) 52%,
+            transparent 82%
+        );
     }
 }
 

@@ -98,12 +98,20 @@ the backdrop photograph itself is laid over it, frosting the band edge to edge,
 with the copy and the framed photograph on top. Nothing else on the site gets
 it.
 
-The tint on that sheet is set by a measurement, not by taste. Against a
-near-white photograph — the worst case — the ground under the headline comes out
-at rgb(117,112,108), 4.9:1 with white text where AA asks for 4.5. Any real
-photograph is darker and reads better, and a lighter tint fails on a bright one.
-Where `backdrop-filter` is unsupported the sheet carries that contrast on its
-own and falls back to a heavier tint rather than a pale wash.
+A flat tint over that sheet is the wrong way to keep white text legible, because
+it pays for the headline with the whole photograph — every percent of it also
+lands on the half of the band that carries no text. So the sheet stays light (14
+per cent, 6px of blur) and the contrast the copy needs is bought separately, as
+an elliptical pool of shade centred on the copy column and gone by the picture.
+Its centre follows the writing direction, because the copy does.
+
+The figures come from rendered pixels with the copy hidden, against a near-white
+photograph — the worst an editor can upload. The lightest pixel under the
+headline is rgb(98,95,90), 6.4:1 with white where AA asks for 4.5; the lightest
+on the picture side is rgb(215,210,203), which is the photograph undimmed. The
+flat tint this replaced managed 4.9:1 while hiding the picture. Where
+`backdrop-filter` is unsupported the sheet carries the contrast on its own and
+falls back to a heavier tint rather than a pale wash.
 
 The same measurement is why both heroes break the site's own rule and set their
 eyebrow in white rather than clay: at 11px the accent colour measures 1.5:1 over

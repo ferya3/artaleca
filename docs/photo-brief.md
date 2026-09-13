@@ -113,17 +113,18 @@ glass covers the whole band, so it is frosted edge to edge and only its colour
 and its brightness survive. A bright, uncluttered picture is worth far more back
 there than a sharp, busy one.
 
-Hero, backdrop and showcase all sit under a dark gradient so white text stays
-legible over them — 45 to 72 per cent on the mobile hero, 45 to 65 plus the
-glass on the backdrop, 35 to 70 on the showcase. A photograph will therefore
-reach the page darker than it looks in the file; choose a bright, low-contrast
-one rather than a busy dark one.
+The hero and the showcase sit under a dark gradient so white text stays legible
+over them — 45 to 72 per cent on the mobile hero, 35 to 70 on the showcase. A
+photograph will therefore reach those two darker than it looks in the file;
+choose a bright, low-contrast one rather than a busy dark one.
 
-How dark is not a matter of taste on the backdrop. The tint over it is already
-at the floor the copy allows: against a near-white photograph the ground under
-the headline measures 4.9:1 with white text, where the accessibility threshold
-is 4.5. Making the photograph read more strongly means supplying a better
-photograph, not a lighter tint.
+The backdrop is the exception, and the one to know about if you are choosing a
+picture for it. The glass over it is deliberately light, and the shade that
+keeps the headline legible is a pool over the copy column only. So the side of
+the band the copy sits on arrives dark whatever you upload, and the other side —
+the half with the framed photograph on it — arrives very close to the file. That
+is where the picture will be seen, so put something there worth seeing and let
+the copy side be the quiet part.
 
 ## Category images — a different thing entirely
 
