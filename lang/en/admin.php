@@ -187,7 +187,7 @@ return [
         'media_hero' => 'Hero image — desktop',
         'media_hero_hint' => '3:2 — 1536x1024 recommended. Anything cut to another shape is cropped to fit the frame.',
         'media_hero_mobile' => 'Hero image — mobile',
-        'media_hero_mobile_hint' => 'Optional but worth supplying. It is the full-screen phone background and its height follows the copy, so the shape varies between 0.64 and 0.78; supply a 1280 x 1920 portrait and keep the subject centred. Left empty, the 3:2 desktop image is used and is cropped on both sides.',
+        'media_hero_mobile_hint' => 'Portrait 2:3 — exactly 1280 x 1920 px. Left empty, the 3:2 desktop image is used and is cropped hard on both sides, so this one is worth filling in.',
         'media_showcase' => 'Pinned showcase — desktop',
         'media_showcase_mobile' => 'Pinned showcase — mobile',
         'media_showcase_hint' => 'On a desktop it stays put while the sections below scroll over it, so it fills the screen and its shape follows the window height (1.7 to 2.3). Supply a wide 2560 x 1140 photograph and keep the subject in the middle band, since the top and bottom are cropped.',

@@ -30,11 +30,19 @@
             <div class="absolute inset-0 bg-gradient-to-b from-night-950/45 via-night-950/60 to-night-950/72"
                  aria-hidden="true"></div>
 
-            {{-- `min-h` on the copy, not on the image: the content decides the
-                 height and the picture follows, never the other way round.
-                 `svh` rather than `vh` so a phone's collapsing address bar
-                 cannot leave the block taller than the screen. --}}
-            <div class="container-page relative z-10 flex min-h-[72svh] flex-col justify-center py-14">
+            {{-- A fixed 2:3, so the picture behind it has one shape.
+
+                 This was `min-h-[72svh]`, which made the hero a different
+                 proportion on every handset — 0.64 on a tall screen, 0.78 on a
+                 short one — and left nobody able to say what size to export
+                 the photograph at. 2:3 answers that with 1280 x 1920 and holds
+                 from 320px to 767px wide.
+
+                 `aspect-ratio` is a preference, not a cap: this is a flex
+                 column, so its `min-height: auto` still comes from the content
+                 and a headline long enough to need more room grows the box
+                 rather than being clipped by it. --}}
+            <div class="container-page relative z-10 flex aspect-[2/3] flex-col justify-center py-14">
                 <p class="eyebrow text-brand-400!">{{ content('home.hero_eyebrow') }}</p>
 
                 <h1 class="mt-4 text-3xl font-bold">

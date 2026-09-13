@@ -87,17 +87,17 @@ These live under Panel → Site images rather than on a record.
 | Slot | Shape | Supply |
 |---|---|---|
 | Hero — desktop | 3:2, fixed | 1536 × 1024 |
-| Hero — mobile | 0.64–0.78, follows the copy | 1280 × 1920 portrait, subject centred |
+| Hero — mobile | 2:3, fixed | 1280 × 1920 |
 | Showcase — desktop | 1.7–2.3, follows the window height | 2560 × 1140, subject in the middle band |
 | Showcase — mobile | **4:5, fixed** | 1080 × 1350 |
 | Quality laboratory | 3:2, fixed | 1536 × 1024 |
 | Plant exterior, kiln, screening | 4:3, fixed | 1600 × 1200 |
 
-Two of them have no fixed shape, and that is not an oversight: both are
-full-bleed backgrounds whose height comes from the screen or from the length of
-the copy over them. There is no single export size that fits every handset, so
-the rule for those two is to keep the subject in the middle and accept that the
-edges go. Everything else on this page crops to a number.
+One of them has no fixed shape, and that is not an oversight: the desktop
+showcase is pinned and fills the window, so its proportion follows the window
+height and no single export size fits every screen. Supply it at 2560 × 1140,
+keep the subject in the middle band, and accept that the top and bottom go.
+Everything else on this page crops to a number.
 
 Both hero and showcase images sit under a dark gradient so white text stays
 legible over them — 45 to 72 per cent on the hero, 35 to 70 on the showcase. A
