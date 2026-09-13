@@ -16,6 +16,11 @@ use Tests\TestCase;
  * The card rows that scroll: the grades on the catalogue page, and the
  * products, the uses, the projects and the news on the home page.
  *
+ * Two kinds. The grades and the uses scroll at every width and carry arrows
+ * from `lg` up; the other three are grids that become carousels only on a
+ * phone. The uses row moved from the second kind to the first because seven
+ * cards never filled a four-column grid evenly.
+ *
  * What makes them read as rows rather than blocks that end is the peek — every
  * card is a little narrower than an exact fit, so part of the next is always on
  * screen. That is a number in a class name, which is exactly the kind of detail
@@ -210,21 +215,26 @@ class CarouselTest extends TestCase
     // ── The home page: the seven uses ───────────────────────────────────
 
     /**
-     * The uses get the same treatment as the products above them, so the two
-     * sections behave the same way under the same thumb.
+     * The uses row scrolls at every width, arrows and all — not only on a
+     * phone like the three rows around it.
+     *
+     * Seven cards into a four-column grid left a row of four and a row of
+     * three with a hole beside it, and a hole in a grid reads as something
+     * failing to load rather than as a deliberate wrap. A row that scrolls has
+     * no last row to leave short, and it holds however many uses an editor
+     * adds.
      */
-    public function test_the_uses_row_is_a_carousel_on_a_phone_too(): void
+    public function test_the_uses_row_is_a_carousel_at_every_width(): void
     {
         $this->catalogue(4);
         $this->uses(7);
 
         $html = $this->get('/fa')->assertOk()->getContent();
 
-        // Two rows carrying the phone-only behaviour here: products, then
-        // uses. The projects and news rows are the same markup but their
-        // sections are skipped while there is nothing published in them —
-        // which is what the next test seeds.
-        $this->assertSame(2, substr_count($html, 'carousel carousel-phone'));
+        // The products row above it is still phone-only; this one is not, so
+        // it carries neither `carousel-phone` nor any grid utilities.
+        $this->assertSame(1, substr_count($html, 'carousel carousel-phone'));
+        $this->assertSame(1, substr_count($html, 'data-carousel-next'));
 
         // Digits::text, because the Persian pages are rewritten on the way
         // out and "1" reaches the browser as "۱" — see LocaliseDigits.
@@ -254,10 +264,19 @@ class CarouselTest extends TestCase
 
         $html = $this->get('/fa')->assertOk()->getContent();
 
+        // Three phone-only rows — products, projects, news — plus the uses
+        // row, which scrolls at every width and so carries the full carousel
+        // markup instead.
         $this->assertSame(
-            4,
+            3,
             substr_count($html, 'carousel carousel-phone'),
-            'Every card row on the home page should carry the phone-only carousel.',
+            'Products, projects and news should each carry the phone-only carousel.',
+        );
+
+        $this->assertSame(
+            1,
+            substr_count($html, 'data-carousel-next'),
+            'The uses row should be the one row with arrows.',
         );
 
         // The peek is the whole point, and it is a number in a class name —

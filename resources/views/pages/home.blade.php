@@ -178,23 +178,53 @@
             />
 
             {{--
-                Same treatment as the products row above — a carousel on a
-                phone, a grid from `sm` up — so the two sections behave the same
-                way under the same thumb.
+                A carousel at every width, arrows and all — the same component
+                as the grades row on the catalogue page.
 
-                Seven into four columns leaves a row of four and a row of three.
-                Deliberate: three columns would leave a single card stranded on
-                a third row, which reads as a mistake rather than a wrap.
+                It was a grid above `sm`, and seven cards into four columns left
+                a row of four and a row of three with a hole beside it. A hole
+                in a grid reads as something failing to load rather than as a
+                deliberate wrap. One row that scrolls has no last row to leave
+                short, and it holds however many uses an editor adds.
             --}}
             @if ($applications->isNotEmpty())
-                <ul class="no-scrollbar carousel carousel-phone mt-12 -mx-5 px-5 pb-2
-                           sm:mx-0 sm:grid sm:grid-cols-2 sm:px-0 sm:pb-0 lg:grid-cols-4">
-                    @foreach ($applications as $application)
-                        <li class="flex shrink-0 basis-[78%] sm:basis-auto sm:shrink">
-                            <x-application-card :application="$application" class="w-full" />
-                        </li>
-                    @endforeach
-                </ul>
+                <div class="relative mt-12">
+                    <ul
+                        data-carousel
+                        tabindex="0"
+                        aria-label="{{ content('home.applications_title') }}"
+                        class="no-scrollbar carousel -mx-5 px-5 pb-2 md:-mx-8 md:px-8"
+                    >
+                        @foreach ($applications as $application)
+                            <li class="flex shrink-0 basis-[78%] sm:basis-[42%] lg:basis-[29%] xl:basis-[22%]">
+                                <x-application-card :application="$application" class="w-full" />
+                            </li>
+                        @endforeach
+                    </ul>
+
+                    {{-- Hidden until app.js wires them up, and never on a
+                         touch-sized screen where the swipe is the control. --}}
+                    <div
+                        data-carousel-controls
+                        class="pointer-events-none absolute inset-y-0 -start-4 -end-4 items-center justify-between"
+                    >
+                        @foreach ([['prev', 'previous', 'M7 1L2 6l5 5'], ['next', 'next', 'M2 1l5 5-5 5']] as [$action, $label, $path])
+                            <button
+                                type="button"
+                                data-carousel-{{ $action }}
+                                aria-label="{{ content('common.pagination.'.$label) }}"
+                                class="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full border border-hairline
+                                       bg-surface text-ink-700 shadow-lift transition-opacity hover:text-brand-600
+                                       disabled:pointer-events-none disabled:opacity-0"
+                            >
+                                <svg viewBox="0 0 9 12" class="h-3 w-2.5 rtl:rotate-180" fill="none" aria-hidden="true">
+                                    <path d="{{ $path }}" stroke="currentColor" stroke-width="1.6"
+                                          stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
             @endif
         </div>
     </section>
