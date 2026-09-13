@@ -658,6 +658,30 @@ moment nothing is running yet and no account exists to reset.
 
 ---
 
+## 4d. Checking the SEO
+
+```bash
+cd /var/www/artaleca && bash deploy/seo-check.sh
+```
+
+Reads the live site — not the source — and reports the title, description and
+canonical of each indexable page, whether any description was cut at the
+158-character limit, whether each Persian search term survives as an unbroken
+run of characters, what `robots.txt` and `sitemap.xml` actually serve, and
+whether the three alias domains still 301 to the canonical one. Exits non-zero
+when anything fails, so it can gate a deploy.
+
+Against a server whose DNS is not pointed yet, pass a base URL:
+`bash deploy/seo-check.sh http://127.0.0.1`. The alias-redirect section is
+skipped then, since it can only be answered by the live domain.
+
+Source and served HTML come apart in ways that are invisible locally — a stale
+view cache, a description written past the cut, an admin override that replaced
+the sentence carrying half the search terms — which is why this reads the
+served bytes.
+
+---
+
 ## 5. Deploying an update
 
 One line, safe to re-run, and it stops at the first failure rather than
