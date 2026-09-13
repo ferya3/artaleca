@@ -35,7 +35,10 @@ light matters far more than the camera — shoot in shade or on an overcast day,
 not in direct midday sun, which blows out the pale granules and loses the
 texture that makes them recognisable.
 
-## Products — 7 photographs, 4:3, at least 1440 px wide
+## Products — 7 photographs, square subject, at least 1440 px wide
+
+Cropped to **1:1** on the card and **4:3** on the product page, so keep the
+granules centred and filling the frame rather than running off one edge.
 
 One per grade, and they must be visibly different from each other, because the
 difference between the grades *is* the product.

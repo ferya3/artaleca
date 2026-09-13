@@ -341,8 +341,17 @@ class CarouselTest extends TestCase
         $this->assertStringContainsString('object-contain', $html);
     }
 
-    /** The product photographs still fill their box, as they always did. */
-    public function test_a_product_card_still_crops_to_fill(): void
+    /**
+     * The grade cards are square, and unlike the use cards their photographs
+     * still fill the box rather than fitting inside it. A grade photograph is
+     * granules and nothing else — cropping the edge of a texture costs
+     * nothing, while letterboxing it would put bands of empty card around the
+     * one thing the picture is there to show.
+     *
+     * The product page keeps 4:3, so a single upload is cropped twice; the
+     * upload hint asks for the granules centred for that reason.
+     */
+    public function test_a_product_card_is_square_and_fills_it(): void
     {
         $this->catalogue(1);
         Product::query()->update(['hero_image' => '/storage/media/products/grade-1200x900.jpg']);
@@ -350,7 +359,8 @@ class CarouselTest extends TestCase
         $html = $this->get('/fa/products')->assertOk()->getContent();
 
         $this->assertStringContainsString('object-cover', $html);
-        $this->assertStringContainsString('aspect-[4/3]', $html);
+        $this->assertStringContainsString('aspect-square', $html);
+        $this->assertStringNotContainsString('aspect-[4/3]', $html);
     }
 
     /** Whatever the row does, the products are still in it. */

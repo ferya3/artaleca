@@ -14,7 +14,10 @@
         :seed="$product->slug"
         :alt="$product->name"
         :eager="$eager"
-        ratio="4/3"
+        {{-- Square on the card, 4:3 on the product page. One upload, two
+             frames — which is why the upload hint asks for the granules
+             centred rather than filling one edge of the picture. --}}
+        ratio="1/1"
         sizes="(min-width: 1280px) 300px, (min-width: 768px) 33vw, 100vw"
     />
 

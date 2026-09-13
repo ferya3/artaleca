@@ -69,7 +69,7 @@ class UploadGuidanceTest extends TestCase
     public function test_each_hint_names_the_ratio_it_will_be_cropped_to(): void
     {
         $hints = [
-            'image_product_hint' => '۴:۳',
+            'image_product_hint' => '۱:۱',
             'image_square_hint' => '۱:۱',
             'image_project_hint' => '۳:۲',
             'image_post_hint' => '۱۶:۹',
