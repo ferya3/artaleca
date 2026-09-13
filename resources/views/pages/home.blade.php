@@ -282,7 +282,16 @@
         for as long as the wrapper is still on screen.
     --}}
     <div class="relative">
-        <div class="sticky top-0 h-[60svh] overflow-hidden bg-night-950 md:h-[78svh]">
+        {{-- Pinned from `md` up, an ordinary band below it.
+
+             The pin works by letting the next section scroll over a fixed
+             image, which needs enough screen for the covered and uncovered
+             parts to read as one movement. On a phone it does not have it:
+             the band is 506px, the section above it covers the bottom within
+             a thumb-flick, and what is left is a photograph sliced through
+             the middle with its own caption hidden underneath. Static, it is
+             simply a full-bleed picture that scrolls like everything else. --}}
+        <div class="relative h-[60svh] overflow-hidden bg-night-950 md:sticky md:top-0 md:h-[78svh]">
             <x-media
                 fill
                 :src="site_image('media.showcase')['light']"
