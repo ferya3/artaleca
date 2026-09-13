@@ -85,7 +85,8 @@ class ProjectController extends ResourceController
                 'translatable' => true, 'rows' => 5,
                 'hint' => __('admin.fields.list_hint')],
 
-            ['name' => 'cover_image', 'label' => __('admin.fields.cover_path'), 'type' => 'image'],
+            ['name' => 'cover_image', 'label' => __('admin.fields.cover_path'), 'type' => 'image',
+                'hint' => __('admin.fields.image_project_hint')],
 
             ['name' => 'gallery', 'label' => __('admin.fields.gallery'), 'type' => 'gallery',
                 'hint' => __('admin.fields.gallery_hint')],

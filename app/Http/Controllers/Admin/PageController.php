@@ -65,7 +65,8 @@ class PageController extends ResourceController
             ['name' => 'body', 'label' => __('admin.fields.description'), 'type' => 'textarea', 'translatable' => true,
                 'rows' => 16, 'rules' => ['nullable', 'string', 'max:40000']],
 
-            ['name' => 'hero_image', 'label' => __('admin.fields.image_path'), 'type' => 'image'],
+            ['name' => 'hero_image', 'label' => __('admin.fields.image_path'), 'type' => 'image',
+                'hint' => __('admin.fields.image_page_hint')],
 
             ['name' => 'meta_title', 'label' => __('admin.fields.meta_title'), 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:70']],

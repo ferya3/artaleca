@@ -117,7 +117,8 @@ class ProductController extends ResourceController
             ['name' => 'specs', 'label' => content('product.properties'), 'type' => 'pairs',
                 'hint' => 'One row per line: label | value'],
 
-            ['name' => 'hero_image', 'label' => __('admin.fields.image_path'), 'type' => 'image', 'width' => 'half'],
+            ['name' => 'hero_image', 'label' => __('admin.fields.image_path'), 'type' => 'image', 'width' => 'half',
+                'hint' => __('admin.fields.image_product_hint')],
 
             ['name' => 'datasheet_path', 'label' => __('admin.fields.datasheet_path'), 'type' => 'document', 'width' => 'half'],
 

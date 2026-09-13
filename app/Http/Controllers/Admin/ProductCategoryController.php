@@ -59,7 +59,8 @@ class ProductCategoryController extends ResourceController
             ['name' => 'description', 'label' => __('admin.fields.description'), 'type' => 'textarea', 'translatable' => true,
                 'rows' => 8, 'rules' => ['nullable', 'string', 'max:6000']],
 
-            ['name' => 'image', 'label' => __('admin.fields.image_path'), 'type' => 'image'],
+            ['name' => 'image', 'label' => __('admin.fields.image_path'), 'type' => 'image',
+                'hint' => __('admin.fields.image_category_hint')],
 
             ['name' => 'meta_title', 'label' => __('admin.fields.meta_title'), 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:70']],
