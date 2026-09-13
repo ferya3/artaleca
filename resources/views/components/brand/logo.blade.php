@@ -1,10 +1,40 @@
-@props(['showWordmark' => true])
+@props(['showWordmark' => true, 'size' => 'sm'])
 
 @php
     // An uploaded file wins over the drawn mark, and each theme gets its own —
     // a logo lettered in dark green needs a light version on a dark header.
     $uploaded = site_image('media.logo');
     $themed = filled($uploaded['dark']) && $uploaded['dark'] !== $uploaded['light'];
+
+    /*
+     * Three sizes, written out as literal class strings rather than composed
+     * from the prop: Tailwind scans the source for class names, and a name it
+     * only ever sees assembled at runtime is a name it never emits.
+     *
+     * `lg` is the footer, where the mark is the only branding on the page and
+     * had shrunk to a 98×56 smudge; `md` is the header, where it competes with
+     * the navigation and cannot grow much without pushing the bar down.
+     */
+    [$markClass, $wordClass, $gapClass, $imgClass] = match ($size) {
+        'lg' => [
+            'h-14 w-auto shrink-0 lg:h-16',
+            'text-[1.3rem]',
+            'gap-3.5',
+            'h-14 w-auto max-w-[16rem] object-contain lg:h-16',
+        ],
+        'md' => [
+            'h-10 w-auto shrink-0 lg:h-12',
+            'text-[1.05rem]',
+            'gap-3',
+            'h-10 w-auto max-w-[13rem] object-contain lg:h-12',
+        ],
+        default => [
+            'h-9 w-auto shrink-0 lg:h-11',
+            'text-[0.95rem]',
+            'gap-2.5',
+            'h-9 w-auto max-w-[11rem] object-contain lg:h-11',
+        ],
+    };
 @endphp
 
 @if (filled($uploaded['light']))
@@ -12,15 +42,15 @@
         @if ($themed)
             <span class="theme-only-light">
                 <img src="{{ $uploaded['light'] }}" alt="{{ config('site.company.brand') }}"
-                     class="h-9 w-auto max-w-[11rem] object-contain lg:h-11" decoding="async">
+                     class="{{ $imgClass }}" decoding="async">
             </span>
             <span class="theme-only-dark">
                 <img src="{{ $uploaded['dark'] }}" alt="{{ config('site.company.brand') }}"
-                     class="h-9 w-auto max-w-[11rem] object-contain lg:h-11" decoding="async">
+                     class="{{ $imgClass }}" decoding="async">
             </span>
         @else
             <img src="{{ $uploaded['light'] }}" alt="{{ config('site.company.brand') }}"
-                 class="h-9 w-auto max-w-[11rem] object-contain lg:h-11" decoding="async">
+                 class="{{ $imgClass }}" decoding="async">
         @endif
     </span>
 @else
@@ -33,10 +63,10 @@
         file. The leaf keeps its own green, which is the one fixed colour in the
         mark — it is the brand.
     --}}
-    <span {{ $attributes->merge(['class' => 'inline-flex items-center gap-2.5']) }}>
+    <span {{ $attributes->merge(['class' => 'inline-flex items-center '.$gapClass]) }}>
         <svg
             viewBox="0 0 40 48"
-            class="h-9 w-auto shrink-0 lg:h-11"
+            class="{{ $markClass }}"
             role="img"
             aria-hidden="{{ $showWordmark ? 'true' : 'false' }}"
             @unless($showWordmark) aria-label="{{ config('site.company.brand') }}" @endunless
@@ -75,8 +105,8 @@
 
         @if ($showWordmark)
             <span class="flex flex-col leading-none" dir="ltr">
-                <span class="text-[0.95rem] font-bold tracking-[0.22em]">ARTA</span>
-                <span class="text-[0.95rem] font-bold tracking-[0.22em] text-[#4ca62e]">LECA</span>
+                <span class="{{ $wordClass }} font-bold tracking-[0.22em]">ARTA</span>
+                <span class="{{ $wordClass }} font-bold tracking-[0.22em] text-[#4ca62e]">LECA</span>
             </span>
         @endif
     </span>

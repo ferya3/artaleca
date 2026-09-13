@@ -18,7 +18,7 @@
 
         <div class="flex items-center justify-between gap-4 lg:col-span-4 lg:flex-col lg:items-start lg:gap-6">
             <a href="{{ route('home') }}" class="text-white" aria-label="{{ config('site.company.brand') }}">
-                <x-brand.logo />
+                <x-brand.logo size="lg" />
             </a>
 
             @if (filled($social))

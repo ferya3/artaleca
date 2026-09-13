@@ -95,7 +95,7 @@
         <a href="{{ route('home') }}"
            class="justify-self-center text-ink-900 shrink-0 lg:order-first lg:justify-self-start"
            aria-label="{{ config('site.company.brand') }}">
-            <x-brand.logo />
+            <x-brand.logo size="md" />
         </a>
 
         {{-- Desktop navigation. Sections with children open on hover *and* on
