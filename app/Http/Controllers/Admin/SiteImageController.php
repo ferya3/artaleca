@@ -63,6 +63,7 @@ class SiteImageController extends Controller
                 ],
                 'media.showcase_mobile' => [
                     'label' => __('admin.settings_fields.media_showcase_mobile'),
+                    'hint' => __('admin.settings_fields.media_showcase_mobile_hint'),
                 ],
             ],
 
