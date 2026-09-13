@@ -108,16 +108,22 @@ cent of the frame to 23, and the average across desktop widths from 25 to 12.
 Keep the subject in the middle and what goes is the part nobody was looking at.
 Everything else on this page crops to a number.
 
-The backdrop is the one photograph here whose detail does not matter: it is seen
-frosted through the glass panel over it, and only its colour and its brightness
-survive that. A bright, uncluttered picture is worth far more back there than a
-sharp, busy one.
+The backdrop is the one photograph here whose detail does not matter: a sheet of
+glass covers the whole band, so it is frosted edge to edge and only its colour
+and its brightness survive. A bright, uncluttered picture is worth far more back
+there than a sharp, busy one.
 
 Hero, backdrop and showcase all sit under a dark gradient so white text stays
-legible over them — 45 to 72 per cent on the mobile hero, 55 to 75 on the
-backdrop, 35 to 70 on the showcase. A photograph will therefore reach the page
-darker than it looks in the file; choose a bright, low-contrast one rather than
-a busy dark one.
+legible over them — 45 to 72 per cent on the mobile hero, 45 to 65 plus the
+glass on the backdrop, 35 to 70 on the showcase. A photograph will therefore
+reach the page darker than it looks in the file; choose a bright, low-contrast
+one rather than a busy dark one.
+
+How dark is not a matter of taste on the backdrop. The tint over it is already
+at the floor the copy allows: against a near-white photograph the ground under
+the headline measures 4.9:1 with white text, where the accessibility threshold
+is 4.5. Making the photograph read more strongly means supplying a better
+photograph, not a lighter tint.
 
 ## Category images — a different thing entirely
 

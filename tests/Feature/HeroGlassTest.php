@@ -50,6 +50,29 @@ class HeroGlassTest extends TestCase
         $this->assertStringContainsString('hero-glass', $this->desktopHero($html));
     }
 
+    /**
+     * The one deliberate inconsistency in the site's typography, and the one
+     * most likely to be tidied away by someone who has not measured it.
+     *
+     * Every other eyebrow is clay. Over a photograph that colour cannot hold
+     * its contrast: at 11px it needs 4.5:1 and measures 1.5:1 on a bright
+     * picture, and the only way to rescue it is to darken the band until the
+     * photograph is gone. Both heroes therefore use white, which holds at 4.9:1
+     * in that same worst case.
+     */
+    public function test_neither_hero_puts_the_clay_eyebrow_over_a_photograph(): void
+    {
+        $html = $this->get('/fa')->assertOk()->getContent();
+
+        $this->assertSame(
+            2,
+            substr_count($html, 'eyebrow text-white!'),
+            'Both heroes sit over a photograph and both need the white eyebrow.',
+        );
+
+        $this->assertStringNotContainsString('eyebrow text-brand-400!', $html);
+    }
+
     /** One upload is enough: the backdrop falls back to the hero photograph. */
     public function test_the_backdrop_falls_back_to_the_hero_photograph(): void
     {

@@ -753,35 +753,39 @@
 |------------------------------------------------------------------------------
 | Hero glass
 |------------------------------------------------------------------------------
-| The desktop hero's copy sits on a translucent panel over the backdrop
-| photograph, so the picture reads frosted behind it and sharp around it. That
-| contrast is the whole effect: blur everything and there is no glass, only a
-| soft photograph.
+| One sheet of glass laid over the whole desktop hero — the size of the backdrop
+| photograph itself, not a card floating on it. The picture is therefore frosted
+| edge to edge, and the tint over it is kept as light as the white text on top
+| allows.
+|
+| That last part is the constraint everything here is set by, and it is measured
+| rather than judged by eye: against a near-white photograph, which is the worst
+| case, the ground under the headline reads rgb(117,112,108) — 4.9:1 with white,
+| where AA asks for 4.5. Any real photograph is darker than that and reads
+| better. Lower the tint further and the copy fails on a bright picture; this is
+| the floor, not a preference.
 |
 | It is the one place on the site that is allowed this. The header is still
 | opaque, and for a reason that is not taste — `backdrop-filter` makes an
 | element the containing block for its `position: fixed` descendants, which
 | collapsed the full-screen mobile menu inside the header to a 64px strip.
-| Nothing inside this panel is fixed, so the same trap is not set here.
+| Nothing inside this sheet is fixed, so the same trap is not set here.
 |
 | The `@supports` split is not decoration either. Without a backdrop filter the
-| panel has to carry the contrast for the white text on its own, so it falls
-| back to being nearly opaque rather than to being a pale wash over a
-| photograph.
+| sheet has to carry the contrast for the white text on its own, so it falls
+| back to a heavier tint rather than to a pale wash over a photograph.
 */
 
 @layer components {
     .hero-glass {
-        position: relative;
-        border-radius: var(--radius-xl);
-        border: 1px solid color-mix(in oklab, white 14%, transparent);
-        background: color-mix(in oklab, var(--color-night-950) 88%, transparent);
-        box-shadow: 0 30px 70px -40px rgb(0 0 0 / 0.85);
+        position: absolute;
+        inset: 0;
+        background: color-mix(in oklab, var(--color-night-950) 62%, transparent);
     }
 
     @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
         .hero-glass {
-            background: color-mix(in oklab, var(--color-night-950) 45%, transparent);
+            background: color-mix(in oklab, var(--color-night-950) 26%, transparent);
             /* Saturation lifts the clay tones the blur would otherwise average
                into grey; the blur radius is wide enough that no shape in the
                photograph survives as a distraction behind the headline. */

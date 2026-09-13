@@ -43,7 +43,14 @@
                  and a headline long enough to need more room grows the box
                  rather than being clipped by it. --}}
             <div class="container-page relative z-10 flex aspect-[2/3] flex-col justify-center py-14">
-                <p class="eyebrow text-brand-400!">{{ content('home.hero_eyebrow') }}</p>
+                {{-- White, where every other eyebrow on the site is clay.
+
+                     The accent colour cannot survive an arbitrary photograph:
+                     at 11px it needs 4.5:1, and over a bright picture it
+                     measures 1.5:1 — the band would have to be nearly black for
+                     it to pass, which is the opposite of showing a photograph.
+                     White holds at 4.9:1 in that same worst case. --}}
+                <p class="eyebrow text-white!">{{ content('home.hero_eyebrow') }}</p>
 
                 <h1 class="mt-4 text-3xl font-bold">
                     {{ content('home.hero_title') }}
@@ -56,10 +63,11 @@
 
     {{--
         ── Hero, desktop ──────────────────────────────────────────────────
-        A photograph fills the band, and the copy and the framed picture sit
-        together on one glass panel over it: frosted through the panel, sharp
-        around its edges. That contrast is the effect — blur the whole band and
-        there is no glass, only a soft photograph.
+        A photograph fills the band and one sheet of glass covers it, edge to
+        edge and the same size as the picture itself, with the copy and the
+        framed photograph on top. The tint on that sheet is as light as the
+        white text over it allows and no lighter — the figure is in app.css,
+        measured against the worst case rather than judged by eye.
 
         The backdrop is fetched eagerly but deliberately not preloaded, so the
         one preload this band pushes still belongs to the framed picture.
@@ -94,20 +102,29 @@
 
             {{-- The glass alone cannot guarantee white text over a photograph
                  nobody has approved yet, so the picture is dimmed first and the
-                 panel then works against a known ground. --}}
-            <div class="absolute inset-0 bg-gradient-to-b from-night-950/60 via-night-950/55 to-night-950/75"
+                 sheet then works against a known ground. Lighter than it was:
+                 the two together are what the text needs, and the sheet giving
+                 up tint means this has to keep a little of it. --}}
+            <div class="absolute inset-0 bg-gradient-to-b from-night-950/50 via-night-950/45 to-night-950/65"
                  aria-hidden="true"></div>
         @endif
+
+        {{-- The glass, laid over the photograph rather than sitting on it. The
+             motion comes after, so the kiln glow and the drifting granules stay
+             on the near side of it instead of being blurred into the picture. --}}
+        <div class="hero-glass" aria-hidden="true"></div>
 
         <x-hero-motion />
 
         {{-- Deeper at the bottom than the top: the scroll cue is absolutely
-             positioned at the foot of the band, and with even padding it landed
-             on the panel's lower edge instead of below it. --}}
-        <div class="container-page relative pb-20 pt-12 lg:pb-24 lg:pt-16">
-            <div class="hero-glass grid items-center gap-12 px-8 py-12 lg:grid-cols-12 lg:gap-16 lg:px-12 lg:py-14">
+             positioned at the foot of the band, and with even padding it sat on
+             the last line of the copy rather than below it. --}}
+        <div class="container-page relative pb-28 pt-16 lg:pb-32 lg:pt-24">
+            <div class="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
                 <div class="min-w-0 lg:col-span-6">
-                    <p class="eyebrow text-brand-400!">{{ content('home.hero_eyebrow') }}</p>
+                    {{-- White for the same reason as the phone hero's: clay on
+                         a bright photograph measures 1.5:1 at this size. --}}
+                    <p class="eyebrow text-white!">{{ content('home.hero_eyebrow') }}</p>
 
                     <h1 class="mt-4 text-4xl font-bold lg:text-[2.5rem]">
                         {{ content('home.hero_title') }}

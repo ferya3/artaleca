@@ -93,14 +93,22 @@ also keeps it out of the accessibility tree.
 No gradients outside the hero's kiln glow and the faint blueprint grid behind
 the dark bands.
 
-Glass is used in exactly one place: the desktop hero, where the copy and the
-framed photograph sit on a translucent panel over a full-bleed backdrop
-photograph — frosted through the panel, sharp around its edges. That contrast
-*is* the effect, which is also why nothing else on the site gets it: blur a
-second surface and neither one reads as glass any more. The panel falls back to
-being nearly opaque where `backdrop-filter` is unsupported, since the white text
-on it has to keep its contrast either way (measured at 8.4:1 over a near-white
-photograph).
+Glass is used in exactly one place: the desktop hero, where a sheet the size of
+the backdrop photograph itself is laid over it, frosting the band edge to edge,
+with the copy and the framed photograph on top. Nothing else on the site gets
+it.
+
+The tint on that sheet is set by a measurement, not by taste. Against a
+near-white photograph — the worst case — the ground under the headline comes out
+at rgb(117,112,108), 4.9:1 with white text where AA asks for 4.5. Any real
+photograph is darker and reads better, and a lighter tint fails on a bright one.
+Where `backdrop-filter` is unsupported the sheet carries that contrast on its
+own and falls back to a heavier tint rather than a pale wash.
+
+The same measurement is why both heroes break the site's own rule and set their
+eyebrow in white rather than clay: at 11px the accent colour measures 1.5:1 over
+a bright photograph, and the only way to save it would be to darken the band
+until there is no photograph left to see.
 
 The header stays opaque, and not for consistency's sake: `backdrop-filter` makes
 an element the containing block for its `position: fixed` descendants, which
