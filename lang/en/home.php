@@ -11,6 +11,7 @@ return [
 
     'intro_title' => 'One material, three engineering advantages',
     'intro_body' => 'LECA is a light, porous, entirely mineral granule produced by firing clay in a rotary kiln at around 1,200 °C. It reduces structural dead load, insulates, and stays chemically stable — at the same time.',
+    'intro_names' => 'The same material trades under several names — expanded clay aggregate, lightweight expanded clay aggregate, LECA — and they all mean this one product. Arta Leca produces it to standard grading ranges.',
 
     'products_title' => 'Production grades',
     'products_body' => 'Each grade is optimised for a specific duty by grain fraction and bulk density.',

@@ -2,16 +2,16 @@
 
 return [
     'brand_tagline' => 'Lightweight expanded clay aggregate (LECA) producer',
-    'default_description' => 'Arta Leca produces lightweight expanded clay aggregate with 450,000 m³ of annual capacity — standard grades for lightweight concrete, insulation, geotechnical fill, green roofs and horticulture.',
+    'default_description' => 'Arta Leca produces lightweight expanded clay aggregate, 450,000 m³ a year — standard grades for lightweight concrete, insulation, fill and green roofs.',
 
     'home_title' => 'LECA lightweight aggregate | Industrial production, guaranteed grading',
-    'home_description' => 'Expanded clay aggregate in graded fractions from 0–3 to 10–20 mm, with a certificate of analysis per consignment. 450,000 m³ annual capacity, exported to 14 countries.',
+    'home_description' => 'Expanded clay aggregate in fractions from 0–3 to 10–20 mm, with a certificate of analysis per consignment. 450,000 m³ a year, exported to 14 countries.',
 
     'products_title' => 'Products & aggregate grades',
     'products_description' => 'The full Arta Leca catalogue by grain fraction, loose bulk density, crushing resistance and thermal conductivity, with a technical datasheet for every grade.',
 
     'applications_title' => 'Industrial applications of LECA',
-    'applications_description' => 'Structural lightweight concrete, screeds and levelling fills, geotechnical backfill, green roofs, filtration and hydroponic growing media — with the recommended grade for each.',
+    'applications_description' => 'Structural lightweight concrete, screeds and levelling fills, geotechnical backfill, green roofs and filtration — with the recommended grade for each.',
 
     'projects_title' => 'Reference projects',
     'projects_description' => 'Building, civil and industrial projects supplied with Arta Leca aggregate, including volumes delivered and the grades specified.',
@@ -20,7 +20,7 @@ return [
     'news_description' => 'Engineering notes on lightweight concrete mix design, grade selection, green roof build-ups and production updates from Arta Leca.',
 
     'about_title' => 'About Arta Leca',
-    'about_description' => 'Producing expanded clay aggregate at the Mahmoudabad Industrial Zone in Qom since 1996: three rotary kiln lines, an in-house quality laboratory and 210 employees.',
+    'about_description' => 'Expanded clay aggregate from the Mahmoudabad Industrial Zone in Qom since 1996: three rotary kiln lines, an in-house laboratory and 210 employees.',
 
     'quality_title' => 'Quality control & certification',
     'quality_description' => 'Grading, loose bulk density, water absorption and crushing resistance tested every production shift, with a certificate of analysis issued per consignment.',

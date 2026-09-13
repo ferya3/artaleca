@@ -112,6 +112,12 @@
                 <p class="eyebrow mb-3">{{ content('nav.about') }}</p>
                 <h2 class="text-2xl font-bold text-ink-950 md:text-3xl">{{ content('home.intro_title') }}</h2>
                 <p class="mt-5 text-base leading-relaxed text-ink-600 md:text-lg">{{ content('home.intro_body') }}</p>
+
+                {{-- The same material is bought under four or five different
+                     names, and someone searching for one of them has no way of
+                     knowing the other four describe what they want. Saying so
+                     costs a sentence and saves the visitor a wrong turn. --}}
+                <p class="mt-4 text-base leading-relaxed text-ink-600">{{ content('home.intro_names') }}</p>
             </div>
         </div>
     </section>
