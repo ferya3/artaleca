@@ -290,27 +290,24 @@
         for as long as the wrapper is still on screen.
     --}}
     <div class="relative">
-        {{-- Pinned from `md` up, a fixed 4:5 band below it.
+        {{-- Pinned at every width; a fixed 4:5 on a phone, the viewport's own
+             height from `md` up.
 
-             The pin works by letting the next section scroll over a held
-             image, which needs enough screen for the covered and uncovered
-             parts to read as one movement. A phone does not have it: the
-             section above covers the bottom within a thumb-flick, and what is
-             left is a photograph sliced through the middle with its own
-             caption buried underneath.
+             The shape is fixed on a phone because `svh` made it a different
+             proportion on every handset — 0.94 on a short screen, 0.77 on a
+             tall one — and left nobody able to say what size to export the
+             picture at. 4:5 makes that 1080 x 1350. The desktop panel keeps
+             its viewport height, where filling the screen is the point.
 
-             4:5 rather than a slice of the viewport height, because `svh`
-             makes this a different shape on every handset — 0.94 on a short
-             screen, 0.77 on a tall one — and there is then no size anyone can
-             export the picture at. A fixed ratio makes 1080 x 1350 an answer
-             instead of a guess. The pinned desktop panel keeps its viewport
-             height: filling the screen is the whole point of it.
-
-             `relative` is not decoration. `sticky` was what made this the
-             containing block for the caption and the gradient, and without it
-             the two go looking for the bottom of the 2500px wrapper, three
-             sections further down. --}}
-        <div class="relative aspect-[4/5] overflow-hidden bg-night-950 md:sticky md:top-0 md:aspect-auto md:h-[78svh]">
+             The pin itself is the same at both: the sections below have an
+             opaque background and a position of their own, so they paint over
+             a held image instead of scrolling past it. What made it read
+             badly on a phone before was the caption — buried under the first
+             section that rose over it, leaving a slice of photograph with
+             text disappearing behind an edge. With the caption gone the band
+             is just a picture being covered, which is what it was meant to
+             be. --}}
+        <div class="sticky top-0 aspect-[4/5] overflow-hidden bg-night-950 md:aspect-auto md:h-[78svh]">
             <x-media
                 fill
                 :src="site_image('media.showcase')['light']"
