@@ -1,5 +1,9 @@
 @props(['project', 'eager' => false])
 
+{{-- The link opens the panel below rather than the page it points at — see
+     `bindDialogs` in app.js, and the use card, which works the same way. The
+     `href` stays real: it is what a middle-click opens, what a crawler follows,
+     and what happens with no JavaScript. --}}
 <article {{ $attributes->merge(['class' => 'panel panel-interactive group relative flex flex-col overflow-hidden']) }}>
     <x-media
         :src="$project->cover_image"
@@ -25,6 +29,7 @@
 
         <h3 class="text-lg font-bold text-ink-950">
             <a href="{{ route('projects.show', ['project' => $project]) }}"
+               data-dialog="project-{{ $project->slug }}"
                class="before:absolute before:inset-0 transition-colors group-hover:text-brand-600">
                 {{ $project->title }}
             </a>
@@ -43,3 +48,7 @@
         @endif
     </div>
 </article>
+
+{{-- Beside the card, so a card can never exist without the panel it opens. A
+     closed <dialog> is `display: none` and costs the layout nothing. --}}
+<x-project-dialog :project="$project" />

@@ -19,16 +19,16 @@
     three hundred lines of ours. Everything that closes it is markup: the form
     below submits with `method="dialog"`, which works with no JavaScript at all.
 --}}
-<dialog id="{{ $id }}" class="use-dialog" data-dialog-panel aria-labelledby="{{ $id }}-title">
-    <form method="dialog" class="use-dialog__dismiss">
-        <button type="submit" class="use-dialog__close" aria-label="{{ content('common.close') }}">
+<dialog id="{{ $id }}" class="dialog-panel" data-dialog-panel aria-labelledby="{{ $id }}-title">
+    <form method="dialog" class="dialog-panel__dismiss">
+        <button type="submit" class="dialog-panel__close" aria-label="{{ content('common.close') }}">
             <svg viewBox="0 0 14 14" class="h-3.5 w-3.5" fill="none" aria-hidden="true">
                 <path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
             </svg>
         </button>
     </form>
 
-    <div class="use-dialog__body">
+    <div class="dialog-panel__body">
         <p class="eyebrow">{{ content('nav.applications') }}</p>
 
         <h2 id="{{ $id }}-title" class="mt-2 text-xl font-bold text-ink-950 md:text-2xl">

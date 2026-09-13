@@ -751,8 +751,11 @@
 
 /*
 |------------------------------------------------------------------------------
-| The use panel
+| The card panel
 |------------------------------------------------------------------------------
+| What a use card and a project card open instead of navigating: one style for
+| both, since the difference is the content and not the box.
+|
 | A native <dialog>, so the top layer, Escape, the backdrop and the focus trap
 | are the browser's. It opens from a card in a horizontally scrolling row, which
 | is exactly where a hand-rolled overlay goes wrong: an absolutely positioned
@@ -766,7 +769,7 @@
 */
 
 @layer components {
-    .use-dialog {
+    .dialog-panel {
         /* Centring a modal <dialog> is `margin: auto` in the user-agent
            stylesheet, and Tailwind's preflight zeroes the margin of every
            element — so without this the panel sits in the corner the writing
@@ -785,25 +788,25 @@
         overflow: hidden;
     }
 
-    .use-dialog[open] {
+    .dialog-panel[open] {
         display: flex;
         flex-direction: column;
     }
 
-    .use-dialog::backdrop {
+    .dialog-panel::backdrop {
         background: rgb(12 11 10 / 0.6);
     }
 
     /* The body scrolls, not the panel, so the close button stays reachable on
        a long use with the list of benefits under it. */
-    .use-dialog__body {
+    .dialog-panel__body {
         overflow-y: auto;
         overscroll-behavior: contain;
         padding: 0.25rem 1.5rem 2rem;
     }
 
     @media (min-width: 768px) {
-        .use-dialog__body {
+        .dialog-panel__body {
             padding: 0.5rem 2.25rem 2.5rem;
         }
     }
@@ -811,13 +814,13 @@
     /* A row of its own above the scrolling body rather than something floating
        over it: the close stays put as the text scrolls under it, and it never
        lands on top of a word. */
-    .use-dialog__dismiss {
+    .dialog-panel__dismiss {
         display: flex;
         justify-content: flex-end;
         padding: 0.75rem 0.75rem 0;
     }
 
-    .use-dialog__close {
+    .dialog-panel__close {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -829,7 +832,7 @@
         transition: color 150ms ease, background-color 150ms ease;
     }
 
-    .use-dialog__close:hover {
+    .dialog-panel__close:hover {
         color: var(--color-ink-950);
         background: var(--color-ink-100);
     }
