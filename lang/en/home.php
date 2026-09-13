@@ -1,7 +1,6 @@
 <?php
 
 return [
-    'showcase_caption' => 'From quarry to site, in one controlled chain.',
     'showcase_alt' => 'ARTA LECA production line',
     'hero_eyebrow' => 'Producing expanded clay aggregate since 1996',
     'hero_title' => 'Lightweight expanded clay aggregate, graded to repeat',

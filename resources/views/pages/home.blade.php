@@ -323,17 +323,13 @@
                 sizes="100vw"
             />
 
-            {{-- A floor under the caption, and a top edge dark enough that the
-                 header does not sit on bare photograph when it reveals. --}}
+            {{-- Only the top edge earns its keep now that the caption is gone:
+                 it keeps the header off bare photograph as it reveals. The
+                 floor at the bottom is left in place because it is what stops
+                 the picture meeting the next section on a hard line. --}}
             <div class="absolute inset-0 bg-gradient-to-t from-night-950/70 via-transparent to-night-950/35"
                  aria-hidden="true"></div>
 
-            <div class="container-page absolute inset-x-0 bottom-0 pb-14 md:pb-20">
-                <p class="eyebrow text-brand-400!">{{ content('common.certificates') }}</p>
-                <p class="mt-3 max-w-lg text-xl font-bold text-white md:text-2xl">
-                    {{ content('home.showcase_caption') }}
-                </p>
-            </div>
         </div>
 
     {{-- ── Projects ───────────────────────────────────────────────────── --}}
