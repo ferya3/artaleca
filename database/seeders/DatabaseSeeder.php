@@ -19,6 +19,11 @@ class DatabaseSeeder extends Seeder
             EditorialSeeder::class,
             CmsSeeder::class,
             SettingSeeder::class,
+            TechnicalArticleSeeder::class,
+
+            // Last: it fills in whatever SEO fields the seeders above left
+            // empty, so it has to see every record they create.
+            SeoMetadataSeeder::class,
         ]);
 
         // Seeded content invalidates the navigation and homepage caches.

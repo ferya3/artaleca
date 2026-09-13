@@ -672,6 +672,29 @@ back. The seeder clears the sitemap cache itself, because that cache lasts six
 hours and is otherwise only cleared by saving from the panel — the articles
 would be missing from the sitemap long after the run that published them.
 
+## 4f. The SEO fields in the panel
+
+Every product, category, use, project, page and post has an SEO title and
+description field. They were all empty, and nothing broke — each controller
+falls back to the record's own name and summary — which is why nobody noticed.
+A fallback title is the name of the thing; a search result wants the phrase
+somebody would type.
+
+```bash
+cd /var/www/artaleca && php artisan db:seed --class=SeoMetadataSeeder --force
+```
+
+Thirty-one records, three languages each. Only blanks are written, so an
+editor's own wording is never replaced and the command is safe to re-run after
+adding records — those already filled in are skipped. Both new seeders are also
+wired into `DatabaseSeeder`, so a fresh install gets them without a second
+command.
+
+One trap worth knowing before editing these in the panel: Persian numerals have
+to be typed literally. The digit middleware rewrites text between tags, and a
+meta description lives inside one, so a Latin `4-10` typed in that field reaches
+Google as `4-10` on a page where every other number is Persian.
+
 ---
 
 ## 4d. Checking the SEO
