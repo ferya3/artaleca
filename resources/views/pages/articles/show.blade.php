@@ -19,7 +19,7 @@
                     @endif
                 </p>
 
-                <h1 class="max-w-3xl text-3xl font-bold text-ink-950 md:text-4xl">{{ $post->title }}</h1>
+                <h1 class="max-w-3xl text-3xl font-bold text-ink-950 md:text-4xl lg:text-[2.5rem]">{{ $post->title }}</h1>
 
                 @if (filled($post->excerpt))
                     <p class="mt-5 max-w-2xl text-base leading-relaxed text-ink-600 md:text-lg">{{ $post->excerpt }}</p>

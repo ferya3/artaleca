@@ -15,7 +15,7 @@
             <p class="eyebrow mb-3">{{ $eyebrow }}</p>
         @endif
 
-        <h1 class="max-w-3xl text-3xl font-bold text-ink-950 md:text-4xl lg:text-[2.75rem]">
+        <h1 class="max-w-3xl text-3xl font-bold text-ink-950 md:text-4xl lg:text-[2.5rem]">
             {{ $title }}
         </h1>
 

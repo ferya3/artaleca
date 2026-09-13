@@ -37,13 +37,9 @@
             <div class="container-page relative z-10 flex min-h-[72svh] flex-col justify-center py-14">
                 <p class="eyebrow text-brand-400!">{{ content('home.hero_eyebrow') }}</p>
 
-                <h1 class="mt-4 text-3xl font-bold leading-[1.2] sm:text-4xl">
+                <h1 class="mt-4 text-3xl font-bold">
                     {{ content('home.hero_title') }}
                 </h1>
-
-                <p class="mt-5 max-w-md text-[0.9375rem] leading-relaxed text-night-200">
-                    {{ content('home.hero_body') }}
-                </p>
             </div>
         </div>
 
@@ -63,18 +59,11 @@
                 <div class="min-w-0 lg:col-span-6">
                     <p class="eyebrow text-brand-400!">{{ content('home.hero_eyebrow') }}</p>
 
-                    <h1 class="mt-4 text-5xl font-bold leading-[1.15] lg:text-[3.25rem]">
+                    <h1 class="mt-4 text-4xl font-bold lg:text-[2.5rem]">
                         {{ content('home.hero_title') }}
                     </h1>
 
-                    <p class="mt-6 max-w-xl text-lg leading-relaxed text-night-300">
-                        {{ content('home.hero_body') }}
-                    </p>
-
-                    <div class="mt-9 flex flex-col gap-3 sm:flex-row">
-                        <x-button :href="route('products.index')" variant="accent" size="lg">
-                            {{ content('home.hero_primary_cta') }}
-                        </x-button>
+                    <div class="mt-8 flex flex-col gap-3 sm:flex-row">
                         <x-button :href="route('quote')" variant="inverse" size="lg">
                             {{ content('home.hero_secondary_cta') }}
                         </x-button>

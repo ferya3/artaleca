@@ -50,9 +50,12 @@ class LocaleRoutingTest extends TestCase
 
     public function test_pages_are_translated_rather_than_repeated(): void
     {
-        $this->get('/fa')->assertSee('مشاهده محصولات');
-        $this->get('/en')->assertSee('View the range');
-        $this->get('/ar')->assertSee('تصفّح المنتجات');
+        // The hero's one remaining button. It was the products button until
+        // that was removed from the hero; any string on the page would do, so
+        // long as the three languages render three different ones.
+        $this->get('/fa')->assertSee('درخواست استعلام');
+        $this->get('/en')->assertSee('Request a quote');
+        $this->get('/ar')->assertSee('طلب عرض سعر');
     }
 
     /**

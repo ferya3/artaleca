@@ -5,8 +5,6 @@ return [
     'showcase_alt' => 'ARTA LECA production line',
     'hero_eyebrow' => 'Producing expanded clay aggregate since 1996',
     'hero_title' => 'Lightweight expanded clay aggregate, graded to repeat',
-    'hero_body' => 'Three rotary kiln lines, continuous in-house testing and 450,000 m³ of annual capacity — for projects that need a fixed number, not an average.',
-    'hero_primary_cta' => 'View the range',
     'hero_secondary_cta' => 'Request a quote',
 
     'intro_title' => 'One material, three engineering advantages',

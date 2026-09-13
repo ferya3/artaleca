@@ -66,7 +66,7 @@
                     </a>
                 @endif
 
-                <h1 class="mt-3 text-3xl font-bold text-ink-950 md:text-4xl">{{ $product->name }}</h1>
+                <h1 class="mt-3 text-3xl font-bold text-ink-950 md:text-4xl lg:text-[2.5rem]">{{ $product->name }}</h1>
 
                 @if (filled($product->sku))
                     <p class="tabular mt-2 text-sm text-ink-500">
