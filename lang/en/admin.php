@@ -20,7 +20,7 @@ return [
         'office_address' => 'Address',
         'office_position_hint' => 'A lower number comes first.',
         'position_hint' => 'A lower number comes first. This is what orders the record everywhere: the index page, the home page row, and related items.',
-        'featured_product_hint' => 'Shows in the products row on the home page. That row has four places, filled from the featured products in Order, so if you feature more than four the Order field is what decides which four appear. Every active product, featured or not, is on the All products page.',
+        'featured_product_hint' => 'Shows in the products row on the home page. That row scrolls, so however many products you feature (up to eight) appear in it, in the Order you give them — a lower number comes first. Every active product, featured or not, is on the All products page.',
         'featured_project_hint' => 'Shows in the projects row on the home page. That row has three places, filled with the most recent featured projects. Every active project is on the projects page.',
         'featured_post_hint' => 'Marks the article as featured. The news row on the home page shows the three most recent articles.',
         'office_geo_hint' => 'Optional. Filled in, it adds a "find us on the map" link under the address.',

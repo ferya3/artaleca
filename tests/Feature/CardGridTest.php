@@ -38,7 +38,6 @@ class CardGridTest extends TestCase
     {
         return [
             ['/fa/applications'],
-            ['/fa/products'],
             ['/fa/projects'],
             ['/fa/articles'],
             ['/fa/representatives'],

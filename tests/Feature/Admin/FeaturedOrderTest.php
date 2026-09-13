@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Admin;
 
 use App\Models\Product;
+use App\Support\Digits;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -12,18 +13,26 @@ use Tests\TestCase;
  * Choosing what appears on the home page, and in what order.
  *
  * The machinery was all there — `is_featured` picks the set, `position` orders
- * it, both editable — and it was still not usable, because neither field said
- * what it did and the list screen showed position without showing which
- * records were featured. An editor ticking the box saw four of seven products
- * reach the home page with no way of telling which four, or why.
+ * it, both editable — and it was still not usable. The row was a four-column
+ * grid, so it took four products however many were featured; and neither field
+ * said what it did, while the list screen showed position without showing which
+ * records were featured. Ticking the box put four of seven products on the home
+ * page with no way of telling which four, or why.
  *
- * So the guard here is not on the query. It is on the two things that make the
- * query legible from the panel: the featured column on the list, and hints that
- * say how many places the row has and what fills them.
+ * The row scrolls at every width now, which is what makes position a control
+ * with a visible effect rather than a tie-break among four. The rest of the
+ * guard is on the panel: the featured column on the list, and hints saying what
+ * each field decides.
  */
 class FeaturedOrderTest extends TestCase
 {
     use RefreshDatabase;
+
+    /** The grade's name as it reaches the page — Persian digits and all. */
+    private function grade(int $position): string
+    {
+        return 'گرید '.Digits::text((string) $position);
+    }
 
     private function product(int $position, bool $featured): Product
     {
@@ -36,24 +45,54 @@ class FeaturedOrderTest extends TestCase
         ]);
     }
 
-    /** The home row is the featured set, cut to its four places by position. */
-    public function test_position_decides_which_featured_products_reach_the_home_page(): void
+    /**
+     * The home row is the featured set, in position order.
+     *
+     * The row scrolls at every width now, so it is no longer cut to the four
+     * places a grid had — which is what made the order a real control rather
+     * than a tie-break nobody could see the effect of.
+     */
+    public function test_the_home_row_is_the_featured_set_in_position_order(): void
     {
-        // Six featured products for four places, in a deliberately unhelpful
-        // creation order so anything falling back to `id` fails here.
+        // Created in a deliberately unhelpful order, so anything falling back
+        // to `id` comes out wrong here.
         foreach ([60, 10, 50, 20, 40, 30] as $position) {
             $this->product($position, true);
         }
 
+        // One that is not featured, to prove the flag still decides the set.
+        $this->product(15, false);
+
+        $html = $this->get('/fa')->assertOk()->getContent();
+        $this->assertStringNotContainsString($this->grade(15), $html);
+
+        $seen = [];
+
+        foreach ([10, 20, 30, 40, 50, 60] as $position) {
+            $at = strpos($html, $this->grade($position));
+
+            $this->assertNotFalse($at, "Grade at position {$position} never reached the home row.");
+            $seen[$position] = $at;
+        }
+
+        $offsets = array_values($seen);
+        $sorted = $offsets;
+        sort($sorted);
+
+        $this->assertSame($sorted, $offsets, 'The home row is not in position order.');
+    }
+
+    /** Beyond eight it stops, because a home page row is not a catalogue. */
+    public function test_the_home_row_stops_at_eight(): void
+    {
+        foreach (range(1, 9) as $i) {
+            $this->product($i, true);
+        }
+
         $html = $this->get('/fa')->assertOk()->getContent();
 
-        foreach ([10, 20, 30, 40] as $shown) {
-            $this->assertStringContainsString('گرید '.\App\Support\Digits::text((string) $shown), $html);
-        }
-
-        foreach ([50, 60] as $hidden) {
-            $this->assertStringNotContainsString('گرید '.\App\Support\Digits::text((string) $hidden), $html);
-        }
+        $this->assertStringContainsString($this->grade(8), $html);
+        $this->assertStringNotContainsString($this->grade(9), $html);
     }
 
     /** And the ones it left out are still on the catalogue page. */
@@ -67,7 +106,7 @@ class FeaturedOrderTest extends TestCase
 
         foreach ([10, 20, 30, 40, 50, 60] as $position) {
             $this->assertStringContainsString(
-                'گرید '.\App\Support\Digits::text((string) $position),
+                $this->grade($position),
                 $html,
                 "Grade at position {$position} is missing from the catalogue.",
             );

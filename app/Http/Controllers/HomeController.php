@@ -23,10 +23,19 @@ class HomeController extends Controller
          * settings, which are read on *every* request, are cached instead.
          */
         $data = [
+            /*
+             * Eight, where it was four — and the four was the layout talking,
+             * not an editorial decision: the row was a four-column grid above
+             * a phone, so a fifth featured product landed on a second row with
+             * three holes beside it. The row scrolls at every width now, so the
+             * number of cards is whatever the editor featured. The cap is only
+             * there to stop a runaway: nine featured products is a catalogue,
+             * and the catalogue is one click away.
+             */
             'products' => Product::query()
                 ->active()->featured()->ordered()
                 ->with('category')
-                ->take(4)->get(),
+                ->take(8)->get(),
 
             /*
              * Seven, which is every use the plant currently lists — and a cap

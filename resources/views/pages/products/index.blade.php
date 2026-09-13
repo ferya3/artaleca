@@ -78,28 +78,54 @@
                 </h2>
 
                 {{--
-                    A grid, and emphatically not the scroller this used to be.
+                    The grades read as a row you scroll, not a block that ends.
+                    Card widths are a little under an exact fit at every
+                    breakpoint, so part of the next one is always on screen —
+                    which is the whole signal that there is more to the right.
+                    See `.carousel` for the mechanics.
 
-                    The row was built to read as "there is more to the right",
-                    and on the home page that is exactly right: a teaser with a
-                    link to the full list. Here it was wrong in a way no amount
-                    of peek could fix. This *is* the full list — the page a
-                    visitor reaches by following that link — and it showed two
-                    grades of seven on a phone and four on a laptop, with the
-                    rest behind a sideways swipe nobody has a reason to try on
-                    a page they believe they are already at the end of.
-
-                    Every grade is on the page now. `.card-grid` centres a short
-                    last row, which is what makes an odd count (seven grades,
-                    three to a row) wrap without leaving a hole in the corner.
+                    The negative margin matches the page gutter at each
+                    breakpoint, so the row bleeds to the edge of the screen on a
+                    phone while the first card still lines up with the heading
+                    above it.
                 --}}
-                <ul class="card-grid">
-                    @foreach ($products as $product)
-                        <li class="flex">
-                            <x-product-card :product="$product" :eager="$loop->index < 3" class="w-full" />
-                        </li>
-                    @endforeach
-                </ul>
+                <div class="relative">
+                    <ul
+                        data-carousel
+                        tabindex="0"
+                        aria-label="{{ content('product.grades_title') }}"
+                        class="no-scrollbar carousel -mx-5 px-5 pb-2 md:-mx-8 md:px-8"
+                    >
+                        @foreach ($products as $product)
+                            <li class="flex shrink-0 basis-[78%] sm:basis-[42%] lg:basis-[29%] xl:basis-[22%]">
+                                <x-product-card :product="$product" :eager="$loop->index < 4" class="w-full" />
+                            </li>
+                        @endforeach
+                    </ul>
+
+                    {{-- Hidden until app.js wires them up, and never on a
+                         touch-sized screen where the swipe is the control. --}}
+                    <div
+                        data-carousel-controls
+                        class="pointer-events-none absolute inset-y-0 -start-4 -end-4 items-center justify-between"
+                    >
+                        @foreach ([['prev', 'previous', 'M7 1L2 6l5 5'], ['next', 'next', 'M2 1l5 5-5 5']] as [$action, $label, $path])
+                            <button
+                                type="button"
+                                data-carousel-{{ $action }}
+                                aria-label="{{ content('common.pagination.'.$label) }}"
+                                class="pointer-events-auto flex h-10 w-10 items-center justify-center rounded-full border border-hairline
+                                       bg-surface text-ink-700 shadow-lift transition-opacity hover:text-brand-600
+                                       disabled:pointer-events-none disabled:opacity-0"
+                            >
+                                <svg viewBox="0 0 9 12" class="h-3 w-2.5 rtl:rotate-180" fill="none" aria-hidden="true">
+                                    <path d="{{ $path }}" stroke="currentColor" stroke-width="1.6"
+                                          stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </button>
+                        @endforeach
+                    </div>
+                </div>
 
                 {{ $products->links() }}
             @endif
