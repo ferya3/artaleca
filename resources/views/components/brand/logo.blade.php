@@ -1,4 +1,4 @@
-@props(['showWordmark' => true, 'size' => 'sm'])
+@props(['showWordmark' => true, 'size' => 'sm', 'onDark' => false])
 
 @php
     // An uploaded file wins over the drawn mark, and each theme gets its own —
@@ -7,15 +7,34 @@
     $themed = filled($uploaded['dark']) && $uploaded['dark'] !== $uploaded['light'];
 
     /*
+     * `on-dark` is for a block that is dark in *both* themes — the footer, which
+     * is night-palette by design and does not invert. Choosing between the two
+     * files by theme is right in the header, where the ground follows the theme,
+     * and wrong there: in the light theme it hands the footer the dark-lettered
+     * file, over a near-black ground, and the logo simply is not there.
+     */
+    if ($onDark && $themed) {
+        $uploaded['light'] = $uploaded['dark'];
+        $themed = false;
+    }
+
+    /*
      * Three sizes, written out as literal class strings rather than composed
      * from the prop: Tailwind scans the source for class names, and a name it
      * only ever sees assembled at runtime is a name it never emits.
      *
-     * `lg` is the footer, where the mark is the only branding on the page and
-     * had shrunk to a 98×56 smudge; `md` is the header, where it competes with
-     * the navigation and cannot grow much without pushing the bar down.
+     * `xl` is the footer, where the mark is the only branding left on the page
+     * and is the last thing a visitor sees; `md` is the header, where it
+     * competes with the navigation and cannot grow much without pushing the bar
+     * down. `lg` sits between them and is what the footer used to take.
      */
     [$markClass, $wordClass, $gapClass, $imgClass] = match ($size) {
+        'xl' => [
+            'h-20 w-auto shrink-0 lg:h-24',
+            'text-[1.75rem]',
+            'gap-4',
+            'h-20 w-auto max-w-[20rem] object-contain lg:h-24',
+        ],
         'lg' => [
             'h-14 w-auto shrink-0 lg:h-16',
             'text-[1.3rem]',

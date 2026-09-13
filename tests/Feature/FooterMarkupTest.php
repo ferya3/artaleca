@@ -77,4 +77,72 @@ class FooterMarkupTest extends TestCase
     {
         $this->assertStringNotContainsString('flex gap-3', $this->footer());
     }
+
+    /**
+     * The brand is centred on a phone and heads the row on a desktop.
+     *
+     * On a phone it shared a `justify-between` row with the social icons, which
+     * with no icons configured left it hard against one edge — measured at 390px
+     * and 768px it is now centred to the pixel.
+     */
+    public function test_the_brand_is_centred_on_a_phone_and_starts_the_row_on_a_desktop(): void
+    {
+        $footer = $this->footer();
+
+        preg_match('~<div class="flex flex-col items-center[^"]*"~', $footer, $brand);
+        $this->assertNotEmpty($brand, 'The footer brand block is not where this test expects it.');
+
+        $this->assertStringContainsString('items-center', $brand[0]);
+        $this->assertStringContainsString('lg:items-start', $brand[0]);
+    }
+
+    /**
+     * The row is sized by its content, not by twelve columns.
+     *
+     * A third of the width for a block as wide as a logo is what put 300px of
+     * nothing between the mark and the first link. `flex-1` on the address is
+     * the half that matters: it is the only block with a reason to take the
+     * slack.
+     */
+    public function test_the_footer_row_is_laid_out_by_content(): void
+    {
+        $footer = $this->footer();
+
+        $this->assertStringNotContainsString('lg:col-span-4', $footer, 'The twelve-column grid is back.');
+        $this->assertStringContainsString('lg:flex lg:items-start', $footer);
+        $this->assertStringContainsString('lg:flex-1', $footer);
+    }
+
+    /** The mark is the last branding on the page, so it takes the largest size. */
+    public function test_the_footer_logo_takes_the_largest_size(): void
+    {
+        // The literal class string the `xl` size emits, which is the only form
+        // Tailwind's scanner ever sees.
+        $this->assertStringContainsString('h-20 w-auto shrink-0 lg:h-24', $this->footer());
+    }
+
+    /**
+     * An uploaded logo in the footer always takes the dark-ground file.
+     *
+     * This band is night-palette in both themes. Picking between the two files
+     * by *theme* is right in the header and wrong here: in the light theme it
+     * handed the footer the dark-lettered file over a near-black ground, and
+     * the logo was simply not visible — which is exactly how it was reported.
+     */
+    public function test_the_footer_logo_uses_the_dark_ground_file_in_both_themes(): void
+    {
+        \App\Models\Setting::put('media.logo', ['fa' => [
+            'light' => '/storage/media/logo-dark-lettering.png',
+            'dark' => '/storage/media/logo-light-lettering.png',
+        ]], 'media', true);
+
+        $footer = $this->footer();
+
+        $this->assertStringContainsString('/storage/media/logo-light-lettering.png', $footer);
+        $this->assertStringNotContainsString('/storage/media/logo-dark-lettering.png', $footer);
+
+        // One tag, not a themed pair: there is nothing here for a theme to
+        // switch between.
+        $this->assertStringNotContainsString('theme-only-', $footer);
+    }
 }

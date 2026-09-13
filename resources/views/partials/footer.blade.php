@@ -13,12 +13,24 @@
     {{-- Two columns of links, then the contact details one line each beneath
          them. Group headings are the accessible name of each <nav> and nothing
          more: drawn, a heading costs as much height as a link, and on a phone
-         this footer used to run past a screen and a half. --}}
-    <div class="container-page py-10 lg:grid lg:grid-cols-12 lg:items-start lg:gap-10 lg:py-16">
+         this footer used to run past a screen and a half.
 
-        <div class="flex items-center justify-between gap-4 lg:col-span-4 lg:flex-col lg:items-start lg:gap-6">
+         A flex row rather than the twelve-column grid it was laid out on. The
+         grid gave the brand a third of the width for a block only as wide as a
+         logo, so the links began 300px away from it with nothing in between and
+         the mark sat marooned in the corner. Sized by content instead, each
+         block takes what it needs and the address takes the rest. --}}
+    <div class="container-page py-10 lg:flex lg:items-start lg:gap-14 lg:py-16">
+
+        {{-- Centred on a phone, where it is the first thing in the footer and
+             has the width to itself; back to a column at the start of the line
+             on a desktop, where it heads the row. --}}
+        <div class="flex flex-col items-center gap-5 lg:shrink-0 lg:items-start lg:gap-6">
+            {{-- `on-dark`: this band is night-palette in both themes, so the
+                 logo must always take the file made for a dark ground rather
+                 than the one the current theme would pick. --}}
             <a href="{{ route('home') }}" class="text-white" aria-label="{{ config('site.company.brand') }}">
-                <x-brand.logo size="lg" />
+                <x-brand.logo size="xl" on-dark />
             </a>
 
             @if (filled($social))
@@ -38,7 +50,7 @@
             @endif
         </div>
 
-        <div class="mt-8 grid grid-cols-2 gap-x-6 gap-y-2.5 lg:col-span-4 lg:mt-0">
+        <div class="mt-8 grid grid-cols-2 gap-x-6 gap-y-2.5 lg:mt-0 lg:shrink-0 lg:gap-x-12">
             @foreach (Navigation::footer() as $heading => $links)
                 <nav aria-label="{{ $heading }}">
                     <ul class="space-y-2.5">
@@ -55,7 +67,7 @@
 
         {{-- One line each. `no-justify` because the page justifies body text,
              and justifying a short address stretches it into a row of gaps. --}}
-        <address class="no-justify mt-8 space-y-2 border-t border-night-line pt-6 text-sm not-italic leading-relaxed text-night-400 lg:col-span-4 lg:mt-0 lg:border-0 lg:pt-0">
+        <address class="no-justify mt-8 space-y-2 border-t border-night-line pt-6 text-sm not-italic leading-relaxed text-night-400 lg:mt-0 lg:flex-1 lg:border-0 lg:pt-0">
             @if ($plant)
                 <p><span class="text-night-500">{{ content('common.plant_address') }}:</span> {{ $plant->address }}</p>
             @endif
