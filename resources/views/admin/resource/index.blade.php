@@ -48,10 +48,18 @@
                                         $value = data_get($record, $attribute);
                                     @endphp
 
-                                    @if (is_bool($value))
+                                    @if (is_bool($value) && $attribute === 'is_active')
                                         <span class="inline-block px-2 py-0.5 text-[0.6875rem] font-medium
                                                      {{ $value ? 'bg-green-100 text-green-800' : 'bg-ink-100 text-ink-500' }}">
                                             {{ $value ? __('admin.active') : __('admin.inactive_state') }}
+                                        </span>
+                                    @elseif (is_bool($value))
+                                        {{-- Any other flag is named by its own column, so the badge
+                                             carries that name. Reusing the active/inactive wording
+                                             here put "active" in a column headed "featured". --}}
+                                        <span class="inline-block px-2 py-0.5 text-[0.6875rem] font-medium
+                                                     {{ $value ? 'bg-brand-100 text-brand-800' : 'text-ink-400' }}">
+                                            {{ $value ? $label : '—' }}
                                         </span>
                                     @elseif ($value instanceof \Carbon\CarbonInterface)
                                         <span class="tabular ltr-run text-xs text-ink-500">{{ $value->format('Y-m-d') }}</span>

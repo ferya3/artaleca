@@ -46,6 +46,7 @@ class ProjectController extends ResourceController
             'title' => content('nav.projects'),
             'client' => content('projects.client'),
             'year' => content('projects.year'),
+            'is_featured' => __('admin.featured'),
             'is_active' => __('admin.status'),
         ];
     }
@@ -96,7 +97,8 @@ class ProjectController extends ResourceController
             ['name' => 'meta_description', 'label' => __('admin.fields.meta_description'), 'type' => 'textarea', 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:170']],
 
-            ['name' => 'is_featured', 'label' => __('admin.featured'), 'type' => 'checkbox', 'width' => 'half'],
+            ['name' => 'is_featured', 'label' => __('admin.featured'), 'type' => 'checkbox', 'width' => 'half',
+                'hint' => __('admin.fields.featured_project_hint')],
             ['name' => 'is_active', 'label' => __('admin.active'), 'type' => 'checkbox', 'width' => 'half'],
         ];
     }

@@ -47,6 +47,7 @@ class PostController extends ResourceController
             'title' => __('admin.posts'),
             'type' => content('articles.types.all'),
             'published_at' => content('articles.published_on', ['date' => '']),
+            'is_featured' => __('admin.featured'),
             'is_active' => __('admin.status'),
         ];
     }
@@ -85,7 +86,8 @@ class PostController extends ResourceController
             ['name' => 'meta_description', 'label' => __('admin.fields.meta_description'), 'type' => 'textarea', 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:170']],
 
-            ['name' => 'is_featured', 'label' => __('admin.featured'), 'type' => 'checkbox', 'width' => 'half'],
+            ['name' => 'is_featured', 'label' => __('admin.featured'), 'type' => 'checkbox', 'width' => 'half',
+                'hint' => __('admin.fields.featured_post_hint')],
             ['name' => 'is_active', 'label' => __('admin.active'), 'type' => 'checkbox', 'width' => 'half'],
         ];
     }

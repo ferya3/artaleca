@@ -44,6 +44,11 @@ class ProductController extends ResourceController
             'sku' => content('product.sku'),
             'category.name' => content('product.filter_by_category'),
             'position' => __('admin.position'),
+            // The list is sorted by position, so featured next to it is the
+            // whole home-page row, in the order it will appear, on one screen.
+            // Without this column that selection can only be read by opening
+            // every product in turn.
+            'is_featured' => __('admin.featured'),
             'is_active' => __('admin.status'),
         ];
     }
@@ -70,6 +75,7 @@ class ProductController extends ResourceController
                 'rules' => ['required', 'integer', Rule::exists('product_categories', 'id')]],
 
             ['name' => 'position', 'label' => __('admin.position'), 'type' => 'number', 'width' => 'half',
+                'hint' => __('admin.fields.position_hint'),
                 'rules' => ['nullable', 'integer', 'min:0', 'max:9999']],
 
             ['name' => 'tagline', 'label' => __('admin.fields.tagline'), 'translatable' => true,
@@ -136,7 +142,8 @@ class ProductController extends ResourceController
             ['name' => 'meta_description', 'label' => __('admin.fields.meta_description'), 'type' => 'textarea', 'translatable' => true,
                 'rules' => ['nullable', 'string', 'max:170']],
 
-            ['name' => 'is_featured', 'label' => __('admin.featured'), 'type' => 'checkbox', 'width' => 'half'],
+            ['name' => 'is_featured', 'label' => __('admin.featured'), 'type' => 'checkbox', 'width' => 'half',
+                'hint' => __('admin.fields.featured_product_hint')],
             ['name' => 'is_active', 'label' => __('admin.active'), 'type' => 'checkbox', 'width' => 'half'],
         ];
     }

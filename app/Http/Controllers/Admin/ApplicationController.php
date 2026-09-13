@@ -51,6 +51,7 @@ class ApplicationController extends ResourceController
                     Rule::unique('applications', 'slug')->ignore($r)]],
 
             ['name' => 'position', 'label' => __('admin.position'), 'type' => 'number', 'width' => 'half',
+                'hint' => __('admin.fields.position_hint'),
                 'rules' => ['nullable', 'integer', 'min:0', 'max:9999']],
 
             ['name' => 'summary', 'label' => __('admin.fields.summary'), 'type' => 'textarea', 'translatable' => true,

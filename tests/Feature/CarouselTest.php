@@ -13,13 +13,19 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 /**
- * The card rows that scroll: the grades on the catalogue page, and the
- * products, the uses, the projects and the news on the home page.
+ * The card rows that scroll, all of them on the home page: the products, the
+ * uses, the projects and the news.
  *
- * Two kinds. The grades and the uses scroll at every width and carry arrows
- * from `lg` up; the other three are grids that become carousels only on a
- * phone. The uses row moved from the second kind to the first because seven
- * cards never filled a four-column grid evenly.
+ * Two kinds. The uses row scrolls at every width and carries arrows from `lg`
+ * up; the other three are grids that become carousels only on a phone. The
+ * uses row moved from the second kind to the first because seven cards never
+ * filled a four-column grid evenly.
+ *
+ * The grades on the catalogue page used to be the first kind and are now a
+ * plain grid, which is why the mechanics below are exercised through the uses
+ * row instead. A teaser row on the home page can afford to say "there is more
+ * to the right"; the page that *is* the full list cannot, because nobody
+ * swipes sideways on a page they believe they have reached the end of.
  *
  * What makes them read as rows rather than blocks that end is the peek — every
  * card is a little narrower than an exact fit, so part of the next is always on
@@ -85,11 +91,11 @@ class CarouselTest extends TestCase
         }
     }
 
-    public function test_the_grades_are_a_snapping_scroller(): void
+    public function test_the_uses_row_is_a_snapping_scroller(): void
     {
-        $this->catalogue();
+        $this->uses(7);
 
-        $html = $this->get('/fa/products')->assertOk()->getContent();
+        $html = $this->get('/fa')->assertOk()->getContent();
 
         $this->assertStringContainsString('data-carousel', $html);
         $this->assertStringContainsString('no-scrollbar carousel', $html);
@@ -106,9 +112,9 @@ class CarouselTest extends TestCase
      */
     public function test_every_breakpoint_leaves_the_next_card_showing(): void
     {
-        $this->catalogue();
+        $this->uses(7);
 
-        $html = $this->get('/fa/products')->assertOk()->getContent();
+        $html = $this->get('/fa')->assertOk()->getContent();
 
         foreach (['basis-[78%]', 'sm:basis-[42%]', 'lg:basis-[29%]', 'xl:basis-[22%]'] as $basis) {
             $this->assertStringContainsString($basis, $html, "The carousel lost its {$basis} peek.");
@@ -135,9 +141,9 @@ class CarouselTest extends TestCase
     /** An arrow that scrolls nothing is worse than no arrow. */
     public function test_the_arrows_are_hidden_until_a_script_claims_them(): void
     {
-        $this->catalogue();
+        $this->uses(7);
 
-        $html = $this->get('/fa/products')->assertOk()->getContent();
+        $html = $this->get('/fa')->assertOk()->getContent();
         $css = (string) file_get_contents(resource_path('css/app.css'));
 
         $this->assertStringContainsString('data-carousel-prev', $html);
@@ -154,12 +160,12 @@ class CarouselTest extends TestCase
     /** Scrolling a row of links with the keyboard needs somewhere to focus. */
     public function test_the_scroller_is_reachable_by_keyboard(): void
     {
-        $this->catalogue();
+        $this->uses(7);
 
-        $this->get('/fa/products')
+        $this->get('/fa')
             ->assertOk()
             ->assertSee('tabindex="0"', false)
-            ->assertSee('aria-label="'.content('product.grades_title').'"', false);
+            ->assertSee('aria-label="'.content('home.applications_title').'"', false);
     }
 
     // ── The home page: a carousel on a phone only ───────────────────────
@@ -201,15 +207,31 @@ class CarouselTest extends TestCase
         );
     }
 
-    /** The catalogue row is a carousel at every width, and keeps its arrows. */
-    public function test_the_catalogue_row_is_not_the_phone_only_kind(): void
+    /**
+     * The catalogue is a grid, and every grade is on it.
+     *
+     * This was a scroller, and it hid five of seven grades on a phone and
+     * three of seven on a laptop behind a sideways swipe. The peek that makes
+     * a teaser row work on the home page is worth nothing here: this page is
+     * where "see all products" leads, so a visitor arriving on it has no
+     * reason to suspect there is anything to the right of what they can see.
+     */
+    public function test_the_catalogue_shows_every_grade_as_a_grid(): void
     {
-        $this->catalogue();
+        $this->catalogue(7);
 
         $html = $this->get('/fa/products')->assertOk()->getContent();
 
-        $this->assertStringNotContainsString('carousel-phone', $html);
-        $this->assertStringContainsString('data-carousel-next', $html);
+        $this->assertStringContainsString('card-grid', $html);
+        $this->assertStringNotContainsString('data-carousel', $html);
+
+        foreach (range(1, 7) as $i) {
+            $this->assertStringContainsString(
+                'گرید '.Digits::text((string) $i),
+                $html,
+                "Grade {$i} is not on the catalogue page.",
+            );
+        }
     }
 
     // ── The home page: the seven uses ───────────────────────────────────

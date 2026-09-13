@@ -65,6 +65,7 @@ class PartnerController extends ResourceController
                 'rules' => ['nullable', 'url', 'max:255']],
 
             ['name' => 'position', 'label' => __('admin.position'), 'type' => 'number', 'width' => 'half',
+                'hint' => __('admin.fields.position_hint'),
                 'rules' => ['nullable', 'integer', 'min:0', 'max:9999']],
 
             ['name' => 'is_active', 'label' => __('admin.active'), 'type' => 'checkbox'],
