@@ -223,6 +223,48 @@ function bindThemeToggle() {
     });
 }
 
+/**
+ * Open a panel instead of following a link.
+ *
+ * A trigger carries `data-dialog="<id>"` and a real `href` to the page that
+ * holds the same material. The href is not a fallback nobody reaches: it is
+ * what a middle-click opens, what a crawler follows, and what happens if this
+ * file never arrives. Only a plain left-click is taken.
+ *
+ * Everything that *closes* the panel is already in the markup — Escape and the
+ * `method="dialog"` form are the browser's — so nothing here needs to unwind
+ * except the scroll lock.
+ */
+function bindDialogs() {
+    document.querySelectorAll('[data-dialog]').forEach((trigger) => {
+        const dialog = document.getElementById(trigger.dataset.dialog);
+
+        // No <dialog> support means no interception: the link goes to the page.
+        if (!dialog || typeof dialog.showModal !== 'function') return;
+
+        trigger.addEventListener('click', (event) => {
+            // A modified click is a deliberate "open this somewhere else".
+            if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+
+            event.preventDefault();
+            dialog.showModal();
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    document.querySelectorAll('[data-dialog-panel]').forEach((dialog) => {
+        // The panel itself is only ever the backdrop: it carries no padding of
+        // its own, so a click that lands on it landed outside the content.
+        dialog.addEventListener('click', (event) => {
+            if (event.target === dialog) dialog.close();
+        });
+
+        dialog.addEventListener('close', () => {
+            document.body.style.overflow = '';
+        });
+    });
+}
+
 /*
  * Each one is isolated. These are independent progressive enhancements, and a
  * throw in any of them used to take out every one that had not run yet — which
@@ -237,6 +279,7 @@ function bindThemeToggle() {
     bindGalleries,
     bindAutoSubmitFilters,
     bindCarousels,
+    bindDialogs,
     bindMapLinks,
     bindThemeToggle,
 ].forEach((enhance) => {

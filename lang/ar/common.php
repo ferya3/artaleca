@@ -7,6 +7,7 @@ return [
     'view_all' => 'عرض الكل',
     'view_details' => 'عرض التفاصيل',
     'back' => 'رجوع',
+    'close' => 'إغلاق',
     'download' => 'تحميل',
     'download_pdf' => 'تحميل PDF',
     'send' => 'إرسال',

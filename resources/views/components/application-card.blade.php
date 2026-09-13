@@ -7,7 +7,13 @@
 
      `x-media` falls back to the deterministic granule field when no image has
      been uploaded, so a use with no photograph yet is a card with a placeholder
-     rather than a card with a gap. --}}
+     rather than a card with a gap.
+
+     The link opens the dialog below rather than the page it points at — see
+     `bindDialogs` in app.js. It stays a real `href` on purpose: that is what
+     still works with no JavaScript, what a middle-click or ctrl-click honours,
+     and what a crawler follows to a page that is still there and still
+     indexed. --}}
 <article {{ $attributes->merge(['class' => 'panel panel-interactive group relative flex flex-col overflow-hidden']) }}>
     <x-media
         :src="$application->image"
@@ -22,6 +28,7 @@
     <div class="flex flex-1 flex-col p-5">
         <h3 class="text-lg font-bold text-ink-950">
             <a href="{{ route('applications.show', ['application' => $application]) }}"
+               data-dialog="use-{{ $application->slug }}"
                class="before:absolute before:inset-0 transition-colors group-hover:text-brand-600">
                 {{ $application->name }}
             </a>
@@ -39,3 +46,8 @@
         </span>
     </div>
 </article>
+
+{{-- Rendered beside the card rather than in a collection at the foot of the
+     page, so a card can never exist without the panel it opens. A closed
+     <dialog> is `display: none`, so it costs the layout around it nothing. --}}
+<x-application-dialog :application="$application" />

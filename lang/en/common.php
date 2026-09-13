@@ -7,6 +7,7 @@ return [
     'view_all' => 'View all',
     'view_details' => 'View details',
     'back' => 'Back',
+    'close' => 'Close',
     'download' => 'Download',
     'download_pdf' => 'Download PDF',
     'send' => 'Send',
