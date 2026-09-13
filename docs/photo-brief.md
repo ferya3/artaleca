@@ -89,7 +89,7 @@ These live under Panel → Site images rather than on a record.
 |---|---|---|
 | Hero — desktop | 3:2, fixed | 1536 × 1024 |
 | Hero — mobile | 2:3, fixed | 1280 × 1920 |
-| Hero backdrop — desktop | follows the window | 2560 × 1440, subject in the middle |
+| Hero backdrop — desktop | 1.9–3.1, follows the window width | 2560 × 1080 (21:9), subject in the middle |
 | Showcase — desktop | 1.7–2.3, follows the window height | 2560 × 1140, subject in the middle band |
 | Showcase — mobile | **4:5, fixed** | 1080 × 1350 |
 | Quality laboratory | 3:2, fixed | 1536 × 1024 |
@@ -97,10 +97,16 @@ These live under Panel → Site images rather than on a record.
 
 Two of them have no fixed shape, and that is not an oversight. The desktop
 showcase is pinned and fills the window, so its proportion follows the window
-height; the desktop hero backdrop fills the width of a band whose height comes
-from the copy on it. Neither has a single export size that fits every screen, so
-supply them oversized, keep the subject in the middle, and accept that the edges
-go. Everything else on this page crops to a number.
+height; the desktop hero backdrop fills the width of a band whose height is set
+by the copy on it — 625px from 1280px wide upward — so its proportion follows
+the window *width* instead, measured from 1.90 at 1024px to 3.07 at 1920px.
+
+Neither has one export size that fits every screen, so both are quoted at the
+proportion that crops least across the range rather than at a shape they hold.
+For the backdrop that is 21:9: against 16:9 it cuts the worst case from 42 per
+cent of the frame to 23, and the average across desktop widths from 25 to 12.
+Keep the subject in the middle and what goes is the part nobody was looking at.
+Everything else on this page crops to a number.
 
 The backdrop is the one photograph here whose detail does not matter: it is seen
 frosted through the glass panel over it, and only its colour and its brightness

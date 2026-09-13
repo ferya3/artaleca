@@ -189,7 +189,7 @@ return [
         'media_hero_mobile' => 'Hero image — mobile',
         'media_hero_mobile_hint' => 'Portrait 2:3 — exactly 1280 x 1920 px. Left empty, the 3:2 desktop image is used and is cropped hard on both sides, so this one is worth filling in.',
         'media_hero_backdrop' => 'Hero backdrop — desktop',
-        'media_hero_backdrop_hint' => 'Sits behind the hero\'s glass panel and is seen frosted through it, so the detail does not matter — a bright, uncluttered photograph works far better than a dark, busy one. It covers the full width and its shape follows the window, so supply a wide 2560 x 1440 image and keep the subject central. Left empty, the desktop hero photograph is repeated behind the glass.',
+        'media_hero_backdrop_hint' => 'Size: 2560 x 1080 px (21:9). It covers the full width of the hero band, whose height comes from the copy on it, so the final proportion follows the window (1.9 to 3.1) and the top and bottom are cropped — keep the subject central. Seen frosted through the glass panel, so the detail does not matter: a bright, uncluttered photograph works far better than a dark, busy one. Left empty, the desktop hero photograph is repeated behind the glass.',
         'media_showcase' => 'Pinned showcase — desktop',
         'media_showcase_mobile' => 'Pinned showcase — mobile',
         'media_showcase_hint' => 'On a desktop it stays put while the sections below scroll over it, so it fills the screen and its shape follows the window height (1.7 to 2.3). Supply a wide 2560 x 1140 photograph and keep the subject in the middle band, since the top and bottom are cropped.',
