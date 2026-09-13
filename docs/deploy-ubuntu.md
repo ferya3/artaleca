@@ -658,6 +658,22 @@ moment nothing is running yet and no account exists to reset.
 
 ---
 
+## 4e. The technical articles
+
+Four are written and ready to publish. Run once:
+
+```bash
+cd /var/www/artaleca && php artisan db:seed --class=TechnicalArticleSeeder --force
+```
+
+`firstOrCreate`, so a second run cannot overwrite anything an editor has since
+rewritten in the panel; delete a post there and re-run to get the shipped text
+back. The seeder clears the sitemap cache itself, because that cache lasts six
+hours and is otherwise only cleared by saving from the panel — the articles
+would be missing from the sitemap long after the run that published them.
+
+---
+
 ## 4d. Checking the SEO
 
 ```bash
