@@ -89,21 +89,29 @@ These live under Panel → Site images rather than on a record.
 |---|---|---|
 | Hero — desktop | 3:2, fixed | 1536 × 1024 |
 | Hero — mobile | 2:3, fixed | 1280 × 1920 |
+| Hero backdrop — desktop | follows the window | 2560 × 1440, subject in the middle |
 | Showcase — desktop | 1.7–2.3, follows the window height | 2560 × 1140, subject in the middle band |
 | Showcase — mobile | **4:5, fixed** | 1080 × 1350 |
 | Quality laboratory | 3:2, fixed | 1536 × 1024 |
 | Plant exterior, kiln, screening | 4:3, fixed | 1600 × 1200 |
 
-One of them has no fixed shape, and that is not an oversight: the desktop
+Two of them have no fixed shape, and that is not an oversight. The desktop
 showcase is pinned and fills the window, so its proportion follows the window
-height and no single export size fits every screen. Supply it at 2560 × 1140,
-keep the subject in the middle band, and accept that the top and bottom go.
-Everything else on this page crops to a number.
+height; the desktop hero backdrop fills the width of a band whose height comes
+from the copy on it. Neither has a single export size that fits every screen, so
+supply them oversized, keep the subject in the middle, and accept that the edges
+go. Everything else on this page crops to a number.
 
-Both hero and showcase images sit under a dark gradient so white text stays
-legible over them — 45 to 72 per cent on the hero, 35 to 70 on the showcase. A
-photograph will therefore reach the page darker than it looks in the file;
-choose a bright, low-contrast one rather than a busy dark one.
+The backdrop is the one photograph here whose detail does not matter: it is seen
+frosted through the glass panel over it, and only its colour and its brightness
+survive that. A bright, uncluttered picture is worth far more back there than a
+sharp, busy one.
+
+Hero, backdrop and showcase all sit under a dark gradient so white text stays
+legible over them — 45 to 72 per cent on the mobile hero, 55 to 75 on the
+backdrop, 35 to 70 on the showcase. A photograph will therefore reach the page
+darker than it looks in the file; choose a bright, low-contrast one rather than
+a busy dark one.
 
 ## Category images — a different thing entirely
 

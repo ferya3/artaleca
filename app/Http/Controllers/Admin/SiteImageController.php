@@ -54,6 +54,10 @@ class SiteImageController extends Controller
                     'label' => __('admin.settings_fields.media_hero_mobile'),
                     'hint' => __('admin.settings_fields.media_hero_mobile_hint'),
                 ],
+                'media.hero_backdrop' => [
+                    'label' => __('admin.settings_fields.media_hero_backdrop'),
+                    'hint' => __('admin.settings_fields.media_hero_backdrop_hint'),
+                ],
             ],
 
             'showcase' => [

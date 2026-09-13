@@ -91,9 +91,21 @@ number rather than reading company numbers — hiding it rather than shrinking i
 also keeps it out of the accessibility tree.
 
 No gradients outside the hero's kiln glow and the faint blueprint grid behind
-the dark bands, and no glassmorphism — the header is deliberately opaque rather
-than blurred, which also avoids `backdrop-filter` making it a containing block
-for the fixed mobile menu inside it.
+the dark bands.
+
+Glass is used in exactly one place: the desktop hero, where the copy and the
+framed photograph sit on a translucent panel over a full-bleed backdrop
+photograph — frosted through the panel, sharp around its edges. That contrast
+*is* the effect, which is also why nothing else on the site gets it: blur a
+second surface and neither one reads as glass any more. The panel falls back to
+being nearly opaque where `backdrop-filter` is unsupported, since the white text
+on it has to keep its contrast either way (measured at 8.4:1 over a near-white
+photograph).
+
+The header stays opaque, and not for consistency's sake: `backdrop-filter` makes
+an element the containing block for its `position: fixed` descendants, which
+collapsed the full-screen mobile menu inside it to a 64px strip. Nothing inside
+the hero panel is fixed, so the same trap is not set there.
 
 ### Motion
 

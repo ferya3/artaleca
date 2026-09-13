@@ -751,6 +751,48 @@
 
 /*
 |------------------------------------------------------------------------------
+| Hero glass
+|------------------------------------------------------------------------------
+| The desktop hero's copy sits on a translucent panel over the backdrop
+| photograph, so the picture reads frosted behind it and sharp around it. That
+| contrast is the whole effect: blur everything and there is no glass, only a
+| soft photograph.
+|
+| It is the one place on the site that is allowed this. The header is still
+| opaque, and for a reason that is not taste — `backdrop-filter` makes an
+| element the containing block for its `position: fixed` descendants, which
+| collapsed the full-screen mobile menu inside the header to a 64px strip.
+| Nothing inside this panel is fixed, so the same trap is not set here.
+|
+| The `@supports` split is not decoration either. Without a backdrop filter the
+| panel has to carry the contrast for the white text on its own, so it falls
+| back to being nearly opaque rather than to being a pale wash over a
+| photograph.
+*/
+
+@layer components {
+    .hero-glass {
+        position: relative;
+        border-radius: var(--radius-xl);
+        border: 1px solid color-mix(in oklab, white 14%, transparent);
+        background: color-mix(in oklab, var(--color-night-950) 88%, transparent);
+        box-shadow: 0 30px 70px -40px rgb(0 0 0 / 0.85);
+    }
+
+    @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+        .hero-glass {
+            background: color-mix(in oklab, var(--color-night-950) 45%, transparent);
+            /* Saturation lifts the clay tones the blur would otherwise average
+               into grey; the blur radius is wide enough that no shape in the
+               photograph survives as a distraction behind the headline. */
+            -webkit-backdrop-filter: blur(22px) saturate(135%);
+            backdrop-filter: blur(22px) saturate(135%);
+        }
+    }
+}
+
+/*
+|------------------------------------------------------------------------------
 | Hero motion
 |------------------------------------------------------------------------------
 | The only animation on the site. It is confined to the hero's background, sits

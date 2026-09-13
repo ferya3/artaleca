@@ -56,14 +56,56 @@
 
     {{--
         ── Hero, desktop ──────────────────────────────────────────────────
-        The visual sits beside the copy, so the text needs no scrim and the
-        LCP element is predictable.
+        A photograph fills the band, and the copy and the framed picture sit
+        together on one glass panel over it: frosted through the panel, sharp
+        around its edges. That contrast is the effect — blur the whole band and
+        there is no glass, only a soft photograph.
+
+        The backdrop is fetched eagerly but deliberately not preloaded, so the
+        one preload this band pushes still belongs to the framed picture.
     --}}
+    @php
+        /*
+         * One photograph, two treatments. The backdrop has a slot of its own
+         * for anyone who wants a different picture behind the glass, and falls
+         * back to the hero image so the effect is there after a single upload
+         * rather than waiting for a second one.
+         */
+        $hero = site_image('media.hero');
+        $backdrop = site_image('media.hero_backdrop');
+        $backdropLight = $backdrop['light'] ?: $hero['light'];
+        $backdropDark = $backdrop['dark'] ?: $hero['dark'];
+    @endphp
+
     <section class="relative hidden overflow-hidden bg-night-950 text-white md:block">
+        @if (filled($backdropLight))
+            {{-- Decorative, hence the empty alt: this is the same photograph as
+                 the framed one below, which already carries the description. --}}
+            <x-media
+                fill
+                :src="$backdropLight"
+                :dark-src="$backdropDark"
+                tone="dark"
+                eager
+                :preload="false"
+                alt=""
+                sizes="100vw"
+            />
+
+            {{-- The glass alone cannot guarantee white text over a photograph
+                 nobody has approved yet, so the picture is dimmed first and the
+                 panel then works against a known ground. --}}
+            <div class="absolute inset-0 bg-gradient-to-b from-night-950/60 via-night-950/55 to-night-950/75"
+                 aria-hidden="true"></div>
+        @endif
+
         <x-hero-motion />
 
-        <div class="container-page relative">
-            <div class="grid items-center gap-12 pb-24 pt-16 lg:grid-cols-12 lg:gap-16 lg:pb-28 lg:pt-24">
+        {{-- Deeper at the bottom than the top: the scroll cue is absolutely
+             positioned at the foot of the band, and with even padding it landed
+             on the panel's lower edge instead of below it. --}}
+        <div class="container-page relative pb-20 pt-12 lg:pb-24 lg:pt-16">
+            <div class="hero-glass grid items-center gap-12 px-8 py-12 lg:grid-cols-12 lg:gap-16 lg:px-12 lg:py-14">
                 <div class="min-w-0 lg:col-span-6">
                     <p class="eyebrow text-brand-400!">{{ content('home.hero_eyebrow') }}</p>
 
@@ -80,8 +122,8 @@
 
                 <div class="min-w-0 lg:col-span-6">
                     <x-media
-                        :src="site_image('media.hero')['light']"
-                        :dark-src="site_image('media.hero')['dark']"
+                        :src="$hero['light']"
+                        :dark-src="$hero['dark']"
                         seed="arta-hero"
                         {{-- 3:2, the shape the artwork is supplied in (1536x1024).
                              The box holds that ratio whatever is uploaded, so an

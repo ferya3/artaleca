@@ -9,6 +9,12 @@
     'fit' => 'cover',
     'tone' => 'light',
     'eager' => false,
+    // Whether to push a `<link rel=preload>` as well. It follows `eager` unless
+    // set, and the case worth having is a full-bleed backdrop: above the fold,
+    // so it wants eager fetching, but a second preload in the same band does
+    // not conjure bandwidth — it splits what the framed photograph beside it
+    // was going to get. The preload stays with the picture the page is about.
+    'preload' => null,
     'sizes' => '(min-width: 1024px) 33vw, 100vw',
     'mobileSrc' => null,
     'fill' => false,
@@ -22,6 +28,7 @@
 @php
     $darkSrc = $darkSrc ?: $src;
     $darkMobileSrc = $darkMobileSrc ?: $mobileSrc;
+    $preload = $preload ?? $eager;
 
     /*
      * Only render two images when the two themes genuinely differ. Otherwise
@@ -146,8 +153,10 @@
             @endforeach
         </svg>
     @else
-        {{-- An eager image is by definition above the fold, so it is also the
-             page's LCP candidate and the only one worth preloading. --}}
+        {{-- An eager image is by definition above the fold, and normally that
+             also makes it the one worth preloading — hence the default.
+             `preload="false"` is the exception: an above-the-fold picture that
+             should still be fetched early, but not ahead of its neighbour. --}}
         @if (! $themed)
             <x-picture
                 :src="$src"
@@ -155,7 +164,7 @@
                 :alt="$alt"
                 :sizes="$sizes"
                 :eager="$eager"
-                :preload="$eager"
+                :preload="$preload"
                 :preload-media="$preloadMedia"
                 class="h-full w-full {{ $objectFit }}"
             />
@@ -181,7 +190,7 @@
                     :alt="$alt"
                     :sizes="$sizes"
                     :eager="$eager"
-                    :preload="$eager"
+                    :preload="$preload"
                     :preload-media="$preloadMedia"
                     theme="light"
                     class="h-full w-full {{ $objectFit }}"
@@ -195,7 +204,7 @@
                     :alt="$alt"
                     :sizes="$sizes"
                     :eager="$eager"
-                    :preload="$eager"
+                    :preload="$preload"
                     :preload-media="$preloadMedia"
                     theme="dark"
                     class="h-full w-full {{ $objectFit }}"
