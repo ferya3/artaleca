@@ -193,13 +193,20 @@ class HeaderMarkupTest extends TestCase
         ];
     }
 
-    /** The ratio has to survive as a class, since it can no longer be a style. */
+    /**
+     * The ratio has to survive as a class, since it can no longer be a style.
+     *
+     * Both shapes are checked: the named one Tailwind ships, and an arbitrary
+     * one in bracket notation — the second is the fragile half, because it only
+     * exists in the stylesheet if the scanner found that exact string in a
+     * template.
+     */
     public function test_the_media_ratio_is_expressed_as_a_class(): void
     {
         // Cards only render where there is content to put in them.
         $this->seed(DatabaseSeeder::class);
 
-        $this->get('/fa/projects')->assertOk()->assertSee('aspect-[3/2]', false);
+        $this->get('/fa/projects')->assertOk()->assertSee('aspect-square', false);
         $this->get('/fa/articles')->assertOk()->assertSee('aspect-[16/9]', false);
     }
 

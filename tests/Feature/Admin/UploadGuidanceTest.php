@@ -71,7 +71,7 @@ class UploadGuidanceTest extends TestCase
         $hints = [
             'image_product_hint' => '۱:۱',
             'image_square_hint' => '۱:۱',
-            'image_project_hint' => '۳:۲',
+            'image_project_hint' => '۱:۱',
             'image_post_hint' => '۱۶:۹',
             'image_page_hint' => '۱۶:۹',
             'image_category_hint' => '۱٫۹۱:۱',

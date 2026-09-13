@@ -29,7 +29,7 @@ return [
         'image_path' => 'Image',
         'image_product_hint' => 'Shown square (1:1) on the card and at 4:3 on the product page — one photograph, two frames. Keep the granules centred and filling the frame so both crops hold. At least 1440 px wide, in even light.',
         'image_square_hint' => 'Shown square (1:1) on the card and wide (16:9) on the application page — one photograph cropped into two different frames. Keep the subject centred with room above and below it. At least 1440 px wide.',
-        'image_project_hint' => 'Shown at 3:2 on the card and 16:9 on the project page, so the wide frame crops off the top and bottom. At least 1440 px wide. A photograph of this project, not a generic building shot.',
+        'image_project_hint' => 'Shown square (1:1) on the card and wide (16:9) on the project page — one photograph, two frames. Keep the subject centred so both crops hold. At least 1440 px wide. A photograph of this project, not a generic building shot.',
         'image_post_hint' => 'Shown at 16:9, both on the card and at the head of the article. At least 1440 px wide.',
         'image_page_hint' => 'Shown at the head of the page at 16:9. At least 1920 px wide, since it spans the full page.',
         'image_category_hint' => 'Never shown on the page; it is the preview picture when a link to this category is shared on social media or a messenger. Roughly 1.91:1, at least 1200 × 630 px.',

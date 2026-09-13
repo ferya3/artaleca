@@ -6,7 +6,9 @@
         :seed="$project->slug"
         :alt="$project->title"
         :eager="$eager"
-        ratio="3/2"
+        {{-- Square on the card, 16:9 on the project page. One upload, two
+             frames, which is why the hint asks for the subject centred. --}}
+        ratio="1/1"
         sizes="(min-width: 1024px) 33vw, 100vw"
     />
 
