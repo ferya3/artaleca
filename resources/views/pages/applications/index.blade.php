@@ -11,7 +11,7 @@
             @if ($applications->isEmpty())
                 <x-empty-state :message="content('applications.empty')" />
             @else
-                <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div class="card-grid">
                     @foreach ($applications as $application)
                         <x-application-card :application="$application" />
                     @endforeach

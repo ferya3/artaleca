@@ -12,7 +12,7 @@
                 <x-empty-state :message="content('representatives.empty')" :action="route('contact')"
                                :action-label="content('nav.contact')" />
             @else
-                <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <ul class="card-grid">
                     @foreach ($representatives as $representative)
                         <li class="panel flex min-w-0 flex-col p-6">
                             @if (filled($representative->logo))

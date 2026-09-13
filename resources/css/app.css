@@ -432,6 +432,43 @@
     }
 
     /*
+     * Card index grids.
+     *
+     * A grid pushes a short last row hard against the start edge, so seven
+     * cards in three columns leave one card with two empty columns beside it —
+     * which reads as something that failed to load rather than as the end of a
+     * list. Wrapping with flex and centring the line puts the remainder in the
+     * middle instead. Full rows fill the width exactly, so the centring does
+     * nothing to them; only the short one moves.
+     *
+     * The alternative is choosing a column count that divides the content, and
+     * that is not a choice anyone can make: an editor adds the eighth use and
+     * the hole moves somewhere else.
+     */
+    .card-grid {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1.5rem;
+    }
+
+    .card-grid > * {
+        flex: 0 0 100%;
+    }
+
+    @media (min-width: 640px) {
+        .card-grid > * {
+            flex-basis: calc((100% - 1.5rem) / 2);
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .card-grid > * {
+            flex-basis: calc((100% - 3rem) / 3);
+        }
+    }
+
+    /*
      * The arrows are added by app.js and revealed here, rather than shipped
      * visible and wired up later: a button that scrolls nothing is worse than
      * no button. They stay off touch-sized screens, where the swipe is the

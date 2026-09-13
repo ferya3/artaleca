@@ -38,7 +38,7 @@
             @if ($projects->isEmpty())
                 <x-empty-state :message="content('projects.empty')" :action="route('projects.index')" />
             @else
-                <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div class="card-grid">
                     @foreach ($projects as $project)
                         <x-project-card :project="$project" :eager="$loop->index < 3" />
                     @endforeach

@@ -35,7 +35,7 @@
             @if ($posts->isEmpty())
                 <x-empty-state :message="content('articles.empty')" :action="route('articles.index')" />
             @else
-                <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                <div class="card-grid">
                     @foreach ($posts as $post)
                         <x-post-card :post="$post" :eager="$loop->index < 3" />
                     @endforeach
