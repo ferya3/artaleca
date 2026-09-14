@@ -39,10 +39,6 @@
         @endif
     </label>
 
-    @if ($hint)
-        <p id="{{ $hintId }}" class="text-xs text-ink-500">{{ $hint }}</p>
-    @endif
-
     @if ($type === 'textarea')
         <textarea
             id="{{ $id }}"
@@ -93,6 +89,19 @@
             class="{{ $control }}"
             @if ($type === 'tel') dir="ltr" @endif
         >
+    @endif
+
+    {{-- Under the control, not above it.
+
+         Above, the hint pushed the control down by its own height, so two
+         fields side by side in the grid had their inputs at different heights
+         whenever only one of them carried a hint — the quantity sat 22px above
+         the delivery terms, and the email 38px above the phone. Below, every
+         label starts on the same line and every control follows it, which is
+         what makes a row read as a row. `aria-describedby` already ties the two
+         together, so the order on screen is free to be the legible one. --}}
+    @if ($hint)
+        <p id="{{ $hintId }}" class="text-xs text-ink-500">{{ $hint }}</p>
     @endif
 
     @error($name)

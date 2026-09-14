@@ -751,6 +751,46 @@
 
 /*
 |------------------------------------------------------------------------------
+| The figures strip
+|------------------------------------------------------------------------------
+| Five statistics, in however many columns the space actually allows.
+|
+| This is the one layout on the site that cannot be decided by a viewport
+| breakpoint, because the same component is a full-width band on the about
+| pages and a 420px aside on the quote page. `lg:grid-cols-5` is correct in the
+| first and clips a six-figure number to its last three digits in the second.
+|
+| 9.5rem is chosen so the narrowest place the strip appears — the 313px aside
+| at a 1024px window — still gets two tracks rather than one, because five
+| single-file rows is 589px of statistics beside a form. Nothing clips at that
+| size: the value and its unit are allowed to wrap onto two lines in the
+| component, which is what a no-wrap flex row could not do.
+*/
+
+@layer components {
+    .stat-strip {
+        grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+        /* So the rule below can ask how wide *this* is, rather than the window
+           — which is the whole problem being fixed here. */
+        container-type: inline-size;
+    }
+
+    /*
+     * Five figures in two columns leave the last one alone on its row, and the
+     * empty track beside it shows the hairline colour the parent uses to draw
+     * the dividers: a grey block that reads as a cell which failed to load. So
+     * on a strip narrow enough to have wrapped, the last figure takes the whole
+     * row. Unsupported, it is the grey block again and nothing worse.
+     */
+    @container (width < 30rem) {
+        .stat-strip > :last-child {
+            grid-column: 1 / -1;
+        }
+    }
+}
+
+/*
+|------------------------------------------------------------------------------
 | The card panel
 |------------------------------------------------------------------------------
 | What a use card and a project card open instead of navigating: one style for

@@ -105,16 +105,29 @@ class HeaderMarkupTest extends TestCase
         );
     }
 
-    /** Company statistics are desktop-only; a phone gets the product instead. */
+    /**
+     * Company statistics are desktop-only; a phone gets the product instead.
+     *
+     * The column count moved out of the utilities and into `.stat-strip`, which
+     * measures the space the strip actually has rather than the width of the
+     * window — five columns is right for this full-width band and clipped a
+     * six-figure number in the quote page's sidebar. What has to stay in the
+     * markup is the part that is still a viewport decision: `hidden md:grid`,
+     * which keeps the figures out of the layout *and* out of the accessibility
+     * tree on a phone rather than merely shrinking them.
+     */
     public function test_the_figures_strip_is_hidden_on_phones(): void
     {
         $html = $this->get('/fa/about')->assertOk()->getContent();
 
         $this->assertMatchesRegularExpression(
-            '/<dl class="hidden grid-cols-2[^"]*md:grid\b/',
+            '/<dl class="stat-strip hidden[^"]*md:grid\b/',
             $html,
             'The figures strip must be display:none below md, not merely visually shrunk.',
         );
+
+        // And the tracks are the container's business now, not the window's.
+        $this->assertDoesNotMatchRegularExpression('/<dl class="stat-strip[^"]*lg:grid-cols-/', $html);
     }
 
     /**

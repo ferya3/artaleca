@@ -65,6 +65,8 @@ class EnquiryAlertTest extends TestCase
             // Required on this form: a quote is settled in a call, and this is
             // the number the alert below carries.
             'phone' => '09121234567',
+            // Also required: a price is calculated from a grade and a volume.
+            'product_id' => $this->makeProduct()->id,
             'message' => 'استعلام قیمت',
             'quantity' => '۵۰۰ متر مکعب',
             'consent' => '1',

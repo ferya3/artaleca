@@ -22,7 +22,7 @@ class QuoteRequest extends ContactRequest
     public function rules(): array
     {
         return array_merge(parent::rules(), [
-            'product_id' => ['nullable', 'integer', Rule::exists('products', 'id')->where('is_active', true)],
+            'product_id' => ['required', 'integer', Rule::exists('products', 'id')->where('is_active', true)],
             'quantity' => ['required', 'string', 'max:60'],
 
             // The same shape the representation form accepts: digits, spaces

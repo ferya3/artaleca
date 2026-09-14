@@ -24,11 +24,19 @@
                     <x-form.honeypot />
 
                     <div class="flex flex-col gap-1.5 sm:col-span-2">
+                        {{-- Required, like the quantity beside it: a grade and a
+                             volume are what a price is calculated from, and an
+                             RFQ missing either one is a round of emails before
+                             anyone can answer it. The markers are written out
+                             rather than taken from `x-form.field`, because that
+                             component has no option groups and the grades are
+                             worth grouping by category. --}}
                         <label for="f-product_id" class="text-sm font-medium text-ink-800">
                             {{ __('form.product') }}
-                            <span class="ms-1 text-xs font-normal text-ink-400">({{ content('common.optional') }})</span>
+                            <span class="text-brand-600" aria-hidden="true">*</span>
+                            <span class="sr-only">({{ content('common.required') }})</span>
                         </label>
-                        <select id="f-product_id" name="product_id"
+                        <select id="f-product_id" name="product_id" required
                                 class="w-full border border-ink-300 bg-surface px-3.5 py-3 text-sm text-ink-900 focus:border-ink-500 focus:outline-none focus:ring-4 focus:ring-brand-500/12">
                             <option value="">{{ __('form.select_placeholder') }}</option>
                             @foreach ($productOptions as $categoryName => $options)
@@ -98,7 +106,10 @@
 
             <aside class="min-w-0 lg:col-span-5">
                 <div class="panel-muted p-6 lg:sticky lg:top-28">
-                    <h2 class="text-lg font-bold text-ink-950">{{ content('home.export_title') }}</h2>
+                    {{-- A step down from the page's own headings: this is the
+                         column beside the form, not a section of its own, and
+                         at 18px it competed with the thing it sits next to. --}}
+                    <h2 class="text-base font-bold text-ink-950">{{ content('home.export_title') }}</h2>
                     <p class="mt-3 text-sm leading-relaxed text-ink-600">{{ content('home.export_body') }}</p>
 
                     <x-stat-strip tone="light" class="mt-6 border border-hairline" />
