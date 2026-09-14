@@ -90,6 +90,27 @@ class FaqTest extends TestCase
         $this->get('/fa/faq')->assertSee('"@type":"FAQPage"', false);
     }
 
+    /**
+     * A long answer is prose, not a run of `<br>`s.
+     *
+     * An editor writing about delivery terms types paragraphs and a couple of
+     * bullets, and until `App\Support\Prose` existed all of it collapsed into
+     * one element with line breaks in it — no paragraph spacing, no list, and
+     * a screen reader given a single unbroken run.
+     */
+    public function test_a_multi_paragraph_answer_is_rendered_as_prose(): void
+    {
+        $this->faq([
+            'answer' => ['fa' => "حداقل بار یک کامیون است.\n\n- تحویل درب کارخانه\n- تحویل در محل"],
+        ]);
+
+        $html = $this->get('/fa/faq')->assertOk()->getContent();
+
+        $this->assertStringContainsString('<p>حداقل بار یک کامیون است.</p>', $html);
+        $this->assertStringContainsString('<li>تحویل درب کارخانه</li>', $html);
+        $this->assertStringNotContainsString('<br>', $html);
+    }
+
     public function test_a_question_needs_both_halves(): void
     {
         $this->actingAs($this->makeAdmin())

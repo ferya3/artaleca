@@ -58,9 +58,7 @@
             </dl>
         @endif
 
-        @if (filled($project->body))
-            <div class="prose-industrial mt-6">{!! nl2br(e($project->body)) !!}</div>
-        @endif
+        <x-prose :text="$project->body" class="mt-6" />
 
         @if ($scope !== [])
             <div class="panel-muted mt-8 p-5">

@@ -58,7 +58,8 @@ class ApplicationController extends ResourceController
                 'rules' => ['nullable', 'string', 'max:600']],
 
             ['name' => 'description', 'label' => __('admin.fields.description'), 'type' => 'textarea', 'translatable' => true,
-                'rows' => 10, 'rules' => ['nullable', 'string', 'max:8000']],
+                'rows' => 10, 'rules' => ['nullable', 'string', 'max:8000'],
+                'hint' => __('admin.fields.prose_hint')],
 
             ['name' => 'benefits', 'label' => content('applications.benefits'), 'type' => 'list',
                 'translatable' => true, 'rows' => 5,

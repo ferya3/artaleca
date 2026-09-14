@@ -44,7 +44,8 @@ class FaqController extends ResourceController
                 'rules' => ['required', 'string', 'max:300']],
 
             ['name' => 'answer', 'label' => __('admin.fields.description'), 'type' => 'textarea', 'translatable' => true,
-                'rows' => 6, 'rules' => ['required', 'string', 'max:4000']],
+                'rows' => 6, 'rules' => ['required', 'string', 'max:4000'],
+                'hint' => __('admin.fields.prose_hint')],
 
             ['name' => 'position', 'label' => __('admin.position'), 'type' => 'number', 'width' => 'half',
                 'hint' => __('admin.fields.position_hint'),

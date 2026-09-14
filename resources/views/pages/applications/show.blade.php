@@ -20,9 +20,7 @@
                     class="rounded-lg border border-hairline shadow-soft"
                 />
 
-                @if (filled($application->description))
-                    <div class="prose-industrial mt-10">{!! nl2br(e($application->description)) !!}</div>
-                @endif
+                <x-prose :text="$application->description" class="mt-10" />
             </div>
 
             @php $benefits = $application->bullets('benefits'); @endphp

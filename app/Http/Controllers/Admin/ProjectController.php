@@ -80,7 +80,8 @@ class ProjectController extends ResourceController
                 'rules' => ['nullable', 'string', 'max:600']],
 
             ['name' => 'body', 'label' => __('admin.fields.description'), 'type' => 'textarea', 'translatable' => true,
-                'rows' => 10, 'rules' => ['nullable', 'string', 'max:10000']],
+                'rows' => 10, 'rules' => ['nullable', 'string', 'max:10000'],
+                'hint' => __('admin.fields.prose_hint')],
 
             ['name' => 'scope', 'label' => content('projects.scope'), 'type' => 'list',
                 'translatable' => true, 'rows' => 5,

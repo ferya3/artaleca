@@ -39,9 +39,7 @@
             <p class="mt-3 text-base leading-relaxed text-ink-600">{{ $application->summary }}</p>
         @endif
 
-        @if (filled($application->description))
-            <div class="prose-industrial mt-6">{!! nl2br(e($application->description)) !!}</div>
-        @endif
+        <x-prose :text="$application->description" class="mt-6" />
 
         @if ($benefits !== [])
             <div class="panel-muted mt-8 p-5">

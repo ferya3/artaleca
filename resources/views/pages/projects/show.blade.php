@@ -33,9 +33,7 @@
                     class="rounded-lg border border-hairline shadow-soft"
                 />
 
-                @if (filled($project->body))
-                    <div class="prose-industrial mt-10">{!! nl2br(e($project->body)) !!}</div>
-                @endif
+                <x-prose :text="$project->body" class="mt-10" />
 
                 @if ($scope !== [])
                     <h2 class="mt-12 text-xl font-bold text-ink-950">{{ content('projects.scope') }}</h2>

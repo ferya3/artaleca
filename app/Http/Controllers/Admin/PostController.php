@@ -76,7 +76,8 @@ class PostController extends ResourceController
                 'rules' => ['nullable', 'string', 'max:600']],
 
             ['name' => 'body', 'label' => __('admin.fields.description'), 'type' => 'textarea', 'translatable' => true,
-                'rows' => 16, 'rules' => ['nullable', 'string', 'max:40000']],
+                'rows' => 16, 'rules' => ['nullable', 'string', 'max:40000'],
+                'hint' => __('admin.fields.prose_hint')],
 
             ['name' => 'cover_image', 'label' => __('admin.fields.cover_path'), 'type' => 'image',
                 'hint' => __('admin.fields.image_post_hint')],

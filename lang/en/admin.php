@@ -28,6 +28,7 @@ return [
         'tagline' => 'Tagline',
         'summary' => 'Summary',
         'description' => 'Full description',
+        'prose_hint' => 'Leave a blank line between paragraphs. A line starting `## ` becomes a subheading, `### ` a smaller one, and consecutive lines starting `- ` become a bulleted list. Nothing else is needed, and HTML is not interpreted.',
         'features' => 'Features',
         'advantages' => 'Advantages',
         'image_path' => 'Image',

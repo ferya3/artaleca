@@ -25,7 +25,7 @@
                                     </svg>
                                 </span>
                             </summary>
-                            <div class="prose-industrial px-5 pb-6 text-sm">{!! nl2br(e($faq->answer)) !!}</div>
+                            <x-prose :text="$faq->answer" class="px-5 pb-6 text-sm" />
                         </details>
                     @endforeach
                 </div>

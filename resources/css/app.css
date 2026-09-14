@@ -558,6 +558,70 @@
     }
 
     /*
+     * The reading column of an article.
+     *
+     * One measure shared by the title, the standfirst, the cover picture and
+     * the body, so everything down the page starts on the same edge. 42rem is
+     * ~70 Persian characters at the long-form size below, which is the range a
+     * line can be scanned without the eye losing its place on the return.
+     *
+     * It is a class rather than a Tailwind `max-w-*` because four elements in
+     * two different wrappers have to agree on it, and a number repeated four
+     * times is a number that drifts.
+     */
+    .article-measure {
+        max-width: 42rem;
+    }
+
+    /*
+     * A body somebody sits and reads.
+     *
+     * `.prose-industrial` is tuned for the paragraph or two under a product or
+     * behind a dialog — read standing up, next to a spec table. A thousand-word
+     * article is a different act: one step up in size and a noticeably looser
+     * line, because line spacing is what carries the eye back to the correct
+     * next line, and Persian's ascenders and descenders need more of it than
+     * Latin at the same size.
+     *
+     * The measure is handed back to the column. `.article-measure` owns it for
+     * every element in the article, and a second `max-width` here would make
+     * the text narrower than the picture above it and break the one edge the
+     * layout is built on.
+     */
+    .prose-long {
+        max-width: none;
+        font-size: 1.0625rem;
+        line-height: 1.85;
+    }
+
+    /* Paragraph spacing scaled with the line, not left at the compact value —
+       at this line height 1.25rem stops reading as a gap between paragraphs. */
+    .prose-long > * + * {
+        margin-block-start: 1.5rem;
+    }
+
+    /* A heading has to belong to what follows it more than to what precedes
+       it, so the space above is the larger of the two by a clear margin. */
+    .prose-long h2 {
+        margin-block-start: 3rem;
+        font-size: 1.5rem;
+    }
+
+    .prose-long h3 {
+        margin-block-start: 2.25rem;
+        font-size: 1.25rem;
+    }
+
+    .prose-long ul,
+    .prose-long ol {
+        padding-inline-start: 1.5rem;
+    }
+
+    .prose-long li + li {
+        margin-block-start: 0.625rem;
+    }
+
+    /*
      * The one surface treatment the site repeats: a rounded panel that reads as
      * a raised sheet rather than a boxed-in area. Promoted to a class because it
      * appears on ~40 blocks across the public site and the admin, and having a

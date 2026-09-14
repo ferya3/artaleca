@@ -1,51 +1,97 @@
 <x-layouts.app>
 
+    {{--
+        ── A technical article ────────────────────────────────────────────
+        One column, one measure, one start edge.
+
+        What it was: the cover picture ran the full 1216px container and stood
+        684px tall — a screen and a half of photograph before the first
+        sentence — while the text sat in a 611px column centred underneath it.
+        Four different edges down the page and nothing aligned to anything, so
+        the eye had no line to follow. The body itself was `nl2br(e($body))`:
+        one element holding twelve `<br>`s and not a single paragraph, which is
+        why no spacing rule in the stylesheet had anything to apply to.
+
+        What it is: one centred column of a single measure, from the
+        breadcrumbs to the last paragraph. The heading, the picture and the body
+        share that measure and that edge, and the picture is a figure inside the
+        column rather than a banner above it. The body is real paragraphs now —
+        see `App\Support\Prose` — which is what makes the spacing and the
+        hierarchy possible at all.
+
+        `.article-measure` is a class rather than a `max-w-*` utility because
+        three wrappers have to agree on the number, and a number repeated three
+        times is a number that drifts.
+    --}}
     <article>
-        <div class="border-b border-hairline bg-surface-muted">
+        <header class="border-b border-hairline bg-surface-muted">
             <div class="container-page py-10 md:py-14">
-                <x-breadcrumbs class="mb-6" />
+                <div class="article-measure mx-auto">
+                    <x-breadcrumbs class="mb-6" />
 
-                <p class="eyebrow mb-3 flex flex-wrap items-center gap-x-2">
-                    <span>{{ __('articles.types.'.$post->type) }}</span>
-                    @if ($post->published_at)
-                        <span class="text-ink-300" aria-hidden="true">·</span>
-                        <time datetime="{{ $post->published_at->toDateString() }}" class="tabular eyebrow-muted">
-                            {{ $post->published_at->isoFormat('D MMMM Y') }}
-                        </time>
+                    {{-- Kind, date, reading time: the three things somebody
+                         checks before deciding to read, on one line above the
+                         title. --}}
+                    <p class="eyebrow mb-3 flex flex-wrap items-center gap-x-2">
+                        <span>{{ __('articles.types.'.$post->type) }}</span>
+
+                        @if ($post->published_at)
+                            <span class="text-ink-300" aria-hidden="true">·</span>
+                            <time datetime="{{ $post->published_at->toDateString() }}" class="tabular eyebrow-muted">
+                                {{ $post->published_at->isoFormat('D MMMM Y') }}
+                            </time>
+                        @endif
+
+                        @if ($post->reading_minutes)
+                            <span class="text-ink-300" aria-hidden="true">·</span>
+                            <span class="eyebrow-muted">{{ content('articles.reading_time', ['minutes' => $post->reading_minutes]) }}</span>
+                        @endif
+                    </p>
+
+                    <h1 class="text-3xl font-bold leading-tight text-ink-950 md:text-4xl">
+                        {{ $post->title }}
+                    </h1>
+
+                    @if (filled($post->excerpt))
+                        {{-- The standfirst: larger than the body and lighter
+                             than the title, which is what marks it as the
+                             summary rather than the first paragraph. --}}
+                        <p class="mt-5 text-lg leading-relaxed text-ink-600 md:text-xl">
+                            {{ $post->excerpt }}
+                        </p>
                     @endif
-                    @if ($post->reading_minutes)
-                        <span class="text-ink-300" aria-hidden="true">·</span>
-                        <span class="eyebrow-muted">{{ content('articles.reading_time', ['minutes' => $post->reading_minutes]) }}</span>
-                    @endif
-                </p>
-
-                <h1 class="max-w-3xl text-3xl font-bold text-ink-950 md:text-4xl lg:text-[2.5rem]">{{ $post->title }}</h1>
-
-                @if (filled($post->excerpt))
-                    <p class="mt-5 max-w-2xl text-base leading-relaxed text-ink-600 md:text-lg">{{ $post->excerpt }}</p>
-                @endif
+                </div>
             </div>
-        </div>
+        </header>
 
-        <div class="container-page py-section">
-            <x-media
-                :src="$post->cover_image"
-                :seed="$post->slug"
-                :alt="$post->title"
-                eager
-                ratio="16/9"
-                sizes="(min-width: 1024px) 68rem, 100vw"
-                class="rounded-lg border border-hairline shadow-soft"
-            />
+        <div class="container-page py-12 md:py-16">
+            <div class="article-measure mx-auto">
+                {{-- `alt=""` on purpose: the picture sits directly under a
+                     heading that already says what the article is, and a second
+                     reading of the same words is noise to anyone listening
+                     rather than looking. --}}
+                <figure>
+                    <x-media
+                        :src="$post->cover_image"
+                        :seed="$post->slug"
+                        alt=""
+                        eager
+                        ratio="16/9"
+                        sizes="(min-width: 1024px) 42rem, 100vw"
+                        class="rounded-lg border border-hairline shadow-soft"
+                    />
+                </figure>
 
-            @if (filled($post->body))
-                <div class="prose-industrial mx-auto mt-12">{!! nl2br(e($post->body)) !!}</div>
-            @endif
+                <x-prose :text="$post->body" long class="mt-10" />
 
-            <div class="mx-auto mt-12 max-w-[68ch] border-t border-hairline pt-6">
-                <x-button :href="route('articles.index')" variant="ghost" size="sm">
-                    {{ content('articles.back_to_list') }}
-                </x-button>
+                {{-- The two things to do at the end of an article, in the order
+                     they are wanted: another article, or a price. The band below
+                     carries the second one, so this is the first. --}}
+                <nav class="mt-12 border-t border-hairline pt-6" aria-label="{{ content('nav.articles') }}">
+                    <x-button :href="route('articles.index')" variant="ghost" size="sm">
+                        {{ content('articles.back_to_list') }}
+                    </x-button>
+                </nav>
             </div>
         </div>
     </article>
@@ -54,11 +100,14 @@
         <section class="border-t border-hairline bg-surface-muted py-section">
             <div class="container-page">
                 <x-section-heading :title="content('common.related_articles')" :href="route('articles.index')" />
-                <div class="mt-10 grid gap-6 md:grid-cols-3">
+
+                <ul class="card-grid mt-10">
                     @foreach ($related as $item)
-                        <x-post-card :post="$item" />
+                        <li class="flex">
+                            <x-post-card :post="$item" class="w-full" />
+                        </li>
                     @endforeach
-                </div>
+                </ul>
             </div>
         </section>
     @endif

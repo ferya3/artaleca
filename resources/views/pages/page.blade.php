@@ -16,9 +16,7 @@
                 />
             @endif
 
-            @if (filled($page->body))
-                <div class="prose-industrial mx-auto">{!! nl2br(e($page->body)) !!}</div>
-            @endif
+            <x-prose :text="$page->body" class="mx-auto" />
         </div>
     </section>
 

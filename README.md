@@ -448,6 +448,24 @@ right-to-left even while the panel is in Persian.
 JSON columns are never shown as JSON: lists are edited one item per line, and
 spec rows as `label | value`.
 
+**Long bodies are prose, not one long line.** Every article, project account,
+product description, page and FAQ answer used to be rendered with
+`nl2br(e($body))` — a single element holding a dozen `<br>`s. It looks
+approximately right and is wrong in a way that compounds: there are no
+paragraphs, so the stylesheet's paragraph spacing has nothing to apply to, a
+screen reader is given one unbroken run, and nothing an editor writes can ever
+be a heading or a list. `App\Support\Prose` takes the same plain text and emits
+real markup: a blank line is a paragraph, `## ` and `### ` are subheadings, and
+a block of `- ` lines is a `<ul>`. The panel says so on each of those six
+fields, which is the other half of the fix — a convention nobody is told about
+is a feature nobody uses.
+
+It is deliberately **not** Markdown. A full parser brings links, images, raw
+HTML and a dependency, and every one of those is a route from editor-supplied
+text to markup on the page. Here the text is escaped first and the only tags
+that exist are the ones the class writes, so there is no path from the panel to
+arbitrary HTML.
+
 ### Roles
 
 Coarse role on the user, real decisions in Policies:

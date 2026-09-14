@@ -131,7 +131,7 @@
             <div class="min-w-0 lg:col-span-7">
                 @if (filled($product->description))
                     <h2 class="text-xl font-bold text-ink-950">{{ content('product.description') }}</h2>
-                    <div class="prose-industrial mt-5">{!! nl2br(e($product->description)) !!}</div>
+                    <x-prose :text="$product->description" class="mt-5" />
                 @endif
 
                 @php
