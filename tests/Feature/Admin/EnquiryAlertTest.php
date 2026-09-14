@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Admin;
 
-use App\Jobs\SendBaleAlert;
+use App\Jobs\SendSmsAlert;
 use App\Models\ContactMessage;
 use App\Models\Setting;
 use App\Models\User;
-use App\Support\Bale;
+use App\Support\Mobile;
+use App\Support\Sms;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
@@ -17,24 +18,29 @@ use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 /**
- * A new enquiry, on the sales desk's phone.
+ * A new enquiry, on the sales manager's phone.
  *
  * The email has always gone out, and has always arrived whenever somebody next
  * opened their inbox. What these tests hold is the second channel: that it is
- * configurable without touching a file, that the credential is not sitting in
- * the database in the clear, and — the part that matters most — that a
- * messenger which is down, blocked or misconfigured never costs the company
+ * configurable without touching a file, that the panel password is not sitting
+ * in the database in the clear, and — the part that matters most — that an SMS
+ * panel which is down, out of credit or misconfigured never costs the company
  * the enquiry it was meant to announce.
  */
 class EnquiryAlertTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function configureBale(): void
+    /** A configured panel: credentials, a sender line, and a number to ring. */
+    private function configurePanel(array $overrides = []): void
     {
-        Bale::storeToken('123456:test-token');
-        Setting::put('notifications.bale_chat_id', '-100200300', 'notifications', translatable: false);
-        Setting::put('notifications.bale_enabled', true, 'notifications', translatable: false);
+        Sms::store(array_merge([
+            'sms.enabled' => '1',
+            'sms.provider' => 'kavenegar',
+            'sms.api_key' => 'test-api-key',
+            'sms.sender' => '10004321',
+            'sms.sales_mobile' => '09121234567',
+        ], $overrides));
     }
 
     private function enquiry(array $overrides = []): ContactMessage
@@ -51,42 +57,106 @@ class EnquiryAlertTest extends TestCase
         ], $overrides));
     }
 
+    private function submitQuote(): \Illuminate\Testing\TestResponse
+    {
+        return $this->post('/fa/quote', [
+            'name' => 'علی رضایی',
+            'email' => 'ali@example.com',
+            'message' => 'استعلام قیمت',
+            'quantity' => '۵۰۰ متر مکعب',
+            'consent' => '1',
+            'started_at' => $this->humanFormToken(),
+        ]);
+    }
+
+    // ── The number ──────────────────────────────────────────────────────
+
+    /**
+     * However it is typed, it reaches the panel in the one shape a panel takes.
+     *
+     * This is the field the company changes themselves, so it has to accept
+     * what a person actually types — Persian digits, a country code, spaces.
+     */
+    public function test_the_sales_number_is_normalised_however_it_is_typed(): void
+    {
+        foreach (['09121234567', '۰۹۱۲۱۲۳۴۵۶۷', '+989121234567', '00989121234567', '0912 123 4567'] as $typed) {
+            $this->assertSame('09121234567', Mobile::normalize($typed), "Failed on: {$typed}");
+        }
+
+        // And what is not a mobile number is refused rather than guessed at.
+        foreach (['0212233445', '0912123456', 'not a number', ''] as $rubbish) {
+            $this->assertNull(Mobile::normalize($rubbish), "Should have refused: {$rubbish}");
+        }
+    }
+
+    public function test_the_number_is_stored_normalised_from_the_panel(): void
+    {
+        $this->actingAs($this->makeAdmin())->put('/admin/sms', [
+            'provider' => 'console',
+            'custom_method' => 'GET',
+            'sales_mobile' => '۰۹۱۲ ۱۲۳ ۴۵۶۷',
+            'enabled' => '1',
+        ])->assertRedirect();
+
+        $this->assertSame('09121234567', Sms::salesMobile());
+    }
+
+    public function test_a_number_that_is_not_a_mobile_is_refused(): void
+    {
+        $this->actingAs($this->makeAdmin())->put('/admin/sms', [
+            'provider' => 'console',
+            'custom_method' => 'GET',
+            'sales_mobile' => '021 8888 0011',
+        ])->assertSessionHasErrors('sales_mobile');
+    }
+
     // ── The credential ──────────────────────────────────────────────────
 
     /** The database is the thing that gets dumped, copied and restored. */
-    public function test_the_token_is_not_stored_in_the_clear(): void
+    public function test_the_panel_password_is_not_stored_in_the_clear(): void
     {
-        Bale::storeToken('123456:secret-token');
+        Sms::store(['sms.password' => 'secret-password']);
 
-        $stored = Setting::map()['notifications.bale_token'];
+        $stored = Setting::map()['sms.password'];
 
         $this->assertIsString($stored);
-        $this->assertStringNotContainsString('secret-token', $stored);
-        $this->assertSame('123456:secret-token', Bale::token());
+        $this->assertStringNotContainsString('secret-password', $stored);
+        $this->assertSame('secret-password', Sms::settings()['sms.password']);
     }
 
     /** A database restored under a different APP_KEY must not break the panel. */
-    public function test_an_undecryptable_token_reads_as_absent(): void
+    public function test_an_undecryptable_credential_reads_as_absent(): void
     {
-        Setting::put('notifications.bale_token', 'not-actually-encrypted', 'notifications', translatable: false);
+        Setting::put('sms.password', 'not-actually-encrypted', 'sms', translatable: false);
 
-        $this->assertSame('', Bale::token());
-        $this->assertFalse(Bale::configured());
-        $this->assertFalse(Bale::enabled());
+        $this->assertSame('', Sms::settings()['sms.password']);
     }
 
-    public function test_it_stays_off_until_all_three_pieces_are_present(): void
+    /** Blank means "keep the one you have", not "delete it". */
+    public function test_saving_without_a_password_keeps_the_saved_one(): void
     {
-        $this->assertFalse(Bale::enabled());
+        $this->configurePanel(['sms.provider' => 'melipayamak', 'sms.username' => 'arta', 'sms.password' => 'secret']);
 
-        Bale::storeToken('123456:test-token');
-        $this->assertFalse(Bale::enabled(), 'A token alone is not a destination.');
+        $this->actingAs($this->makeAdmin())->put('/admin/sms', [
+            'provider' => 'melipayamak',
+            'username' => 'arta',
+            'password' => '',
+            'custom_method' => 'GET',
+            'sales_mobile' => '09121234567',
+            'enabled' => '1',
+        ])->assertRedirect();
 
-        Setting::put('notifications.bale_chat_id', '-100200300', 'notifications', translatable: false);
-        $this->assertFalse(Bale::enabled(), 'Configured is not the same as switched on.');
+        $this->assertSame('secret', Sms::settings()['sms.password']);
+    }
 
-        Setting::put('notifications.bale_enabled', true, 'notifications', translatable: false);
-        $this->assertTrue(Bale::enabled());
+    public function test_the_credentials_can_be_cleared_deliberately(): void
+    {
+        $this->configurePanel();
+
+        $this->actingAs($this->makeAdmin())->delete('/admin/sms')->assertRedirect();
+
+        $this->assertSame('', Sms::settings()['sms.api_key']);
+        $this->assertFalse(Sms::enabled());
     }
 
     // ── The alert ───────────────────────────────────────────────────────
@@ -96,60 +166,90 @@ class EnquiryAlertTest extends TestCase
         Queue::fake();
         Mail::fake();
 
-        $this->post('/fa/quote', [
-            'name' => 'علی رضایی',
-            'email' => 'ali@example.com',
-            'message' => 'استعلام قیمت',
-            'quantity' => '۵۰۰ متر مکعب',
-            'consent' => '1',
-            'started_at' => $this->humanFormToken(),
-        ]);
+        $this->submitQuote();
 
-        Queue::assertPushed(SendBaleAlert::class);
+        Queue::assertPushed(SendSmsAlert::class);
     }
 
-    public function test_the_message_carries_what_the_desk_needs_to_act_on(): void
+    /**
+     * What the message carries, and what it deliberately does not.
+     *
+     * A Persian SMS is 70 characters a part and every part is charged, so this
+     * is the part someone acts on — who, and the number to call back — not a
+     * copy of the enquiry. The panel and the email have the rest.
+     */
+    public function test_the_message_carries_what_the_manager_acts_on(): void
     {
-        $this->configureBale();
+        $this->configurePanel();
 
-        Http::fake(['*' => Http::response(['ok' => true, 'result' => []])]);
+        Http::fake(['*' => Http::response(['return' => ['status' => 200]])]);
 
-        (new SendBaleAlert($this->enquiry()->id))->handle();
+        (new SendSmsAlert($this->enquiry()->id))->handle();
 
         Http::assertSent(function ($request) {
-            $text = $request['text'] ?? '';
+            $text = (string) ($request['message'] ?? '');
 
-            foreach (['علی رضایی', 'ساختمانی پارس', '09121234567', 'ali@example.com', '۵۰۰ متر مکعب'] as $needle) {
+            foreach (['استعلام قیمت جدید', 'علی رضایی', 'ساختمانی پارس', '09121234567', '۵۰۰ متر مکعب'] as $needle) {
                 if (! str_contains($text, $needle)) {
                     return false;
                 }
             }
 
-            return str_contains($request->url(), '/bot123456:test-token/sendMessage')
-                && ($request['chat_id'] ?? null) === '-100200300';
+            return ($request['receptor'] ?? null) === '09121234567'
+                && str_contains($request->url(), 'api.kavenegar.com');
         });
     }
 
-    /** The alert links back to the record rather than repeating all of it. */
-    public function test_the_message_links_to_the_enquiry_in_the_panel(): void
+    public function test_the_message_stays_short_enough_to_be_worth_sending(): void
     {
-        $this->configureBale();
-        Http::fake(['*' => Http::response(['ok' => true])]);
+        $text = SendSmsAlert::text($this->enquiry([
+            'name' => str_repeat('ن', 120),
+            'company' => str_repeat('ش', 120),
+            'quantity' => str_repeat('۹', 80),
+        ]));
 
-        $enquiry = $this->enquiry();
-        (new SendBaleAlert($enquiry->id))->handle();
-
-        Http::assertSent(fn ($request) => str_contains(
-            $request['text'] ?? '',
-            route('admin.enquiries.show', $enquiry),
-        ));
+        // Four parts of a Persian SMS is the ceiling this trimming is for; the
+        // real thing is two.
+        $this->assertLessThan(280, mb_strlen($text));
     }
 
     public function test_nothing_is_sent_while_the_channel_is_off(): void
     {
+        $this->configurePanel(['sms.enabled' => '0']);
         Http::fake();
 
-        (new SendBaleAlert($this->enquiry()->id))->handle();
+        (new SendSmsAlert($this->enquiry()->id))->handle();
+
+        Http::assertNothingSent();
+    }
+
+    /** No number, no message — and no error either. */
+    public function test_nothing_is_sent_without_a_sales_number(): void
+    {
+        $this->configurePanel(['sms.sales_mobile' => '']);
+        Http::fake();
+
+        (new SendSmsAlert($this->enquiry()->id))->handle();
+
+        Http::assertNothingSent();
+    }
+
+    /**
+     * An unconfigured panel is not a temporary failure, so it must not go
+     * round the retry loop: there is nothing to retry against.
+     */
+    public function test_an_unconfigured_panel_is_not_retried(): void
+    {
+        Sms::store([
+            'sms.enabled' => '1',
+            'sms.provider' => 'kavenegar',
+            'sms.sales_mobile' => '09121234567',
+        ]);
+
+        Http::fake();
+
+        // No throw: a throw is what the queue reads as "try again".
+        (new SendSmsAlert($this->enquiry()->id))->handle();
 
         Http::assertNothingSent();
     }
@@ -157,122 +257,118 @@ class EnquiryAlertTest extends TestCase
     /** A deleted enquiry is not an error; the queue may simply be behind. */
     public function test_an_enquiry_that_no_longer_exists_is_not_an_error(): void
     {
-        $this->configureBale();
+        $this->configurePanel();
         Http::fake();
 
-        (new SendBaleAlert(99999))->handle();
+        (new SendSmsAlert(99999))->handle();
 
         Http::assertNothingSent();
     }
 
-    /** The whole point: a broken messenger must never break the form. */
-    public function test_a_failing_messenger_never_costs_the_enquiry(): void
+    /** The whole point: a broken panel must never break the form. */
+    public function test_a_failing_panel_never_costs_the_enquiry(): void
     {
-        $this->configureBale();
+        $this->configurePanel();
         Mail::fake();
 
-        Http::fake(['*' => Http::response(['ok' => false, 'description' => 'chat not found'], 400)]);
+        Http::fake(fn () => throw new ConnectionException('No route to host'));
 
-        $response = $this->post('/fa/quote', [
-            'name' => 'علی رضایی',
-            'email' => 'ali@example.com',
-            'message' => 'استعلام قیمت',
-            'quantity' => '۵۰۰ متر مکعب',
-            'consent' => '1',
-            'started_at' => $this->humanFormToken(),
-        ]);
+        $this->submitQuote()->assertRedirect();
 
-        $response->assertRedirect();
         $this->assertSame(1, ContactMessage::count());
     }
 
-    // ── The panel ───────────────────────────────────────────────────────
+    // ── The panel screen ────────────────────────────────────────────────
 
-    public function test_the_screen_is_reachable_and_never_echoes_the_token(): void
+    public function test_the_screen_is_reachable_and_never_echoes_a_credential(): void
     {
-        Bale::storeToken('123456:secret-token');
+        $this->configurePanel(['sms.api_key' => 'super-secret-key']);
 
         $this->actingAs($this->makeAdmin())
-            ->get('/admin/notifications')
+            ->get('/admin/sms')
             ->assertOk()
-            ->assertSee(__('admin.notifications.title'))
-            ->assertDontSee('secret-token');
-    }
-
-    /** Blank means "keep the one you have", not "delete it". */
-    public function test_saving_without_a_token_keeps_the_saved_one(): void
-    {
-        $this->configureBale();
-
-        $this->actingAs($this->makeAdmin())
-            ->put('/admin/notifications', ['bale_chat_id' => '-999', 'bale_enabled' => '1'])
-            ->assertRedirect();
-
-        $this->assertSame('123456:test-token', Bale::token());
-        $this->assertSame('-999', Bale::chatId());
-    }
-
-    public function test_the_token_can_be_cleared_deliberately(): void
-    {
-        $this->configureBale();
-
-        $this->actingAs($this->makeAdmin())
-            ->delete('/admin/notifications')
-            ->assertRedirect();
-
-        $this->assertFalse(Bale::configured());
-        $this->assertFalse(Bale::enabled());
-    }
-
-    public function test_the_chat_finder_lists_the_groups_the_bot_can_see(): void
-    {
-        $this->configureBale();
-
-        Http::fake(['*' => Http::response(['ok' => true, 'result' => [
-            ['message' => ['chat' => ['id' => -100200300, 'title' => 'استعلام‌های آرتالکا']]],
-            ['message' => ['chat' => ['id' => -100200300, 'title' => 'استعلام‌های آرتالکا']]],
-            ['message' => ['chat' => ['id' => 55, 'first_name' => 'علی']]],
-        ]])]);
-
-        $this->actingAs($this->makeAdmin())
-            ->post('/admin/notifications/chats')
-            ->assertRedirect()
-            ->assertSessionHas('chats', fn (array $chats) => count($chats) === 2
-                && $chats[0]['title'] === 'استعلام‌های آرتالکا');
+            ->assertSee(__('admin.sms.title'))
+            ->assertDontSee('super-secret-key');
     }
 
     /**
-     * The failure this screen exists to surface: the server cannot reach Bale
-     * at all. Finding that out on the first real enquiry is the bad outcome.
+     * The failure this screen exists to surface: the server cannot reach the
+     * panel at all. Finding that out on the first real enquiry is the bad
+     * outcome, which is why the test button sends for real and reports back.
      */
-    public function test_the_test_button_reports_an_unreachable_service(): void
+    public function test_the_test_button_reports_an_unreachable_panel(): void
     {
-        $this->configureBale();
+        $this->configurePanel();
 
         Http::fake(fn () => throw new ConnectionException('No route to host'));
 
         $this->actingAs($this->makeAdmin())
-            ->post('/admin/notifications/test')
+            ->post('/admin/sms/test', ['mobile' => '09121234567'])
             ->assertRedirect()
-            ->assertSessionHas('error', __('admin.notifications.unreachable'));
+            ->assertSessionHas('error');
     }
 
-    public function test_the_test_button_confirms_a_working_path(): void
+    public function test_the_test_button_confirms_a_working_panel(): void
     {
-        $this->configureBale();
+        $this->configurePanel();
 
-        Http::fake(['*' => Http::response(['ok' => true, 'result' => ['username' => 'ArtaLecaBot']])]);
+        Http::fake(['*' => Http::response(['return' => ['status' => 200]])]);
 
         $this->actingAs($this->makeAdmin())
-            ->post('/admin/notifications/test')
+            ->post('/admin/sms/test', ['mobile' => '09121234567'])
             ->assertRedirect()
-            ->assertSessionHas('status', __('admin.notifications.test_sent'));
+            ->assertSessionHas('status', __('admin.sms.errors.sent'));
     }
 
-    public function test_an_editor_cannot_reach_the_notification_settings(): void
+    /** An unconfigured panel says so rather than reporting a send failure. */
+    public function test_the_test_button_names_the_missing_setting(): void
+    {
+        Sms::store(['sms.enabled' => '1', 'sms.provider' => 'kavenegar']);
+
+        $this->actingAs($this->makeAdmin())
+            ->post('/admin/sms/test', ['mobile' => '09121234567'])
+            ->assertRedirect()
+            ->assertSessionHas('error', __('admin.sms.errors.no_api_key'));
+    }
+
+    public function test_an_editor_cannot_reach_the_sms_settings(): void
     {
         $this->actingAs($this->makeAdmin(User::ROLE_EDITOR))
-            ->get('/admin/notifications')
+            ->get('/admin/sms')
             ->assertForbidden();
+    }
+
+    // ── The custom panel, and the hole it would otherwise open ──────────
+
+    /**
+     * A settings field that becomes an outbound request is an SSRF, and the one
+     * address worth naming in a test is the cloud metadata service: on a rented
+     * server it hands out credentials to anything that can reach it.
+     */
+    public function test_a_custom_url_cannot_point_inside_the_server(): void
+    {
+        Sms::store([
+            'sms.enabled' => '1',
+            'sms.provider' => 'custom',
+            'sms.custom_url' => 'http://169.254.169.254/latest/meta-data/',
+            'sms.custom_method' => 'GET',
+            'sms.sales_mobile' => '09121234567',
+        ]);
+
+        Http::fake();
+
+        [$status] = Sms::send('09121234567', 'test');
+
+        $this->assertSame(Sms::STATUS_FAILED, $status);
+        Http::assertNothingSent();
+    }
+
+    public function test_a_custom_url_must_be_http(): void
+    {
+        $this->actingAs($this->makeAdmin())->put('/admin/sms', [
+            'provider' => 'custom',
+            'custom_url' => 'file:///etc/passwd',
+            'custom_method' => 'GET',
+        ])->assertSessionHasErrors('custom_url');
     }
 }

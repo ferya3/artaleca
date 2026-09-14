@@ -10,7 +10,7 @@ use App\Http\Controllers\Admin\DownloadController;
 use App\Http\Controllers\Admin\EnquiryController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\GalleryController;
-use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\SmsController;
 use App\Http\Controllers\Admin\OfficeController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PartnerController;
@@ -104,11 +104,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
          * nothing — but both call out to a third party, so neither belongs
          * behind a GET a browser might prefetch.
          */
-        Route::get('notifications', [NotificationController::class, 'edit'])->name('notifications.edit');
-        Route::put('notifications', [NotificationController::class, 'update'])->name('notifications.update');
-        Route::delete('notifications', [NotificationController::class, 'destroy'])->name('notifications.destroy');
-        Route::post('notifications/chats', [NotificationController::class, 'chats'])->name('notifications.chats');
-        Route::post('notifications/test', [NotificationController::class, 'test'])->name('notifications.test');
+        Route::get('sms', [SmsController::class, 'edit'])->name('sms.edit');
+        Route::put('sms', [SmsController::class, 'update'])->name('sms.update');
+        Route::delete('sms', [SmsController::class, 'destroy'])->name('sms.destroy');
+        Route::post('sms/test', [SmsController::class, 'test'])->name('sms.test');
+        Route::post('sms/probe', [SmsController::class, 'probe'])->name('sms.probe');
 
         Route::get('site-images', [SiteImageController::class, 'edit'])->name('site-images.edit');
         Route::put('site-images', [SiteImageController::class, 'update'])->name('site-images.update');

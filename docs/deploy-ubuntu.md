@@ -124,7 +124,7 @@ ADMPW='CHANGE-THIS-PASSWORD'; git clone -b claude/industrial-company-website-6vt
 ```
 
 ```bash
-# 3. PHP limits and the queue worker (the worker is what sends the Bale alert).
+# 3. PHP limits and the queue worker (the worker is what sends the enquiry SMS).
 PHPV=$(php -r 'echo PHP_MAJOR_VERSION.".".PHP_MINOR_VERSION;'); printf 'expose_php=Off\ndisplay_errors=Off\nlog_errors=On\nupload_max_filesize=12M\npost_max_size=14M\nmemory_limit=256M\nopcache.enable=1\nopcache.memory_consumption=192\nopcache.max_accelerated_files=20000\n' > /etc/php/$PHPV/fpm/conf.d/99-artaleca.ini && printf '[Unit]\nDescription=Arta Leca queue worker\nAfter=network.target\n\n[Service]\nUser=www-data\nGroup=www-data\nRestart=always\nRestartSec=5\nWorkingDirectory=/var/www/artaleca\nExecStart=/usr/bin/php artisan queue:work --sleep=3 --tries=3 --max-time=3600\n\n[Install]\nWantedBy=multi-user.target\n' > /etc/systemd/system/artaleca-worker.service && systemctl daemon-reload && systemctl enable --now artaleca-worker && systemctl restart php$PHPV-fpm
 ```
 
@@ -718,6 +718,50 @@ Source and served HTML come apart in ways that are invisible locally — a stale
 view cache, a description written past the cut, an admin override that replaced
 the sentence carrying half the search terms — which is why this reads the
 served bytes.
+
+---
+
+## 4g. The enquiry SMS
+
+Every quote request and contact message puts an SMS on the sales manager's
+phone, on top of the email that has always gone out. All of it is configured in
+**Panel → Enquiry SMS**; none of it is in `.env`, so changing a provider or a
+password needs neither SSH nor a deploy.
+
+Fill in, in this order:
+
+1. **The sales manager's mobile.** Any way you like — Persian digits, a `+98`,
+   spaces — it is normalised to `09xxxxxxxxx` on save. Left empty, nothing is
+   sent.
+2. **The provider**, then its credentials. Six are built in: a test mode that
+   writes to `storage/logs/sms-test.log` instead of sending, the Asr Fara
+   Ertebat family (afe.ir, wide.ir and resellers), Kavenegar, SMS.ir,
+   Melipayamak, and a custom panel given as a URL with `{to}` and `{text}` in
+   it.
+3. **Switch it on**, then press **send a test SMS**. It sends for real,
+   synchronously, and shows you the panel's own answer — which is the whole
+   point of the button. "Added to the queue" would tell you nothing.
+
+Two things worth knowing when it does not work:
+
+- On a reseller panel of the afe family, a wrong domain looks exactly like
+  wrong credentials. **Find the right domain** tries each one with your
+  credentials and names the one that answered; it stops at the first success so
+  the test message is not sent twice.
+- The alerts are queued, so section 4b's worker has to be running. Without it
+  they sit in the `jobs` table and nothing arrives. `systemctl status
+  artaleca-worker` is the check.
+
+The password and API key are encrypted in the database and never sent back to
+the browser: leaving either field blank means "keep the one you have". Clearing
+them is the separate red link at the foot of the screen.
+
+A note on cost, since it decides what the message says: a Persian SMS is UCS-2,
+70 characters per part, and every part is charged. The alert is therefore the
+part someone acts on — what kind of enquiry, who, their number, the grade and
+volume — and not a copy of the enquiry. It carries no link, because a URL costs
+40 of those 70 characters and Iranian panels filter links on shared sender
+lines. The whole enquiry is in the panel and in the email.
 
 ---
 

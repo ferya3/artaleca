@@ -19,16 +19,11 @@ return [
     ],
 
     /*
-    | Bale, the Iranian messenger, used to put a new enquiry on the sales
-    | desk's phone. The bot token is not here: it is editor-owned and lives
-    | encrypted in the settings table. Only the endpoint is configuration —
-    | it is the part outside our control, and if Bale moves it, it should
-    | move in .env rather than in a release.
+    | Nothing here for the SMS panel, and that is deliberate. Every part of it
+    | — provider, credentials, sender line, the number an alert rings — is
+    | editor-owned and lives in the settings table, the credentials encrypted.
+    | Changing a panel or a password should not need SSH and a deploy.
     */
-    'bale' => [
-        'base_url' => env('BALE_API_URL', 'https://tapi.bale.ai'),
-        'timeout' => env('BALE_TIMEOUT', 8),
-    ],
 
     'resend' => [
         'key' => env('RESEND_API_KEY'),
