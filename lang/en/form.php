@@ -5,6 +5,7 @@ return [
     'company' => 'Company',
     'email' => 'Email',
     'phone' => 'Phone',
+    'phone_quote_hint' => 'Please give a number you answer: the sales desk quotes by phone, on this number.',
     'country' => 'Country',
     'subject' => 'Subject',
     'message' => 'Message',

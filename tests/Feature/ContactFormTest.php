@@ -111,6 +111,37 @@ class ContactFormTest extends TestCase
         ]))->assertSessionHasErrors(['name', 'email', 'message']);
     }
 
+    /**
+     * A number is required to ask for a price, and optional to ask a question.
+     *
+     * A price for expanded clay depends on the grade, the volume and the
+     * destination, so it is settled in a call — and the alert that reaches the
+     * sales manager's phone carries this number as the thing to act on. An RFQ
+     * with no number is a lead nobody can answer.
+     *
+     * The contact form stays as it was on purpose: someone asking a technical
+     * question is owed a reply, not a phone call, and a required number there
+     * would cost messages that are worth having.
+     */
+    public function test_a_quote_needs_a_phone_number_and_a_message_does_not(): void
+    {
+        $this->post('/fa/quote', $this->payload([
+            'phone' => '',
+            'quantity' => '500 m³',
+        ]))->assertSessionHasErrors('phone');
+
+        $this->post('/fa/contact', $this->payload(['phone' => '']))
+            ->assertSessionHasNoErrors();
+    }
+
+    /** And the form says so where it is asked, not only after it is refused. */
+    public function test_the_quote_form_says_why_the_number_is_needed(): void
+    {
+        $this->get('/fa/quote')
+            ->assertOk()
+            ->assertSee(__('form.phone_quote_hint'));
+    }
+
     public function test_a_delivery_failure_does_not_lose_the_enquiry(): void
     {
         // The record is what the business needs; a broken SMTP server must not

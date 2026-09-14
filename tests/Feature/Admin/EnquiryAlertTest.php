@@ -62,6 +62,9 @@ class EnquiryAlertTest extends TestCase
         return $this->post('/fa/quote', [
             'name' => 'علی رضایی',
             'email' => 'ali@example.com',
+            // Required on this form: a quote is settled in a call, and this is
+            // the number the alert below carries.
+            'phone' => '09121234567',
             'message' => 'استعلام قیمت',
             'quantity' => '۵۰۰ متر مکعب',
             'consent' => '1',

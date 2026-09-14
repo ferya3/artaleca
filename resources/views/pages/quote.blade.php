@@ -66,7 +66,16 @@
                     <x-form.field name="name" :label="__('form.name')" required />
                     <x-form.field name="company" :label="__('form.company')" />
                     <x-form.field name="email" type="email" :label="__('form.email')" required />
-                    <x-form.field name="phone" type="tel" :label="__('form.phone')" />
+                    {{-- Required on this form only, with the reason next to it:
+                         a quote is settled in a call, and the alert that
+                         reaches the sales manager carries this number. --}}
+                    <x-form.field
+                        name="phone"
+                        type="tel"
+                        :label="__('form.phone')"
+                        :hint="__('form.phone_quote_hint')"
+                        required
+                    />
 
                     <x-form.field
                         name="country_code"
