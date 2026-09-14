@@ -121,6 +121,11 @@ return [
     'translation_hint' => 'Enter each language separately. Empty languages fall back to Persian.',
     'image_inherited' => 'No image uploaded for this language — the :locale one is shown. If the artwork carries text, upload a version for this language.',
 
+    'alerts' => [
+        'mail_is_logged' => 'Site email is set to "write to a file", so enquiry notifications reach no inbox — they are only written to the server log. To send for real, put the SMTP settings in the server\'s .env (see the company email section of the deployment notes). To check it: php artisan mail:test',
+        'sms_is_silent' => 'Enquiry alerts are not being sent by SMS — it is either switched off or has no sales number:',
+    ],
+
     'sms' => [
         'title' => 'Enquiry SMS',
         'intro' => 'Every quote request and contact message puts an SMS on the sales manager\'s phone. The email still goes out as before; the SMS is for when nobody is looking at an inbox.',

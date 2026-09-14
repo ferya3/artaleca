@@ -2,6 +2,28 @@
 
     <h1 class="text-xl font-bold text-ink-950">{{ __('admin.dashboard') }}</h1>
 
+    {{-- Where a new enquiry is meant to go, when it is not going there.
+
+         Both of these report success to the application and deliver nothing,
+         which is the worst kind of failure: the first time anyone notices is a
+         customer asking why nobody called back. --}}
+    @if ($mailIsGoingToTheLog || $smsIsSilent)
+        <div class="mt-6 space-y-2">
+            @if ($mailIsGoingToTheLog)
+                <p class="border-s-2 border-amber-500 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-900">
+                    {{ __('admin.alerts.mail_is_logged') }}
+                </p>
+            @endif
+
+            @if ($smsIsSilent)
+                <p class="border-s-2 border-amber-500 bg-amber-50 px-4 py-3 text-sm leading-relaxed text-amber-900">
+                    {{ __('admin.alerts.sms_is_silent') }}
+                    <a href="{{ route('admin.sms.edit') }}" class="font-medium underline">{{ __('admin.sms.title') }}</a>
+                </p>
+            @endif
+        </div>
+    @endif
+
     <dl class="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-hairline bg-hairline shadow-soft lg:grid-cols-4">
         @foreach ($stats as $key => $value)
             <div class="bg-white px-5 py-6">

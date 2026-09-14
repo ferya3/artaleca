@@ -765,6 +765,116 @@ lines. The whole enquiry is in the panel and in the email.
 
 ---
 
+## 4h. The company email
+
+Three addresses are printed on the site — `info@`, `sales@` and `export@
+artaleca.com` — and none of them exists until somebody hosts mail for the
+domain. This section is about making them real, and about the site's own
+outgoing mail, which is a separate thing that happens to travel the same way.
+
+### Where the mailboxes should live
+
+Not on this server. The temptation is Postfix and Dovecot next to the site,
+and it is the wrong trade for a company whose sales channel is email:
+
+- A single small IP address has no sending reputation, so Gmail and Outlook
+  put its mail in spam or refuse it outright, and there is nothing to appeal
+  to. Building that reputation takes months of steady volume this domain does
+  not have.
+- Most hosts block outbound port 25 by default, and unblocking it is a support
+  ticket that is often refused.
+- You would then be running an anti-spam system, a backup of the mail store,
+  and TLS certificate renewal for a second service. All of that is somebody's
+  job, forever.
+
+Buy mail hosting instead, from the company that already hosts the domain or
+the server. In Iran it is sold as «هاست ایمیل» or «ایمیل سازمانی», costs very
+little, comes with webmail and IMAP, and — the part that matters — the
+provider's IP addresses already have a reputation and their abuse desk is the
+one dealing with it.
+
+Two things to be clear about before choosing:
+
+- **Google Workspace and Microsoft 365 are not options here.** Both enforce
+  sanctions on Iranian organisations, and an account that works today can be
+  suspended with the mail still inside it. The same applies to most Western
+  transactional senders (Mailgun, SendGrid, Postmark) and to Zoho, which
+  blocks signups from Iranian addresses.
+- **Domestic mail hosting delivers well inside Iran and unevenly abroad.** For
+  `sales@`, whose correspondents are Iranian, that is fine. For `export@`,
+  writing to buyers on Gmail, expect to end up in a spam folder sometimes
+  however correct the DNS is. The phone number on the export page is not
+  decoration; for a first contact abroad it is often the channel that works.
+
+### The DNS records
+
+Add these where the domain's DNS is managed. The provider gives you the exact
+values for the first three; the shapes are below so a wrong one is
+recognisable.
+
+| Record | Name | Value |
+|---|---|---|
+| MX | `@` | the provider's mail host, with its priority — usually two records |
+| TXT (SPF) | `@` | `v=spf1 include:<the provider's include> ~all` |
+| TXT or CNAME (DKIM) | as the provider states | the key they generate |
+| TXT (DMARC) | `_dmarc` | `v=DMARC1; p=none; rua=mailto:info@artaleca.com` |
+
+Four notes, each of which is a real mistake somebody makes:
+
+- **One SPF record, not several.** A domain with two `v=spf1` TXT records
+  fails SPF entirely. If the site sends through the same provider, its
+  `include:` covers both and nothing needs adding.
+- **MX has nothing to do with the A record.** The website stays on this server
+  while the mail goes elsewhere; they do not conflict.
+- **`p=none` to start.** DMARC at `p=reject` before SPF and DKIM are both
+  verified will bounce your own mail. Move to `quarantine` and then `reject`
+  once reports come back clean.
+- **Do the `.ir` domain too**, or mail to `@artaleca.ir` bounces while the
+  website answers perfectly.
+
+### Wiring the site to send
+
+Once a mailbox exists, the site sends its enquiry notifications through it.
+In `/var/www/artaleca/.env`:
+
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=mail.artaleca.com     # whatever the provider documents
+MAIL_PORT=465                   # 465 with smtps, or 587 with tls
+MAIL_SCHEME=smtps
+MAIL_USERNAME=info@artaleca.com # the full address, not "info"
+MAIL_PASSWORD="the mailbox password"
+MAIL_FROM_ADDRESS=info@artaleca.com
+MAIL_FROM_NAME="ARTA LECA"
+```
+
+Then, and this is not optional:
+
+```bash
+cd /var/www/artaleca && php artisan config:clear && php artisan mail:test
+```
+
+`config:clear` because a cached config ignores `.env` completely — the same
+trap as the panel password in 4c. `mail:test` prints the settings it is about
+to use, sends one real message to the sales address, and on failure prints
+what the mail server said rather than a summary of it: "connection refused"
+and "535 authentication failed" send you to two different places.
+
+`MAIL_FROM_ADDRESS` has to be an address the account may send as. A message
+from `noreply@artaleca.com` sent through a mailbox for `info@artaleca.com`
+fails DKIM alignment at the far end, and no amount of correct SPF rescues it.
+
+### Why it matters that this is checked
+
+Until it is configured the site runs with `MAIL_MAILER=log`, which writes every
+notification into `storage/logs/laravel.log` and reports success to the
+application. An enquiry nobody is told about looks exactly like one that was
+delivered. The panel dashboard now says so in a banner while that is the case,
+and the SMS alert covers the same ground from the other direction — but the
+banner going away is the thing to aim for.
+
+---
+
 ## 5. Deploying an update
 
 One line, safe to re-run, and it stops at the first failure rather than
