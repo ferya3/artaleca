@@ -6,7 +6,10 @@
         :seed="$post->slug"
         :alt="$post->title"
         :eager="$eager"
-        ratio="16/9"
+        {{-- Square on the card, 16:9 at the head of the article. One upload,
+             two frames — the same arrangement as the product, use and project
+             cards, which is now every card on the site. --}}
+        ratio="1/1"
         sizes="(min-width: 1024px) 33vw, 100vw"
     />
 

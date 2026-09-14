@@ -76,7 +76,10 @@ Cropped to **1:1** on the card and **16:9** on the page, so keep the subject
 centred with room above and below it. These are the ones that have to be the
 actual sites, with the volumes already stated on each page.
 
-## Articles — 16:9, at least 1440 px wide
+## Articles — square subject, at least 1440 px wide
+
+Cropped to **1:1** on the card and **16:9** at the head of the article, so keep
+the subject centred with room above and below it.
 
 Nine posts, four of them new. These illustrate rather than claim, so a licensed
 stock photograph is legitimate here.
