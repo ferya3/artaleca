@@ -66,18 +66,30 @@
 
         <div class="container-page py-12 md:py-16">
             <div class="article-measure mx-auto">
-                {{-- `alt=""` on purpose: the picture sits directly under a
+                {{-- 1:1, the same frame as the card the reader just clicked.
+                     It was 16:9 here, which made the article the one record on
+                     the site still asking for two crops of one upload — and
+                     the wide crop is the one that cuts through a subject shot
+                     square. One frame now, so the photograph the editor chose
+                     is the photograph that appears.
+
+                     Inset rather than full-column: a square at the full 42rem
+                     measure stands 672px tall, which is the screenful of
+                     photograph this page was redesigned to get rid of. Capped
+                     it is 416px, and the first sentence stays above the fold.
+
+                     `alt=""` on purpose: the picture sits directly under a
                      heading that already says what the article is, and a second
                      reading of the same words is noise to anyone listening
                      rather than looking. --}}
-                <figure>
+                <figure class="article-figure">
                     <x-media
                         :src="$post->cover_image"
                         :seed="$post->slug"
                         alt=""
                         eager
-                        ratio="16/9"
-                        sizes="(min-width: 1024px) 42rem, 100vw"
+                        ratio="1/1"
+                        sizes="(min-width: 1024px) 26rem, 100vw"
                         class="rounded-lg border border-hairline shadow-soft"
                     />
                 </figure>

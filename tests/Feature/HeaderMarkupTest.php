@@ -214,9 +214,9 @@ class HeaderMarkupTest extends TestCase
      * exists in the stylesheet if the scanner found that exact string in a
      * template.
      *
-     * One article carries both, which is also the arrangement every card on the
-     * site now uses: square on the card, and wide at the head of the thing
-     * itself. One upload, two frames.
+     * An article is square in both places now — card and cover — so the
+     * bracketed shape has to be checked where one still exists: a project
+     * page, which is 1:1 on its card and 16:9 at its head.
      */
     public function test_the_media_ratio_is_expressed_as_a_class(): void
     {
@@ -225,9 +225,9 @@ class HeaderMarkupTest extends TestCase
 
         $this->get('/fa/articles')->assertOk()->assertSee('aspect-square', false);
 
-        $article = \App\Models\Post::query()->published()->firstOrFail();
+        $project = \App\Models\Project::query()->active()->firstOrFail();
 
-        $this->get(route('articles.show', ['post' => $article]))
+        $this->get('/fa/projects/'.$project->slug)
             ->assertOk()
             ->assertSee('aspect-[16/9]', false);
     }

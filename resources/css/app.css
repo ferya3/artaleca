@@ -574,6 +574,22 @@
     }
 
     /*
+     * The cover, inset inside that column.
+     *
+     * It is square — the same frame as the card the reader clicked — and a
+     * square at the full 42rem measure is 672px tall, which is the screenful
+     * of photograph this page exists to avoid. Capped at 26rem it is 416px and
+     * the first sentence survives above the fold.
+     *
+     * It keeps the column's start edge rather than centring: the whole layout
+     * is one edge, and an inset plate that shares it reads as deliberate where
+     * a centred one reads as a stray card.
+     */
+    .article-figure {
+        max-width: 26rem;
+    }
+
+    /*
      * A body somebody sits and reads.
      *
      * `.prose-industrial` is tuned for the paragraph or two under a product or

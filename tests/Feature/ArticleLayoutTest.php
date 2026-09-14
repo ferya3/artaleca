@@ -113,12 +113,32 @@ class ArticleLayoutTest extends TestCase
     }
 
     /**
-     * The cover stays 16:9 at the head of the article — the card is 1:1, and
-     * the brief promises one upload cropped both ways.
+     * The cover is square, the same frame as the card the reader clicked.
+     *
+     * It was 16:9 here while the card was 1:1, which left the article as the
+     * one record on the site still asking for two crops of one upload — and
+     * the wide crop is the one that cuts through a subject shot square.
      */
-    public function test_the_cover_keeps_the_wide_frame(): void
+    public function test_the_cover_is_square(): void
     {
-        $this->assertStringContainsString('aspect-[16/9]', $this->html());
+        $html = $this->html();
+
+        $this->assertStringContainsString('aspect-square', $html);
+        $this->assertStringNotContainsString('aspect-[16/9]', $html);
+    }
+
+    /**
+     * And it is inset rather than spanning the measure. A square at the full
+     * 42rem column is 672px tall — the screenful of photograph before the
+     * first sentence that this page was redesigned to remove.
+     */
+    public function test_the_cover_is_capped_below_the_measure(): void
+    {
+        $this->assertMatchesRegularExpression(
+            '/<figure class="[^"]*article-figure/',
+            $this->html(),
+            'The cover figure is not capped, so the square runs the full width of the reading column.',
+        );
     }
 
     /**
