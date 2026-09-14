@@ -61,12 +61,17 @@
                         required
                     />
 
+                    {{-- The options were five bare Incoterm codes, which meant
+                         nothing to most of the people filling this in. Each one
+                         now carries a sentence, and the whole list is editable
+                         in Panel → Settings → Delivery terms — see
+                         `App\Support\DeliveryTerms`. --}}
                     <x-form.field
                         name="delivery_terms"
                         type="select"
                         :label="__('form.delivery_terms')"
                         :hint="__('form.delivery_terms_hint')"
-                        :options="collect(['EXW', 'FOB', 'CFR', 'CIF', 'DAP'])->mapWithKeys(fn ($t) => [$t => $t])->all()"
+                        :options="\App\Support\DeliveryTerms::options()"
                     />
 
                     <div class="sm:col-span-2 border-t border-hairline pt-5"></div>

@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Support\Contact;
+use App\Support\DeliveryTerms;
 use App\Support\Locales;
 use App\Support\Navigation;
 use Illuminate\Contracts\View\View;
@@ -52,6 +53,21 @@ class SettingController extends Controller
                 'social.instagram' => ['label' => 'Instagram', 'type' => 'text', 'max' => 200, 'translatable' => false],
                 'social.youtube' => ['label' => 'YouTube', 'type' => 'text', 'max' => 200, 'translatable' => false],
                 'social.aparat' => ['label' => 'آپارات', 'type' => 'text', 'max' => 200, 'translatable' => false],
+            ],
+
+            /*
+             * ── What the quote form offers under "delivery terms" ────────
+             *
+             * One line per term, `CODE | explanation`. The code is stored on
+             * the enquiry and read by the sales desk and the forwarder; the
+             * explanation is what the buyer sees, and it is the whole reason
+             * this is a setting — the select used to be five bare Incoterm
+             * codes, which is an unreadable field to anybody who does not
+             * work in freight. See `App\Support\DeliveryTerms`.
+             */
+            'delivery' => [
+                'delivery.terms' => ['label' => __('form.delivery_terms'), 'type' => 'textarea', 'rows' => 7,
+                    'max' => 1200, 'hint' => __('admin.settings_fields.delivery_terms_hint')],
             ],
 
             // ── The headline numbers, editable without a deploy ──────────
@@ -187,6 +203,19 @@ class SettingController extends Controller
      */
     private function placeholdersFor(string $group): array
     {
+        // The delivery terms fall back to the language files the same way, so
+        // an empty box there is the shipped five Incoterms rather than a form
+        // with no options at all.
+        if ($group === 'delivery') {
+            $placeholders = [];
+
+            foreach (Locales::codes() as $locale) {
+                $placeholders[DeliveryTerms::SETTING.'.'.$locale] = DeliveryTerms::defaultText($locale);
+            }
+
+            return $placeholders;
+        }
+
         if ($group !== 'contact') {
             return [];
         }

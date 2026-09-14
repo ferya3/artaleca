@@ -69,7 +69,10 @@
                                 <span class="mt-2.5 w-7 shrink-0 text-[0.6875rem] font-semibold uppercase text-ink-400" dir="ltr">{{ $code }}</span>
 
                                 @if ($type === 'textarea')
-                                    <textarea name="{{ $field }}[{{ $code }}]" rows="3"
+                                    {{-- A list needs room for its lines: three
+                                         rows on a seven-line field means
+                                         editing through a slot. --}}
+                                    <textarea name="{{ $field }}[{{ $code }}]" rows="{{ $definition['rows'] ?? 3 }}"
                                               lang="{{ $code }}" dir="{{ $meta['dir'] }}"
                                               placeholder="{{ $placeholders[$key.'.'.$code] ?? '' }}"
                                               class="{{ $inputClass }} @error($errorKey) border-red-500 @enderror">{{ $value }}</textarea>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Support\DeliveryTerms;
 use Illuminate\Validation\Rule;
 
 /**
@@ -28,7 +29,9 @@ class QuoteRequest extends ContactRequest
             // The same shape the representation form accepts: digits, spaces
             // and the punctuation people put in a number, six characters up.
             'phone' => ['required', 'string', 'max:40', 'regex:/^[\d\s+()\-\.]{6,40}$/'],
-            'delivery_terms' => ['nullable', Rule::in(['EXW', 'FOB', 'CFR', 'CIF', 'DAP'])],
+            // Read from the same place the select is built from, so a term an
+            // editor removes stops validating and one they add starts working.
+            'delivery_terms' => ['nullable', Rule::in(DeliveryTerms::codes())],
             // The commercial context belongs in `message`, so it stays optional
             // here — a buyer should be able to send a quantity and nothing else.
             'message' => ['nullable', 'string', 'max:4000'],

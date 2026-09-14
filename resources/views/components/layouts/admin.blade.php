@@ -57,6 +57,7 @@
             ['route' => 'admin.offices.index', 'label' => __('admin.offices')],
             ['route' => 'admin.settings.edit', 'params' => 'contact', 'label' => __('admin.settings_groups.contact')],
             ['route' => 'admin.settings.edit', 'params' => 'figures', 'label' => __('admin.settings_groups.figures')],
+            ['route' => 'admin.settings.edit', 'params' => 'delivery', 'label' => __('admin.settings_groups.delivery')],
             ['route' => 'admin.sms.edit', 'label' => __('admin.sms.title')],
             ['route' => 'admin.settings.index', 'label' => __('admin.settings_all')],
         ];

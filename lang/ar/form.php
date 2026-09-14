@@ -13,7 +13,20 @@ return [
     'quantity' => 'الكمية المطلوبة',
     'quantity_placeholder' => 'مثال: ٥٠٠ متر مكعب',
     'delivery_terms' => 'شروط التسليم',
-    'delivery_terms_hint' => 'وفق إنكوترمز ٢٠٢٠',
+    'delivery_terms_hint' => 'اتركه فارغاً إن لم تكن متأكداً؛ يحدّده قسم البيع عند الاتصال.',
+
+    /*
+     * The shipped list, shown until an editor writes their own in
+     * Panel → Settings → Delivery terms. The code is what gets stored on the
+     * enquiry; this sentence is only ever read by the buyer.
+     */
+    'delivery_terms_options' => [
+        'EXW' => 'التسليم في المصنع',
+        'FOB' => 'على ظهر السفينة، ميناء الشحن',
+        'CFR' => 'الشحن إلى ميناء الوصول دون تأمين',
+        'CIF' => 'الشحن والتأمين إلى ميناء الوصول',
+        'DAP' => 'التسليم في موقعكم',
+    ],
     'consent' => 'الموافقة على سياسة الخصوصية',
     'consent_label' => 'أوافق على حفظ ومعالجة البيانات المدخلة لغرض الرد على هذا الطلب.',
     'consent_required' => 'يرجى الموافقة على سياسة الخصوصية قبل إرسال النموذج.',

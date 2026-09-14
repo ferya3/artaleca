@@ -13,7 +13,21 @@ return [
     'quantity' => 'حجم مورد نیاز',
     'quantity_placeholder' => 'مثلاً ۵۰۰ متر مکعب',
     'delivery_terms' => 'شرایط تحویل',
-    'delivery_terms_hint' => 'بر اساس اینکوترمز ۲۰۲۰',
+    'delivery_terms_hint' => 'اگر مطمئن نیستید خالی بگذارید؛ واحد فروش در تماس مشخص می‌کند.',
+
+    /*
+     * The shipped list, shown until an editor writes their own in
+     * Panel → Settings → Delivery terms. The code is what gets stored on the
+     * enquiry; this sentence is only ever read by the buyer, who has no reason
+     * to know what "FOB" means.
+     */
+    'delivery_terms_options' => [
+        'EXW' => 'تحویل درب کارخانه',
+        'FOB' => 'تحویل روی کشتی، بندر مبدأ',
+        'CFR' => 'حمل تا بندر مقصد، بدون بیمه',
+        'CIF' => 'حمل و بیمه تا بندر مقصد',
+        'DAP' => 'تحویل در محل شما',
+    ],
     'consent' => 'موافقت با سیاست حریم خصوصی',
     'consent_label' => 'با ذخیره و پردازش اطلاعات واردشده برای پاسخ به این درخواست موافقم.',
     'consent_required' => 'برای ارسال فرم، موافقت با سیاست حریم خصوصی الزامی است.',

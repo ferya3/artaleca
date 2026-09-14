@@ -431,6 +431,27 @@ the sources in order and fetches exactly one, and the preload carries the same
 media query so a phone never pulls the desktop photograph it will not display.
 Leaving the mobile one empty falls back to the desktop image.
 
+The same gap closed once more on the quote form. **Delivery terms** were five
+bare Incoterm codes written into the Blade template — EXW, FOB, CFR, CIF, DAP
+— which is two faults in one field: they needed a deploy to change, and to
+almost everyone filling the form in they mean nothing. A contractor ordering
+thirty cubic metres for a roof screed has no reason to know what FOB is, and an
+unreadable option is one that gets guessed at or skipped. Each code now carries
+a short sentence in the buyer's own language, and the list lives in
+**Settings → Delivery terms** as one line per term, `CODE | explanation`.
+
+The split matters: the code is what gets stored on the enquiry, emailed, and
+handed to the sales desk and the haulier — a quote written against "درب
+کارخانه" is not one anybody can act on internationally — while the sentence is
+only ever shown to the buyer. `App\Support\DeliveryTerms` is the single source
+for both the select and the validation rule, so a term an editor adds starts
+working and one they remove stops validating; codes are sanitised to Latin
+letters and digits before they can reach an enquiry, and the list is capped so
+a paste cannot turn the select into a thousand rows. An empty box falls back to
+the shipped list **per language**, not to Persian — the one place the usual
+settings fallback would be wrong, since handing an English buyer Persian
+sentences recreates the exact problem being fixed.
+
 **Files are uploaded, never typed as paths.** The stored filename is generated
 and the extension comes from the file's sniffed MIME type, so an editor cannot
 overwrite an existing asset or store something executable. Images go to the

@@ -13,7 +13,20 @@ return [
     'quantity' => 'Volume required',
     'quantity_placeholder' => 'e.g. 500 m³',
     'delivery_terms' => 'Delivery terms',
-    'delivery_terms_hint' => 'Incoterms 2020',
+    'delivery_terms_hint' => 'Leave it blank if you are not sure — the sales desk will settle it on the call.',
+
+    /*
+     * The shipped list, shown until an editor writes their own in
+     * Panel → Settings → Delivery terms. The code is what gets stored on the
+     * enquiry; this sentence is only ever read by the buyer.
+     */
+    'delivery_terms_options' => [
+        'EXW' => 'Ex works, collected by the buyer',
+        'FOB' => 'Free on board, port of loading',
+        'CFR' => 'Freight to destination port, no insurance',
+        'CIF' => 'Freight and insurance to destination port',
+        'DAP' => 'Delivered to your site',
+    ],
     'consent' => 'privacy policy consent',
     'consent_label' => 'I agree that the details above may be stored and processed in order to answer this enquiry.',
     'consent_required' => 'Please accept the privacy policy before sending the form.',

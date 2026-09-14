@@ -27,5 +27,5 @@ return [
     'news_body' => 'Engineering notes, production updates and material selection guidance.',
 
     'export_title' => 'Export & logistics',
-    'export_body' => 'Bulk loading, 1 m³ big bags and 50-litre sacks. Delivery EXW, FOB Bandar Abbas, or CIF to Persian Gulf destinations.',
+    'export_body' => 'Bulk loading, 1 m³ big bags and 50-litre sacks. Ex works, free on board at Bandar Abbas (FOB), or freight and insurance to Persian Gulf ports (CIF).',
 ];

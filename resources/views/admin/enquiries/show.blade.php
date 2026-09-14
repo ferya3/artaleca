@@ -93,7 +93,16 @@
                     __('form.country') => $enquiry->country_code,
                     __('form.product') => $enquiry->product?->getTranslation('name', 'en'),
                     __('form.quantity') => $enquiry->quantity,
-                    __('form.delivery_terms') => $enquiry->delivery_terms,
+                    /*
+                     * The code as the buyer picked it, with the sentence they
+                     * were reading when they picked it. A three-letter code on
+                     * its own is exactly the problem this list was changed to
+                     * solve, and it is no more readable to a new salesperson
+                     * than it was to the buyer.
+                     */
+                    __('form.delivery_terms') => \App\Support\DeliveryTerms::explain($enquiry->delivery_terms)
+                        ? $enquiry->delivery_terms.' — '.\App\Support\DeliveryTerms::explain($enquiry->delivery_terms)
+                        : $enquiry->delivery_terms,
 
                     /*
                      * The form-specific answers, in the order the applicant was

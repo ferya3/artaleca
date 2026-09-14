@@ -192,6 +192,7 @@ return [
         'contact' => 'Contact and addresses',
         'social' => 'Social profiles',
         'figures' => 'Key numbers',
+        'delivery' => 'Delivery terms',
         'copy' => 'Homepage copy',
         'media' => 'Site imagery',
         'seo' => 'SEO settings',
@@ -211,11 +212,13 @@ return [
         'contact' => 'Head office and plant addresses, phone, fax, email and opening hours. These are what the contact page and the footer show.',
         'social' => 'Links to the company profiles. Leave one blank and it does not appear on the site.',
         'figures' => 'Annual capacity, plant area, kiln lines, export countries and headcount.',
+        'delivery' => 'The options the quote form offers under "delivery terms". The code on the left is stored on the enquiry; the explanation on the right is what the buyer reads.',
         'seo' => 'Default title and description for search engines, and site-ownership verification codes.',
         'business' => 'Structured data that puts the plant on the map and in Google results.',
     ],
 
     'settings_fields' => [
+        'delivery_terms_hint' => 'One option per line, as `CODE | explanation` — for example `EXW | Ex works, collection by the buyer`. The code must be Latin letters and digits with no spaces: it is what gets stored on the enquiry and handed to the sales desk and the forwarder. The explanation is what the buyer sees in the form, with the code shown beside it. Leave it blank to keep the shipped list.',
         'hq_lines' => 'Head office address',
         'plant_lines' => 'Plant address',
         'switchboard' => 'Head office phone',
