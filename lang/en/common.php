@@ -42,6 +42,20 @@ return [
     'head_office_address' => 'Head office address',
     'phones' => 'Telephone',
 
+    /* The quick-contact widget. */
+    'support' => [
+        'open' => 'Contact support and sales',
+        'title' => 'Support and sales',
+        'note' => 'Answered during working hours. Quickest route for a technical question.',
+        'quote' => 'Request a quotation',
+        'channels' => [
+            'whatsapp' => 'WhatsApp',
+            'telegram' => 'Telegram',
+            'rubika' => 'Rubika',
+            'phone' => 'Call the sales desk',
+        ],
+    ],
+
     'copyright' => '© :year :brand. All rights reserved.',
     'all_rights' => 'All rights reserved',
     'privacy' => 'Privacy',

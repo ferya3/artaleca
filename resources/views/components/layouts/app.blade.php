@@ -23,5 +23,11 @@
 
     @include('partials.footer')
 
+    {{-- Last in the document on purpose: it is pinned by CSS, so its place in
+         the source is purely the order it reaches a screen reader and the
+         keyboard — and "how to reach us" belongs after the page, not before
+         the navigation. --}}
+    <x-quick-contact />
+
 </body>
 </html>

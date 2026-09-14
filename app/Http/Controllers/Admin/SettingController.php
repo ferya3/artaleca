@@ -44,7 +44,29 @@ class SettingController extends Controller
                 'contact.sales_phone' => ['label' => __('admin.settings_fields.sales_phone'), 'type' => 'text', 'max' => 40, 'translatable' => false],
                 'contact.sales_email' => ['label' => __('admin.settings_fields.sales_email'), 'type' => 'text', 'max' => 120, 'translatable' => false],
                 'contact.export_email' => ['label' => __('admin.settings_fields.export_email'), 'type' => 'text', 'max' => 120, 'translatable' => false],
-                'contact.whatsapp' => ['label' => 'WhatsApp', 'type' => 'text', 'max' => 40, 'translatable' => false],
+            ],
+
+            /*
+             * ── The messenger desks ──────────────────────────────────────
+             *
+             * These drive the quick-contact button on every page. They are
+             * their own screen rather than three more rows on the contact
+             * page, because they are the one setting somebody will come back
+             * to change — the account that answers moves between people far
+             * more often than the plant's address does.
+             *
+             * WhatsApp moved here from the contact group. Its key is unchanged
+             * (`contact.whatsapp`), so an already-saved number carries over.
+             */
+            'support' => [
+                'contact.whatsapp' => ['label' => content('common.support.channels.whatsapp'), 'type' => 'text',
+                    'max' => 40, 'translatable' => false, 'hint' => __('admin.settings_fields.whatsapp_hint')],
+                'contact.telegram' => ['label' => content('common.support.channels.telegram'), 'type' => 'text',
+                    'max' => 60, 'translatable' => false, 'hint' => __('admin.settings_fields.telegram_hint')],
+                'contact.rubika' => ['label' => content('common.support.channels.rubika'), 'type' => 'text',
+                    'max' => 60, 'translatable' => false, 'hint' => __('admin.settings_fields.rubika_hint')],
+                'contact.sales_phone' => ['label' => __('admin.settings_fields.sales_phone'), 'type' => 'text',
+                    'max' => 40, 'translatable' => false, 'hint' => __('admin.settings_fields.support_phone_hint')],
             ],
 
             // ── Social profiles ─────────────────────────────────────────
@@ -216,7 +238,10 @@ class SettingController extends Controller
             return $placeholders;
         }
 
-        if ($group !== 'contact') {
+        // The support screen's fields are all `contact.*` keys, so the same
+        // defaults answer for it. The messengers ship empty, which is the
+        // point — an unset one has no placeholder and is simply not offered.
+        if (! in_array($group, ['contact', 'support'], true)) {
             return [];
         }
 

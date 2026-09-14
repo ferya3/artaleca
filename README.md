@@ -431,6 +431,27 @@ the sources in order and fetches exactly one, and the preload carries the same
 media query so a phone never pulls the desktop photograph it will not display.
 Leaving the mobile one empty falls back to the desktop image.
 
+**Support and messengers** is the newest of these screens and the one most
+likely to be edited. A form is the right way to ask for a price and the wrong
+way to ask a question: somebody standing on a site with a pallet of the wrong
+grade in front of them wants an answer in the next minute, and in Iran that
+means WhatsApp, Telegram or Rubika. A floating button on every page now offers
+whichever of those is configured, plus the sales line. It is a `<details>` —
+the same decision the mobile menu made, and for the same reason: the one
+control whose job is to rescue a stuck visitor cannot depend on a script having
+loaded.
+
+What is stored is a number or a handle, never a URL, because nobody types a
+`wa.me` link — they paste what their phone gave them. `@artaleca`,
+`https://t.me/artaleca`, `۰۹۱۲…`, `+98 912 …` and `0098…` all become the same
+working link, and a handle is reduced to the characters a path segment may
+contain so it cannot be made to point somewhere else. A national number with a
+leading zero is refused rather than turned into a dead `wa.me` link; a landline
+on WhatsApp Business is offered by writing it as `+98 21 …`, and the panel hint
+says so. Every channel ships **empty**: a link to an account nobody holds costs
+the visitor the one thing they opened the button for and tells them the company
+does not answer.
+
 The same gap closed once more on the quote form. **Delivery terms** were five
 bare Incoterm codes written into the Blade template — EXW, FOB, CFR, CIF, DAP
 — which is two faults in one field: they needed a deploy to change, and to

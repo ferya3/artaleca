@@ -122,6 +122,8 @@ final class Contact
         'sales_email' => 'sales_email',
         'export_email' => 'export_email',
         'whatsapp' => 'whatsapp',
+        'telegram' => 'telegram',
+        'rubika' => 'rubika',
     ];
 
     /**

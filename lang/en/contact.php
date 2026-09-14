@@ -5,6 +5,7 @@ return [
     'intro' => 'Get in touch for a technical question, a plant visit or a commercial partnership.',
     'reach_us' => 'How to reach us',
     'desks' => 'Sales and export desks',
+    'messengers' => 'Messengers',
     'sales_desk' => 'Domestic sales',
     'export_desk' => 'Export desk',
     'technical_desk' => 'Technical & engineering',

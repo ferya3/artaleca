@@ -42,6 +42,24 @@ return [
     'head_office_address' => 'آدرس دفتر مرکزی',
     'phones' => 'تلفن‌های تماس',
 
+    /*
+     * The quick-contact widget. Its labels are the app names as Iranian users
+     * write them, not transliterations — nobody searches their phone for
+     * "WhatsApp" in Latin letters.
+     */
+    'support' => [
+        'open' => 'تماس با پشتیبانی و فروش',
+        'title' => 'پشتیبانی و فروش',
+        'note' => 'پاسخ در ساعات کاری. برای پرسش فنی سریع‌ترین راه همین‌جاست.',
+        'quote' => 'درخواست استعلام قیمت',
+        'channels' => [
+            'whatsapp' => 'واتساپ',
+            'telegram' => 'تلگرام',
+            'rubika' => 'روبیکا',
+            'phone' => 'تماس تلفنی با واحد فروش',
+        ],
+    ],
+
     'copyright' => '© :year :brand — کلیه حقوق محفوظ است.',
     'all_rights' => 'تمامی حقوق محفوظ است',
     'privacy' => 'حریم خصوصی',

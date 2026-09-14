@@ -1146,6 +1146,213 @@
         /* Someone who has found it does not need to be pointed at it. */
         animation-play-state: paused;
     }
+
+    /*
+     * ── Quick contact ────────────────────────────────────────────────────
+     *
+     * The messenger button, pinned to the corner of every page.
+     *
+     * `inset-inline-end` rather than `right`, so it sits bottom-left on the
+     * Persian and Arabic sites and bottom-right on the English one — the
+     * corner furthest from where the eye starts a line, in each direction.
+     *
+     * z-30, below the mobile menu's z-40: a floating button on top of an open
+     * menu is a button covering the navigation.
+     */
+    .quick-contact {
+        position: fixed;
+        inset-block-end: 1rem;
+        inset-inline-end: 1rem;
+        z-index: 30;
+
+        /*
+         * `column-reverse` so the panel opens *upward* and the button stays
+         * put. A summary is the first child of a details, so in normal flow
+         * the panel appears under the button — which on a corner widget pushes
+         * the button up the screen as the panel grows and moves the thing the
+         * visitor is reaching for.
+         *
+         * `align-items: flex-end` is the cross axis here, so it resolves to
+         * the inline end: the button sits on the same side as the widget in
+         * both writing directions without a second rule.
+         */
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: flex-end;
+    }
+
+    @media (min-width: 768px) {
+        .quick-contact {
+            inset-block-end: 1.5rem;
+            inset-inline-end: 1.5rem;
+        }
+    }
+
+    .quick-contact__toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 3.25rem;
+        height: 3.25rem;
+        border-radius: 9999px;
+        background: var(--color-brand-600);
+        color: #fff;
+        box-shadow: 0 8px 24px -6px rgb(0 0 0 / 0.35);
+        cursor: pointer;
+        list-style: none;
+        transition:
+            background-color 150ms ease,
+            transform 150ms ease;
+    }
+
+    /* Safari and Chrome both draw their own marker on a summary. */
+    .quick-contact__toggle::-webkit-details-marker,
+    .quick-contact__toggle::marker {
+        display: none;
+        content: '';
+    }
+
+    .quick-contact__toggle:hover {
+        background: var(--color-brand-700);
+    }
+
+    .quick-contact[open] .quick-contact__open,
+    .quick-contact:not([open]) .quick-contact__close {
+        display: none;
+    }
+
+    /*
+     * The panel opens upward from the button.
+     *
+     * `position: static` on a phone instead — at 320px a 19rem panel anchored
+     * to the corner would run off the other edge, so there it becomes part of
+     * the flow inside a container pinned to both side gutters.
+     */
+    .quick-contact__panel {
+        width: min(19rem, calc(100vw - 2rem));
+        margin-block-end: 0.75rem;
+        overflow: hidden;
+        border: 1px solid var(--color-hairline);
+        border-radius: 0.75rem;
+        background: var(--color-surface);
+        box-shadow: 0 18px 40px -12px rgb(0 0 0 / 0.3);
+    }
+
+    .quick-contact__head {
+        padding: 0.875rem 1rem;
+        border-block-end: 1px solid var(--color-hairline);
+        background: var(--color-surface-muted);
+    }
+
+    .quick-contact__title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--color-ink-950);
+        text-align: start;
+    }
+
+    .quick-contact__note {
+        margin-block-start: 0.25rem;
+        font-size: 0.75rem;
+        line-height: 1.6;
+        color: var(--color-ink-600);
+        text-align: start;
+    }
+
+    .quick-contact__row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        transition: background-color 150ms ease;
+    }
+
+    .quick-contact__row:hover {
+        background: var(--color-ink-50);
+    }
+
+    .quick-contact li + li .quick-contact__row {
+        border-block-start: 1px solid var(--color-hairline);
+    }
+
+    .quick-contact__mark {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 2.25rem;
+        height: 2.25rem;
+        border-radius: 0.5rem;
+        background: var(--color-ink-100);
+        color: var(--color-ink-800);
+    }
+
+    .quick-contact__row:hover .quick-contact__mark {
+        background: var(--color-brand-600);
+        color: #fff;
+    }
+
+    /* Takes the slack, so the chevron sits on the far edge of every row
+       rather than trailing whichever label happens to be longest. */
+    .quick-contact__body {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .quick-contact__name {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--color-ink-900);
+    }
+
+    /*
+     * Physical alignment on purpose, and this one is worth recording.
+     *
+     * The detail carries `ltr-run`, which forces `direction: ltr` so a phone
+     * number and an `@handle` read left-to-right inside an RTL row. But
+     * `text-align: start` resolves against the element's *own* direction, not
+     * the page's — so a logical `start` here means the LTR start, which is
+     * left, and the number sat at the opposite edge from the label above it.
+     */
+    .quick-contact__detail {
+        display: block;
+        margin-block-start: 0.125rem;
+        overflow: hidden;
+        font-size: 0.75rem;
+        color: var(--color-ink-500);
+        text-align: left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    [dir='rtl'] .quick-contact__detail {
+        text-align: right;
+    }
+
+    /* Points the way the reader reads, in both directions. */
+    .quick-contact__chevron {
+        flex-shrink: 0;
+        width: 0.875rem;
+        height: 0.875rem;
+        color: var(--color-ink-300);
+    }
+
+    [dir='rtl'] .quick-contact__chevron {
+        transform: rotate(180deg);
+    }
+
+    .quick-contact__quote {
+        display: block;
+        padding: 0.75rem 1rem;
+        border-block-start: 1px solid var(--color-hairline);
+        background: var(--color-ink-950);
+        color: var(--color-surface);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        text-align: center;
+    }
 }
 
 @keyframes scroll-cue {

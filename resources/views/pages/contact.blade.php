@@ -132,6 +132,39 @@
                             </dd>
                         </div>
                     </dl>
+
+                    @php
+                        // Only the messengers here: the phone is already two
+                        // lines above, and the quote link is the band below.
+                        $messengers = collect(\App\Support\QuickContact::channels())->except('phone');
+                    @endphp
+
+                    @if ($messengers->isNotEmpty())
+                        {{-- Somebody who opens the contact page rather than the
+                             floating button should find the same channels here,
+                             or the page reads as the complete answer while
+                             being the slower half of it. --}}
+                        <div class="mt-6 border-t border-hairline pt-5">
+                            <p class="text-xs text-ink-500">{{ content('contact.messengers') }}</p>
+
+                            <ul class="mt-3 flex flex-wrap gap-2">
+                                @foreach ($messengers as $channel => $link)
+                                    <li>
+                                        <a
+                                            href="{{ $link['href'] }}"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="inline-flex items-center gap-2 rounded-md border border-hairline px-3 py-2 text-sm
+                                                   text-ink-800 transition-colors hover:border-brand-500 hover:text-brand-600"
+                                        >
+                                            <x-messenger-icon :channel="$channel" class="h-4 w-4" />
+                                            {{ content('common.support.channels.'.$channel) }}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

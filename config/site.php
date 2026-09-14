@@ -97,7 +97,18 @@ return [
         'email' => env('SITE_EMAIL', 'info@artaleca.com'),
         'sales_email' => env('SITE_SALES_EMAIL', 'sales@artaleca.com'),
         'export_email' => env('SITE_EXPORT_EMAIL', 'export@artaleca.com'),
-        'whatsapp' => env('SITE_WHATSAPP', '+989120000000'),
+        /*
+         * The messenger desks, shipped empty on purpose.
+         *
+         * These drive the quick-contact widget, and a link to an account
+         * nobody holds is worse than no link: it costs the visitor the one
+         * thing they opened it for and tells them the company does not answer.
+         * Empty means the channel simply is not offered. Fill them in at
+         * Panel → Settings → Support and messengers.
+         */
+        'whatsapp' => env('SITE_WHATSAPP', ''),
+        'telegram' => env('SITE_TELEGRAM', ''),
+        'rubika' => env('SITE_RUBIKA', ''),
 
         'hq' => [
             'lines' => [

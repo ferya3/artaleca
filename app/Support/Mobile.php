@@ -25,10 +25,22 @@ final class Mobile
         '٥' => '5', '٦' => '6', '٧' => '7', '٨' => '8', '٩' => '9',
     ];
 
+    /**
+     * Just the digits, in Latin, with everything else dropped.
+     *
+     * Exposed because the eastern-digit map lives here and more than one caller
+     * needs a number reduced to digits without also asserting that it is an
+     * Iranian mobile — an international WhatsApp number, for instance.
+     */
+    public static function digits(?string $value): string
+    {
+        return preg_replace('/\D+/', '', strtr($value ?? '', self::EASTERN)) ?? '';
+    }
+
     /** `09xxxxxxxxx`, or null when it is not a mobile number at all. */
     public static function normalize(?string $value): ?string
     {
-        $digits = preg_replace('/\D+/', '', strtr($value ?? '', self::EASTERN)) ?? '';
+        $digits = self::digits($value);
 
         $digits = match (true) {
             str_starts_with($digits, '0098') => substr($digits, 4),

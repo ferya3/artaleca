@@ -31,18 +31,34 @@ class ContactDetailsTest extends TestCase
             ->assertSee('/admin/settings/contact', false);
     }
 
-    public function test_the_contact_screen_offers_every_desk(): void
+    /**
+     * Every desk is editable somewhere.
+     *
+     * Two screens, not one: the messengers moved to their own page, because
+     * they are the setting somebody comes back to change — the account that
+     * answers moves between people far more often than the plant's address
+     * does — while the emails and the phone lines stay with the addresses.
+     * What must not happen is a desk that exists in `Contact::fields()` and on
+     * no screen at all, which is a setting the site reads and nobody can set.
+     */
+    public function test_every_desk_is_editable_on_one_screen_or_the_other(): void
     {
-        $html = $this->actingAs($this->makeAdmin())
-            ->get('/admin/settings/contact')
-            ->assertOk()
-            ->getContent();
+        $admin = $this->makeAdmin();
+
+        $screens = '';
+
+        foreach (['contact', 'support'] as $group) {
+            $screens .= $this->actingAs($admin)
+                ->get('/admin/settings/'.$group)
+                ->assertOk()
+                ->getContent();
+        }
 
         foreach (Contact::fields() as $field) {
             $this->assertStringContainsString(
                 'contact|'.$field,
-                $html,
-                "The contact screen is missing {$field}.",
+                $screens,
+                "No settings screen offers the {$field} desk.",
             );
         }
     }
