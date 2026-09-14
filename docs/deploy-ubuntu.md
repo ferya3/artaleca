@@ -832,6 +832,34 @@ Four notes, each of which is a real mistake somebody makes:
 - **Do the `.ir` domain too**, or mail to `@artaleca.ir` bounces while the
   website answers perfectly.
 
+### If the DNS is on Cloudflare
+
+Which it is, for this domain. Cloudflare changes three things about the list
+above, and the first one breaks mail silently.
+
+**The mail host's A record must be grey-clouded.** If the provider says to
+point MX at `mail.artaleca.com`, that name needs an A record of its own — and
+with the orange cloud *off*. Cloudflare's proxy carries HTTP and HTTPS and
+nothing else, so a proxied `mail.` name answers web requests and refuses SMTP
+and IMAP. The website's own records can stay proxied; they are unrelated. (MX
+records themselves have no proxy toggle, so there is nothing to get wrong
+there.)
+
+**Cloudflare Email Routing and a mail host cannot both have the MX.** Email
+Routing writes its own MX records and will fight anything else that wants
+them. Pick one:
+
+- *Email Routing* is free, and receives only: it forwards `info@artaleca.com`
+  to an inbox you already have. There is no mailbox and no way to reply *as*
+  the company, and the site still needs somewhere to send through. Useful as a
+  stopgap while a mailbox is being bought, not as the answer.
+- *A mail host* gives mailboxes, webmail, IMAP and an SMTP account the site can
+  relay through. Then Email Routing must be switched off.
+
+**Check for an SPF record that is already there.** Two `v=spf1` TXT records
+fail SPF completely, and a domain that has been through a previous setup often
+has one nobody remembers. One record, with every sender in it as an `include:`.
+
 ### Wiring the site to send
 
 Once a mailbox exists, the site sends its enquiry notifications through it.
