@@ -110,9 +110,16 @@ return [
     |
     */
 
+    /*
+     * The fallback is the company's own address rather than Laravel's
+     * `hello@example.com`, and that is not tidiness: the From domain has to be
+     * one the sending account may send as, or SPF and DKIM fail at the far end
+     * and the message lands in spam however correct the records are. A
+     * placeholder left in `.env` is silent until somebody reads a bounce.
+     */
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
+        'address' => env('MAIL_FROM_ADDRESS', env('SITE_EMAIL', 'info@artaleca.com')),
+        'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'ARTA LECA')),
     ],
 
 ];

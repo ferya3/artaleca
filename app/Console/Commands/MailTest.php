@@ -50,9 +50,26 @@ class MailTest extends Command
             $this->line('  Username    '.($smtp['username'] ?: '— (none, which most providers refuse)'));
         }
 
-        $this->line('  From        '.config('mail.from.address').' ('.config('mail.from.name').')');
+        $from = (string) config('mail.from.address');
+
+        $this->line('  From        '.$from.' ('.config('mail.from.name').')');
         $this->line('  To          '.$to);
         $this->newLine();
+
+        /*
+         * The check that a live server actually needed. It was running with
+         * `hello@example.com` — Laravel's skeleton value, left in `.env` — and
+         * nothing complained, because nothing was being sent yet. With SMTP
+         * configured that address fails SPF and DKIM alignment at the far end:
+         * the message leaves and lands in spam, which is the hardest failure to
+         * diagnose from here.
+         */
+        if (! $this->fromMatchesTheSite($from)) {
+            $this->warn('  The From address does not belong to this site\'s own domain.');
+            $this->line('  Set MAIL_FROM_ADDRESS in .env to an address the sending account may');
+            $this->line('  send as — otherwise SPF and DKIM fail and the mail is filtered as spam.');
+            $this->newLine();
+        }
 
         if ($mailer === 'log') {
             /*
@@ -105,5 +122,26 @@ class MailTest extends Command
         $this->newLine();
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Is the From address at the site's own domain?
+     *
+     * Compared against `APP_URL` rather than a hardcoded name, so this keeps
+     * working if the site ever moves. A subdomain counts — mail from
+     * `info@artaleca.com` on a site at `www.artaleca.com` is the normal case.
+     */
+    private function fromMatchesTheSite(string $from): bool
+    {
+        $host = parse_url((string) config('app.url'), PHP_URL_HOST);
+
+        if (! is_string($host) || $host === '' || ! str_contains($from, '@')) {
+            return true; // Nothing to compare against; do not cry wolf.
+        }
+
+        $site = implode('.', array_slice(explode('.', $host), -2));
+        $domain = strtolower(substr($from, strrpos($from, '@') + 1));
+
+        return str_ends_with($domain, strtolower($site));
     }
 }

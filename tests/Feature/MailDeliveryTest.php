@@ -118,6 +118,59 @@ class MailDeliveryTest extends TestCase
             ->assertFailed();
     }
 
+    /**
+     * The From address never falls back to a placeholder.
+     *
+     * A live server ran with `MAIL_FROM_ADDRESS="hello@example.com"` — the
+     * value straight out of Laravel's skeleton — and nothing complained,
+     * because nothing was being sent yet. With SMTP configured it would have
+     * been sending as a domain the account may not send as, which fails SPF and
+     * DKIM alignment at the far end: the mail leaves, and lands in spam.
+     */
+    public function test_the_from_address_falls_back_to_the_company_not_a_placeholder(): void
+    {
+        // The config file rather than the resolved value: what `.env` says is
+        // per-machine, and the fallback is the part this repository controls.
+        $source = (string) file_get_contents(config_path('mail.php'));
+
+        preg_match("/'address' => .*/", $source, $line);
+
+        $this->assertNotEmpty($line, 'The from address is not where this test expects it.');
+        $this->assertStringNotContainsString('example.com', $line[0]);
+        $this->assertStringContainsString("env('SITE_EMAIL', 'info@artaleca.com')", $line[0]);
+    }
+
+    /** And where `.env` does carry a placeholder, the command says so. */
+    public function test_the_command_warns_about_a_foreign_from_address(): void
+    {
+        config([
+            'app.url' => 'https://artaleca.com',
+            'mail.from.address' => 'hello@example.com',
+            'mail.default' => 'smtp',
+        ]);
+
+        Mail::fake();
+
+        $this->artisan('mail:test', ['to' => 'someone@example.com'])
+            ->expectsOutputToContain('does not belong to this site')
+            ->assertSuccessful();
+    }
+
+    public function test_the_command_is_quiet_about_an_address_at_the_site(): void
+    {
+        config([
+            'app.url' => 'https://www.artaleca.com',
+            'mail.from.address' => 'info@artaleca.com',
+            'mail.default' => 'smtp',
+        ]);
+
+        Mail::fake();
+
+        $this->artisan('mail:test', ['to' => 'someone@example.com'])
+            ->doesntExpectOutputToContain('does not belong to this site')
+            ->assertSuccessful();
+    }
+
     /** Reading the panel's own notices is an administrator's business. */
     public function test_an_editor_does_not_see_the_configuration_notices(): void
     {

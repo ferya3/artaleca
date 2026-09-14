@@ -864,6 +864,13 @@ and "535 authentication failed" send you to two different places.
 from `noreply@artaleca.com` sent through a mailbox for `info@artaleca.com`
 fails DKIM alignment at the far end, and no amount of correct SPF rescues it.
 
+This one is worth checking on a server that has been running a while: the
+first live install went out with `MAIL_FROM_ADDRESS="hello@example.com"`, the
+value straight from Laravel's skeleton, and nothing complained because nothing
+was being sent yet. `mail:test` now says so — it compares the From domain with
+`APP_URL` and warns when they do not match — but a `.env` written before that
+check existed still carries the placeholder.
+
 ### Why it matters that this is checked
 
 Until it is configured the site runs with `MAIL_MAILER=log`, which writes every
