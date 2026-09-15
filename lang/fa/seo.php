@@ -2,6 +2,18 @@
 
 return [
     'brand_tagline' => 'تولیدکننده سبکدانه رسی منبسط‌شده (لیکا)',
+
+    /*
+     * The company's name in this language, used as the <title> suffix, as
+     * og:site_name and as the WebSite node's name.
+     *
+     * It was the Latin "ARTA LECA" on every page in all three languages, so no
+     * Persian title carried the company's name at all — and the title is the
+     * strongest single on-page signal there is for a brand query. Somebody
+     * typing the firm's name in Persian was being answered by a page whose
+     * title did not contain it.
+     */
+    'brand_name' => 'آرتا لیکا',
     'default_description' => 'آرتا لیکا تولیدکننده سبکدانه رسی منبسط‌شده (پوکه صنعتی لیکا) با ظرفیت سالانه ۴۵۰٬۰۰۰ متر مکعب؛ گریدهای استاندارد برای بتن سبک، عایق‌کاری، ژئوتکنیک و بام سبز.',
 
     'home_title' => 'تولید و فروش سبکدانه لیکا و پوکه صنعتی',
@@ -19,8 +31,8 @@ return [
     'news_title' => 'اخبار و مقالات فنی',
     'news_description' => 'یادداشت‌های مهندسی درباره طرح اختلاط بتن سبک، انتخاب دانه‌بندی، اجرای بام سبز و به‌روزرسانی‌های تولید آرتا لیکا.',
 
-    'about_title' => 'درباره آرتا لیکا',
-    'about_description' => 'از سال ۱۳۷۵، تولید سبکدانه رسی منبسط‌شده در شهرک صنعتی محمودآباد قم؛ سه خط کوره دوار، آزمایشگاه کنترل کیفیت و ۲۱۰ نفر نیروی انسانی.',
+    'about_title' => 'درباره آرتا لیکا (آرتا لکا)',
+    'about_description' => 'آرتا لیکا (آرتا لکا) از ۱۳۷۵ سبکدانه رسی منبسط‌شده تولید می‌کند؛ شهرک صنعتی محمودآباد قم، سه خط کوره دوار و آزمایشگاه کنترل کیفیت.',
 
     'quality_title' => 'کنترل کیفیت و گواهینامه‌ها',
     'quality_description' => 'آزمون دانه‌بندی، وزن مخصوص انبوه، جذب آب و مقاومت فشاری دانه در هر شیفت تولید؛ صدور گواهی آنالیز به تفکیک محموله.',

@@ -59,6 +59,15 @@ class KeywordCoverageTest extends TestCase
             'خرید لیکا',
             'فروش لیکا',
 
+            /*
+             * The company's own name, in both spellings. "لیکا" transliterates
+             * the Italian *Leca* and Persian has no settled spelling for it, so
+             * customers write the firm as آرتا لیکا and as آرتا لکا — and only
+             * the first was anywhere in the source.
+             */
+            'آرتا لیکا',
+            'آرتا لکا',
+
             // What it is used for.
             'سبکدانه بتن',
             'بتن سبک لیکا',

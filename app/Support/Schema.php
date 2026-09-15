@@ -20,13 +20,32 @@ use Illuminate\Support\Collection;
  */
 final class Schema
 {
+    /**
+     * Every name the company answers to, brand first and no repeats.
+     *
+     * "لیکا" transliterates the Italian *Leca*, and Persian has no settled
+     * spelling for it — so this firm's own name is written both with the ی and
+     * without, by customers and on delivery notes alike. `alternateName`
+     * accepts a list, and telling a search engine that one entity has several
+     * names is what the field exists for.
+     *
+     * @return list<string>
+     */
+    public static function names(): array
+    {
+        return array_values(array_unique(array_filter([
+            config('site.company.brand'),
+            ...(array) config('site.company.aliases', []),
+        ])));
+    }
+
     public static function organization(): array
     {
         return array_filter([
             '@type' => 'Organization',
             '@id' => url('/').'#organization',
             'name' => config('site.company.legal_name'),
-            'alternateName' => config('site.company.brand'),
+            'alternateName' => self::names(),
             'url' => url('/'),
             'logo' => [
                 '@type' => 'ImageObject',
@@ -80,6 +99,9 @@ final class Schema
             '@type' => 'LocalBusiness',
             '@id' => url('/').'#plant',
             'name' => config('site.company.legal_name'),
+            // The plant is the record a local search resolves to, so it needs
+            // the spelling variants as much as the Organization does.
+            'alternateName' => self::names(),
             'url' => url('/'),
             'image' => url(config('site.seo.default_og_image')),
             'telephone' => Contact::value('sales_phone'),
@@ -107,7 +129,9 @@ final class Schema
             '@type' => 'WebSite',
             '@id' => url('/').'#website',
             'url' => url('/'),
-            'name' => config('site.company.brand'),
+            // The node is already per-locale through `inLanguage`, so its name
+            // is the company's name in that language rather than the Latin one.
+            'name' => content('seo.brand_name'),
             'inLanguage' => Locales::hreflang(),
             'publisher' => ['@id' => url('/').'#organization'],
             'potentialAction' => [

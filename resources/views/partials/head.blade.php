@@ -30,7 +30,7 @@
 <link rel="alternate" hreflang="x-default" href="{{ $alternates[Locales::default()] }}">
 
 <meta property="og:type" content="{{ seo()->getType() }}">
-<meta property="og:site_name" content="{{ config('site.company.brand') }}">
+<meta property="og:site_name" content="{{ content('seo.brand_name') }}">
 <meta property="og:title" content="{{ seo()->getTitle() }}">
 <meta property="og:description" content="{{ seo()->getDescription() }}">
 <meta property="og:url" content="{{ seo()->getCanonical() }}">

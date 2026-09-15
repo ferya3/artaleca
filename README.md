@@ -300,6 +300,36 @@ seo()->title($product->name)
   outside production so a staging copy cannot be indexed.
 - Pagination beyond page 1, search results and form pages are `noindex, follow`.
 
+### The company's name has two spellings
+
+"لیکا" transliterates the Italian *Leca*, and Persian has no settled spelling
+for it — so this firm's own name is written both with the ی and without, **آرتا
+لیکا** and **آرتا لکا**, by customers and on delivery notes alike. Only the
+first was anywhere in the source, which means the search that matters most —
+somebody typing the company's name — could miss the site entirely on one of its
+two spellings.
+
+Three signals now carry both, because any one of them alone is weak:
+
+- `alternateName` on the Organization and LocalBusiness nodes, as a list. This
+  is the declared way to say that one entity has several names, and a genuine
+  spelling variant of a proper noun is exactly what the field is for — not
+  keyword stuffing. The list is `config('site.company.aliases')`.
+- The **visible copy**, once on the home page and once in the company's own
+  account of itself. Structured data will not rank a spelling that appears
+  nowhere in the text.
+- The **about page** title and description, which is where a brand query should
+  land.
+
+Fixing that turned up something larger. The `<title>` suffix was the Latin
+`ARTA LECA` on every page in all three languages, so **no Persian page carried
+the company's name in Persian at all** — and a title is the strongest single
+on-page signal there is for a brand query. The suffix is now `seo.brand_name`,
+per locale and editable in the panel: آرتا لیکا, ARTA LECA, آرتا ليكا. Same for
+`og:site_name` and the WebSite node, which is already per-locale through
+`inLanguage`. Nothing is lost on the Latin side — the wordmark in the header and
+footer still reads ARTA LECA on every page, and it stays in `alternateName`.
+
 ---
 
 ## Performance

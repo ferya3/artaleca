@@ -54,6 +54,32 @@ return [
     'company' => [
         'legal_name' => env('SITE_LEGAL_NAME', 'Arta Leca Industrial Co.'),
         'brand' => env('SITE_BRAND', 'ARTA LECA'),
+
+        /*
+         * Every name this company is actually searched under.
+         *
+         * "لیکا" transliterates the Italian *Leca* and Persian has no settled
+         * spelling for it, so the company's own name is written both with the
+         * ی and without — آرتا لیکا and آرتا لکا — by customers, by suppliers
+         * and on delivery notes. Both are the same firm, and somebody who
+         * types the second one is looking for this site.
+         *
+         * These become `alternateName` on the Organization and LocalBusiness
+         * records, which is the declared way to tell a search engine that one
+         * entity has several names. It is not keyword stuffing: a genuine
+         * spelling variant of a proper noun is exactly what the field is for,
+         * and the list stays at the handful of forms people really type.
+         *
+         * Structured data alone will not rank a spelling that appears nowhere
+         * in the text, so the variant is also written once into the home page
+         * copy and once into the company's own account of itself.
+         */
+        'aliases' => [
+            'آرتا لیکا',
+            'آرتا لکا',
+            'Arta Leca',
+            'Arta Leka',
+        ],
         'founded' => 1996,
         'registration_no' => env('SITE_REGISTRATION_NO', '۱۲۴۵۸'),
         'national_id' => env('SITE_NATIONAL_ID', '۱۰۸۶۱۲۳۴۵۶۷'),

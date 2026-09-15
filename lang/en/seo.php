@@ -2,6 +2,10 @@
 
 return [
     'brand_tagline' => 'Lightweight expanded clay aggregate (LECA) producer',
+
+    /* The company's name in this language — the <title> suffix and
+       og:site_name. See the Persian file for why this is per-locale. */
+    'brand_name' => 'ARTA LECA',
     'default_description' => 'Arta Leca produces lightweight expanded clay aggregate, 450,000 m³ a year — standard grades for lightweight concrete, insulation, fill and green roofs.',
 
     'home_title' => 'LECA lightweight aggregate | Industrial production, guaranteed grading',

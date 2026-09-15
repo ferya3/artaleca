@@ -122,15 +122,24 @@ final class Seo
         return $this->breadcrumbs;
     }
 
+    /**
+     * The suffix is the company's name *in this language*.
+     *
+     * It used to be the Latin `ARTA LECA` on every page in all three, which
+     * meant no Persian title carried the company's name — and a title is the
+     * strongest single on-page signal for a brand query. Somebody searching
+     * the firm's name in Persian was being answered by a page whose title did
+     * not contain it. See `seo.brand_name`.
+     */
     public function getTitle(): string
     {
-        $brand = config('site.company.brand');
+        $brand = (string) content('seo.brand_name');
 
         if (blank($this->title)) {
             return $brand.' — '.content('seo.brand_tagline');
         }
 
-        // Avoid "ARTA LECA | ARTA LECA" on the homepage.
+        // Avoid "آرتا لیکا | آرتا لیکا" on a page that already says it.
         return Str::contains($this->title, $brand)
             ? $this->title
             : $this->title.' | '.$brand;

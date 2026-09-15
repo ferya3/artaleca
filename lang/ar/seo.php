@@ -2,6 +2,10 @@
 
 return [
     'brand_tagline' => 'منتج ركام الطين الممدد خفيف الوزن (ليكا)',
+
+    /* The company's name in this language — the <title> suffix and
+       og:site_name. See the Persian file for why this is per-locale. */
+    'brand_name' => 'آرتا ليكا',
     'default_description' => 'آرتا ليكا منتج لركام الطين الممدد خفيف الوزن بطاقة سنوية ٤٥٠٬٠٠٠ متر مكعب، بدرجات قياسية للخرسانة خفيفة الوزن والعزل والردم الجيوتقني والأسطح الخضراء.',
 
     'home_title' => 'ركام ليكا خفيف الوزن | إنتاج صناعي بتدرّج حبيبي مضمون',

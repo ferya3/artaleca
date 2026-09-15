@@ -60,6 +60,15 @@ for name in home products applications; do
     printf '    descr  (%s) %s\n' "$(printf '%s' "$desc" | wc -m)" "$desc"
 
     [ -n "$title" ] && ok "has a title" || bad "no <title>"
+
+    # The title suffix is the company's name in the page's own language. It
+    # used to be the Latin "ARTA LECA" everywhere, which left no Persian title
+    # carrying the company's name — and the title is the strongest single
+    # on-page signal there is for a brand query.
+    case "$title" in
+        *'آرتا لیکا'*) ok "title names the company in Persian" ;;
+        *) bad "title does not contain آرتا لیکا — a brand search cannot match it" ;;
+    esac
     [ -n "$desc" ] && ok "has a description" || bad "no meta description"
 
     # Seo::description cuts at 158 and appends an ellipsis; if one arrives it
@@ -103,6 +112,12 @@ TERMS=(
     'سبکدانه بتن'
     'بتن سبک لیکا'
     'مصالح سبک ساختمانی'
+
+    # The company's own name, in both spellings. "لیکا" transliterates the
+    # Italian Leca and Persian has no settled spelling for it, so customers
+    # write the firm both ways and both have to be findable.
+    'آرتا لیکا'
+    'آرتا لکا'
 )
 
 for term in "${TERMS[@]}"; do
