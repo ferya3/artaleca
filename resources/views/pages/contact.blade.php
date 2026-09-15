@@ -114,6 +114,16 @@
                     <h3 class="eyebrow mb-4">{{ content('contact.desks') }}</h3>
 
                     <dl class="grid gap-5 text-sm sm:grid-cols-2 lg:grid-cols-1">
+                        @if (filled(Contact::value('national_phone')))
+                            <div>
+                                <dt class="text-xs text-ink-500">{{ content('common.national_phone') }}</dt>
+                                <dd class="mt-1">
+                                    <a class="ltr-run block font-medium text-ink-900 hover:text-brand-600"
+                                       href="tel:{{ Contact::tel('national_phone') }}">{{ Contact::value('national_phone') }}</a>
+                                </dd>
+                            </div>
+                        @endif
+
                         <div>
                             <dt class="text-xs text-ink-500">{{ content('contact.sales_desk') }}</dt>
                             <dd class="mt-1 space-y-1">

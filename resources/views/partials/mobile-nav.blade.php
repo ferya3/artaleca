@@ -107,6 +107,16 @@
             </div>
 
             <div class="mt-8 space-y-2 border-t border-hairline pt-6 text-sm text-ink-600">
+                {{-- The utility strip that carries this on a desktop is hidden
+                     on a phone, so without this the nationwide number would be
+                     invisible to exactly the visitors most likely to ring it. --}}
+                @if (filled(Contact::value('national_phone')))
+                    <a class="block" href="tel:{{ Contact::tel('national_phone') }}">
+                        <span class="text-ink-400">{{ content('common.national_phone') }}</span>
+                        <span class="ltr-run ms-1.5 font-medium">{{ Contact::value('national_phone') }}</span>
+                    </a>
+                @endif
+
                 <a class="block" href="tel:{{ Contact::tel('sales_phone') }}">
                     <span class="text-ink-400">{{ content('common.sales') }}</span>
                     <span class="ltr-run ms-1.5 font-medium">{{ Contact::value('sales_phone') }}</span>

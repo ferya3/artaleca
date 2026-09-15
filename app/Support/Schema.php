@@ -59,7 +59,17 @@ final class Schema
                 'postalCode' => Contact::headOffice()?->postal_code,
                 'addressCountry' => 'IR',
             ],
-            'contactPoint' => [
+            // The nationwide line first, because it is the number to try
+            // first — and `array_values` so a missing one does not leave a
+            // gap that makes the list an object rather than an array in JSON.
+            'contactPoint' => array_values(array_filter([
+                filled(Contact::value('national_phone')) ? [
+                    '@type' => 'ContactPoint',
+                    'contactType' => 'customer service',
+                    'telephone' => Contact::value('national_phone'),
+                    'email' => Contact::value('email'),
+                    'availableLanguage' => ['fa', 'en', 'ar'],
+                ] : null,
                 [
                     '@type' => 'ContactPoint',
                     'contactType' => 'sales',
@@ -67,7 +77,7 @@ final class Schema
                     'email' => Contact::value('sales_email'),
                     'availableLanguage' => ['fa', 'en', 'ar'],
                 ],
-            ],
+            ])),
             'sameAs' => array_values(Contact::social()),
         ]);
     }

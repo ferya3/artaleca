@@ -224,6 +224,7 @@ return [
         'telegram_hint' => 'The Telegram handle, without the @. A full link (https://t.me/…) works too — the handle is taken out of it. Leave it blank and Telegram is not offered.',
         'rubika_hint' => 'The Rubika handle, without the @. A full link (https://rubika.ir/…) is accepted. Leave it blank and Rubika is not offered.',
         'support_phone_hint' => 'The same number as on the Contact and addresses page — one value, shown in both places. It appears in the support button as the call option.',
+        'national_phone_hint' => 'One number reachable from anywhere in the country. Shown in the top strip ahead of the sales line, in the mobile menu and on the contact page. Leave it blank and none of the three show it.',
         'delivery_terms_hint' => 'One option per line, as `CODE | explanation` — for example `EXW | Ex works, collection by the buyer`. The code must be Latin letters and digits with no spaces: it is what gets stored on the enquiry and handed to the sales desk and the forwarder. The explanation is what the buyer sees in the form, with the code shown beside it. Leave it blank to keep the shipped list.',
         'hq_lines' => 'Head office address',
         'plant_lines' => 'Plant address',

@@ -34,6 +34,7 @@ return [
     'phone' => 'Phone',
     'fax' => 'Fax',
     'email' => 'Email',
+    'national_phone' => 'National line',
     'sales' => 'Domestic sales',
     'export' => 'Export',
     'address' => 'Address',

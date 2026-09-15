@@ -148,6 +148,9 @@ return [
         'phone' => env('SITE_PHONE', '+98 21 8888 0000'),
         'phone_display' => env('SITE_PHONE_DISPLAY', '۰۲۱-۸۸۸۸۰۰۰۰'),
         'sales_phone' => env('SITE_SALES_PHONE', '+98 21 8888 0011'),
+        // The one number to ring from anywhere in the country, shown
+        // ahead of the sales line because it is the one to try first.
+        'national_phone' => env('SITE_NATIONAL_PHONE', '+98-45-3182'),
         'fax' => env('SITE_FAX', '+98 21 8888 0099'),
         'email' => env('SITE_EMAIL', 'info@artaleca.com'),
         'sales_email' => env('SITE_SALES_EMAIL', 'sales@artaleca.com'),

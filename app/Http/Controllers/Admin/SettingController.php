@@ -41,6 +41,8 @@ class SettingController extends Controller
             // ── Where the company is and how to reach it ────────────────
             'contact' => [
                 'contact.email' => ['label' => __('admin.settings_fields.general_email'), 'type' => 'text', 'max' => 120, 'translatable' => false],
+                'contact.national_phone' => ['label' => content('common.national_phone'), 'type' => 'text',
+                    'max' => 40, 'translatable' => false, 'hint' => __('admin.settings_fields.national_phone_hint')],
                 'contact.sales_phone' => ['label' => __('admin.settings_fields.sales_phone'), 'type' => 'text', 'max' => 40, 'translatable' => false],
                 'contact.sales_email' => ['label' => __('admin.settings_fields.sales_email'), 'type' => 'text', 'max' => 120, 'translatable' => false],
                 'contact.export_email' => ['label' => __('admin.settings_fields.export_email'), 'type' => 'text', 'max' => 120, 'translatable' => false],

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Admin;
 
+use App\Models\Setting;
 use App\Models\User;
 use App\Support\Contact;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -81,6 +82,60 @@ class ContactDetailsTest extends TestCase
 
         $this->get('/fa/contact')->assertOk()->assertSee('+۹۸ ۴۵ ۳۳۳۳ ۱۱۱۱');
         $this->get('/en/contact')->assertOk()->assertSee('+98 45 3333 1111');
+    }
+
+    /**
+     * The nationwide line, in the three places that show it.
+     *
+     * It is the number to try first — one number that works from anywhere in
+     * the country, where the sales line is a city code somebody has to be
+     * willing to dial — so it sits ahead of the sales line in the top strip.
+     * The strip is desktop-only, which is why the mobile menu carries it too:
+     * without that it would be invisible to exactly the visitors most likely
+     * to ring it.
+     */
+    public function test_the_national_line_is_shown_ahead_of_the_sales_line(): void
+    {
+        $this->actingAs($this->makeAdmin())
+            ->put('/admin/settings/contact', ['contact|national_phone' => '+98-45-3182'])
+            ->assertRedirect();
+
+        $html = $this->get('/en')->assertOk()->getContent();
+
+        $this->assertStringContainsString('tel:+98-45-3182', $html);
+        $this->assertStringContainsString(__('common.national_phone', [], 'en'), $html);
+
+        /*
+         * Ahead of the sales line in the strip, and in the mobile menu.
+         *
+         * Split on the menu's opening tag rather than on `data-mobile-menu`:
+         * the head carries a critical-CSS block that names the same attribute,
+         * so the bare string first matches inside <head> and would put the
+         * whole header on the wrong side of the split.
+         */
+        $strip = substr($html, 0, (int) strpos($html, '<details data-mobile-menu'));
+
+        $this->assertLessThan(
+            strpos($strip, 'tel:'.str_replace(' ', '', config('site.contact.sales_phone'))),
+            strpos($strip, 'tel:+98-45-3182'),
+            'The nationwide number is not ahead of the sales line.',
+        );
+
+        $menu = substr($html, (int) strpos($html, '<details data-mobile-menu'));
+        $this->assertStringContainsString('tel:+98-45-3182', $menu, 'The mobile menu does not carry it.');
+
+        $this->get('/en/contact')->assertOk()->assertSee('+98-45-3182', false);
+    }
+
+    /** Emptied, it disappears rather than rendering a label with no number. */
+    public function test_an_empty_national_line_is_not_rendered(): void
+    {
+        Setting::put('contact.national_phone', '', 'contact', false);
+        config()->set('site.contact.national_phone', '');
+
+        $html = $this->get('/en')->assertOk()->getContent();
+
+        $this->assertStringNotContainsString(__('common.national_phone', [], 'en'), $html);
     }
 
     /** A field nobody has filled in must not blank the site. */

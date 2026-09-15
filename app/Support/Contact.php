@@ -118,6 +118,7 @@ final class Contact
      */
     private const CONFIG = [
         'email' => 'email',
+        'national_phone' => 'national_phone',
         'sales_phone' => 'sales_phone',
         'sales_email' => 'sales_email',
         'export_email' => 'export_email',

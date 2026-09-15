@@ -37,6 +37,19 @@
     <div class="hidden border-b border-hairline lg:block">
         <div class="container-page flex h-9 items-center justify-between gap-6 text-xs text-ink-500">
             <div class="flex items-center gap-5">
+                {{-- Ahead of the sales line, because it is the number to try
+                     first: one number that works from anywhere in the country,
+                     where the sales line is a city code somebody has to be
+                     willing to dial. --}}
+                @if (filled(Contact::value('national_phone')))
+                    <a href="tel:{{ Contact::tel('national_phone') }}"
+                       class="hover:text-ink-900 transition-colors">
+                        <span class="text-ink-400">{{ content('common.national_phone') }}</span>
+                        <span class="ltr-run ms-1.5 font-medium tabular">{{ Contact::value('national_phone') }}</span>
+                    </a>
+                    <span class="h-3 w-px bg-hairline" aria-hidden="true"></span>
+                @endif
+
                 <a href="tel:{{ Contact::tel('sales_phone') }}"
                    class="hover:text-ink-900 transition-colors">
                     <span class="text-ink-400">{{ content('common.sales') }}</span>
