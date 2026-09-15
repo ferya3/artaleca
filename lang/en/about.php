@@ -5,7 +5,7 @@ return [
     'lead' => 'We have produced expanded clay aggregate since 1996 on one principle: the number printed on the datasheet is the number that arrives on the truck.',
 
     'story_title' => 'How the company grew',
-    'story_body' => 'Arta Leca began with a single rotary kiln line in the Mahmoudabad Industrial Zone, Qom. Capacity was expanded in three stages; today three lines supply 450,000 m³ a year across fractions from 0 to 20 mm. Export to the Persian Gulf states, Iraq and Central Asia began in 2013.',
+    'story_body' => 'Arta Leca began with a single rotary kiln line in the Mahmoudabad Industrial Zone, Qom. Capacity was expanded in three stages; today three lines supply 450,000 m³ a year across fractions from 0 to 20 mm. Export to the Persian Gulf states, Iraq and Central Asia began in 2013. The name is transliterated from Persian and appears as both Arta Leca and Arta Leka on documents — “leca” being the Italian word the material is named after — and both refer to this company.',
 
     'approach_title' => 'How we think about the material',
     'approach_body' => 'Lightweight aggregate is not a commodity — it is an engineered material with declared parameters. The difference between a good consignment and a poor one shows up in grading spread and bulk-density drift, not in how the granules look. Our technical investment goes into narrowing exactly that spread.',

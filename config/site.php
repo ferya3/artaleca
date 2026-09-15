@@ -71,14 +71,43 @@ return [
          * and the list stays at the handful of forms people really type.
          *
          * Structured data alone will not rank a spelling that appears nowhere
-         * in the text, so the variant is also written once into the home page
-         * copy and once into the company's own account of itself.
+         * in the text, so the genuine variants are also written once into the
+         * home page copy and once into the company's own account of itself.
+         *
+         * One casing per form, and that is not an oversight. Name matching in
+         * every search engine is case-insensitive, so `ARTALCA`, `Artalca` and
+         * `artalca` are one token rather than three; listing all three would
+         * add nothing and would make the list read as padding, which is the
+         * one thing this field must not look like. A test fails on a
+         * case-duplicate. The space is different — `Arta Lca` and `Artalca`
+         * really are two tokens, so both are here.
          */
         'aliases' => [
+            // Persian and Arabic, the two scripts the company trades in.
             'آرتا لیکا',
             'آرتا لکا',
-            'Arta Leca',
+            'آرتا ليكا',
+
+            // Latin, as written. `Arta Leca` itself is absent because the
+            // brand above already supplies it, and one casing per form is the
+            // rule — a test enforces it.
             'Arta Leka',
+            'Artaleca',
+            'Artaleka',
+
+            /*
+             * Latin, as typed. The `e` is the first thing to go when somebody
+             * keys the name from memory or from a delivery note, and these are
+             * the forms that actually reach a search box. They are here and
+             * nowhere else on purpose: a sentence on a page listing six
+             * misspellings of your own name reads as spam to a person and to a
+             * crawler alike, while `alternateName` is precisely the field for
+             * saying "this entity is also called that".
+             */
+            'Arta Lca',
+            'Artalca',
+            'Arta Lka',
+            'Artalka',
         ],
         'founded' => 1996,
         'registration_no' => env('SITE_REGISTRATION_NO', '۱۲۴۵۸'),

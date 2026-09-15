@@ -46,9 +46,70 @@ class BrandNameTest extends TestCase
     {
         $names = Schema::names();
 
-        foreach ([...self::SPELLINGS, 'Arta Leca', 'Arta Leka', 'ARTA LECA'] as $name) {
+        foreach ([
+            ...self::SPELLINGS,
+            'آرتا ليكا',                                    // the Arabic spelling
+            'ARTA LECA', 'Arta Leka',                       // Latin, as written
+            'Artaleca', 'Artaleka',                         // …and unspaced
+            'Arta Lca', 'Artalca', 'Arta Lka', 'Artalka',   // …and as typed
+        ] as $name) {
             $this->assertContains($name, $names, "Schema::names() is missing \"{$name}\".");
         }
+    }
+
+    /**
+     * One casing per form.
+     *
+     * Name matching is case-insensitive everywhere, so `ARTALCA`, `Artalca`
+     * and `artalca` are one token rather than three. Listing all three adds
+     * nothing and makes the list read as padding, which is the one thing this
+     * field must not look like — so a case-duplicate is a mistake worth
+     * failing on rather than a harmless extra.
+     */
+    public function test_no_name_is_listed_twice_in_a_different_case(): void
+    {
+        $folded = array_map('mb_strtolower', Schema::names());
+
+        $duplicates = array_keys(array_filter(array_count_values($folded), fn (int $n) => $n > 1));
+
+        $this->assertSame([], $duplicates, 'Listed in more than one casing: '.implode(', ', $duplicates));
+    }
+
+    /**
+     * The typo forms stay in the structured data and out of the prose.
+     *
+     * A sentence on a page listing six misspellings of your own name reads as
+     * spam to a reader and to a crawler alike. `alternateName` is the field
+     * for "this entity is also called that"; body copy is not.
+     */
+    public function test_the_typo_forms_are_not_written_into_the_copy(): void
+    {
+        foreach (['/fa', '/en', '/fa/about', '/en/about'] as $path) {
+            $html = $this->get($path)->assertOk()->getContent();
+
+            // Strip the JSON-LD, which is where they legitimately live.
+            $prose = preg_replace('~<script type="application/ld\+json"[^>]*>.*?</script>~s', '', $html) ?? '';
+
+            foreach (['Arta Lca', 'Artalca', 'Arta Lka', 'Artalka'] as $typo) {
+                $this->assertStringNotContainsStringIgnoringCase(
+                    $typo,
+                    $prose,
+                    "{$path} writes \"{$typo}\" into the page itself.",
+                );
+            }
+        }
+    }
+
+    /**
+     * The English account of the company names the two forms that appear on
+     * real documents — the Persian page does the same for its two spellings.
+     */
+    public function test_the_english_about_page_explains_the_transliteration(): void
+    {
+        $this->get('/en/about')
+            ->assertOk()
+            ->assertSee('Arta Leca', false)
+            ->assertSee('Arta Leka', false);
     }
 
     public function test_the_organization_node_carries_them(): void

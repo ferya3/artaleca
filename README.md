@@ -321,6 +321,22 @@ Three signals now carry both, because any one of them alone is weak:
 - The **about page** title and description, which is where a brand query should
   land.
 
+The Latin side has the same problem for the same reason, plus a second one: the
+`e` is the first thing to go when somebody keys the name from memory or off a
+delivery note. `Arta Leka`, `Artaleca`, `Artaleka`, `Arta Lca`, `Artalca`,
+`Arta Lka` and `Artalka` are all in `alternateName` — and **only** there. A
+sentence on a page listing seven misspellings of your own name reads as spam to
+a person and to a crawler alike; the English about page instead carries the one
+honest note, that the name transliterates as both *Arta Leca* and *Arta Leka*
+and both appear on documents.
+
+Two rules, both enforced by tests. **One casing per form**: name matching is
+case-insensitive everywhere, so `ARTALCA`, `Artalca` and `artalca` are one
+token rather than three, and listing all three would add nothing while making
+the list read as padding. The space is different — `Arta Lca` and `Artalca`
+really are two tokens. And **no typo form in the prose**, checked against the
+rendered pages with the JSON-LD stripped out.
+
 Fixing that turned up something larger. The `<title>` suffix was the Latin
 `ARTA LECA` on every page in all three languages, so **no Persian page carried
 the company's name in Persian at all** — and a title is the strongest single
