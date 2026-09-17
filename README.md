@@ -599,3 +599,22 @@ database/seeders/                the full catalogue, in three languages
 - `php artisan storage:link` is required for editor-uploaded media.
 - Documents belong on the private `documents` disk
   (`storage/app/private/documents`), never in `public/`.
+
+`docs/deploy-ubuntu.md` is the full procedure. Three scripts in `deploy/` do the
+parts that must not be retyped: `https.sh` (certificate and the real nginx
+config), `seo-check.sh` (asserts the titles, descriptions, canonicals, hreflang
+and search terms against a running site, exit code and all), and `backup.sh` /
+`restore.sh`.
+
+Backups are worth a paragraph because of what is easy to get wrong. The code is
+in git, so `backup.sh` takes only what a `git clone` cannot give back: the
+database, `storage/app`, and `.env`. **`.env` is not optional there** — the SMS
+panel's credentials are encrypted with `APP_KEY`, so a database restored beside
+a freshly generated key comes back with secrets nothing can decrypt, and it
+fails quietly as an SMS that never arrives. The database is snapshotted with
+SQLite's `VACUUM INTO` rather than copied, because a `cp` of a file being
+written to can capture a torn page and the damage only surfaces at the restore;
+the snapshot is `integrity_check`ed before the archive is sealed, while there is
+still a working server to complain on. `restore.sh` asks exactly one question —
+whether to proceed when the archive's commit differs from the checkout's — and
+refuses rather than assuming yes when there is no terminal to ask on.

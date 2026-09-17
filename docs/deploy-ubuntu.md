@@ -962,6 +962,115 @@ there is, because everything looks deployed.
 
 ---
 
+## 5b. Backups, and getting the server back
+
+Two scripts. One takes everything the server holds that GitHub does not; the
+other puts it back.
+
+```bash
+# Take one now.
+cd /var/www/artaleca && sudo bash deploy/backup.sh
+```
+
+```bash
+# Put the newest one back.
+cd /var/www/artaleca && sudo bash deploy/restore.sh
+```
+
+That is the whole interface. `restore.sh` with no argument takes the newest
+archive in `/var/backups/artaleca`; give it a path to choose a different one.
+
+### What is in the archive, and why
+
+The code is in git, so this is deliberately not an image of the machine — it is
+the four things `git clone` cannot give back.
+
+| What | Why it cannot be rebuilt |
+|:-----|:-------------------------|
+| `database/database.sqlite` | Every product, page, article, setting, enquiry and user account. The work. |
+| `storage/app` | The uploaded photographs and the private documents. Served from disk; they exist in no other copy. |
+| `.env` | `APP_KEY` above all — see below. Also the SMTP password and the admin bootstrap password. |
+| nginx site, systemd unit, php ini | Reproducible from `deploy/https.sh` and this document, so they are in there for speed rather than out of necessity. |
+
+**`APP_KEY` is the part people lose.** The SMS panel's password and API key are
+encrypted with it. A database restored beside a *freshly generated* key comes
+back with credentials nothing can decrypt — and it fails quietly, as an SMS
+that never arrives. This is why `.env` is in the archive and why `restore.sh`
+puts it back first, before anything reads it.
+
+Not in the archive, on purpose: the TLS certificate (certbot re-issues it in
+seconds from a name that resolves, and a stale copy that diverges from what
+Let's Encrypt has on file is worse than none), `vendor/`, `node_modules/`,
+`public/build` and the Laravel caches — all of which are rebuilt by the deploy
+line, and a restored *stale* config cache is a genuine hazard.
+
+### Safe to run on a live site
+
+The database is snapshotted with SQLite's own `VACUUM INTO`, not copied. A plain
+`cp` of a file that is being written to can capture a torn page, and that shows
+up months later as a corrupt restore — the worst possible moment to find out.
+The snapshot is then opened and `PRAGMA integrity_check`ed before the archive is
+sealed, so a bad one is reported while there is still a working server to report
+it on. The script prints the row counts it found, which is the cheapest possible
+proof that it backed up the real database and not an empty one.
+
+### Nightly, and off the server
+
+```bash
+# 03:00 every night, keeping the last fourteen.
+sudo crontab -l 2>/dev/null | grep -v deploy/backup.sh > /tmp/cron.new; \
+  echo '0 3 * * * cd /var/www/artaleca && bash deploy/backup.sh >> /var/log/artaleca-backup.log 2>&1' >> /tmp/cron.new; \
+  sudo crontab /tmp/cron.new && rm /tmp/cron.new && sudo crontab -l
+```
+
+**A copy on the same disk is not a backup.** If the machine is wiped, so is
+`/var/backups`. Pull the newest one to your own computer — run this on *your*
+machine, not on the server:
+
+```bash
+scp root@SERVER-IP:"$(ssh root@SERVER-IP 'ls -1t /var/backups/artaleca/*.tar.gz | head -1')" .
+```
+
+The archive is mode 600 in a mode 700 directory because it contains `.env`.
+Keep it that way: it is a secret, and it must not go into the repository, a
+chat, or anywhere public.
+
+### Restoring after the machine is gone
+
+Rebuild first, then restore. Sections 1 to 3 install the packages, clone the
+repository and set up the queue worker; `restore.sh` then overwrites the fresh
+`.env` and the seeded demonstration database with the real ones. That is the
+intended order — the clone gives you the code, the archive gives you the work.
+
+```bash
+# On the rebuilt machine, with the archive copied back to /root:
+cd /var/www/artaleca && sudo bash deploy/restore.sh /root/artaleca-YYYYMMDD-HHMMSS.tar.gz
+sudo bash deploy/https.sh          # a fresh certificate for the new machine
+```
+
+`restore.sh` asks one question and only one: if the archive was taken at a
+different commit than the checkout it is going onto, it says so and waits.
+Moving *forward* is fine — migrations run after the restore, which is an
+ordinary deploy. Restoring onto an **older** checkout is not, because the
+database would carry tables the code does not know about. With no terminal to
+ask on it refuses and changes nothing; `FORCE=1` is how to say yes in advance,
+which is the only way to run it unattended.
+
+It keeps what it replaced. The previous database and `.env` stay beside the live
+ones as `*.before-restore-…`; delete them once the site is confirmed good. And
+uploads are copied over the top rather than replacing the directory, so a
+photograph added since the backup survives a restore that was meant to rescue
+something else.
+
+### Afterwards
+
+```bash
+curl -sI https://artaleca.com | head -1
+cd /var/www/artaleca && php artisan mail:test && bash deploy/seo-check.sh https://artaleca.com
+```
+
+---
+
 ## 6. Moving to another server
 
 The repository is the whole application and none of the content. Three things
@@ -988,9 +1097,16 @@ cd /var/www/artaleca && php artisan down \
 ```
 
 `storage/app`, not `storage/app/public`: the private documents tree sits beside
-it and is just as unrecoverable. `database.sqlite*` with the glob, because
-SQLite in WAL mode keeps recent writes in a `-wal` file next to the database —
-copy only the database and you silently lose the last few edits.
+it and is just as unrecoverable. `database.sqlite*` with the glob, so that any
+journal or `-wal` file beside the database comes too — this install runs in
+`delete` journal mode, where there is normally nothing to collect, but the glob
+costs nothing and a database configured into WAL later would silently lose its
+last few edits without it.
+
+Section 5b does all of this in one command and snapshots the database properly
+rather than copying it. Prefer it; this section is the manual equivalent, for
+when the two servers cannot see each other and you are moving the archive by
+hand.
 
 (Using MySQL instead? Swap the sqlite files for
 `mysqldump -u USER -p --single-transaction artaleca > db.sql` and add `db.sql`
