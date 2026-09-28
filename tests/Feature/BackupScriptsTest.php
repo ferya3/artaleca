@@ -119,6 +119,32 @@ class BackupScriptsTest extends TestCase
         );
     }
 
+    /**
+     * The doctor reports everything rather than stopping at the first fault.
+     *
+     * `set -e` in a diagnostic is the bug: it tells you about one thing when
+     * you needed to see all of them, and the first fault is usually the least
+     * interesting one. It must also stay read-only — it is run precisely when
+     * nobody knows what state the machine is in.
+     */
+    public function test_the_doctor_reports_everything_and_changes_nothing(): void
+    {
+        $doctor = $this->script('doctor.sh');
+
+        // Line-anchored: the script's own comment explains why `set -e` is
+        // absent, and a bare substring check matches that explanation.
+        $this->assertMatchesRegularExpression('/^set \+e$/m', $doctor);
+        $this->assertDoesNotMatchRegularExpression('/^set -e/m', $doctor);
+
+        foreach (['systemctl start', 'systemctl restart', 'systemctl enable --now nginx;', 'rm -'] as $mutation) {
+            $this->assertStringNotContainsString(
+                $mutation,
+                preg_replace('/^\s*(#.*|note ".*"|.*fix:.*)$/m', '', $doctor) ?? '',
+                "deploy/doctor.sh does something ({$mutation}) instead of only reporting.",
+            );
+        }
+    }
+
     /** Both are documented where somebody looking for them would look. */
     public function test_they_are_in_the_deployment_notes(): void
     {

@@ -962,6 +962,35 @@ there is, because everything looks deployed.
 
 ---
 
+## 5a. When it does not come up
+
+```bash
+cd /var/www/artaleca && bash deploy/doctor.sh
+```
+
+One line per check, and it never stops on a failure — a diagnostic that halts
+on the first problem tells you about one thing when you needed to see all of
+them. Read-only: it starts nothing, writes nothing and fixes nothing, so it is
+safe on a live site and safe when nobody knows what state the machine is in.
+
+It covers, in the order the faults cause each other: the checkout and the built
+assets, `.env` and `APP_KEY`, whether the database holds the restored site or
+the seeded demonstration one, nginx and php-fpm and the queue worker, what is
+listening on 80 and 443, what the machine serves itself on each of those, **the
+ACME challenge path** — a redirect there is why certificates fail even when
+port 80 is open — what the four names resolve to against this server's own
+address, the certificate and its expiry, the last application and nginx errors,
+ownership of the writable directories, and disk and memory.
+
+When every check passes and the site is still unreachable from a browser, the
+problem is between the internet and the machine rather than on it: the hosting
+firewall, or a datacentre filtering inbound traffic. The script says so and
+points at `check-host.net`, which shows what the outside world sees from a
+dozen countries at once. `letsdebug.net` answers the narrower question of why
+Let's Encrypt in particular cannot validate.
+
+---
+
 ## 5b. Backups, and getting the server back
 
 Two scripts. One takes everything the server holds that GitHub does not; the
