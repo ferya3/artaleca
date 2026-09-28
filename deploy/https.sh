@@ -29,6 +29,23 @@ SITE=/etc/nginx/sites-available/artaleca
 SOCK=$(ls /run/php/php*-fpm.sock 2>/dev/null | head -1)
 [ -n "$SOCK" ] || { echo "php-fpm is not running — no socket in /run/php"; exit 1; }
 
+# Reload a running nginx, start one that is not running.
+#
+# A bare `systemctl reload nginx` is right on a server that has served this
+# site before and wrong on a fresh one, where nginx is installed but was never
+# started: reload fails, and with `set -e` the script stops here — after
+# writing a perfectly good config and before ever reaching certbot. The failure
+# reads as an nginx problem when nothing is wrong with nginx at all.
+serve() {
+    nginx -t || return 1
+
+    if systemctl is-active --quiet nginx; then
+        systemctl reload nginx
+    else
+        systemctl enable --now nginx
+    fi
+}
+
 # ── 1. DNS ─────────────────────────────────────────────────────────────────
 # Checked rather than assumed: certbot proves you own a name by fetching a
 # file from it, so a name pointing somewhere else fails the whole request and
@@ -70,7 +87,7 @@ printf 'server {
 
 ln -sf "$SITE" /etc/nginx/sites-enabled/artaleca
 rm -f /etc/nginx/sites-enabled/default
-nginx -t && systemctl reload nginx
+serve
 echo "  127.0.0.1/fa -> $(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1/fa)"
 
 # ── 3. The certificate ─────────────────────────────────────────────────────
@@ -151,7 +168,7 @@ server {
 }
 ' "$ALL" "$ROOT" "$APEX" "$ALL" "$APEX" "$APEX" "$APEX" "$APEX" "$ROOT" "$SOCK" > "$SITE"
 
-nginx -t && systemctl reload nginx
+serve
 
 # ── 5. The application's own idea of its address ───────────────────────────
 # This is the step that matters beyond nginx: canonical tags, hreflang, the
