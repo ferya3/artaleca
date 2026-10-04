@@ -140,6 +140,45 @@ return [
             'hreflang' => 'ar',
             'flag' => 'SA',
         ],
+
+        /*
+         * Russian, for the export desk. The Gulf, Iraq and Central Asia are
+         * already named on the about page as export markets, and Central Asia
+         * buys in Russian.
+         *
+         * `ltr`, and the only locale on the site that needs a script the
+         * shipped font does not carry — see the `[lang='ru']` rule in app.css.
+         */
+        'ru' => [
+            'name' => 'Russian',
+            'native' => 'Русский',
+            'dir' => 'ltr',
+            'hreflang' => 'ru',
+            'flag' => 'RU',
+        ],
+
+        /*
+         * Kurdish. Sorani — Central Kurdish — written in the Arabic script and
+         * read right to left, which is the variety read in Kermanshah, Sanandaj
+         * and Ilam and across the border in Iraqi Kurdistan. Kurmanji is the
+         * Latin-script variety read in Turkey and Syria and is a different
+         * language for this purpose, not a different spelling.
+         *
+         * The route prefix is `ku` because that is what a reader will type and
+         * recognise; `hreflang` is `ckb`, which is what actually identifies
+         * Sorani to a search engine. They are allowed to differ, and here they
+         * have to.
+         *
+         * The shipped font already covers it: ڕ ڵ ێ ۆ ە ھ ڤ are all in
+         * Vazirmatn, so Kurdish costs nothing in bytes.
+         */
+        'ku' => [
+            'name' => 'Kurdish',
+            'native' => 'کوردی',
+            'dir' => 'rtl',
+            'hreflang' => 'ckb',
+            'flag' => 'IQ',
+        ],
     ],
 
     'default_locale' => 'fa',

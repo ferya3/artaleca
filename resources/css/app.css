@@ -21,6 +21,31 @@
 }
 
 /*
+ * Russian takes the system font, deliberately.
+ *
+ * Vazirmatn carries Persian, Arabic and Latin and not one Cyrillic
+ * codepoint — checked, not assumed: U+0410, U+044F and U+0451 are all absent
+ * from its cmap, while every Kurdish letter the Sorani alphabet adds (ڕ ڵ ێ
+ * ۆ ە ھ ڤ) is present. So Kurdish costs nothing and Russian cannot use the
+ * font at all.
+ *
+ * The failure that matters is not "Russian falls back" — the stack already
+ * ends in system-ui, so it would. It is that a Russian page mixes scripts in
+ * the same sentence: "ARTA LECA", "м³", "EN 13055". Leaving Vazirmatn at the
+ * front would set the Latin in one face and the Cyrillic beside it in
+ * another, with different metrics, in the same line.
+ *
+ * Dropping Vazirmatn for this locale makes the whole page one face. The
+ * alternative — vendoring a second 100 KB font for one language — is the
+ * worse trade on a site whose stated cost is a single font request, and the
+ * CSP (`font-src 'self'`) means it could not be a CDN link anyway. If a
+ * Cyrillic face is wanted later it is a `@font-face` and one more line here.
+ */
+[lang='ru'] {
+    --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/*
 |------------------------------------------------------------------------------
 | Design tokens
 |------------------------------------------------------------------------------

@@ -11,7 +11,7 @@ return [
     'apply_message_hint' => 'اگر نکته‌ای هست که در فیلدهای بالا جا نشد — سابقه‌ی همکاری، ناوگان حمل، پروژه‌های شاخص — اینجا بنویسید.',
     'apply_submit' => 'ارسال درخواست نمایندگی',
     'apply_success' => 'درخواست نمایندگی شما ثبت شد. واحد فروش پس از بررسی با شما تماس می‌گیرد.',
-    'apply_subject' => 'Representation application',
+    'apply_subject' => 'درخواست نمایندگی',
     'apply_desk' => 'واحد فروش و توسعه بازار',
     'apply_criteria_title' => 'چه چیزی بررسی می‌شود',
     'apply_criteria' => [

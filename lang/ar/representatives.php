@@ -11,7 +11,7 @@ return [
     'apply_message_hint' => 'كل ما لم تغطّه الحقول أعلاه — سجل العمل، أسطول النقل، المشاريع البارزة — يُكتب هنا.',
     'apply_submit' => 'إرسال الطلب',
     'apply_success' => 'تم استلام طلبك. سيتواصل معك قسم المبيعات بعد دراسته.',
-    'apply_subject' => 'Representation application',
+    'apply_subject' => 'طلب وكالة',
     'apply_desk' => 'المبيعات وتطوير السوق',
     'apply_criteria_title' => 'ما الذي ندرسه',
     'apply_criteria' => [

@@ -100,12 +100,17 @@ class TechnicalArticleTest extends TestCase
     {
         $xml = $this->get('/sitemap.xml')->assertOk()->getContent();
 
+        // Once per language, counted from the config rather than written out:
+        // the site gained Russian and Kurdish and this assertion was the only
+        // thing that noticed, by failing with 5 where 3 was hard-coded.
+        $expected = count(\App\Support\Locales::codes());
+
         foreach (self::SLUGS as $slug) {
-            // <loc> only: each entry also repeats the slug in its four
-            // xhtml:link alternates, so a plain substring count returns 15.
+            // <loc> only: each entry also repeats the slug in its alternates,
+            // so a plain substring count returns several times this.
             $n = preg_match_all('~<loc>[^<]*'.preg_quote($slug, '~').'[^<]*</loc>~', $xml);
 
-            $this->assertSame(3, $n, "{$slug} should be in the sitemap once per language, found {$n}.");
+            $this->assertSame($expected, $n, "{$slug} should be in the sitemap once per language, found {$n}.");
         }
     }
 

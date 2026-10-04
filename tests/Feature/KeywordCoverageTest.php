@@ -124,10 +124,14 @@ class KeywordCoverageTest extends TestCase
      * the home page description the first time it was written there. The
      * truncation is deliberate and right; writing past it is the mistake, and
      * it is invisible in the source file.
+     *
+     * Driven from the locale config rather than a written-out list, so a
+     * language added to the site is checked from the day it is added — which
+     * is the only moment anybody is looking at its descriptions.
      */
     public function test_no_description_is_written_past_the_cut(): void
     {
-        foreach (['fa', 'en', 'ar'] as $locale) {
+        foreach (\App\Support\Locales::codes() as $locale) {
             foreach (__('seo', [], $locale) as $key => $text) {
                 if (! str_contains($key, 'description')) {
                     continue;

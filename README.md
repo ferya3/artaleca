@@ -16,7 +16,7 @@ server-rendered Blade, Tailwind CSS v4 and effectively no client-side framework.
 | Styling | Tailwind CSS v4 via `@theme` design tokens |
 | Build | Vite 8 |
 | JavaScript | ~2 KB of vanilla progressive enhancement. No React/Vue/Alpine. |
-| Fonts | One self-hosted Vazirmatn variable font (111 KB) covering all three scripts |
+| Fonts | One self-hosted Vazirmatn variable font (111 KB) covering Persian, Arabic, Kurdish and Latin; Russian uses the system face |
 
 **Production bundle:** ~10.2 KB CSS and ~0.5 KB JS, gzipped, plus one font request.
 
@@ -243,22 +243,64 @@ action sit together.
 
 ---
 
-## Three languages
+## Five languages
+
+| | | | |
+|---|---|---|---|
+| `fa` | فارسی | RTL | default |
+| `en` | English | LTR | |
+| `ar` | العربية | RTL | |
+| `ru` | Русский | LTR | Central Asia buys in Russian |
+| `ku` | کوردی | RTL | Sorani, Arabic script |
 
 Locales are declared once in `config/site.php` and read through
-`App\Support\Locales`. Persian is the default; Persian and Arabic render RTL,
-English LTR.
+`App\Support\Locales`. Everything downstream follows from that one entry —
+routing, `hreflang`, the sitemap, the language switcher, and the per-locale
+inputs in the panel, which grew from three boxes to five without a template
+change. That is the right design and also the trap: the config line alone makes
+a locale *routable* while its translation files are still missing, and the
+pages come up in English with nobody told. `LocaleCoverageTest` is what stops a
+half-added language shipping — it checks key parity against English, that no
+file is quietly still English, that each locale serves its own pages in its own
+direction, and that the `hreflang` set is complete.
 
-**Slugs are shared across locales.** A product is `leca-structure-4-10` in all
-three languages, so alternate-language URLs differ only by their prefix. That
-makes `hreflang` and `canonical` trivial to generate and impossible to point at
-a page that does not exist — and it keeps URLs stable if a title is retranslated.
+Two decisions worth recording.
+
+**Kurdish is Sorani, not Kurmanji.** Central Kurdish in the Arabic script, read
+right to left — the variety read in Kermanshah, Sanandaj and Ilam and across the
+border in Iraqi Kurdistan. Kurmanji is Latin-script and a different language for
+this purpose, not a different spelling. The route prefix is `ku` because that is
+what a reader types; `hreflang` is `ckb`, which is what actually identifies
+Sorani to a search engine. They are allowed to differ and here they have to.
+It costs nothing in bytes: all six letters the Sorani alphabet adds to Arabic —
+ڕ ڵ ێ ۆ ە ھ ڤ — are already in the shipped font, checked rather than assumed.
+
+**Russian takes the system font.** Vazirmatn carries Persian, Arabic and Latin
+and not one Cyrillic codepoint. The failure that matters is not that Russian
+falls back — the stack already ends in `system-ui`, so it would — but that a
+Russian page mixes scripts in one sentence: "ARTA LECA", "м³", "EN 13055".
+Leaving Vazirmatn at the front would set the Latin in one face and the Cyrillic
+beside it in another. `[lang='ru']` drops it for that locale so the whole page
+is one face. Vendoring a second 100 KB font for one language is the worse trade
+on a site whose stated cost is a single font request, and `font-src 'self'`
+means it could not be a CDN link anyway.
+
+**The panel stays Persian and English.** `admin.php` is 286 strings of staff
+chrome and the panel's own language selector offers two languages, so
+translating it into a language nobody administers the site in is work with no
+reader. Arabic has never had it either; Russian and Kurdish follow the same
+rule and fall back to English.
+
+**Slugs are shared across locales.** A product is `leca-structure-4-10` in every
+language, so alternate-language URLs differ only by their prefix. That makes
+`hreflang` and `canonical` trivial to generate and impossible to point at a page
+that does not exist — and it keeps URLs stable if a title is retranslated.
 
 **Content is translated in JSON columns.** `App\Concerns\HasTranslations` stores
-`{"fa": …, "en": …, "ar": …}` and resolves the active locale on read, falling
+`{"fa": …, "en": …, "ru": …}` and resolves the active locale on read, falling
 back to Persian and then to any non-empty value, so a partly translated record
 still renders. Writing a plain string only touches the active locale — an editor
-working in one language can never wipe the other two.
+working in one language can never wipe the others.
 
 One implementation note worth knowing: controller actions receive route
 parameters *positionally*, so the `{locale}` prefix would land in the first
