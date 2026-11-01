@@ -257,6 +257,9 @@ return [
         'twitter_handle' => env('SITE_TWITTER', '@artaleca'),
         'default_og_image' => '/images/og/og-default.png',
         'google_site_verification' => env('GOOGLE_SITE_VERIFICATION', ''),
+        // نماد اعتماد الکترونیکی. Better set in Panel → Settings → SEO,
+        // which is where whoever renews the seal will look for it.
+        'enamad' => env('SITE_ENAMAD', ''),
     ],
 
     /*

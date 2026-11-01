@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Models\Setting;
+use App\Support\Seo;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 /**
  * Files that exist only because an outside verifier asks for them.
@@ -24,6 +27,8 @@ use PHPUnit\Framework\TestCase;
  */
 class DomainVerificationTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * Each entry: the path under `public/`, who asks for it, and whether the
      * verifier requires the file to be empty.
@@ -94,6 +99,59 @@ class DomainVerificationTest extends TestCase
             'The named fallback is gone, so a .txt that is a route rather than a file '
             .'(robots.txt) would 404 instead of redirecting.',
         );
+    }
+
+    /**
+     * The meta-tag route to the same proof.
+     *
+     * eNamad offers three ways to verify and will ask for whichever it feels
+     * like: a file at the root, the code in the page title, or this. The tag
+     * is the only one of the three that is permanent and costs nothing — it
+     * does not touch the title, which is the strongest brand signal the page
+     * has, and it does not leave a numeric file lying in the document root.
+     */
+    public function test_the_enamad_tag_renders_when_it_is_set(): void
+    {
+        Setting::put('seo.enamad', '54474714', 'seo', false);
+
+        $this->get('/fa')
+            ->assertOk()
+            ->assertSee('<meta name="enamad" content="54474714">', false);
+    }
+
+    /**
+     * And is absent when it is not.
+     *
+     * `<meta name="enamad" content="">` is not a tag that says "not
+     * configured" — to a verifier it is a tag that says the wrong thing.
+     */
+    public function test_an_unset_verification_tag_is_not_rendered(): void
+    {
+        config()->set('site.seo.enamad', '');
+
+        $this->get('/fa')->assertOk()->assertDontSee('name="enamad"', false);
+    }
+
+    /**
+     * The panel box has to be the one the page reads.
+     *
+     * It was not. The settings screen has offered a `google-site-verification`
+     * field since it existed, and the template read
+     * `config('site.seo.google_site_verification')` — a different key from a
+     * different source — so anything typed into that box went nowhere and
+     * nothing said so. Both now resolve through `Seo::verifications()`.
+     */
+    public function test_a_code_typed_into_the_panel_reaches_the_page(): void
+    {
+        Setting::put('seo.google_verification', 'typed-into-the-panel', 'seo', false);
+
+        $this->assertSame(
+            'typed-into-the-panel',
+            Seo::verifications()['google-site-verification'] ?? null,
+            'The panel field is not what the page renders.',
+        );
+
+        $this->get('/fa')->assertOk()->assertSee('content="typed-into-the-panel"', false);
     }
 
     /**

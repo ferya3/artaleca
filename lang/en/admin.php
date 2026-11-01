@@ -258,6 +258,8 @@ return [
         'cta_title' => 'CTA band title',
         'cta_body' => 'CTA band body',
         'contact_note' => 'Response-time note',
+        'enamad' => 'eNamad code',
+        'enamad_hint' => 'The numeric code from the eNamad panel — the number alone, not the whole meta tag. It renders as <meta name="enamad"> in the head of every page. Leave it blank and no tag is written.',
         'seo_title' => 'Default page title',
         'seo_description' => 'Default meta description',
         'og_image' => 'Share image (Open Graph)',

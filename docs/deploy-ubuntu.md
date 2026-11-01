@@ -994,6 +994,34 @@ saying what it was for. Adding another verifier is one line in that test's
 Behind Cloudflare's orange cloud a fresh file can take a few minutes to appear.
 Test with `?v=1` on the end, or purge the cache.
 
+### The meta-tag route, which is the one to prefer
+
+eNamad offers three proofs and will ask for whichever it feels like: the file
+above, the code in the page title, or a meta tag. **Take the meta tag.** It is
+the only one of the three that is permanent and costs nothing — it does not
+touch the `<title>`, which is the strongest brand signal the page has, and it
+leaves no numeric file in the document root for somebody to delete later.
+
+Panel → Settings → SEO → **eNamad code**. The number alone, not the whole tag:
+
+```html
+<meta name="enamad" content="54474714">
+```
+
+It renders in the head of every page, from `App\Support\Seo::verifications()`,
+which reads the stored setting first and the shipped config second. An unset
+code renders no tag at all — `content=""` is not a tag that says "not
+configured", it is one that says the wrong thing.
+
+Check it with:
+
+```bash
+curl -s https://artaleca.com/fa | grep -o '<meta name="enamad"[^>]*>'
+```
+
+Adding the next verifier is a line in `verifications()` and a field in the
+settings schema; both are rendered by the same loop in `partials/head.blade.php`.
+
 ---
 
 ## 5a. When it does not come up

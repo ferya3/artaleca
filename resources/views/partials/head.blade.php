@@ -48,9 +48,12 @@
     <meta name="twitter:site" content="{{ config('site.seo.twitter_handle') }}">
 @endif
 
-@if (filled(config('site.seo.google_site_verification')))
-    <meta name="google-site-verification" content="{{ config('site.seo.google_site_verification') }}">
-@endif
+{{-- Ownership verification — Google, eNamad and whatever comes next. One
+     loop, so adding a verifier is a setting rather than a template change.
+     See App\Support\Seo::verifications(); an unset one is not rendered. --}}
+@foreach (\App\Support\Seo::verifications() as $verifier => $token)
+    <meta name="{{ $verifier }}" content="{{ $token }}">
+@endforeach
 
 <meta name="theme-color" content="#101010">
 <meta name="format-detection" content="telephone=no">

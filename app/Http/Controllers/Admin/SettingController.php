@@ -109,6 +109,8 @@ class SettingController extends Controller
                 'seo.default_title' => ['label' => __('admin.settings_fields.seo_title'), 'type' => 'text', 'max' => 70],
                 'seo.default_description' => ['label' => __('admin.settings_fields.seo_description'), 'type' => 'textarea', 'max' => 170],
                 'seo.google_verification' => ['label' => 'google-site-verification', 'type' => 'text', 'max' => 120, 'translatable' => false],
+                'seo.enamad' => ['label' => __('admin.settings_fields.enamad'), 'type' => 'text',
+                    'max' => 40, 'translatable' => false, 'hint' => __('admin.settings_fields.enamad_hint')],
                 'seo.twitter_handle' => ['label' => 'Twitter / X handle', 'type' => 'text', 'max' => 40, 'translatable' => false],
             ],
 

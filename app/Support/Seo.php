@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Support;
 
+use App\Models\Setting;
 use Illuminate\Support\Str;
 
 /**
@@ -22,6 +23,44 @@ use Illuminate\Support\Str;
  */
 final class Seo
 {
+    /**
+     * The ownership-verification meta tags, as name => content.
+     *
+     * Google, eNamad and the rest all prove you own a domain the same way: a
+     * meta tag in the head of the home page, read once and then re-read on a
+     * schedule. They are rendered from one list so adding the next verifier is
+     * a line here and a field in the panel.
+     *
+     * Each reads the stored setting first and the shipped config second, which
+     * is the point — these change without a deploy, and the one before this
+     * could not. The panel has offered a `google-site-verification` box since
+     * the settings screen existed and the template was reading
+     * `config('site.seo.google_site_verification')`: a different key, from a
+     * different source. Anything typed into that box went nowhere.
+     *
+     * An empty one is dropped rather than rendered blank. `<meta name="enamad"
+     * content="">` is not a tag that says "not configured" — to a verifier it
+     * is a tag that says the wrong thing.
+     *
+     * @return array<string, string>
+     */
+    public static function verifications(): array
+    {
+        $tags = [
+            'google-site-verification' => Setting::get('seo.google_verification')
+                ?: config('site.seo.google_site_verification'),
+
+            // نماد اعتماد الکترونیکی — the Iranian e-commerce trust seal.
+            'enamad' => Setting::get('seo.enamad')
+                ?: config('site.seo.enamad'),
+        ];
+
+        return array_filter(array_map(
+            fn ($value) => is_string($value) ? trim($value) : '',
+            $tags,
+        ), 'strlen');
+    }
+
     private ?string $title = null;
 
     private ?string $description = null;
