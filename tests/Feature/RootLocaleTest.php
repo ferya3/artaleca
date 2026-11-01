@@ -6,6 +6,7 @@ namespace Tests\Feature;
 
 use App\Support\Locales;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 /**
@@ -21,14 +22,37 @@ class RootLocaleTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** Whatever the browser asks for, the site opens in Persian. */
+    /**
+     * Whatever the browser asks for, the site opens in Persian — served at the
+     * root itself rather than redirected there, because ownership verifiers
+     * read the bare domain and do not follow redirects.
+     */
     public function test_the_root_opens_in_persian(): void
     {
-        $this->get('/')->assertRedirect('/fa');
+        $this->assertPersianHome($this->get('/'));
 
         foreach (['en-GB,en;q=0.9', 'ar,en;q=0.8', 'de-DE,de;q=0.9', ''] as $header) {
-            $this->withHeaders(['Accept-Language' => $header])->get('/')->assertRedirect('/fa');
+            $this->assertPersianHome($this->withHeaders(['Accept-Language' => $header])->get('/'));
         }
+    }
+
+    /**
+     * Two URLs, one page. Without the canonical, `/` and `/fa` are duplicate
+     * content and a search engine picks which one to keep — possibly the one
+     * with no language in it, which hreflang cannot describe.
+     */
+    public function test_the_root_names_the_persian_home_as_canonical(): void
+    {
+        $this->get('/')->assertSee('<link rel="canonical" href="'.url('/fa').'">', false);
+    }
+
+    /** Set up like any Persian page — same header, same remembered choice. */
+    public function test_the_root_is_served_as_a_persian_page(): void
+    {
+        $this->get('/')
+            ->assertHeader('Content-Language', 'fa')
+            ->assertSee('<html lang="fa" dir="rtl"', false)
+            ->assertPlainCookie(Locales::COOKIE, 'fa');
     }
 
     /**
@@ -37,15 +61,19 @@ class RootLocaleTest extends TestCase
      */
     public function test_a_remembered_choice_is_honoured(): void
     {
-        $this->withUnencryptedCookie(Locales::COOKIE, 'en')->get('/')->assertRedirect('/en');
-        $this->withUnencryptedCookie(Locales::COOKIE, 'ar')->get('/')->assertRedirect('/ar');
+        foreach (array_diff(Locales::codes(), [Locales::default()]) as $code) {
+            $this->withUnencryptedCookie(Locales::COOKIE, $code)->get('/')->assertRedirect('/'.$code);
+        }
+
+        // Having chosen Persian is answered in place, like no choice at all.
+        $this->assertPersianHome($this->withUnencryptedCookie(Locales::COOKIE, 'fa')->get('/'));
     }
 
     /** A cookie holding anything else is ignored rather than trusted. */
     public function test_an_unsupported_cookie_falls_back_to_persian(): void
     {
         foreach (['de', '../fa', '', 'FA'] as $value) {
-            $this->withUnencryptedCookie(Locales::COOKIE, $value)->get('/')->assertRedirect('/fa');
+            $this->assertPersianHome($this->withUnencryptedCookie(Locales::COOKIE, $value)->get('/'));
         }
     }
 
@@ -67,5 +95,10 @@ class RootLocaleTest extends TestCase
         $this->withHeaders(['Accept-Language' => 'en-US,en;q=0.9'])->get('/fa')->assertOk();
 
         $this->withUnencryptedCookie(Locales::COOKIE, 'fa')->get('/en/products')->assertOk();
+    }
+
+    private function assertPersianHome(TestResponse $response): void
+    {
+        $response->assertOk()->assertSee('<html lang="fa"', false);
     }
 }

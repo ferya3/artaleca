@@ -16,10 +16,10 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\RepresentativeController;
+use App\Http\Controllers\RootController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SitemapController;
 use App\Support\Locales;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,16 +44,12 @@ use Illuminate\Support\Facades\Route;
  * symptom until the traffic is gone.
  *
  * The one thing that still moves this is the visitor's own choice, remembered
- * from the last language they read. That is not a guess about them, it is
- * something they told us — and it is what makes the language switcher stick.
+ * from the last language they read — that one is a redirect. Otherwise the
+ * root serves the Persian home page itself, in place, because ownership
+ * verifiers (eNamad above all) read the bare domain and do not follow
+ * redirects. See RootController.
  */
-Route::get('/', function (Request $request) {
-    $chosen = $request->cookie(Locales::COOKIE);
-
-    return redirect()->route('home', [
-        'locale' => Locales::supports($chosen) ? $chosen : Locales::default(),
-    ], 302);
-})->name('root');
+Route::get('/', RootController::class)->name('root');
 
 // Search engines look for these at the domain root, never under a locale.
 Route::get('sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');

@@ -124,6 +124,15 @@ echo "— HTTPS —"
 # misses, and falls through to the redirect as before. The exposure is nil —
 # these files are public by design and hold either nothing or a token that is
 # itself public.
+#
+# The bare `http://domain/` is the other exception, for the same verifiers'
+# other method: a meta tag in the home page's head. They fetch the root over
+# HTTP, get the 301, and report the tag missing although it is on the page.
+# So exactly `/` — not `/fa`, not anything else — goes to the application on
+# port 80, which answers it with the Persian home page (canonical `/fa`, all
+# links https). The rewrite keeps REQUEST_URI as `/`, and the `internal`
+# location cannot be requested from outside, so `http://domain/index.php` is a
+# 404 rather than a second way in.
 printf 'server {
     listen 80;
     listen [::]:80;
@@ -131,6 +140,14 @@ printf 'server {
     root %s/public;
     location ^~ /.well-known/acme-challenge/ { allow all; }
     location ~ ^/[A-Za-z0-9_.-]+\\.txt$ { try_files $uri @https; }
+    location = / { rewrite ^ /index.php last; }
+    location = /index.php {
+        internal;
+        fastcgi_pass unix:%s;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        fastcgi_hide_header X-Powered-By;
+        include fastcgi_params;
+    }
     location @https { return 301 https://%s$request_uri; }
     location / { return 301 https://%s$request_uri; }
 }
@@ -182,7 +199,7 @@ server {
         include fastcgi_params;
     }
 }
-' "$ALL" "$ROOT" "$APEX" "$APEX" "$ALL" "$APEX" "$APEX" "$APEX" "$APEX" "$ROOT" "$SOCK" > "$SITE"
+' "$ALL" "$ROOT" "$SOCK" "$APEX" "$APEX" "$ALL" "$APEX" "$APEX" "$APEX" "$APEX" "$ROOT" "$SOCK" > "$SITE"
 
 serve
 

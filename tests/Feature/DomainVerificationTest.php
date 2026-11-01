@@ -120,6 +120,37 @@ class DomainVerificationTest extends TestCase
     }
 
     /**
+     * On the bare domain, not only on `/fa`.
+     *
+     * eNamad reads `artaleca.com` itself and does not follow redirects. The
+     * tag was on `/fa` and the root was a 302 to it, so eNamad reported the
+     * tag missing — this is the test that would have said so first.
+     */
+    public function test_the_enamad_tag_is_on_the_bare_domain(): void
+    {
+        Setting::put('seo.enamad', '54474714', 'seo', false);
+
+        $this->get('/')
+            ->assertOk()
+            ->assertSee('<meta name="enamad" content="54474714">', false);
+    }
+
+    /** And over plain HTTP, which is how eNamad asks for it. */
+    public function test_plain_http_serves_the_bare_domain(): void
+    {
+        $script = (string) file_get_contents(dirname(__DIR__, 2).'/deploy/https.sh');
+        // The last port-80 block is the one that stays; the first is the
+        // bootstrap that serves everything until a certificate exists.
+        $port80 = substr($script, (int) strrpos($script, 'listen 80;'), 900);
+
+        $this->assertStringContainsString('location = / { rewrite ^ /index.php last; }', $port80,
+            'The port-80 block redirects the bare domain, so a verifier reading the home page '
+            .'over HTTP gets a 301 and reports the meta tag missing.');
+        $this->assertStringContainsString('internal;', $port80,
+            'The PHP location on port 80 must be internal, or every PHP URL is reachable over HTTP.');
+    }
+
+    /**
      * And is absent when it is not.
      *
      * `<meta name="enamad" content="">` is not a tag that says "not

@@ -18,12 +18,13 @@ class LocaleRoutingTest extends TestCase
      * from the request's country. Both were removed: choosing a language from
      * anything about the visitor means Googlebot, crawling from the United
      * States, only ever sees the English pages. `RootLocaleTest` covers the
-     * rest of that behaviour.
+     * rest of that behaviour, including why the root is served in place
+     * rather than redirected.
      */
     public function test_root_always_opens_in_the_default_locale(): void
     {
         foreach (['', 'ar-SA,ar;q=0.9,en;q=0.5', 'en-GB,en;q=0.9', 'de-DE,de;q=0.9'] as $header) {
-            $this->get('/', ['Accept-Language' => $header])->assertRedirect('/fa');
+            $this->get('/', ['Accept-Language' => $header])->assertOk()->assertSee('<html lang="fa"', false);
         }
     }
 

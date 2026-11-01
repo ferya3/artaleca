@@ -1013,11 +1013,21 @@ which reads the stored setting first and the shipped config second. An unset
 code renders no tag at all — `content=""` is not a tag that says "not
 configured", it is one that says the wrong thing.
 
-Check it with:
+Check it the way eNamad does — the **bare domain**, over **plain HTTP**, and
+**without** `-L`, because the checker does not follow redirects:
 
 ```bash
-curl -s https://artaleca.com/fa | grep -o '<meta name="enamad"[^>]*>'
+curl -s http://artaleca.com/  | grep -o '<meta name="enamad"[^>]*>'
+curl -s https://artaleca.com/ | grep -o '<meta name="enamad"[^>]*>'
 ```
+
+Both must print the tag. Checking `/fa` proves nothing: that is where the tag
+was the three times eNamad reported it missing, because the root was then a
+302 to `/fa` and `http://` a 301 to `https://`. The root now serves the
+Persian home page itself (`RootController`, canonical `/fa`), and the port-80
+block `deploy/https.sh` writes passes exactly `/` to the application — so
+after pulling this, re-run `bash deploy/https.sh` once, or the HTTP check
+still gets the 301.
 
 Adding the next verifier is a line in `verifications()` and a field in the
 settings schema; both are rendered by the same loop in `partials/head.blade.php`.
