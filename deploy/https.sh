@@ -110,12 +110,28 @@ ls "/etc/letsencrypt/live/$APEX/"
 # `$host` rather than `$server_name`, because the redirect has to fire on the
 # name the visitor actually typed.
 echo "— HTTPS —"
+# A plain-text file that really exists at the document root is served over
+# HTTP as well as HTTPS. Everything else still redirects.
+#
+# Domain verifiers — eNamad, Search Console, Samandehi — prove you own a name
+# by fetching a file from its root, and several of them request `http://` and
+# do not follow the redirect. They see the 301 and report the file as missing,
+# which is exactly what happened here: the file was in place, HTTPS returned
+# 200, HTTP returned 301, and eNamad said "not uploaded".
+#
+# `try_files $uri @https` and not `=404`, so this changes nothing for a name
+# that is not a real file: `robots.txt` is a route rather than a file on disk,
+# misses, and falls through to the redirect as before. The exposure is nil —
+# these files are public by design and hold either nothing or a token that is
+# itself public.
 printf 'server {
     listen 80;
     listen [::]:80;
     server_name %s;
     root %s/public;
     location ^~ /.well-known/acme-challenge/ { allow all; }
+    location ~ ^/[A-Za-z0-9_.-]+\\.txt$ { try_files $uri @https; }
+    location @https { return 301 https://%s$request_uri; }
     location / { return 301 https://%s$request_uri; }
 }
 
@@ -166,7 +182,7 @@ server {
         include fastcgi_params;
     }
 }
-' "$ALL" "$ROOT" "$APEX" "$ALL" "$APEX" "$APEX" "$APEX" "$APEX" "$ROOT" "$SOCK" > "$SITE"
+' "$ALL" "$ROOT" "$APEX" "$APEX" "$ALL" "$APEX" "$APEX" "$APEX" "$APEX" "$ROOT" "$SOCK" > "$SITE"
 
 serve
 

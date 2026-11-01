@@ -962,6 +962,40 @@ there is, because everything looks deployed.
 
 ---
 
+## 4i. Domain verification files
+
+eNamad, Google Search Console and the rest prove you own a domain by fetching a
+file from its root. Put it in `public/` and **commit it**:
+
+```bash
+# The file eNamad asked for is empty; its existence is the proof.
+cd /var/www/artaleca && touch public/54474714.txt \
+  && chown www-data:www-data public/54474714.txt && chmod 644 public/54474714.txt \
+  && curl -s -o /dev/null -w '%{http_code} %{size_download} bytes\n' https://artaleca.com/54474714.txt
+```
+
+`200 0 bytes` means it is answering. nginx serves `public/` through
+`try_files $uri`, so the file is returned before the application is involved —
+no locale prefix, no router, no redirect.
+
+**Committing it is the part that is easy to skip and expensive to skip.** These
+are not checked once: eNamad re-reads the file on a schedule and the seal lapses
+when it stops answering. A file that exists only on the server is lost twice
+over — a rebuild clones the repository and brings nothing else, and
+`deploy/backup.sh` deliberately leaves `public/` out because its contents come
+from the repository and `npm run build`.
+
+`DomainVerificationTest` is the third guard, and the one that catches the most
+likely ending: a zero-byte file named after nothing, deleted six months from now
+by somebody tidying a directory. Deleting it fails the suite with a message
+saying what it was for. Adding another verifier is one line in that test's
+`files()` provider and one file in `public/`.
+
+Behind Cloudflare's orange cloud a fresh file can take a few minutes to appear.
+Test with `?v=1` on the end, or purge the cache.
+
+---
+
 ## 5a. When it does not come up
 
 ```bash
