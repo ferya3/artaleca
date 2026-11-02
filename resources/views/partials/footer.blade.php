@@ -49,31 +49,6 @@
                     @endforeach
                 </div>
             @endif
-
-            {{-- eNamad's badge, built from the seal's id and Code rather than
-                 pasted raw (see App\Support\TrustSeal). On a white tile
-                 because the image is drawn for a light page and this band is
-                 dark in both themes. Not lazy: it is small, and it is the one
-                 image here a buyer may actually look for. --}}
-            @if ($seal)
-                <a
-                    href="{{ $seal['href'] }}"
-                    target="_blank"
-                    rel="noopener"
-                    referrerpolicy="origin"
-                    class="block rounded-lg bg-white p-1.5 transition-opacity hover:opacity-90"
-                    aria-label="{{ content('common.enamad_seal') }}"
-                    data-enamad-seal
-                >
-                    <img
-                        src="{{ $seal['src'] }}"
-                        referrerpolicy="origin"
-                        alt=""
-                        code="{{ $seal['code'] }}"
-                        class="block aspect-[125/136] h-auto w-[5.5rem]"
-                    >
-                </a>
-            @endif
         </div>
 
         <div class="mt-8 grid grid-cols-2 gap-x-6 gap-y-2.5 lg:mt-0 lg:shrink-0 lg:gap-x-12">
@@ -93,7 +68,7 @@
 
         {{-- One line each. `no-justify` because the page justifies body text,
              and justifying a short address stretches it into a row of gaps. --}}
-        <address class="no-justify mt-8 space-y-2 border-t border-night-line pt-6 text-sm not-italic leading-relaxed text-night-400 lg:mt-0 lg:flex-1 lg:border-0 lg:pt-0">
+        <address class="no-justify mt-8 space-y-2 border-t border-night-line pt-6 text-sm not-italic leading-relaxed text-night-400 text-pretty lg:mt-0 lg:flex-1 lg:border-0 lg:pt-0">
             @if ($plant)
                 <p><span class="text-night-500">{{ content('common.plant_address') }}:</span> {{ $plant->address }}</p>
             @endif
@@ -114,6 +89,35 @@
                 <a class="ltr-run text-night-200 hover:text-white" href="mailto:{{ Contact::value('email') }}">{{ Contact::value('email') }}</a>
             </p>
         </address>
+
+        {{-- eNamad's badge, built from the seal's id and Code rather than
+             pasted raw (see App\Support\TrustSeal). Its own block at the end
+             of the row: under the email on a phone, and on a desktop a column
+             of its own past the address, ruled off from it — the far left in
+             Persian, the far right in English. On a white tile because the
+             image is drawn for a light page and this band is dark in both
+             themes. --}}
+        @if ($seal)
+            <div class="mt-5 lg:mt-0 lg:shrink-0 lg:self-stretch lg:border-s lg:border-night-line lg:ps-10">
+                <a
+                    href="{{ $seal['href'] }}"
+                    target="_blank"
+                    rel="noopener"
+                    referrerpolicy="origin"
+                    class="inline-block rounded-lg bg-white p-1.5 transition-opacity hover:opacity-90"
+                    aria-label="{{ content('common.enamad_seal') }}"
+                    data-enamad-seal
+                >
+                    <img
+                        src="{{ $seal['src'] }}"
+                        referrerpolicy="origin"
+                        alt=""
+                        code="{{ $seal['code'] }}"
+                        class="block aspect-[125/136] h-auto w-[5.5rem]"
+                    >
+                </a>
+            </div>
+        @endif
     </div>
 
     <div class="border-t border-night-line">
