@@ -7,6 +7,7 @@
     $head = Contact::headOffice();
     $plant = Contact::plant();
     $social = Contact::social();
+    $seal = \App\Support\TrustSeal::enamad();
 @endphp
 
 <footer class="bg-night-950 text-night-300">
@@ -47,6 +48,31 @@
                         </a>
                     @endforeach
                 </div>
+            @endif
+
+            {{-- eNamad's badge, built from the seal's id and Code rather than
+                 pasted raw (see App\Support\TrustSeal). On a white tile
+                 because the image is drawn for a light page and this band is
+                 dark in both themes. Not lazy: it is small, and it is the one
+                 image here a buyer may actually look for. --}}
+            @if ($seal)
+                <a
+                    href="{{ $seal['href'] }}"
+                    target="_blank"
+                    rel="noopener"
+                    referrerpolicy="origin"
+                    class="block rounded-lg bg-white p-1.5 transition-opacity hover:opacity-90"
+                    aria-label="{{ content('common.enamad_seal') }}"
+                    data-enamad-seal
+                >
+                    <img
+                        src="{{ $seal['src'] }}"
+                        referrerpolicy="origin"
+                        alt=""
+                        code="{{ $seal['code'] }}"
+                        class="block aspect-[125/136] h-auto w-[5.5rem]"
+                    >
+                </a>
             @endif
         </div>
 

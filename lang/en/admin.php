@@ -260,6 +260,8 @@ return [
         'contact_note' => 'Response-time note',
         'enamad' => 'eNamad code',
         'enamad_hint' => 'The numeric code from the eNamad panel — the number alone, not the whole meta tag. It renders as <meta name="enamad"> in the head of every page. Leave it blank and no tag is written.',
+        'enamad_seal' => 'eNamad seal in the footer',
+        'enamad_seal_hint' => 'Paste the badge code the eNamad panel gives you as it is — the whole <a><img></a> snippet or just its link. Only the id and Code are taken from it and the badge is built by the site. Leave blank to keep the shipped seal.',
         'seo_title' => 'Default page title',
         'seo_description' => 'Default meta description',
         'og_image' => 'Share image (Open Graph)',

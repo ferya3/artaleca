@@ -111,6 +111,8 @@ class SettingController extends Controller
                 'seo.google_verification' => ['label' => 'google-site-verification', 'type' => 'text', 'max' => 120, 'translatable' => false],
                 'seo.enamad' => ['label' => __('admin.settings_fields.enamad'), 'type' => 'text',
                     'max' => 40, 'translatable' => false, 'hint' => __('admin.settings_fields.enamad_hint')],
+                'seo.enamad_seal' => ['label' => __('admin.settings_fields.enamad_seal'), 'type' => 'textarea', 'rows' => 4,
+                    'max' => 1000, 'translatable' => false, 'hint' => __('admin.settings_fields.enamad_seal_hint')],
                 'seo.twitter_handle' => ['label' => 'Twitter / X handle', 'type' => 'text', 'max' => 40, 'translatable' => false],
             ],
 

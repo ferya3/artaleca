@@ -260,6 +260,10 @@ return [
         // نماد اعتماد الکترونیکی. Better set in Panel → Settings → SEO,
         // which is where whoever renews the seal will look for it.
         'enamad' => env('SITE_ENAMAD', ''),
+        // The seal in the footer — the `id` and `Code` from the snippet eNamad
+        // issued for artaleca.com. Public by design: the same two values are in
+        // the page of every visitor. Panel → Settings → SEO overrides it.
+        'enamad_seal' => env('SITE_ENAMAD_SEAL', 'id=8468344&Code=7EzIUkuzLEPb9AqmxfkrcWcmzFhnzKhz'),
     ],
 
     /*

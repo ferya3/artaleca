@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Middleware;
 
+use App\Support\TrustSeal;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -87,7 +88,9 @@ class SecurityHeaders
             "object-src 'none'",
             "frame-ancestors 'self'",
             "form-action 'self'",
-            'img-src '.trim("'self' data: blob: {$cdn}"),
+            // The eNamad seal is an image served from eNamad's own host, and it
+            // has to be: the badge is how they vouch for the domain.
+            'img-src '.trim("'self' data: blob: ".TrustSeal::HOST." {$cdn}"),
             'font-src '.trim("'self' {$cdn}"),
             "connect-src 'self'",
             'media-src '.trim("'self' {$cdn}"),

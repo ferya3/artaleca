@@ -35,6 +35,7 @@ return [
     'fax' => 'Fax',
     'email' => 'Email',
     'national_phone' => 'National line',
+    'enamad_seal' => 'eNamad e-commerce trust seal',
     'sales' => 'Domestic sales',
     'export' => 'Export',
     'address' => 'Address',
