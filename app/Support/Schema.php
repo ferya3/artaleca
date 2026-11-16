@@ -185,7 +185,36 @@ final class Schema
             'brand' => ['@type' => 'Brand', 'name' => config('site.company.brand')],
             'manufacturer' => ['@id' => url('/').'#organization'],
             'additionalProperty' => $properties ?: null,
+            'offers' => self::offers($product),
         ]);
+    }
+
+    /**
+     * The shop's prices, as an AggregateOffer — the form Google reads a price
+     * range from. In rials: the toman is not an ISO 4217 currency and IRR is.
+     * Only when the page actually shows a price; structured data claiming one
+     * the visitor cannot see is the kind Google penalises.
+     *
+     * @return array<string, mixed>|null
+     */
+    private static function offers(Product $product): ?array
+    {
+        if (! $product->relationLoaded('variants') || $product->variants->isEmpty()) {
+            return null;
+        }
+
+        $prices = $product->variants->pluck('price');
+
+        return [
+            '@type' => 'AggregateOffer',
+            'priceCurrency' => 'IRR',
+            'lowPrice' => (string) ($prices->min() * 10),
+            'highPrice' => (string) ($prices->max() * 10),
+            'offerCount' => $prices->count(),
+            'availability' => 'https://schema.org/InStock',
+            'url' => route('products.show', ['locale' => Locales::current(), 'product' => $product]).'#buy',
+            'seller' => ['@id' => url('/').'#organization'],
+        ];
     }
 
     public static function article(Post $post): array

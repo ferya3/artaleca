@@ -105,8 +105,21 @@
                     </dl>
                 @endif
 
+                {{-- The shop's offer for this grade, when it has one. The quote
+                     button stays beside it: a bulk buyer, a project with its own
+                     terms, an export order — those still start with a price
+                     request, and the shop does not pretend otherwise. --}}
+                @if ($product->variants->isNotEmpty())
+                    <div class="mt-8 space-y-3" id="buy">
+                        <h2 class="text-base font-bold text-ink-950">{{ __('shop.buy_online') }}</h2>
+                        @foreach ($product->variants as $variant)
+                            <x-shop.buy-form :variant="$variant" />
+                        @endforeach
+                    </div>
+                @endif
+
                 <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-                    <x-button :href="route('quote', ['product' => $product->slug])" variant="primary">
+                    <x-button :href="route('quote', ['product' => $product->slug])" :variant="$product->variants->isNotEmpty() ? 'outline' : 'primary'">
                         {{ content('product.request_quote') }}
                     </x-button>
 

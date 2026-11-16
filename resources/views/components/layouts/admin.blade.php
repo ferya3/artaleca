@@ -24,6 +24,12 @@
             ['route' => 'admin.enquiries.index', 'label' => __('admin.enquiries'), 'badge' => \App\Models\ContactMessage::query()->unhandled()->count()],
         ],
 
+        // The shop: what came in, and what it costs.
+        __('admin.groups.shop') => [
+            ['route' => 'admin.orders.index', 'label' => __('admin.orders.title'), 'badge' => \App\Models\Order::query()->needsAttention()->count()],
+            ['route' => 'admin.product-variants.index', 'label' => __('admin.orders.prices')],
+        ],
+
         // What the plant sells.
         __('admin.groups.catalogue') => [
             ['route' => 'admin.products.index', 'label' => __('admin.products')],
@@ -59,6 +65,7 @@
             ['route' => 'admin.settings.edit', 'params' => 'figures', 'label' => __('admin.settings_groups.figures')],
             ['route' => 'admin.settings.edit', 'params' => 'support', 'label' => __('admin.settings_groups.support')],
             ['route' => 'admin.settings.edit', 'params' => 'delivery', 'label' => __('admin.settings_groups.delivery')],
+            ['route' => 'admin.settings.edit', 'params' => 'shop', 'label' => __('admin.settings_groups.shop')],
             ['route' => 'admin.sms.edit', 'label' => __('admin.sms.title')],
             ['route' => 'admin.settings.index', 'label' => __('admin.settings_all')],
         ];

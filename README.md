@@ -612,6 +612,60 @@ or delete their own account — that is the classic way to lock the last admin o
 
 ---
 
+## Shop
+
+Direct sales from the plant, in all five languages. **It ships switched off**
+(Panel → Settings → Shop → *Shop is open*): until then there is no shop page, no
+menu item, no basket and no price anywhere on the site, so the code can be
+deployed long before the price list is ready.
+
+**What is sold.** A product is the material described on its catalogue page; a
+*variant* is one way of buying it — a 50-litre bag, a cubic metre loose — with
+its own unit, price, minimum, step, optional ceiling and optional stock (Panel →
+Shop → Prices and units). A product with no variant on sale keeps its quote
+button and nothing else changes. Money is whole **tomans** in integers; the
+gateway gets rials (× 10) at the one place that talks to it, and the product's
+structured data offers an `AggregateOffer` in IRR.
+
+**The flow.** Basket (session; prices always re-read from the database) →
+checkout (contact, delivery address, delivery method, payment method, optional
+official-invoice details; Persian digits accepted everywhere) → order.
+
+* **Online:** Zarinpal REST v4. The customer is sent to the bank, comes back to
+  `/{locale}/payment/{id}/callback`, and the order is marked paid only after the
+  server's own *verify* call succeeds for the order's amount — `Status=OK` in
+  the address bar proves nothing. Repeated callbacks are idempotent. A sandbox
+  switch runs the whole flow with no money moving.
+* **Bank transfer:** the order page shows the account details from the panel
+  (card numbers and IBANs isolated left-to-right so they are not reordered in
+  Persian text). Staff mark it paid in Panel → Shop → Orders.
+
+A payment method appears at checkout only once it is configured (merchant id;
+transfer details). **Freight is never in the total:** bulk loads go *پس‌کرایه*,
+fare paid to the driver, or are collected at the gate.
+
+**Orders** have no customer accounts. Each is reached by a 40-character token
+link shown after checkout, or by order number + mobile at `/{locale}/orders/track`
+(one error message for both mistakes). Order numbers are `AL-` + seven letters —
+letters only, because the Persian pages localise digits and an order must not
+have two spellings. Staff can only move an order to its *next* possible states;
+cancelling returns reserved stock; nobody can delete an order.
+
+**Notifications** reuse the SMS panel and the sales inbox: staff hear when there
+is something to do (a transfer order on placement, an online order once paid),
+the customer on placement, on payment and on dispatch. All best-effort and
+queued — a failed SMS never costs an order.
+
+Order, basket, checkout and payment pages are `noindex` and disallowed in
+`robots.txt`; the shop listing is in the sitemap only while the shop is open.
+
+**Before switching it on:** enter the prices; set VAT (confirm the year's rate
+with accounting, or 0 if prices include it); add the Zarinpal merchant id
+and/or the transfer details; place one order of each kind in sandbox mode;
+turn sandbox off. Zarinpal requires the domain's eNamad, which the site has.
+
+---
+
 ## Layout of the code
 
 ```

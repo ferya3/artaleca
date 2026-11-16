@@ -6,6 +6,7 @@ namespace App\Support;
 
 use App\Models\Application;
 use App\Models\ProductCategory;
+use App\Shop\Shop;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
@@ -27,7 +28,7 @@ final class Navigation
      */
     public static function primary(): array
     {
-        return [
+        $items = [
             [
                 'label' => content('nav.home'),
                 'route' => 'home',
@@ -60,6 +61,18 @@ final class Navigation
                 'match' => 'contact',
             ],
         ];
+
+        // The shop sits next to the catalogue it sells from, and only while it
+        // is open — a menu item leading to a 404 is worse than none.
+        if (Shop::enabled()) {
+            array_splice($items, 2, 0, [[
+                'label' => __('shop.title'),
+                'route' => 'shop.index',
+                'match' => 'shop.',
+            ]]);
+        }
+
+        return $items;
     }
 
     /** @return Collection<int, ProductCategory> */
@@ -133,7 +146,7 @@ final class Navigation
         // footer was running to a screen and a half. Everything dropped here
         // — the gallery, quality control, the plant page, the quote form — is
         // one tap away from a page that is still listed.
-        return [
+        $columns = [
             content('nav.products') => [
                 ['label' => content('nav.home'), 'route' => 'home'],
                 ['label' => content('nav.all_products'), 'route' => 'products.index'],
@@ -149,6 +162,13 @@ final class Navigation
                 ['label' => content('nav.news'), 'route' => 'articles.index'],
             ],
         ];
+
+        if (Shop::enabled()) {
+            $columns[content('nav.products')][] = ['label' => __('shop.title'), 'route' => 'shop.index'];
+            $columns[content('nav.about')][] = ['label' => __('shop.track_title'), 'route' => 'orders.track'];
+        }
+
+        return $columns;
     }
 
     /** Clears every cached navigation fragment; called when content is saved. */

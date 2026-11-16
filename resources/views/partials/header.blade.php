@@ -183,6 +183,28 @@
                 </svg>
             </a>
 
+            {{-- The basket, while the shop is open. Shown at every width:
+                 somebody who has put something in it on a phone needs a way
+                 back to it that is not inside the menu. --}}
+            @if (\App\Shop\Shop::enabled())
+                @php($cartCount = app(\App\Shop\Cart::class)->count())
+                <a
+                    href="{{ route('cart.index') }}"
+                    class="relative flex h-10 w-10 items-center justify-center rounded-md text-ink-600 transition-colors hover:bg-ink-50 hover:text-ink-950"
+                    aria-label="{{ __('shop.cart_count', ['count' => $cartCount]) }}"
+                    data-cart-link
+                >
+                    <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" aria-hidden="true">
+                        <path d="M3 4h2l2.4 10.2a1.5 1.5 0 0 0 1.46 1.16h8.1a1.5 1.5 0 0 0 1.45-1.12L20 8H6.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="9.5" cy="19.5" r="1.3" fill="currentColor"/>
+                        <circle cx="17" cy="19.5" r="1.3" fill="currentColor"/>
+                    </svg>
+                    @if ($cartCount > 0)
+                        <span class="tabular absolute -end-0.5 -top-0.5 flex h-4.5 min-w-4.5 items-center justify-center rounded-full bg-brand-600 px-1 text-[0.625rem] font-bold text-white">{{ $cartCount }}</span>
+                    @endif
+                </a>
+            @endif
+
             <a
                 href="{{ route('quote') }}"
                 class="hidden rounded-md bg-ink-950 px-5 py-2.5 text-sm font-semibold text-surface shadow-soft transition-[background-color,box-shadow] duration-200 hover:bg-brand-600 hover:shadow-lift lg:inline-flex"

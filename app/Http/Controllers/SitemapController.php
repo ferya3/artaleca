@@ -10,6 +10,7 @@ use App\Models\Post;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\Project;
+use App\Shop\Shop;
 use App\Support\Locales;
 use Carbon\CarbonInterface;
 use Illuminate\Http\Response;
@@ -42,6 +43,12 @@ class SitemapController extends Controller
             'Disallow: /admin',
             'Disallow: /*/search',
             'Disallow: /*/quote',
+            // The basket, the checkout and every order page are per-customer;
+            // order pages carry a private token in the URL.
+            'Disallow: /*/cart',
+            'Disallow: /*/checkout',
+            'Disallow: /*/orders/',
+            'Disallow: /*/payment/',
             'Disallow: /*?*sort=',
             'Allow: /',
             '',
@@ -114,7 +121,7 @@ class SitemapController extends Controller
     /** @return array<string, array{0: float, 1: string}> */
     private function staticRoutes(): array
     {
-        return [
+        $routes = [
             'home' => [1.0, 'weekly'],
             'about' => [0.8, 'monthly'],
             'about.quality' => [0.6, 'yearly'],
@@ -129,6 +136,14 @@ class SitemapController extends Controller
             'faq' => [0.5, 'monthly'],
             'contact' => [0.7, 'yearly'],
         ];
+
+        // Listed only while open: a sitemap entry that answers 404 is the kind
+        // Search Console reports as an error on every crawl.
+        if (Shop::enabled()) {
+            $routes['shop.index'] = [0.8, 'daily'];
+        }
+
+        return $routes;
     }
 
     /**

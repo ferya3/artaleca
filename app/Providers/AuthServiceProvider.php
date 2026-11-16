@@ -11,16 +11,19 @@ use App\Models\Download;
 use App\Models\Faq;
 use App\Models\GalleryImage;
 use App\Models\Office;
+use App\Models\Order;
 use App\Models\Page;
 use App\Models\Partner;
 use App\Models\Post;
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\ProductVariant;
 use App\Models\Project;
 use App\Models\Redirect;
 use App\Models\User;
 use App\Policies\ContactMessagePolicy;
 use App\Policies\ContentPolicy;
+use App\Policies\OrderPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -48,8 +51,10 @@ class AuthServiceProvider extends ServiceProvider
         Partner::class => ContentPolicy::class,
         GalleryImage::class => ContentPolicy::class,
         Redirect::class => ContentPolicy::class,
+        ProductVariant::class => ContentPolicy::class,
 
         ContactMessage::class => ContactMessagePolicy::class,
+        Order::class => OrderPolicy::class,
         User::class => UserPolicy::class,
     ];
 

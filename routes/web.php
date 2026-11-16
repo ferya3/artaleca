@@ -18,6 +18,10 @@ use App\Http\Controllers\QuoteController;
 use App\Http\Controllers\RepresentativeController;
 use App\Http\Controllers\RootController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\Shop\CartController;
+use App\Http\Controllers\Shop\CheckoutController;
+use App\Http\Controllers\Shop\OrderController;
+use App\Http\Controllers\Shop\ShopController;
 use App\Http\Controllers\SitemapController;
 use App\Support\Locales;
 use Illuminate\Support\Facades\Route;
@@ -111,6 +115,35 @@ Route::prefix('{locale}')
         Route::post('quote', [QuoteController::class, 'store'])
             ->middleware('throttle:contact-form')
             ->name('quote.store');
+
+        /*
+         * The shop. Its browsing and basket pages exist only while it is
+         * switched on in the panel; the order pages and the bank's callback
+         * always do, so closing the shop never strands a payment in flight.
+         */
+        Route::middleware('shop')->group(function () {
+            Route::get('shop', [ShopController::class, 'index'])->name('shop.index');
+            Route::get('cart', [CartController::class, 'index'])->name('cart.index');
+            Route::post('cart', [CartController::class, 'store'])->middleware('throttle:60,1')->name('cart.store');
+            Route::patch('cart/{variant}', [CartController::class, 'update'])->whereNumber('variant')->name('cart.update');
+            Route::delete('cart/{variant}', [CartController::class, 'destroy'])->whereNumber('variant')->name('cart.destroy');
+            Route::get('checkout', [CheckoutController::class, 'create'])->name('checkout.create');
+            Route::post('checkout', [CheckoutController::class, 'store'])
+                ->middleware('throttle:checkout')
+                ->name('checkout.store');
+        });
+
+        Route::get('orders/track', [OrderController::class, 'track'])->name('orders.track');
+        Route::post('orders/track', [OrderController::class, 'lookup'])
+            ->middleware('throttle:10,1')
+            ->name('orders.lookup');
+        Route::get('orders/{token}', [OrderController::class, 'show'])->name('orders.show');
+        Route::post('orders/{token}/pay', [OrderController::class, 'pay'])
+            ->middleware('throttle:10,1')
+            ->name('orders.pay');
+        Route::get('payment/{payment}/callback', [OrderController::class, 'callback'])
+            ->whereNumber('payment')
+            ->name('payment.callback');
 
         Route::get('privacy', [LegalController::class, 'privacy'])->name('legal.privacy');
         Route::get('terms', [LegalController::class, 'terms'])->name('legal.terms');

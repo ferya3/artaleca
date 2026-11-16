@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Shop\Shop;
 use App\Support\Locales;
 use App\Support\Schema;
 use Illuminate\Contracts\View\View;
@@ -75,6 +76,15 @@ class ProductController extends Controller
             'applications' => fn ($q) => $q->where('is_active', true)->orderBy('position'),
             'downloads' => fn ($q) => $q->where('is_active', true)->orderBy('position'),
         ]);
+
+        // What of it is on sale, when the shop is open. An empty collection
+        // either way, so the page and the structured data have one thing to ask.
+        $product->setRelation('variants', Shop::enabled()
+            ? $product->variants()->purchasable()->get()
+                ->filter(fn ($variant) => $variant->inStock())
+                ->each(fn ($variant) => $variant->setRelation('product', $product))
+                ->values()
+            : collect());
 
         $related = Product::query()
             ->active()

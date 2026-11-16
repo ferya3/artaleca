@@ -12,12 +12,14 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\GalleryController;
 use App\Http\Controllers\Admin\SmsController;
 use App\Http\Controllers\Admin\OfficeController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductVariantController;
 use App\Http\Controllers\Admin\ProjectController;
 use App\Http\Controllers\Admin\RedirectController;
 use App\Http\Controllers\Admin\SettingController;
@@ -66,6 +68,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         $resources = [
             'product-categories' => ProductCategoryController::class,
             'products' => ProductController::class,
+            'product-variants' => ProductVariantController::class,
             'applications' => ApplicationController::class,
             'projects' => ProjectController::class,
             'posts' => PostController::class,
@@ -89,6 +92,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('enquiries/{enquiry}', [EnquiryController::class, 'show'])->name('enquiries.show');
         Route::patch('enquiries/{enquiry}', [EnquiryController::class, 'update'])->name('enquiries.update');
         Route::delete('enquiries/{enquiry}', [EnquiryController::class, 'destroy'])->name('enquiries.destroy');
+
+        Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+        Route::patch('orders/{order}', [OrderController::class, 'update'])->name('orders.update');
 
         Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
         Route::get('settings/{group}', [SettingController::class, 'edit'])->name('settings.edit');

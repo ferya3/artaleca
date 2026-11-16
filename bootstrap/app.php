@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureShopIsOpen;
 use App\Http\Middleware\EnsureUserIsStaff;
 use App\Http\Middleware\HandleRedirects;
 use App\Http\Middleware\LocaliseDigits;
@@ -48,6 +49,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'locale' => SetLocale::class,
             'admin' => EnsureUserIsStaff::class,
+            'shop' => EnsureShopIsOpen::class,
         ]);
 
         $middleware->trustProxies(at: '*');

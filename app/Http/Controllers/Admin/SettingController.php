@@ -94,6 +94,27 @@ class SettingController extends Controller
                     'max' => 1200, 'hint' => __('admin.settings_fields.delivery_terms_hint')],
             ],
 
+            /*
+             * ── The shop ─────────────────────────────────────────────────
+             *
+             * Off until somebody switches it on, which should be after the
+             * prices are in. A payment method appears at checkout only once
+             * it is set up: online needs the merchant id, a transfer needs
+             * the account details. See App\Shop\Shop.
+             */
+            'shop' => [
+                'shop.enabled' => ['label' => __('admin.orders.settings.enabled'), 'type' => 'checkbox', 'translatable' => false,
+                    'hint' => __('admin.orders.settings.enabled_hint')],
+                'shop.tax_percent' => ['label' => __('admin.orders.settings.tax_percent'), 'type' => 'number', 'max' => 100,
+                    'hint' => __('admin.orders.settings.tax_percent_hint')],
+                'shop.zarinpal_merchant' => ['label' => __('admin.orders.settings.zarinpal_merchant'), 'type' => 'text',
+                    'max' => 36, 'translatable' => false, 'hint' => __('admin.orders.settings.zarinpal_merchant_hint')],
+                'shop.zarinpal_sandbox' => ['label' => __('admin.orders.settings.zarinpal_sandbox'), 'type' => 'checkbox', 'translatable' => false,
+                    'hint' => __('admin.orders.settings.zarinpal_sandbox_hint')],
+                'shop.transfer_details' => ['label' => __('admin.orders.settings.transfer_details'), 'type' => 'textarea', 'rows' => 5,
+                    'max' => 1000, 'translatable' => false, 'hint' => __('admin.orders.settings.transfer_details_hint')],
+            ],
+
             // ── The headline numbers, editable without a deploy ──────────
             'figures' => [
                 'figures.annual_capacity_m3' => ['label' => content('common.figures.capacity'), 'type' => 'number', 'max' => 100000000],

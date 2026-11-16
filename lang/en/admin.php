@@ -52,6 +52,7 @@ return [
     ],
 
     'groups' => [
+        'shop' => 'Shop',
         'inbox' => 'Inbox',
         'catalogue' => 'Catalogue',
         'content' => 'Pages and text',
@@ -127,6 +128,58 @@ return [
         'sms_is_silent' => 'Enquiry alerts are not being sent by SMS — it is either switched off or has no sales number:',
     ],
 
+    /*
+     * The shop, in the panel: orders, prices, and its settings screen.
+     */
+    'orders' => [
+        'title' => 'Orders',
+        'prices' => 'Prices and units',
+        'price' => 'Price (toman)',
+        'price_hint' => 'The price of one unit, in tomans, with no separators — 2500000 for two and a half million.',
+        'unit' => 'Unit',
+        'unit_hint' => 'What the customer counts: bag, cubic metre, big bag.',
+        'variant_name' => 'Packaging',
+        'variant_name_hint' => 'For example "50-litre bag" or "Loose, by truck".',
+        'stock' => 'Stock',
+        'stock_hint' => 'Blank means no stock limit (made to order). A number is counted down by each order and back up when one is cancelled.',
+        'min_quantity' => 'Minimum order',
+        'step' => 'Order step',
+        'step_hint' => '5 means only 5, 10, 15 … can be ordered.',
+        'max_quantity' => 'Most per order',
+        'max_quantity_hint' => 'Blank means no ceiling. Set one for volumes that should go through a quote instead.',
+        'on_sale' => 'Sold in the shop',
+        'search' => 'Order number, name or mobile',
+        'items_count' => ':count items',
+        'move_to' => 'Move to',
+        'keep_status' => 'No change (:status)',
+        'move_hint' => 'Only the steps this order can take next are listed. "Paid" stamps the payment date and texts the customer; "Cancelled" returns the stock; "Shipped" texts the customer.',
+        'staff_note' => 'Internal note',
+        'payments' => 'Bank transactions',
+        'customer_page' => 'The order as the customer sees it',
+        'payment_status' => [
+            'pending' => 'Open',
+            'paid' => 'Successful',
+            'failed' => 'Failed',
+        ],
+        'sms' => [
+            'placed' => 'New order :number (bank transfer)',
+            'paid' => 'Order paid :number',
+            'shipped' => 'Order :number shipped',
+        ],
+        'settings' => [
+            'enabled' => 'Shop is open',
+            'enabled_hint' => 'While it is off, the shop, the basket and the menu link do not appear on the site. Enter the prices first, then switch it on.',
+            'tax_percent' => 'VAT (percent)',
+            'tax_percent_hint' => 'Added to the order total. Set 0 if the prices already include it. Check this year\'s rate with accounting.',
+            'zarinpal_merchant' => 'Zarinpal merchant id',
+            'zarinpal_merchant_hint' => 'The 36-character id from the Zarinpal panel. Leave blank and online payment is not offered.',
+            'zarinpal_sandbox' => 'Test mode (sandbox)',
+            'zarinpal_sandbox_hint' => 'Runs the whole checkout without moving money. Switch it off before selling for real.',
+            'transfer_details' => 'Bank transfer details',
+            'transfer_details_hint' => 'Card number, IBAN (sheba) and account holder, one per line. Shown to a customer who chooses bank transfer. Leave blank and that method is removed.',
+        ],
+    ],
+
     'sms' => [
         'title' => 'Enquiry SMS',
         'intro' => 'Every quote request and contact message puts an SMS on the sales manager\'s phone. The email still goes out as before; the SMS is for when nobody is looking at an inbox.',
@@ -189,6 +242,7 @@ return [
     ],
 
     'settings_groups' => [
+        'shop' => 'Shop',
         'contact' => 'Contact and addresses',
         'social' => 'Social profiles',
         'figures' => 'Key numbers',
@@ -210,6 +264,7 @@ return [
     'settings_fields_count' => 'fields',
     'settings_placeholder_hint' => 'An empty box shows the value the site ships with, greyed out inside it. Anything you type replaces it.',
     'settings_group_intros' => [
+        'shop' => 'Opening the shop, the VAT rate, the Zarinpal gateway and the bank transfer details.',
         'contact' => 'Head office and plant addresses, phone, fax, email and opening hours. These are what the contact page and the footer show.',
         'social' => 'Links to the company profiles. Leave one blank and it does not appear on the site.',
         'figures' => 'Annual capacity, plant area, kiln lines, export countries and headcount.',

@@ -97,6 +97,18 @@ class AppServiceProvider extends ServiceProvider
             Limit::perDay(20)->by($request->ip()),
         ]);
 
+        /*
+         * The checkout. Looser than the enquiry forms, because a real buyer
+         * fixing a postal code, then a mobile number, then forgetting the
+         * terms box submits four times in a minute — and the fourth one is the
+         * order. A bot still meets the honeypot, the render-time check and a
+         * daily ceiling.
+         */
+        RateLimiter::for('checkout', fn (Request $request) => [
+            Limit::perMinute(10)->by($request->ip()),
+            Limit::perDay(60)->by($request->ip()),
+        ]);
+
         RateLimiter::for('login', fn (Request $request) => [
             Limit::perMinute(5)->by($request->ip()),
             Limit::perMinute(5)->by((string) $request->input('email')),
